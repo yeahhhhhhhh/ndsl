@@ -2,7 +2,6 @@ build/*
 .vscode/sftp.json
 !.gitkeep
 bin/
-temp_define.h
 
 *.log
 *.fls
