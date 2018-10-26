@@ -12,27 +12,28 @@
 #ifndef __TCPCHANNEL_H__
 #define __TCPCHANNEL_H__
 #include "Channel.h"
-#include "EventLoop.h"
+// #include "EventLoop.h"
+#include "TcpConnection.h"
 
 class TcpChannel : public Channel
 {
   private:
-    int sockfd_;
-    int events_;
-    EventLoop *pLoop;
+    TcpConnection *pCon_;
 
+    // epoll事件注册
     int update();
-    int register();
+    int regist();
+    int del();
 
   public:
+    TcpChannel(EventLoop *loop, int sockfd);
+
+    // 回调
     int onRead(TcpConnection *pCon, char *inBuf);
     int onWrite();
 
-    int enableReading();
-    int enableWriting();
-    int disableWriting();
-    int getEvents();
-    int getFd();
+    int handleEvent();
+    int setCallBack(TcpConnection *pCon);
 };
 
 #endif // __TCPCHANNEL_H__

@@ -9,33 +9,26 @@
  * Copyright 2018 - 2018
  */
 
-#include "../incluce/ndsl/net/TcpChannel.h"
+#include "ndsl/net/TcpChannel.h"
+#include <sys/epoll.h>
 
-int TcpChannel::onRead(TcpConnection *pCon, char *inBuf) {}
+TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
+    : Channel(sockfd, loop)
+{}
+
+int TcpChannel::onRead(TcpConnection *pCon, char *inBuf) { pCon->send(inBuf_); }
 int TcpChannel::onWrite() {}
 
-int TcpChannel::enableReading()
+int TcpChannel::handleEvent()
 {
-    events_ |= EPOLLIN;
-    register();
+    if (getRevents() & EPOLLIN) { pCon_->read(); }
+    if (getRevents() & EPOLLOUT) { pCon_->write(); }
 }
 
-int TcpChannel::enableWriting()
-{
-    events_ |= EPOLLOUT;
-    update();
-}
+int TcpChannel::update() { getEventLoop()->update(this); }
 
-int TcpChannel::disableWriting()
-{
-    events_ &= ~EPOLLOUT;
-    update();
-}
+int TcpChannel::regist() { getEventLoop()->register(this); }
 
-int TcpChannel::getEvents() { return events_; }
+int TcpChannel::del() {}
 
-int TcpChannel::getFd() { return sockfd_; }
-
-int TcpChannel::update() { pLoop_->update(); }
-
-int TcpChannel::register() { pLoop_->register(); }
+int TcpChannel::setCallBack(TcpConnection *pCon) { pCon_ = pCon; }

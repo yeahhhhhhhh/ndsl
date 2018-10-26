@@ -29,6 +29,7 @@ class TcpConnection
 
     int read();
     int write();
+    int send(char *outBuf);
 };
 
 #endif // __TCPCONNECTION_H__
