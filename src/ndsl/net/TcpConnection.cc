@@ -8,7 +8,7 @@
  * -----
  * Copyright 2018 - 2018
  */
-#include "../incluce/ndsl/net/TcpConnection.h"
+#include "ndsl/net/TcpConnection.h"
 
 TcpConnection::TcpConnection(int sockfd, EventLoop *pLoop)
 {
@@ -20,10 +20,12 @@ int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
     pTcpChannel_ = new TcpChannel(sockfd, pLoop);
     pTcpChannel_->enableReading();
+    pTcpChannel_->setCallBack(this);
 }
 
 int TcpConnection::read()
 {
+    memset(inBuf_, 0, sizeof(inBuf_));
     int sockfd = pTcpChannel_->getFd();
     if (sockfd < 0) { return -1; }
     int length;
@@ -42,4 +44,43 @@ int TcpConnection::read()
         pTcpChannel_->onRead(this, &inBuf_);
     }
 }
-int TcpConnection::write() { append(); }
+
+int TcpConnection::write()
+{
+    int sockfd = pTcpChannel_->getFd();
+    if (sockfd < 0) { return -1; }
+    int n, length;
+    char temp[MAXLINE];
+    memset(temp, 0, sizeof(temp));
+    length = strlen(outBuf_);
+    if (pTcpChannel_->isWriting()) {
+        n = write(sockfd, outBuf_, strlen(outBuf_));
+        if (n == length) {
+            // log(write n bytes);
+            pTcpChannel_->disableWriting();
+            pTcpChannel_->onWrite();
+        } else {
+            // 这一次还没传完
+            strncpy(temp, outBuf_ + n, length - n);
+            memsset(outBuf_, 0, sizeof(outBuf_));
+            strcpy(outBuf_, temp);
+        }
+    }
+}
+
+int TcpConnection::send(char *outBuf)
+{
+    int sockfd = pTcpChannel_->getFd();
+    if (sockfd < 0) { return -1; }
+    int length = strlen(outBuf);
+    int n = 0;
+    if ((n = write(sockfd, outBuf, strlen(outBuf))) < 0) {
+        // log(write error);
+        pTcpChannel_->onWrite();
+    } else if (n < length) {
+        // 一次write没写完
+        if (!pTcpChannel_->isWriting()) pTcpChannel_->enableWriting();
+        strcat(outBuf_, outBuf + n);
+        memset(outBuf, 0, sizeof(outBuf));
+    }
+}
