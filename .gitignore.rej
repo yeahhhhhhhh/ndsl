@@ -1,0 +1,9 @@
+diff a/.gitignore b/.gitignore	(rejected hunks)
+@@ -2,6 +2,7 @@
+ .vscode/sftp.json
+ !.gitkeep
+ bin/
++temp_define.h
+ 
+ *.log
+ *.fls

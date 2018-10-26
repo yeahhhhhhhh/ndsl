@@ -40,7 +40,11 @@ int Channel::isWriting() { return events_ & EPOLLOUT; }
 
 int Channel::update() { getEventLoop()->update(this); }
 
+<<<<<<< HEAD
 int Channel::regist() { getEventLoop()->regist(this); }
+=======
+int Channel::regist() { getEventLoop()->register(this); }
+>>>>>>> dev_gyz
 
 int Channel::del() {}
 
