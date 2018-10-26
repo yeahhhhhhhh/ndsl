@@ -34,6 +34,11 @@ class Interrupter : public Channel
     Interrupter(EventLoop *eloop, int fd);
     ~Interrupter();
 
+    // 获取文件描述符
+    int getFd();
+
+    int interrupt();
+
   private:
     int handleRead();
 

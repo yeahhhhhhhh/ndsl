@@ -10,6 +10,7 @@
 #define __NDSL_NET_EVENTLOOP_H__
 
 #include "ndsl/net/Epoll.h"
+#include "ndsl/utils/Interrupter.h"
 
 namespace ndsl {
 namespace net {
@@ -17,12 +18,16 @@ namespace net {
 class EventLoop
 {
   private:
-    Epoll epoll_;
+    Epoll *epoll_;
+    utils::Interrupter *intr_;
     bool quit_;
 
   public:
-    EventLoop(Epoll epoll);
+    EventLoop(Epoll *epoll);
     ~EventLoop();
+
+    // 初始化中断器
+    int init();
 
     // 开始循环
     int loop();
