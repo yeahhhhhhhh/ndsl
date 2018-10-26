@@ -12,6 +12,9 @@
 #include "ndsl/net/TcpChannel.h"
 #include <sys/epoll.h>
 
+namespace ndsl {
+namespace net {
+
 TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
     : Channel(sockfd, loop)
 {}
@@ -25,10 +28,7 @@ int TcpChannel::handleEvent()
     if (getRevents() & EPOLLOUT) { pCon_->write(); }
 }
 
-int TcpChannel::update() { getEventLoop()->update(this); }
-
-int TcpChannel::regist() { getEventLoop()->register(this); }
-
-int TcpChannel::del() {}
-
 int TcpChannel::setCallBack(TcpConnection *pCon) { pCon_ = pCon; }
+
+} // namespace net
+} // namespace ndsl

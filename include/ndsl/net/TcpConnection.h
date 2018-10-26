@@ -14,6 +14,9 @@
 #include "TcpChannel.h"
 #include "EventLoop.h"
 
+namespace ndsl {
+namespace net {
+
 class TcpConnection
 {
   private:
@@ -31,5 +34,8 @@ class TcpConnection
     int write();
     int send(char *outBuf);
 };
+
+} // namespace net
+} // namespace ndsl
 
 #endif // __TCPCONNECTION_H__

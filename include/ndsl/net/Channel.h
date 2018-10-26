@@ -13,6 +13,9 @@
 #define __CHANNEL_H__
 #include "EventLoop.h"
 
+namespace ndsl {
+namespace net {
+
 class Channel
 {
   private:
@@ -20,6 +23,11 @@ class Channel
     int events_;
     int revents_;
     EventLoop *pLoop_;
+
+    // epoll事件注册
+    int update();
+    int regist();
+    int del();
 
   public:
     Channel(int fd, EventLoop *loop);
@@ -39,5 +47,8 @@ class Channel
     int disableWriting();
     int isWriting();
 };
+
+} // namespace net
+} // namespace ndsl
 
 #endif // __CHANNEL_H__

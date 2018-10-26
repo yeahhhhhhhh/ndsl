@@ -1,5 +1,8 @@
 #include "ndsl/net/Channel.h"
 
+namespace ndsl {
+namespace net {
+
 Channel::Channel(int fd, EventLoop *loop)
     : fd_(fd)
     , pLoop_(loop)
@@ -34,3 +37,12 @@ int Channel::disableWriting()
 }
 
 int TcpChannel::isWriting() { return events_ & EPOLLOUT; }
+
+int TcpChannel::update() { getEventLoop()->update(this); }
+
+int TcpChannel::regist() { getEventLoop()->register(this); }
+
+int TcpChannel::del() {}
+
+} // namespace net
+} // namespace ndsl

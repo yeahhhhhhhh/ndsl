@@ -10,6 +10,9 @@
  */
 #include "ndsl/net/TcpConnection.h"
 
+namespace ndsl {
+namespace net {
+
 TcpConnection::TcpConnection(int sockfd, EventLoop *pLoop)
 {
     createChannel(sockfd, pLoop);
@@ -84,3 +87,6 @@ int TcpConnection::send(char *outBuf)
         memset(outBuf, 0, sizeof(outBuf));
     }
 }
+
+} // namespace net
+} // namespace ndsl
