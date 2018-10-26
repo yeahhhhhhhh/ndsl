@@ -36,13 +36,13 @@ int Channel::disableWriting()
     update();
 }
 
-int TcpChannel::isWriting() { return events_ & EPOLLOUT; }
+int Channel::isWriting() { return events_ & EPOLLOUT; }
 
-int TcpChannel::update() { getEventLoop()->update(this); }
+int Channel::update() { getEventLoop()->update(this); }
 
-int TcpChannel::regist() { getEventLoop()->register(this); }
+int Channel::regist() { getEventLoop()->register(this); }
 
-int TcpChannel::del() {}
+int Channel::del() {}
 
 } // namespace net
 } // namespace ndsl
