@@ -12,18 +12,15 @@
 #ifndef __TCPCHANNEL_H__
 #define __TCPCHANNEL_H__
 #include "Channel.h"
-// #include "EventLoop.h"
 #include "TcpConnection.h"
+
+namespace ndsl {
+namespace net {
 
 class TcpChannel : public Channel
 {
   private:
     TcpConnection *pCon_;
-
-    // epoll事件注册
-    int update();
-    int regist();
-    int del();
 
   public:
     TcpChannel(EventLoop *loop, int sockfd);
@@ -35,5 +32,8 @@ class TcpChannel : public Channel
     int handleEvent();
     int setCallBack(TcpConnection *pCon);
 };
+
+} // namespace net
+} // namespace ndsl
 
 #endif // __TCPCHANNEL_H__
