@@ -15,6 +15,9 @@
 namespace ndsl {
 namespace net {
 
+class Epoll;
+class Channel;
+
 class EventLoop
 {
   private:

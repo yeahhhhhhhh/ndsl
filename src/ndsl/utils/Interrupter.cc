@@ -40,16 +40,6 @@ int Interrupter::interrupt()
     return S_OK;
 }
 
-// TODO:自定义第一个中断服务函数
-int Interrupter::interrupt1()
-{
-    Channel::getEventLoop()->quit();
-    LOG(LEVEL_DEBUG, "Interrupter::interrupt1\n");
-}
-
-// TODO:自定义第二个中断服务函数
-int Interrupter::interrupt2() { LOG(LEVEL_DEBUG, "Interrupter::interrupt2\n"); }
-
 int Interrupter::handleRead()
 {
     data = 0;
@@ -58,8 +48,6 @@ int Interrupter::handleRead()
         LOG(LEVEL_ERROR, "Interrupter::handleRead eventfd_read\n");
         return S_FAIL;
     }
-    if (data == INT1) interrupt1();
-    if (data == INT2) interrupt2();
 }
 
 } // namespace utils

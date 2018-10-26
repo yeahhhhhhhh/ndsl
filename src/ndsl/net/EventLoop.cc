@@ -6,6 +6,8 @@
  * @email 675040625@qq.com
  */
 
+// #include <iostream>
+#include <new>
 #include <sys/eventfd.h>
 #include <errno.h>
 #include "ndsl/utils/temp_define.h"
@@ -38,7 +40,7 @@ int EventLoop::init()
             return errno;
         }
 
-        intr_ = new utils::Interrupter(this, evfd);
+        intr_ = new Interrupter(this, evfd);
 
         return intr_.regist();
     }

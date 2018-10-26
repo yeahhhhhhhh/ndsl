@@ -24,11 +24,11 @@ class Interrupter : public Channel
 {
   private:
     eventfd_t data;
-    enum
-    {
-        INT1 = 1, // 设置第一个中断号
-        INT2 = 2  // 设置第二个中断号
-    };
+    // enum
+    // {
+    //     INT1 = 1, // 设置第一个中断号
+    //     INT2 = 2  // 设置第二个中断号
+    // };
 
   public:
     Interrupter(EventLoop *eloop, int fd);
@@ -41,9 +41,6 @@ class Interrupter : public Channel
 
   private:
     int handleRead();
-
-    int interrupt1(); //第一个中断服务函数
-    int interrupt2(); //第二个中断服务函数
 };
 
 } // namespace utils

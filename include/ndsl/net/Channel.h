@@ -11,11 +11,10 @@
 
 #ifndef __CHANNEL_H__
 #define __CHANNEL_H__
-#include "EventLoop.h"
+#include "ndsl/net/EventLoop.h"
 
 namespace ndsl {
 namespace net {
-
 class Channel
 {
   private:
@@ -47,6 +46,8 @@ class Channel
     int disableWriting();
     int isWriting();
 };
+} // namespace net
+} // namespace ndsl
 
 } // namespace net
 } // namespace ndsl

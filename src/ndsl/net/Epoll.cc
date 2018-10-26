@@ -16,6 +16,8 @@ namespace ndsl {
 
 namespace net {
 
+class Channel;
+
 int Epoll::init()
 {
     epfd_ = epoll_create(1);
