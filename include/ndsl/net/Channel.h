@@ -19,33 +19,16 @@ namespace net {
 class Channel
 {
   private:
-    int fd_;
-    int events_;
     int revents_;
-    EventLoop *pLoop_;
-
-    // epoll事件注册
-    int update();
-    int regist();
-    int del();
 
   public:
-    Channel(int fd, EventLoop *loop);
-
     virtual int onRead() = 0;
     virtual int onWrite() = 0;
     virtual int handleEvent() = 0;
+    virtual int getFd() = 0;
+    virtual int getEvents() = 0;
 
-    int getFd();
     int setRevents(int revents);
-    int getRevents();
-    int getEvents();
-    EventLoop *getEventLoop();
-
-    int enableReading();
-    int enableWriting();
-    int disableWriting();
-    int isWriting();
 };
 
 } // namespace net

@@ -20,7 +20,15 @@ namespace net {
 class TcpChannel : public Channel
 {
   private:
+    int sockfd_;
+    int events_;
+    EventLoop *pLoop_;
     TcpConnection *pCon_;
+
+    // epoll事件注册
+    int update();
+    int regist();
+    int del();
 
   public:
     TcpChannel(EventLoop *loop, int sockfd);
@@ -30,7 +38,20 @@ class TcpChannel : public Channel
     int onWrite();
 
     int handleEvent();
+
+    int getFd();
+    int getRevents();
+    int getEvents();
+    EventLoop *getEventLoop();
+
+    int handleEvent();
     int setCallBack(TcpConnection *pCon);
+
+    // epoll 事件管理
+    int enableReading();
+    int enableWriting();
+    int disableWriting();
+    int isWriting();
 };
 
 } // namespace net
