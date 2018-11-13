@@ -10,7 +10,7 @@ Channel::Channel(int fd, EventLoop *loop)
 
 int Channel::getFd() { return fd_; }
 
-int Channel::setRevents(int revents) { revents_ = revents; }
+void Channel::setRevents(int revents) { revents_ = revents; }
 
 int Channel::getRevents() { return revents_; }
 
@@ -18,19 +18,19 @@ EventLoop *Channel::getEventLoop() { return pLoop_; }
 
 int Channel::getEvents() { return events_; }
 
-int Channel::enableReading()
+void Channel::enableReading()
 {
     events_ |= EPOLLIN;
     regist();
 }
 
-int Channel::enableWriting()
+void Channel::enableWriting()
 {
     events_ |= EPOLLOUT;
     update();
 }
 
-int Channel::disableWriting()
+void Channel::disableWriting()
 {
     events_ &= ~EPOLLOUT;
     update();
@@ -38,15 +38,11 @@ int Channel::disableWriting()
 
 int Channel::isWriting() { return events_ & EPOLLOUT; }
 
-int Channel::update() { getEventLoop()->update(this); }
+int Channel::update() { return getEventLoop()->update(this); }
 
-<<<<<<< HEAD
-int Channel::regist() { getEventLoop()->regist(this); }
-=======
-int Channel::regist() { getEventLoop()->register(this); }
->>>>>>> dev_gyz
+int Channel::regist() { return getEventLoop()->regist(this); }
 
-int Channel::del() {}
+int Channel::del() { return -1; }
 
 } // namespace net
 } // namespace ndsl

@@ -16,7 +16,7 @@ namespace ndsl {
 
 namespace net {
 
-class Channel;
+// class Channel;
 
 int Epoll::init()
 {
@@ -91,7 +91,7 @@ int Epoll::wait(std::vector<Channel *> &channels, int timeoutMs)
     // 依次读取事件，并返回事件
     for (int i = 0; i < ret; i++) {
         Channel *channel = static_cast<Channel *>(events[i].data.ptr);
-        channel->setRevent(events[i].events);
+        channel->setRevents(events[i].events);
         channels.push_back(channel);
     }
 

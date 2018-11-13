@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(NDSL)
 
-message(STATUS "### Begin to configure project EchoServer ###")
+message(STATUS "### Begin to configure project NDSL ###")
 
 # 检测cmake运行操作系统/CPU/编译器
 message(STATUS "Generator: ${CMAKE_GENERATOR}")
@@ -47,6 +47,6 @@ set(CMAKE_CXX_FLAGS_MINSIZEREL        "-Os")
 set(CMAKE_CXX_RELWITHDEBINFO_RELEASE  "-O2")
 
 add_subdirectory(src)
-#add_subdirectory(test)
+add_subdirectory(tests)
 
 message(STATUS "### Done ###")

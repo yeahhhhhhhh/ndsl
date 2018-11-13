@@ -15,6 +15,8 @@
 
 namespace ndsl {
 namespace net {
+
+class EventLoop;
 class Channel
 {
   private:
@@ -36,19 +38,16 @@ class Channel
     virtual int handleEvent() = 0;
 
     int getFd();
-    int setRevents(int revents);
+    void setRevents(int revents);
     int getRevents();
     int getEvents();
     EventLoop *getEventLoop();
 
-    int enableReading();
-    int enableWriting();
-    int disableWriting();
+    void enableReading();
+    void enableWriting();
+    void disableWriting();
     int isWriting();
 };
-} // namespace net
-} // namespace ndsl
-
 } // namespace net
 } // namespace ndsl
 

@@ -1,12 +1,12 @@
 /*
  * @file: EventLoopTest.cc
  * @brief
- * EventLoop的单元测试
+ * EventLoop的单元测试，包含WorkQueue的单元测试
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
 
-#include <pthread.h>
+#include <thread>
 #include "catch2/catch.hpp"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/Epoll.h"
@@ -15,22 +15,16 @@
 using namespace ndsl;
 using namespace net;
 
-TEST_CASE("net/EventLoop")
+TEST_CASE("net/EventLoop(WorkQueue)")
 {
     SECTION("quit")
     {
         Epoll ep;
+        ep.init();
         EventLoop loop(&ep);
         REQUIRE(loop.init() == S_OK);
 
-        pthread_t p_id;
-        int ret = ::pthread_create(&p_id, NULL, loop.loop, NULL);
-
-        REQUIRE(loop.quit() == S_OK);
-
-        void *pret;
-        ::pthread_join(p_id, &pret);
-
-        REQUIRE((int) pret == S_FAIL);
+        // bind c++11特性
+        std::thread th(std::bind(&EventLoop::loop, loop));
     }
 }

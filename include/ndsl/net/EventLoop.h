@@ -9,8 +9,10 @@
 #ifndef __NDSL_NET_EVENTLOOP_H__
 #define __NDSL_NET_EVENTLOOP_H__
 
+#include "ndsl/net/Channel.h"
+#include "ndsl/net/InterruptChannel.h"
 #include "ndsl/net/Epoll.h"
-#include "ndsl/utils/Interrupter.h"
+#include "ndsl/net/WorkQueue.h"
 
 namespace ndsl {
 namespace net {
@@ -21,9 +23,9 @@ class Channel;
 class EventLoop
 {
   private:
+    WorkQueue *workqueue_; // 任务队列
     Epoll *epoll_;
-    utils::Interrupter *intr_;
-    bool quit_;
+    InterruptChannel *pIntrCh_; // 用于中断的channel
 
   public:
     EventLoop(Epoll *epoll);
@@ -33,14 +35,20 @@ class EventLoop
     int init();
 
     // 开始循环
-    int loop();
+    void loop();
     // 退出循环
-    int quit();
+    // int quit();
+
+    // 添加任务
+    void addWork(work_struct *work);
 
     // 注册、更新、删除事件
     int regist(Channel *);
     int update(Channel *);
     int del(Channel *);
+
+  private:
+    void interrupter();
 };
 
 } // namespace net
