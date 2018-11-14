@@ -1,4 +1,6 @@
 #include "ndsl/net/Channel.h"
+#include "ndsl/net/Epoll.h"
+#include "ndsl/net/EventLoop.h"
 
 namespace ndsl {
 namespace net {
@@ -7,6 +9,8 @@ Channel::Channel(int fd, EventLoop *loop)
     : fd_(fd)
     , pLoop_(loop)
 {}
+
+Channel::~Channel() {}
 
 int Channel::getFd() { return fd_; }
 

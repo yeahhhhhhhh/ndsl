@@ -15,9 +15,16 @@
 using namespace ndsl;
 using namespace net;
 
+void func1(void *para) { printf("Call func1 and para is %d!\n", (int) para); }
+
+void func2(void *para)
+{
+    printf("Call func2 and para is %s!\n", (char *) para);
+}
+
 TEST_CASE("net/EventLoop(WorkQueue)")
 {
-    SECTION("quit")
+    SECTION("addwork")
     {
         Epoll ep;
         ep.init();
@@ -26,5 +33,17 @@ TEST_CASE("net/EventLoop(WorkQueue)")
 
         // bind c++11特性
         std::thread th(std::bind(&EventLoop::loop, loop));
+
+        work_struct *w1 = new work_struct;
+        w1->doit = func1;
+        w1->para = (void *) 100;
+        loop.addWork(w1);
+
+        sleep(2);
+
+        work_struct *w2 = new work_struct;
+        w2->doit = func2;
+        w2->para = (void *) "Hello World!";
+        loop.addWork(w2);
     }
 }

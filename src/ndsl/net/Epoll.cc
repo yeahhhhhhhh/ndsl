@@ -13,10 +13,7 @@
 #include "ndsl/net/Channel.h"
 
 namespace ndsl {
-
 namespace net {
-
-// class Channel;
 
 int Epoll::init()
 {

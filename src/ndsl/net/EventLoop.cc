@@ -9,6 +9,7 @@
 #include <sys/eventfd.h>
 #include <errno.h>
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/net/Epoll.h"
 #include "ndsl/net/Channel.h"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/WorkQueue.h"
@@ -68,6 +69,8 @@ void EventLoop::loop()
             while (!workqueue_->empty()) {
                 workqueue_->doit();
             }
+
+            break; // for test
         }
     };
     // return S_OK;

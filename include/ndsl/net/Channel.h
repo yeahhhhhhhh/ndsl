@@ -11,7 +11,7 @@
 
 #ifndef __CHANNEL_H__
 #define __CHANNEL_H__
-#include "ndsl/net/EventLoop.h"
+// #include "ndsl/net/EventLoop.h"
 
 namespace ndsl {
 namespace net {
@@ -32,6 +32,7 @@ class Channel
 
   public:
     Channel(int fd, EventLoop *loop);
+    virtual ~Channel();
 
     virtual int onRead() = 0;
     virtual int onWrite() = 0;

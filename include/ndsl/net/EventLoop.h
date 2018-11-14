@@ -9,9 +9,9 @@
 #ifndef __NDSL_NET_EVENTLOOP_H__
 #define __NDSL_NET_EVENTLOOP_H__
 
-#include "ndsl/net/Channel.h"
+// #include "ndsl/net/Channel.h"
 #include "ndsl/net/InterruptChannel.h"
-#include "ndsl/net/Epoll.h"
+// #include "ndsl/net/Epoll.h"
 #include "ndsl/net/WorkQueue.h"
 
 namespace ndsl {
@@ -19,6 +19,8 @@ namespace net {
 
 class Epoll;
 class Channel;
+class WorkQueue;
+class InterruptChannel;
 
 class EventLoop
 {

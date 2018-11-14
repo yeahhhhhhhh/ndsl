@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <sys/epoll.h>
 #include <vector>
-#include "ndsl/net/Channel.h"
+// #include "ndsl/net/Channel.h"
 
 namespace ndsl {
 namespace net {
