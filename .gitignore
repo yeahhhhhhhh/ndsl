@@ -2,6 +2,7 @@ build/*
 .vscode/sftp.json
 !.gitkeep
 bin/
+docs/
 
 *.log
 *.fls
