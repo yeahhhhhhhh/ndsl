@@ -14,21 +14,21 @@
 
 namespace ndsl {
 namespace net {
-// 任务回调函数
-using WorkCallback = void (*)(void *);
 
 // 定义work结构体
 struct work_struct
 {
-    WorkCallback doit; // 回调函数
-    void *para;        // 回调函数的参数指针
+    // 任务回调函数
+    using Callback = void (*)(void *);
+    Callback doit; // 回调函数
+    void *para;    // 回调函数的参数指针
 };
 
 class WorkQueue
 {
   private:
-    std::queue<work_struct *> workQueue_; // 任务队列
-    std::mutex workQueueMutex_;           // 任务队列的锁
+    std::queue<work_struct *> queue_; // 任务队列
+    std::mutex queueMutex_;           // 任务队列的锁
 
   public:
     // WorkQueue(/* args */);

@@ -11,6 +11,7 @@
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/Epoll.h"
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/net/WorkQueue.h"
 
 using namespace ndsl;
 using namespace net;
