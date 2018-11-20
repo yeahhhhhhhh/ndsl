@@ -25,6 +25,7 @@ int Channel::getEvents() { return events_; }
 void Channel::enableReading()
 {
     events_ |= EPOLLIN;
+    events_ |= EPOLLET;
     regist();
 }
 

@@ -9,21 +9,15 @@
 #ifndef __NDSL_NET_EVENTLOOP_H__
 #define __NDSL_NET_EVENTLOOP_H__
 
-#include <queue>
+#include <list>
+// #include <queue>
 #include <mutex>
-
-// #include "ndsl/net/Channel.h"
-// #include "ndsl/net/InterruptChannel.h"
-// #include "ndsl/net/Epoll.h"
-// #include "ndsl/net/WorkQueue.h"
+#include "ndsl/net/Channel.h"
 
 namespace ndsl {
 namespace net {
 
-// struct work_struct;
 class Epoll;
-class Channel;
-// class InterruptChannel;
 
 // 定义work结构体
 struct work_struct
@@ -41,8 +35,8 @@ struct work_struct
 class WorkQueue
 {
   private:
-    std::queue<work_struct *> queue_; // 任务队列
-    std::mutex queueMutex_;           // 任务队列的锁
+    std::list<work_struct *> queue_; // 任务队列,用list实现
+    std::mutex queueMutex_;          // 任务队列的锁
 
   public:
     // WorkQueue(/* args */);
@@ -64,7 +58,7 @@ class WorkQueue
 class QueueChannel : public Channel
 {
   private:
-    WorkQueue *workqueue_; // 任务队列
+    WorkQueue workqueue_; // 任务队列
   public:
     QueueChannel(int fd, EventLoop *loop);
     ~QueueChannel();
@@ -130,8 +124,8 @@ class EventLoop
     int update(Channel *);
     int del(Channel *);
 
-  private:
-    void interrupter();
+    // 退出
+    void quit();
 };
 
 } // namespace net

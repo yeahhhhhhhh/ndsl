@@ -12,7 +12,6 @@
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/Channel.h"
 #include "ndsl/net/EventLoop.h"
-// #include "ndsl/net/WorkQueue.h"
 
 namespace ndsl {
 namespace net {
@@ -34,24 +33,27 @@ void WorkQueue::doit()
 {
     work_struct *curWork;
 
-    // 取队首任务
     queueMutex_.lock();
-    // 若为空，则退出
-    if (queue_.empty()) {
-        queueMutex_.unlock();
-        return;
-    }
-    curWork = queue_.front(); // 若非空，则取出
-    queueMutex_.unlock();
 
-    // 执行任务
-    curWork->doit(curWork->para);
+    while (!queue_.empty()) {
+        // 取队首任务
+        curWork = queue_.front(); // 若非空，则取出
+        queue_.pop_front();       // 删除第一个元素
+        queueMutex_.unlock();
+
+        // 执行任务
+        curWork->doit(curWork->para);
+
+        queueMutex_.lock();
+    }
+
+    queueMutex_.unlock();
 }
 
 void WorkQueue::enQueue(work_struct *work)
 {
     queueMutex_.lock();
-    queue_.push(work);
+    queue_.push_back(work);
     queueMutex_.unlock();
 }
 
@@ -70,7 +72,7 @@ QueueChannel::~QueueChannel()
 }
 
 // 添加任务
-void QueueChannel::addWork(work_struct *work) { workqueue_->enQueue(work); }
+void QueueChannel::addWork(work_struct *work) { workqueue_.enQueue(work); }
 
 // 没有重载
 int QueueChannel::onRead()
@@ -96,8 +98,8 @@ int QueueChannel::onWrite()
 // 处理队列中的任务
 int QueueChannel::handleEvent()
 {
-    while (!workqueue_->empty()) {
-        workqueue_->doit();
+    while (!workqueue_.empty()) {
+        workqueue_.doit();
     }
     return S_OK;
 }
@@ -175,7 +177,10 @@ int EventLoop::init()
 
         // 创建InterruptChannel
         pIntrCh_ = new InterruptChannel(evfd, this);
-        regist(pIntrCh_);
+
+        printf("pIntrCh_.getFd() = %d\n", pIntrCh_->getFd());
+
+        pIntrCh_->enableReading();
     }
 
     // 若pQueCh_为空,则分配eventfd
@@ -188,7 +193,8 @@ int EventLoop::init()
 
         // 创建QueueChannel
         pQueCh_ = new QueueChannel(evfd, this);
-        regist(pQueCh_);
+        printf("pQueCh_.getFd() = %d\n", pQueCh_->getFd());
+        pQueCh_->enableReading();
     }
     return S_OK;
 }
@@ -197,9 +203,11 @@ int EventLoop::loop()
 {
     // 进入事件循环
     while (true) {
+        LOG(LEVEL_INFO, "In wait.\n");
         std::vector<Channel *> channels;
-        epoll_->wait(channels);
+        epoll_->wait(channels, -1);
 
+        LOG(LEVEL_INFO, "out wait.\n");
         bool quit = false;    // 退出标志
         bool haswork = false; // 中断标志
 
@@ -212,11 +220,12 @@ int EventLoop::loop()
                 haswork = true;
             else
                 (*it)->handleEvent();
+            LOG(LEVEL_INFO, "handle event.\n");
         }
 
         if (haswork) { pQueCh_->handleEvent(); }
         if (quit) break;
-    };
+    }
     return S_OK;
 }
 
@@ -233,7 +242,7 @@ int EventLoop::update(Channel *pCh) { return epoll_->update(pCh); }
 
 int EventLoop::del(Channel *pCh) { return epoll_->del(pCh); }
 
-void EventLoop::interrupter() { pIntrCh_->onWrite(); }
+void EventLoop::quit() { pIntrCh_->onWrite(); }
 
 } // namespace net
 } // namespace ndsl

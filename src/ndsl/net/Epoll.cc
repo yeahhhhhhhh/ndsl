@@ -8,6 +8,7 @@
 
 #include <errno.h>
 #include <sys/epoll.h>
+#include <string.h>
 #include "ndsl/net/Epoll.h"
 #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/Channel.h"
@@ -35,6 +36,13 @@ int Epoll::regist(Channel *pCh)
     ev.events = pCh->getEvents();
 
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_ADD, pCh->getFd(), &ev);
+
+    printf(
+        "fd =  %d, ret = %d, errno = %d, strerr = %s\n",
+        pCh->getFd(),
+        ret,
+        errno,
+        strerror(errno));
 
     if (ret < 0) {
         LOG(LEVEL_DEBUG, "epoll::control regist\n");

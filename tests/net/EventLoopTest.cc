@@ -11,12 +11,11 @@
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/Epoll.h"
 #include "ndsl/utils/temp_define.h"
-#include "ndsl/net/WorkQueue.h"
 
 using namespace ndsl;
 using namespace net;
 
-void func1(void *para) { printf("Call func1 and para is %d!\n", (int) para); }
+void func1(void *para) { printf("Call func1 and para is %ld!\n", (long) para); }
 
 void func2(void *para)
 {
@@ -25,7 +24,7 @@ void func2(void *para)
 
 TEST_CASE("net/EventLoop(WorkQueue)")
 {
-    SECTION("addwork")
+    SECTION("addwork and quit")
     {
         Epoll ep;
         ep.init();
@@ -33,18 +32,22 @@ TEST_CASE("net/EventLoop(WorkQueue)")
         REQUIRE(loop.init() == S_OK);
 
         // bind c++11特性
-        std::thread th(std::bind(&EventLoop::loop, loop));
+        // std::thread th(std::bind(&EventLoop::loop, &loop));
+
+        LOG(LEVEL_INFO, "this is in TEST\n");
 
         work_struct *w1 = new work_struct;
         w1->doit = func1;
         w1->para = (void *) 100;
         loop.addWork(w1);
 
-        sleep(2);
-
         work_struct *w2 = new work_struct;
         w2->doit = func2;
         w2->para = (void *) "Hello World!";
         loop.addWork(w2);
+
+        loop.quit();
+
+        REQUIRE(loop.loop() == S_OK);
     }
 }
