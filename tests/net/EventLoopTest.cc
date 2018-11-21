@@ -34,8 +34,6 @@ TEST_CASE("net/EventLoop(WorkQueue)")
         // bind c++11特性
         // std::thread th(std::bind(&EventLoop::loop, &loop));
 
-        LOG(LEVEL_INFO, "this is in TEST\n");
-
         work_struct *w1 = new work_struct;
         w1->doit = func1;
         w1->para = (void *) 100;

@@ -178,8 +178,6 @@ int EventLoop::init()
         // 创建InterruptChannel
         pIntrCh_ = new InterruptChannel(evfd, this);
 
-        printf("pIntrCh_.getFd() = %d\n", pIntrCh_->getFd());
-
         pIntrCh_->enableReading();
     }
 
@@ -193,7 +191,6 @@ int EventLoop::init()
 
         // 创建QueueChannel
         pQueCh_ = new QueueChannel(evfd, this);
-        printf("pQueCh_.getFd() = %d\n", pQueCh_->getFd());
         pQueCh_->enableReading();
     }
     return S_OK;
@@ -203,11 +200,11 @@ int EventLoop::loop()
 {
     // 进入事件循环
     while (true) {
-        LOG(LEVEL_INFO, "In wait.\n");
+        // LOG(LEVEL_INFO, "In wait.\n");
         std::vector<Channel *> channels;
         epoll_->wait(channels, -1);
 
-        LOG(LEVEL_INFO, "out wait.\n");
+        // LOG(LEVEL_INFO, "out wait.\n");
         bool quit = false;    // 退出标志
         bool haswork = false; // 中断标志
 
@@ -220,7 +217,7 @@ int EventLoop::loop()
                 haswork = true;
             else
                 (*it)->handleEvent();
-            LOG(LEVEL_INFO, "handle event.\n");
+            // LOG(LEVEL_INFO, "handle event.\n");
         }
 
         if (haswork) { pQueCh_->handleEvent(); }
