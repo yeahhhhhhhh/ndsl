@@ -63,12 +63,13 @@ void WorkQueue::enQueue(work_struct *work)
  * 维护任务队列
  */
 QueueChannel::QueueChannel(int fd, EventLoop *loop)
-    : Channel(fd, loop)
+    : fd_(fd)
+    , loop_(loop)
 {}
 
 QueueChannel::~QueueChannel()
 {
-    if (getFd() >= 0) { ::close(getFd()); }
+    if (fd_ >= 0) { ::close(fd_); }
 }
 
 // 添加任务
@@ -85,7 +86,7 @@ int QueueChannel::onRead()
 int QueueChannel::onWrite()
 {
     uint64_t data = 1;
-    int ret = ::write(this->getFd(), &data, sizeof(data));
+    int ret = ::write(fd_, &data, sizeof(data));
 
     if (ret == -1) {
         LOG(LEVEL_ERROR, "QueueChannel::onWrite write");
@@ -104,18 +105,36 @@ int QueueChannel::handleEvent()
     return S_OK;
 }
 
+int QueueChannel::getFd() { return fd_; }
+
+uint64_t QueueChannel::getEvents() { return events_; }
+
+int QueueChannel::setRevents(uint64_t revents)
+{
+    revents_ = revents;
+    return S_OK;
+}
+
+int QueueChannel::enableReading()
+{
+    events_ |= EPOLLIN;
+    loop_->regist(this);
+    return S_OK;
+}
+
 /**
  * @class: InterruptChannel
  * @brief:
  * 中断EventLoop,退出循环
  */
 InterruptChannel::InterruptChannel(int fd, EventLoop *loop)
-    : Channel(fd, loop)
+    : fd_(fd)
+    , loop_(loop)
 {}
 
 InterruptChannel::~InterruptChannel()
 {
-    if (getFd() >= 0) { ::close(getFd()); }
+    if (fd_ >= 0) { ::close(fd_); }
 }
 
 int InterruptChannel::onRead()
@@ -129,7 +148,7 @@ int InterruptChannel::onWrite()
     uint64_t data;
     data = 1;
 
-    int ret = ::write(getFd(), &data, sizeof(data));
+    int ret = ::write(fd_, &data, sizeof(data));
 
     if (ret == -1) {
         LOG(LEVEL_ERROR, "InterruptChannel::onWrite");
@@ -143,6 +162,23 @@ int InterruptChannel::handleEvent()
 {
     LOG(LEVEL_ERROR, "Wrong call InterruptChannel::handleEvent");
     return S_FAIL;
+}
+
+int InterruptChannel::getFd() { return fd_; }
+
+uint64_t InterruptChannel::getEvents() { return events_; }
+
+int InterruptChannel::setRevents(uint64_t revents)
+{
+    revents_ = revents;
+    return S_OK;
+}
+
+int InterruptChannel::enableReading()
+{
+    events_ |= EPOLLIN;
+    loop_->regist(this);
+    return S_OK;
 }
 
 /**

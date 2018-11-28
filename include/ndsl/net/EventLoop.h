@@ -18,6 +18,7 @@ namespace ndsl {
 namespace net {
 
 class Epoll;
+class EventLoop;
 
 // 定义work结构体
 struct work_struct
@@ -58,19 +59,32 @@ class WorkQueue
 class QueueChannel : public Channel
 {
   private:
+    uint64_t events_;
+    uint64_t revents_;
+    int fd_;
     WorkQueue workqueue_; // 任务队列
+    EventLoop *loop_;
+
   public:
     QueueChannel(int fd, EventLoop *loop);
     ~QueueChannel();
 
     // 增加任务
     void addWork(work_struct *work);
+
     // 没有重载
     int onRead();
     // 发送中断信号
     int onWrite();
     // 处理队列中的任务
     int handleEvent();
+    // 同TcpChannel
+    int getFd();
+    uint64_t getEvents();
+    int setRevents(uint64_t revents);
+    int enableReading();
+
+  private:
 };
 
 /**
@@ -81,7 +95,11 @@ class QueueChannel : public Channel
 class InterruptChannel : public Channel
 {
   private:
-    /* data */
+    uint64_t revents_;
+    uint64_t events_;
+    int fd_;
+    EventLoop *loop_;
+
   public:
     InterruptChannel(int fd, EventLoop *loop);
     ~InterruptChannel();
@@ -92,6 +110,11 @@ class InterruptChannel : public Channel
     int onWrite();
     // 没有重载
     int handleEvent();
+    // 同TcpChannel
+    int getFd();
+    uint64_t getEvents();
+    int setRevents(uint64_t revents);
+    int enableReading();
 };
 
 /**

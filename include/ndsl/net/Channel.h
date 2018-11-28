@@ -11,44 +11,24 @@
 
 #ifndef __CHANNEL_H__
 #define __CHANNEL_H__
-// #include "ndsl/net/EventLoop.h"
+// #include "EventLoop.h"
 
 namespace ndsl {
 namespace net {
 
-class EventLoop;
 class Channel
 {
-  private:
-    int fd_;
-    int events_;
-    int revents_;
-    EventLoop *pLoop_;
-
-    // epoll事件注册
-    int update();
-    int regist();
-    int del();
-
   public:
-    Channel(int fd, EventLoop *loop);
-    virtual ~Channel();
-
+    virtual ~Channel() {}
     virtual int onRead() = 0;
     virtual int onWrite() = 0;
+
     virtual int handleEvent() = 0;
-
-    int getFd();
-    void setRevents(int revents);
-    int getRevents();
-    int getEvents();
-    EventLoop *getEventLoop();
-
-    void enableReading();
-    void enableWriting();
-    void disableWriting();
-    int isWriting();
+    virtual int getFd() = 0;
+    virtual uint64_t getEvents() = 0;
+    virtual int setRevents(uint64_t revents) = 0;
 };
+
 } // namespace net
 } // namespace ndsl
 
