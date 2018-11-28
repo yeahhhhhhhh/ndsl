@@ -9,20 +9,32 @@
 #ifndef __GUID_H__
 #define __GUID_H__
 
+#include<stdint.h>
+
+#define COMPARE(gu1, gu2) if(gu1 != gu2) return false
+
+typedef unsigned char guid_t[16];
+
 namespace ndsl {
 namespace utils {
 
-typedef unsigned char guid_t[16];
 class Guid{
     public:
-    	Guid();
+      Guid();
+      
+    private:
+      uint32_t time_low;
+	  uint16_t time_mid;
+	  uint16_t time_hi_and_version;
+	  uint16_t clock_seq;
+	  uint8_t node[6];
     
     public:
-      void guidGenerate(guid_t gu); // 生成guid
-      void guid2String(guid_t gu, char* str); // 将guid转换成字符串
-      int guidCompare(guid_t gu1, guid_t gu2); // 比较两个guid，相同则返回0
-      void guidStringGenerate(char* str); // 直接生成字符串类型的guid
-      int guidStringCompare(char* str1, char* str2); // 比较字符串类型的guid
+      void generate(guid_t gu); // 生成guid，返回guid_t，并解包
+      void toString(guid_t gu, char* str); // 将guid_t转换成字符串
+      void pack(const Guid &guid, guid_t &out); // 将uint*_t打包成guid_t
+      void unpack(const guid_t in, Guid &guid); // 将guid_t解包
+      bool operator==(const Guid& guid); // 相同返回true,不相同返回false
 }; 
 
 } // namespace utils
