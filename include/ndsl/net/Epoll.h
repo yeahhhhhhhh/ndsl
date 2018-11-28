@@ -34,7 +34,7 @@ class Epoll
 
     ~Epoll()
     {
-        if (epfd_ == -1) ::close(epfd_);
+        if (epfd_ != -1) ::close(epfd_);
     }
 
     // 初始化epfd
