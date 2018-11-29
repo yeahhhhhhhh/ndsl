@@ -11,7 +11,12 @@ add_subdirectory(utils)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-set(LIB_NDSL_SRC net/Epoll.cc net/EventLoop.cc net/Channel.cc utils/Interrupter.cc)
+set(LIB_NDSL_SRC
+ net/Epoll.cc 
+ net/EventLoop.cc 
+ net/Channel.cc )
+ #net/WorkQueue.cc 
+ #net/InterruptChannel.cc)
 
 
-add_library(LIB_NDSL ${LIB_NDSL_SRC})
+add_library(ndsl ${LIB_NDSL_SRC})

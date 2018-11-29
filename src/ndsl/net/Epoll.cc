@@ -8,15 +8,13 @@
 
 #include <errno.h>
 #include <sys/epoll.h>
+#include <string.h>
 #include "ndsl/net/Epoll.h"
 #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/Channel.h"
 
 namespace ndsl {
-
 namespace net {
-
-class Channel;
 
 int Epoll::init()
 {
@@ -26,7 +24,9 @@ int Epoll::init()
         return errno;
     }
 
-    LOG(LEVEL_DEBUG, "Epoll::init ok\n");
+    // 为什么在单元测试中加上下面这句就会报错???删去就不会报错
+    // (单元测试不止包含一个,如EpollTest.cc和EventLoopTest.cc)
+    // LOG(LEVEL_DEBUG, "assert error!\n");
     return S_OK;
 }
 
@@ -40,6 +40,13 @@ int Epoll::regist(Channel *pCh)
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_ADD, pCh->getFd(), &ev);
 
     if (ret < 0) {
+        // printf(
+        //     "epfd = %d, fd =  %d, ret = %d, errno = %d, strerr = %s\n",
+        //     epfd_,
+        //     pCh->getFd(),
+        //     ret,
+        //     errno,
+        //     strerror(errno));
         LOG(LEVEL_DEBUG, "epoll::control regist\n");
         return errno;
     }
@@ -91,7 +98,7 @@ int Epoll::wait(std::vector<Channel *> &channels, int timeoutMs)
     // 依次读取事件，并返回事件
     for (int i = 0; i < ret; i++) {
         Channel *channel = static_cast<Channel *>(events[i].data.ptr);
-        channel->setRevent(events[i].events);
+        channel->setRevents(events[i].events);
         channels.push_back(channel);
     }
 

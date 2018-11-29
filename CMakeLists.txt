@@ -10,13 +10,25 @@ cmake_minimum_required(VERSION 2.8)
 
 project(NDSL)
 
-message(STATUS "### Begin to configure project EchoServer ###")
+message(STATUS "### Begin to configure project NDSL ###")
 
 # 检测cmake运行操作系统/CPU/编译器
 message(STATUS "Generator: ${CMAKE_GENERATOR}")
 message(STATUS "Building OS: ${CMAKE_SYSTEM_NAME}")
 message(STATUS "Building Processor: ${CMAKE_SYSTEM_PROCESSOR}")
 message(STATUS "Compiler: ${CMAKE_C_COMPILER_ID}")
+
+# 编译模式，Release/Debug，-DCMAKE_BUILD_TYPE=Release|Debug
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug) # Debug Release
+endif()
+string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
+if (CMAKE_BUILD_TYPE MATCHES "debug")
+    set(CMAKE_BUILD_TYPE Debug)
+else()
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+message(STATUS "Building mode: ${CMAKE_BUILD_TYPE}")
 
 # c/c++按照11表展
 set(CMAKE_C_STANDARD 11)
@@ -47,6 +59,6 @@ set(CMAKE_CXX_FLAGS_MINSIZEREL        "-Os")
 set(CMAKE_CXX_RELWITHDEBINFO_RELEASE  "-O2")
 
 add_subdirectory(src)
-#add_subdirectory(test)
+add_subdirectory(tests)
 
 message(STATUS "### Done ###")

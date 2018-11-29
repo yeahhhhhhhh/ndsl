@@ -9,14 +9,14 @@
 #ifndef __NDSL_NET_EPOLL_H__
 #define __NDSL_NET_EPOLL_H__
 
-namespace ndsl {
-namespace net {
-
 #include <unistd.h>
 #include <sys/epoll.h>
 #include <vector>
-#include "ndsl/net/Channel.h"
 
+namespace ndsl {
+namespace net {
+
+class Channel;
 /*
  * @brief
  * 封装epoll
@@ -34,9 +34,10 @@ class Epoll
 
     ~Epoll()
     {
-        if (epfd_ == -1) ::close(epfd_);
+        if (epfd_ != -1) ::close(epfd_);
     }
 
+    // 初始化epfd
     int init();
 
     // 注册、更新、删除事件
