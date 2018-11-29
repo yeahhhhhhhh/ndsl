@@ -6,37 +6,35 @@
 // @author why
 // @email 136046355@qq.com
 //
-#include "../../include/ndsl/utils/Guid.h"
+#include "Guid.h"
 
 #define CATCH_CONFIG_MAIN
 #include "../catch.hpp"
 
 
 TEST_CASE("Guid"){
-	ndsl::utils::Guid g;
+	ndsl::utils::Guid g, g1;
 	guid_t gu1, gu2;
 	char str1[32], str2[32];
-	SECTION("stringGenerate"){
-		char str[32];
-		g.guidStringGenerate(str);
-		std::cout << str << std::endl;
+		
+	SECTION("generate"){
+		g.generate(gu1);
+		g1.generate(gu2);
 	}
-	SECTION("guidGenerate"){
-		g.guidGenerate(gu1);
-		g.guidGenerate(gu2);
-	}
-	SECTION("guidCompare"){
-		int ret = g.guidCompare(gu1, gu2);
-		std::cout << ret << std::endl;
-	}
-	SECTION("guid2String"){	
-		g.guid2String(gu1, str1);
-		g.guid2String(gu2, str2);
+	SECTION("toString"){	
+		g.toString(gu1, str1);
+		g1.toString(gu2, str2);
 		std::cout << str1 << std::endl;
 		std::cout << str2 << std::endl;
 	}
-	SECTION("guidStringCompare"){
-		int ret = g.guidStringCompare(str1, str2);
-		std::cout << ret << std::endl;
+	SECTION("pack"){
+		g.pack(g, gu1);
+	}
+	SECTION("unpack"){
+		g.unpack(gu1, g);
+	}
+	SECTION("operator=="){
+		bool b = g == g2;
+		std::cout << b << std::endl;
 	}
 }
