@@ -21,6 +21,8 @@ set(TEST testMain.cc net/EpollTest.cc net/EventLoopTest.cc)
 # )
 # set(CMAKE_CXX_FLAGS "/EHsc ${CMAKE_CXX_FLAGS}")
 
+include_directories(${CMAKE_SOURCE_DIR}/tests)
+
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl pthread boost_system)
