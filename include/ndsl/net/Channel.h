@@ -4,31 +4,27 @@
  *
  * Author: gyz
  * Email: mni_gyz@163.com
- * Last Modified: Saturday, 20th October 2018 3:46:24 pm
- * -----
- * Copyright 2018 - 2018
+ * Last Modified: Thursday, 29th November 2018 10:42:18 am
  */
 
 #ifndef __CHANNEL_H__
 #define __CHANNEL_H__
-#include "EventLoop.h"
+#include <stdint.h>
 
 namespace ndsl {
 namespace net {
 
 class Channel
 {
-  private:
-    int revents_;
-
   public:
-    virtual int onRead() = 0;
+    virtual ~Channel(){};
+    virtual int onRead(char *inBuf) = 0;
     virtual int onWrite() = 0;
+
     virtual int handleEvent() = 0;
     virtual int getFd() = 0;
-    virtual int getEvents() = 0;
-
-    int setRevents(int revents);
+    virtual uint64_t getEvents() = 0;
+    virtual int setRevents(uint64_t revents) = 0;
 };
 
 } // namespace net

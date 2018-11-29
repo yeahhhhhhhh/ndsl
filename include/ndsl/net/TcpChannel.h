@@ -4,26 +4,29 @@
  *
  * Author: gyz
  * Email: mni_gyz@163.com
- * Last Modified: Saturday, 20th October 2018 3:46:27 pm
- * -----
- * Copyright 2018 - 2018
+ * Last Modified: Thursday, 29th November 2018 10:42:13 am
  */
 
 #ifndef __TCPCHANNEL_H__
 #define __TCPCHANNEL_H__
 #include "Channel.h"
 #include "TcpConnection.h"
+#include "ChannelCallBack.h"
+#include "EventLoop.h"
 
 namespace ndsl {
 namespace net {
+
+class TcpConnection;
 
 class TcpChannel : public Channel
 {
   private:
     int sockfd_;
-    int events_;
+    uint64_t events_;
+    uint64_t revents_;
     EventLoop *pLoop_;
-    TcpConnection *pCon_;
+    ChannelCallBack *pCallBack_;
 
     // epoll事件注册
     int update();
@@ -31,21 +34,21 @@ class TcpChannel : public Channel
     int del();
 
   public:
-    TcpChannel(EventLoop *loop, int sockfd);
+    TcpChannel(int sockfd, EventLoop *loop);
+    // ~Channel();
 
     // 回调
-    int onRead(TcpConnection *pCon, char *inBuf);
+    int onRead(char *inBuf);
     int onWrite();
 
-    int handleEvent();
-
     int getFd();
-    int getRevents();
-    int getEvents();
+    uint64_t getRevents();
+    int setRevents(uint64_t revents);
+    uint64_t getEvents();
     EventLoop *getEventLoop();
 
     int handleEvent();
-    int setCallBack(TcpConnection *pCon);
+    int setCallBack(ChannelCallBack *pCB);
 
     // epoll 事件管理
     int enableReading();

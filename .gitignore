@@ -1,7 +1,8 @@
 build/*
-.vscode/sftp.json
+.vscode/
 !.gitkeep
 bin/
+tests/tmpMain.cc
 
 *.log
 *.fls

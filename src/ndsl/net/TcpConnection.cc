@@ -4,11 +4,16 @@
  *
  * Author: gyz
  * Email: mni_gyz@163.com
- * Last Modified: Saturday, 20th October 2018 3:42:20 pm
- * -----
- * Copyright 2018 - 2018
+ * Last Modified: Thursday, 29th November 2018 2:23:14 pm
  */
+
 #include "ndsl/net/TcpConnection.h"
+#include "ndsl/utils/temp_define.h"
+#include <cstring>
+#include <unistd.h>
+
+#include <iostream>
+using namespace std;
 
 namespace ndsl {
 namespace net {
@@ -24,12 +29,21 @@ int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
     pTcpChannel_ = new TcpChannel(sockfd, pLoop);
     pTcpChannel_->enableReading();
     pTcpChannel_->setCallBack(this);
+
+    cout << "TcpConnection::createChannel" << endl;
+
+    return S_OK;
 }
 
-int TcpConnection::read()
+int TcpConnection::handleRead()
 {
+    cout << "TcpConnection::handleRead" << endl;
+
     memset(inBuf_, 0, sizeof(inBuf_));
     int sockfd = pTcpChannel_->getFd();
+
+    cout << "fd = " << sockfd << endl;
+
     if (sockfd < 0) { return -1; }
     int length;
     char line[MAXLINE];
@@ -43,12 +57,17 @@ int TcpConnection::read()
         // cout << "read 0 closed socket fd:" << sockfd << endl;
         close(sockfd);
     } else {
+        cout << "length = " << length << endl;
+        cout << "receive buf = end" << line << endl;
+
         strcat(inBuf_, line);
-        pTcpChannel_->onRead(this, &inBuf_);
+
+        pTcpChannel_->onRead(inBuf_);
     }
+    return S_OK;
 }
 
-int TcpConnection::write()
+int TcpConnection::handleWrite()
 {
     int sockfd = pTcpChannel_->getFd();
     if (sockfd < 0) { return -1; }
@@ -65,10 +84,11 @@ int TcpConnection::write()
         } else {
             // 这一次还没传完
             strncpy(temp, outBuf_ + n, length - n);
-            memsset(outBuf_, 0, sizeof(outBuf_));
+            memset(outBuf_, 0, sizeof(outBuf_));
             strcpy(outBuf_, temp);
         }
     }
+    return S_OK;
 }
 
 int TcpConnection::send(char *outBuf)
@@ -84,8 +104,9 @@ int TcpConnection::send(char *outBuf)
         // 一次write没写完
         if (!pTcpChannel_->isWriting()) pTcpChannel_->enableWriting();
         strcat(outBuf_, outBuf + n);
-        memset(outBuf, 0, sizeof(outBuf));
+        // memset(outBuf, 0, sizeof(outBuf));
     }
+    return S_OK;
 }
 
 } // namespace net
