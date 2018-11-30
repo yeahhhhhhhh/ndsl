@@ -24,10 +24,16 @@ void func2(void *para)
 
 TEST_CASE("net/EventLoop(WorkQueue)")
 {
+    // SECTION("init")
+    // {
+    //     Epoll ep;
+    //     REQUIRE(ep.init() == S_OK);
+    // }
+
     SECTION("addwork and quit")
     {
         Epoll ep;
-        ep.init();
+        REQUIRE(ep.init() == S_OK);
         EventLoop loop(&ep);
         REQUIRE(loop.init() == S_OK);
 
@@ -44,7 +50,7 @@ TEST_CASE("net/EventLoop(WorkQueue)")
         w2->para = (void *) "Hello World!";
         loop.addWork(w2);
 
-        loop.quit();
+        // loop.quit();
 
         REQUIRE(loop.loop() == S_OK);
     }

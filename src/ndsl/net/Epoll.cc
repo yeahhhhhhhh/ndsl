@@ -40,13 +40,13 @@ int Epoll::regist(Channel *pCh)
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_ADD, pCh->getFd(), &ev);
 
     if (ret < 0) {
-        // printf(
-        //     "epfd = %d, fd =  %d, ret = %d, errno = %d, strerr = %s\n",
-        //     epfd_,
-        //     pCh->getFd(),
-        //     ret,
-        //     errno,
-        //     strerror(errno));
+        printf(
+            "epfd = %d, fd =  %d, ret = %d, errno = %d, strerr = %s\n",
+            epfd_,
+            pCh->getFd(),
+            ret,
+            errno,
+            strerror(errno));
         LOG(LEVEL_DEBUG, "epoll::control regist\n");
         return errno;
     }
@@ -85,7 +85,8 @@ int Epoll::del(Channel *pCh)
     return S_OK;
 }
 
-int Epoll::wait(std::vector<Channel *> &channels, int timeoutMs)
+// TODO: 用Channel* 的数组替换vector
+int Epoll::wait(Channel *channels[], int timeoutMs)
 {
     struct epoll_event events[MAX_EVENTS];
     int ret = ::epoll_wait(epfd_, events, MAX_EVENTS, timeoutMs);

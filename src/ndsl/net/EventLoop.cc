@@ -1,13 +1,15 @@
-/*
- * @file: EventLoop.cc
+/**
+ * @file EventLoop.cc
  * @brief
  * 事件循环的实现
+ *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
 
 #include <sys/eventfd.h>
 #include <errno.h>
+#include <list>
 #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/Channel.h"
@@ -33,21 +35,20 @@ void WorkQueue::doit()
 {
     work_struct *curWork;
 
-    queueMutex_.lock();
+    std::list<struct work_struct *> getQueue;
 
-    while (!queue_.empty()) {
+    queueMutex_.lock();
+    getQueue.swap(queue_);
+    queueMutex_.unlock();
+
+    while (!getQueue.empty()) {
         // 取队首任务
-        curWork = queue_.front(); // 若非空，则取出
-        queue_.pop_front();       // 删除第一个元素
-        queueMutex_.unlock();
+        curWork = getQueue.front(); // 若非空，则取出
+        getQueue.pop_front();       // 删除第一个元素
 
         // 执行任务
         curWork->doit(curWork->para);
-
-        queueMutex_.lock();
     }
-
-    queueMutex_.unlock();
 }
 
 void WorkQueue::enQueue(work_struct *work)
@@ -58,8 +59,8 @@ void WorkQueue::enQueue(work_struct *work)
 }
 
 /**
- * @class: QueueChannel
- * @brief:
+ * @class QueueChannel
+ * @brief
  * 维护任务队列
  */
 QueueChannel::QueueChannel(int fd, EventLoop *loop)
@@ -118,13 +119,12 @@ int QueueChannel::setRevents(uint64_t revents)
 int QueueChannel::enableReading()
 {
     events_ |= EPOLLIN;
-    loop_->regist(this);
-    return S_OK;
+    return loop_->regist(this);
 }
 
 /**
- * @class: InterruptChannel
- * @brief:
+ * @class InterruptChannel
+ * @brief
  * 中断EventLoop,退出循环
  */
 InterruptChannel::InterruptChannel(int fd, EventLoop *loop)
@@ -177,8 +177,7 @@ int InterruptChannel::setRevents(uint64_t revents)
 int InterruptChannel::enableReading()
 {
     events_ |= EPOLLIN;
-    loop_->regist(this);
-    return S_OK;
+    return loop_->regist(this);
 }
 
 /**
@@ -203,19 +202,6 @@ EventLoop::~EventLoop()
 int EventLoop::init()
 {
     int evfd;
-    // 若pIntrCh_为空,则分配eventfd
-    if (!pIntrCh_) {
-        evfd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK | EFD_SEMAPHORE);
-        if (evfd < 0) {
-            LOG(LEVEL_ERROR, "EventLoop::init pIntrCh_ eventfd\n");
-            return errno;
-        }
-
-        // 创建InterruptChannel
-        pIntrCh_ = new InterruptChannel(evfd, this);
-
-        pIntrCh_->enableReading();
-    }
 
     // 若pQueCh_为空,则分配eventfd
     if (!pQueCh_) {
@@ -227,7 +213,28 @@ int EventLoop::init()
 
         // 创建QueueChannel
         pQueCh_ = new QueueChannel(evfd, this);
-        pQueCh_->enableReading();
+
+        printf("pQueCh_ = %d\n", pQueCh_->getFd());
+
+        int ret = pQueCh_->enableReading();
+        if (ret != S_OK) return ret; // 若不成功直接返回
+    }
+
+    // 若pIntrCh_为空,则分配eventfd
+    if (!pIntrCh_) {
+        evfd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK | EFD_SEMAPHORE);
+        if (evfd < 0) {
+            LOG(LEVEL_ERROR, "EventLoop::init pIntrCh_ eventfd\n");
+            return errno;
+        }
+
+        // 创建InterruptChannel
+        pIntrCh_ = new InterruptChannel(evfd, this);
+
+        printf("pIntrCh_ = %d\n", pIntrCh_->getFd());
+
+        int ret = pIntrCh_->enableReading();
+        if (ret != S_OK) return ret; // 若不成功直接返回
     }
     return S_OK;
 }
@@ -247,9 +254,9 @@ int EventLoop::loop()
         // 处理事件
         for (auto it = channels.begin(); it != channels.end(); ++it) {
             // 若任务队列非空，则标记中断
-            if (pIntrCh_->getFd() == (*it)->getFd())
+            if (pIntrCh_ == (*it))
                 quit = true;
-            else if (pQueCh_->getFd() == (*it)->getFd())
+            else if (pQueCh_ == (*it))
                 haswork = true;
             else
                 (*it)->handleEvent();

@@ -83,8 +83,6 @@ class QueueChannel : public Channel
     uint64_t getEvents();
     int setRevents(uint64_t revents);
     int enableReading();
-
-  private:
 };
 
 /**
