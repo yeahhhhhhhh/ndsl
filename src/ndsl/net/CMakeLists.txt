@@ -5,7 +5,7 @@
 # @author niexw
 # @email xiaowen.nie.cn@gmail.com
 #
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include/ndsl/net)
 
 # set(LIB_NDSL_SRC Log.cc Reactor.cc Timer.cc Dns.cc)
 # add_library(ndsl SHARED ${LIB_NDSL_SRC})

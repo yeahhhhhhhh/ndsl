@@ -6,35 +6,45 @@
 // @author why
 // @email 136046355@qq.com
 //
+#include "test.h"
 #include "Guid.h"
 
-#define CATCH_CONFIG_MAIN
-#include "../catch.hpp"
-
-
 TEST_CASE("Guid"){
-	ndsl::utils::Guid g, g1;
-	guid_t gu1, gu2;
-	char str1[32], str2[32];
-		
+	
+	ndsl::utils::Guid g1,g2;
+	
 	SECTION("generate"){
-		g.generate(gu1);
-		g1.generate(gu2);
+		REQUIRE(g1.generate() == 0);
 	}
-	SECTION("toString"){	
-		g.toString(gu1, str1);
-		g1.toString(gu2, str2);
-		std::cout << str1 << std::endl;
-		std::cout << str2 << std::endl;
+	SECTION("toString"){
+		char str[32];
+		g1.generate();
+		g1.toString(str);
+		std::cout << str << std::endl;
+		REQUIRE(g1.toString(str) == 0);
 	}
-	SECTION("pack"){
-		g.pack(g, gu1);
-	}
-	SECTION("unpack"){
-		g.unpack(gu1, g);
+	SECTION("toGuid_t"){
+		char str[33] = "0D1A1E81BA3540B493340D84B61775E2";		
+		g1.toGuid_t(str);	
+		REQUIRE(g1.toGuid_t(str) == 0);
 	}
 	SECTION("operator=="){
-		bool b = g == g2;
-		std::cout << b << std::endl;
+		g1.generate();
+		g2.generate();
+		REQUIRE((g1 == g2) == false);
+	}
+	SECTION("operator<"){
+		char str[33] = "0D1A1E81BA3540B493340D84B61775E2";		
+		g1.toGuid_t(str);
+		char str2[33] = "A000277BA39B4384AFC4A05CE8CFA6DD";		
+		g2.toGuid_t(str2);
+		REQUIRE((g1 < g2) == true);
+	}
+	SECTION("operator>"){
+		char str[33] = "0D1A1E81BA3540B493340D84B61775E2";		
+		g1.toGuid_t(str);
+		char str2[33] = "A000277BA39B4384AFC4A05CE8CFA6DD";		
+		g2.toGuid_t(str2);
+		REQUIRE((g2 > g1) == true);
 	}
 }

@@ -6,7 +6,7 @@
 # @author niexw
 # @email niexiaowen@uestc.edu.cn
 #
-project(RamGraph)
+project(ndsl)
 cmake_minimum_required(VERSION 2.8)
 message(STATUS "### Begin to configure project RamGraph ###")
 
@@ -15,6 +15,9 @@ message(STATUS "Generator: ${CMAKE_GENERATOR}")
 message(STATUS "Building OS: ${CMAKE_SYSTEM_NAME}")
 message(STATUS "Building Processor: ${CMAKE_SYSTEM_PROCESSOR}")
 message(STATUS "Compiler: ${CMAKE_C_COMPILER_ID}")
+
+message(STATUS "PROJECT_BINARY_DIR --- ${PROJECT_BINARY_DIR}")
+message(STATUS "PROJECT_SOURCE_DIR --- ${PROJECT_SOURCE_DIR}")
 
 # 打开vobose选项
 set(CMAKE_VERBOSE_MAKEFILE on)
@@ -48,7 +51,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${PROJECT_BINARY_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${PROJECT_BINARY_DIR}/bin")
 
 # g++编译器版本
-if(CMAKE_C_COMPILER_VERSION VERSION_LESS "6.3")
+if(CMAKE_C_COMPILER_VERSION VERSION_LESS "5.4")
     message(FATAL_ERROR "The least version of gcc is 6.3")
 endif()
 
