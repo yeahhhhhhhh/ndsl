@@ -9,43 +9,49 @@
 #ifndef _SOCKETADDRESS_H_
 #define _SOCKETADDRESS_H_
 
+using namespace std;
+
 #include <string>
 #include <netinet/in.h>
 
 namespace ndsl{
 namespace net{
 
-class SocketAddress
+struct SocketAddress4:sockaddr_in
 {
   public:
-    static int ipType; // 默认ipv4类型
-
-  public:
-    SocketAddress();
-    SocketAddress( const char* buf, unsigned short p );
-    ~SocketAddress();
+    SocketAddress4();
+    SocketAddress4( const char* buf, unsigned short p );
+    ~SocketAddress4();
 
     void setAddress( const char*, unsigned short );
-    const char* getIP( void )const
-    {
-        return ip_.c_str();
-    };
-    unsigned short getPort( void )const
-    {
-        return port_;
-    };
+	void getIP( char* strbuf4)const;   
+    unsigned short getPort( void )const;    
     sockaddr_in getAddr();
     bool getAddr( sockaddr_in& addr );  
     void setPort( unsigned short );
-    string& convertToString( void );
-    bool ifAnyAddr( void )const;
-    bool operator == ( const SocketAddress& )const;   // 判断两个地址是否相同
-    SocketAddress& operator = ( const SocketAddress& ); // 地址的赋值
+    void convertToString( string& );
+    bool operator == ( const SocketAddress4& )const;   // 判断两个地址是否相同
+    SocketAddress4& operator = ( const SocketAddress4& ); // 地址的赋值
 
-private:
-    string          ip_;
-    unsigned short  port_;
-    string          str_;
+};
+
+struct SocketAddress6:sockaddr_in6
+{
+	public:
+    SocketAddress6();
+    SocketAddress6( const char* buf, unsigned short p );
+    ~SocketAddress6();
+
+    void setAddress( const char*, unsigned short );
+	void getIP( char* strbuf4)const;   
+    unsigned short getPort( void )const;    
+    sockaddr_in6 getAddr();
+    bool getAddr( sockaddr_in6& addr );  
+    void setPort( unsigned short );
+    void convertToString( string& );
+    bool operator == ( const SocketAddress6& )const;   // 判断两个地址是否相同
+    SocketAddress6& operator = ( const SocketAddress6& ); // 地址的赋值
 };
 }	// namespace net
 }	// namespace ndsl
