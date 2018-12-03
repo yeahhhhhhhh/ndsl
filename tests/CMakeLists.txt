@@ -1,4 +1,4 @@
-﻿##
+##
 # @file CMakeLists.txt
 # @brief
 # tests目录下cmake文件
@@ -11,14 +11,6 @@
 # catch要求打开异常
 #string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
-# 设置单元测试的文件
-set(TEST test.cc
-    
-   utils/TimeStampTest.cc  utils/LogTest.cc)
-
-add_executable(utest ${TEST})
-add_dependencies(utest ndsl)
-target_link_libraries(utest ndsl pthread)
-
 add_subdirectory(utils)
 add_subdirectory(net)
+
