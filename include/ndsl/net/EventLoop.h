@@ -1,7 +1,8 @@
-/*
- * @file: EventLoop.h
+/**
+ * @file EventLoop.h
  * @brief
  * 事件循环的封装
+ *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
@@ -10,7 +11,6 @@
 #define __NDSL_NET_EVENTLOOP_H__
 
 #include <list>
-// #include <queue>
 #include <mutex>
 #include "ndsl/net/Channel.h"
 
@@ -59,8 +59,8 @@ class WorkQueue
 class QueueChannel : public Channel
 {
   private:
-    uint64_t events_;
-    uint64_t revents_;
+    uint32_t events_;
+    uint32_t revents_;
     int fd_;
     WorkQueue workqueue_; // 任务队列
     EventLoop *loop_;
@@ -80,8 +80,8 @@ class QueueChannel : public Channel
     int handleEvent();
     // 同TcpChannel
     int getFd();
-    uint64_t getEvents();
-    int setRevents(uint64_t revents);
+    uint32_t getEvents();
+    int setRevents(uint32_t revents);
     int enableReading();
 };
 
@@ -93,8 +93,8 @@ class QueueChannel : public Channel
 class InterruptChannel : public Channel
 {
   private:
-    uint64_t revents_;
-    uint64_t events_;
+    uint32_t revents_;
+    uint32_t events_;
     int fd_;
     EventLoop *loop_;
 
@@ -110,8 +110,8 @@ class InterruptChannel : public Channel
     int handleEvent();
     // 同TcpChannel
     int getFd();
-    uint64_t getEvents();
-    int setRevents(uint64_t revents);
+    uint32_t getEvents();
+    int setRevents(uint32_t revents);
     int enableReading();
 };
 

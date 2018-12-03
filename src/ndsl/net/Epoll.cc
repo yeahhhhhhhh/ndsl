@@ -1,7 +1,8 @@
-/*
- * @file: Epoll.cc
+/**
+ * @file Epoll.cc
  * @brief
  * Epoll的实现
+ *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
@@ -85,8 +86,8 @@ int Epoll::del(Channel *pCh)
     return S_OK;
 }
 
-// TODO: 用Channel* 的数组替换vector
-int Epoll::wait(Channel *channels[], int timeoutMs)
+// nEvents返回响应事件数,timeoutMs默认为-1
+int Epoll::wait(Channel *channels[], int &nEvents, int timeoutMs)
 {
     struct epoll_event events[MAX_EVENTS];
     int ret = ::epoll_wait(epfd_, events, MAX_EVENTS, timeoutMs);
@@ -96,11 +97,14 @@ int Epoll::wait(Channel *channels[], int timeoutMs)
         return errno;
     }
 
+    // 记录响应事件数
+    nEvents = ret;
+
     // 依次读取事件，并返回事件
     for (int i = 0; i < ret; i++) {
         Channel *channel = static_cast<Channel *>(events[i].data.ptr);
         channel->setRevents(events[i].events);
-        channels.push_back(channel);
+        channels[i] = channel;
     }
 
     return S_OK;

@@ -1,7 +1,8 @@
-/*
- * @file: temp_define.h
+/**
+ * @file temp_define.h
  * @brief
  * 定义一些变量，正式commit时，可删去
+ *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */

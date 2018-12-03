@@ -25,8 +25,8 @@ class Channel
 
     virtual int handleEvent() = 0;
     virtual int getFd() = 0;
-    virtual uint64_t getEvents() = 0;
-    virtual int setRevents(uint64_t revents) = 0;
+    virtual uint32_t getEvents() = 0;
+    virtual int setRevents(uint32_t revents) = 0;
 };
 
 } // namespace net

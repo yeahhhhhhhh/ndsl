@@ -1,12 +1,14 @@
-/*
- * @file: EventLoopTest.cc
+/**
+ * @file EventLoopTest.cc
  * @brief
  * EventLoop的单元测试，包含WorkQueue的单元测试
+ *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
 
 #include <thread>
+#include <sys/eventfd.h>
 #include "catch.hpp"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/Epoll.h"
@@ -24,11 +26,13 @@ void func2(void *para)
 
 TEST_CASE("net/EventLoop(WorkQueue)")
 {
-    // SECTION("init")
-    // {
-    //     Epoll ep;
-    //     REQUIRE(ep.init() == S_OK);
-    // }
+    SECTION("init")
+    {
+        Epoll ep;
+        REQUIRE(ep.init() == S_OK);
+        EventLoop loop(&ep);
+        REQUIRE(loop.init() == S_OK);
+    }
 
     SECTION("addwork and quit")
     {
@@ -36,7 +40,6 @@ TEST_CASE("net/EventLoop(WorkQueue)")
         REQUIRE(ep.init() == S_OK);
         EventLoop loop(&ep);
         REQUIRE(loop.init() == S_OK);
-
         // bind c++11特性
         // std::thread th(std::bind(&EventLoop::loop, &loop));
 
@@ -50,7 +53,7 @@ TEST_CASE("net/EventLoop(WorkQueue)")
         w2->para = (void *) "Hello World!";
         loop.addWork(w2);
 
-        // loop.quit();
+        loop.quit();
 
         REQUIRE(loop.loop() == S_OK);
     }

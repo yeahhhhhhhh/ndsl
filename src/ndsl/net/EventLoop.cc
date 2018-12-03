@@ -108,9 +108,9 @@ int QueueChannel::handleEvent()
 
 int QueueChannel::getFd() { return fd_; }
 
-uint64_t QueueChannel::getEvents() { return events_; }
+uint32_t QueueChannel::getEvents() { return events_; }
 
-int QueueChannel::setRevents(uint64_t revents)
+int QueueChannel::setRevents(uint32_t revents)
 {
     revents_ = revents;
     return S_OK;
@@ -166,9 +166,9 @@ int InterruptChannel::handleEvent()
 
 int InterruptChannel::getFd() { return fd_; }
 
-uint64_t InterruptChannel::getEvents() { return events_; }
+uint32_t InterruptChannel::getEvents() { return events_; }
 
-int InterruptChannel::setRevents(uint64_t revents)
+int InterruptChannel::setRevents(uint32_t revents)
 {
     revents_ = revents;
     return S_OK;
@@ -214,7 +214,7 @@ int EventLoop::init()
         // 创建QueueChannel
         pQueCh_ = new QueueChannel(evfd, this);
 
-        printf("pQueCh_ = %d\n", pQueCh_->getFd());
+        // printf("pQueCh_ = %d\n", pQueCh_->getFd());
 
         int ret = pQueCh_->enableReading();
         if (ret != S_OK) return ret; // 若不成功直接返回
@@ -231,7 +231,7 @@ int EventLoop::init()
         // 创建InterruptChannel
         pIntrCh_ = new InterruptChannel(evfd, this);
 
-        printf("pIntrCh_ = %d\n", pIntrCh_->getFd());
+        // printf("pIntrCh_ = %d\n", pIntrCh_->getFd());
 
         int ret = pIntrCh_->enableReading();
         if (ret != S_OK) return ret; // 若不成功直接返回
@@ -241,29 +241,33 @@ int EventLoop::init()
 
 int EventLoop::loop()
 {
+    int nEvents = 0;
     // 进入事件循环
     while (true) {
         // LOG(LEVEL_INFO, "In wait.\n");
-        std::vector<Channel *> channels;
-        epoll_->wait(channels, -1);
+        Channel *channels[Epoll::MAX_EVENTS];
+        if (S_OK != epoll_->wait(channels, nEvents, -1)) {
+            // LOG(LEVEL_ERROR, "EventLoop::loop epoll->wait\n");
+            break;
+        }
 
         // LOG(LEVEL_INFO, "out wait.\n");
         bool quit = false;    // 退出标志
         bool haswork = false; // 中断标志
 
         // 处理事件
-        for (auto it = channels.begin(); it != channels.end(); ++it) {
-            // 若任务队列非空，则标记中断
-            if (pIntrCh_ == (*it))
+        for (int i = 0; i < nEvents; i++) {
+            if (pIntrCh_ == channels[i]) // 退出Channel响应,退出标记
                 quit = true;
-            else if (pQueCh_ == (*it))
+            else if (pQueCh_ == channels[i]) // 任务队列非空,中断标记
                 haswork = true;
             else
-                (*it)->handleEvent();
-            // LOG(LEVEL_INFO, "handle event.\n");
+                channels[i]->handleEvent();
         }
 
+        // 处理任务队列
         if (haswork) { pQueCh_->handleEvent(); }
+        // 退出
         if (quit) break;
     }
     return S_OK;
