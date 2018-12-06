@@ -28,17 +28,13 @@ TEST_CASE("net/EventLoop(WorkQueue)")
 {
     SECTION("init")
     {
-        Epoll ep;
-        REQUIRE(ep.init() == S_OK);
-        EventLoop loop(&ep);
+        EventLoop loop;
         REQUIRE(loop.init() == S_OK);
     }
 
     SECTION("addwork and quit")
     {
-        Epoll ep;
-        REQUIRE(ep.init() == S_OK);
-        EventLoop loop(&ep);
+        EventLoop loop;
         REQUIRE(loop.init() == S_OK);
         // bind c++11特性
         // std::thread th(std::bind(&EventLoop::loop, &loop));

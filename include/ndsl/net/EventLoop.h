@@ -13,11 +13,11 @@
 #include <list>
 #include <mutex>
 #include "ndsl/net/Channel.h"
+#include "ndsl/net/Epoll.h"
 
 namespace ndsl {
 namespace net {
 
-class Epoll;
 class EventLoop;
 
 // 定义work结构体
@@ -123,12 +123,12 @@ class InterruptChannel : public Channel
 class EventLoop
 {
   private:
-    Epoll *epoll_;
+    Epoll epoll_;
     QueueChannel *pQueCh_;      // 用于维护任务队列的Channel
     InterruptChannel *pIntrCh_; // 用于中断的channel
 
   public:
-    EventLoop(Epoll *epoll);
+    EventLoop();
     ~EventLoop();
 
     // 初始化中断器

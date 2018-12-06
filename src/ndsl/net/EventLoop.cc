@@ -186,9 +186,8 @@ int InterruptChannel::enableReading()
  * 事件循环: 包含一个QueueChannel和一个InterruptChannel
  */
 
-EventLoop::EventLoop(Epoll *epoll)
-    : epoll_(epoll)
-    , pQueCh_(NULL)
+EventLoop::EventLoop()
+    : pQueCh_(NULL)
     , pIntrCh_(NULL)
 
 {}
@@ -202,6 +201,11 @@ EventLoop::~EventLoop()
 int EventLoop::init()
 {
     int evfd;
+    int ret;
+
+    // 初始化epoll
+    ret = epoll_.init();
+    if (ret != S_OK) { return ret; }
 
     // 若pQueCh_为空,则分配eventfd
     if (!pQueCh_) {
@@ -216,7 +220,7 @@ int EventLoop::init()
 
         // printf("pQueCh_ = %d\n", pQueCh_->getFd());
 
-        int ret = pQueCh_->enableReading();
+        ret = pQueCh_->enableReading();
         if (ret != S_OK) return ret; // 若不成功直接返回
     }
 
@@ -233,7 +237,7 @@ int EventLoop::init()
 
         // printf("pIntrCh_ = %d\n", pIntrCh_->getFd());
 
-        int ret = pIntrCh_->enableReading();
+        ret = pIntrCh_->enableReading();
         if (ret != S_OK) return ret; // 若不成功直接返回
     }
     return S_OK;
@@ -246,7 +250,7 @@ int EventLoop::loop()
     while (true) {
         // LOG(LEVEL_INFO, "In wait.\n");
         Channel *channels[Epoll::MAX_EVENTS];
-        if (S_OK != epoll_->wait(channels, nEvents, -1)) {
+        if (S_OK != epoll_.wait(channels, nEvents, -1)) {
             // LOG(LEVEL_ERROR, "EventLoop::loop epoll->wait\n");
             break;
         }
@@ -280,11 +284,11 @@ void EventLoop::addWork(work_struct *work)
     pQueCh_->onWrite();
 }
 
-int EventLoop::regist(Channel *pCh) { return epoll_->regist(pCh); }
+int EventLoop::regist(Channel *pCh) { return epoll_.regist(pCh); }
 
-int EventLoop::update(Channel *pCh) { return epoll_->update(pCh); }
+int EventLoop::update(Channel *pCh) { return epoll_.update(pCh); }
 
-int EventLoop::del(Channel *pCh) { return epoll_->del(pCh); }
+int EventLoop::del(Channel *pCh) { return epoll_.del(pCh); }
 
 void EventLoop::quit() { pIntrCh_->onWrite(); }
 
