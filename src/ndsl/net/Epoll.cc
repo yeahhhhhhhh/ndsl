@@ -25,9 +25,6 @@ int Epoll::init()
         return errno;
     }
 
-    // 为什么在单元测试中加上下面这句就会报错???删去就不会报错
-    // (单元测试不止包含一个,如EpollTest.cc和EventLoopTest.cc)
-    // LOG(LEVEL_DEBUG, "assert error!\n");
     return S_OK;
 }
 

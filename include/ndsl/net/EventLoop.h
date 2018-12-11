@@ -123,9 +123,9 @@ class InterruptChannel : public Channel
 class EventLoop
 {
   private:
-    Epoll epoll_;
+    Epoll epoll_;               // 用于监听事件
     QueueChannel *pQueCh_;      // 用于维护任务队列的Channel
-    InterruptChannel *pIntrCh_; // 用于中断的channel
+    InterruptChannel *pIntrCh_; // 用于退出的channel
 
   public:
     EventLoop();

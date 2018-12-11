@@ -248,14 +248,12 @@ int EventLoop::loop()
     int nEvents = 0;
     // 进入事件循环
     while (true) {
-        // LOG(LEVEL_INFO, "In wait.\n");
         Channel *channels[Epoll::MAX_EVENTS];
         if (S_OK != epoll_.wait(channels, nEvents, -1)) {
             // LOG(LEVEL_ERROR, "EventLoop::loop epoll->wait\n");
             break;
         }
 
-        // LOG(LEVEL_INFO, "out wait.\n");
         bool quit = false;    // 退出标志
         bool haswork = false; // 中断标志
 
