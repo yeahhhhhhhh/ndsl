@@ -8,14 +8,20 @@
 #
 include_directories(${PROJECT_SOURCE_DIR}/include/ndsl/utils)
 include_directories(${PROJECT_SOURCE_DIR}/include/ndsl/net)
+link_directories(${PROJECT_SOURCE_DIR}/src/lib)
 
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # 设置单元测试的文件
-set(TEST GuidTest.cc)
+set(TEST ${TEST} GuidTest.cc)
 
 add_executable(utest3 ${TEST})
 
+<<<<<<< HEAD
 target_link_libraries(utest3 ndsl)
+=======
+target_link_libraries(utest ndsl)
+target_link_libraries(utest libuuid.so)
+>>>>>>> dev_2rxj
 
