@@ -1,7 +1,8 @@
-/*
- * @file: temp_define.h
+/**
+ * @file temp_define.h
  * @brief
  * 定义一些变量，正式commit时，可删去
+ *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
@@ -16,6 +17,11 @@
 #define LEVEL_DEBUG 1
 #define LEVEL_ERROR 2
 #define LEVEL_INFO 3
+#define MAXLINE 1024
+
+#define SERV_PORT 9877
+#define SA struct sockaddr
+#define LISTENQ 1024
 
 #define LOG(level, format, ...) printf(format, ##__VA_ARGS__)
 
