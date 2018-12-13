@@ -17,6 +17,11 @@
 #define LEVEL_DEBUG 1
 #define LEVEL_ERROR 2
 #define LEVEL_INFO 3
+#define MAXLINE 1024
+
+#define SERV_PORT 9877
+#define SA struct sockaddr
+#define LISTENQ 1024
 
 #define LOG(level, format, ...) printf(format, ##__VA_ARGS__)
 

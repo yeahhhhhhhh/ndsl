@@ -4,20 +4,22 @@
  *
  * Author: gyz
  * Email: mni_gyz@163.com
- * Last Modified: Saturday, 20th October 2018 3:46:35 pm
- * -----
- * Copyright 2018 - 2018
+ * Last Modified: Wednesday, 28th November 2018 10:57:51 pm
  */
 
 #ifndef __TCPCONNECTION_H__
 #define __TCPCONNECTION_H__
 #include "TcpChannel.h"
 #include "EventLoop.h"
+#include "ChannelCallBack.h"
+#include "../utils/temp_define.h"
 
 namespace ndsl {
 namespace net {
 
-class TcpConnection
+class TcpChannel;
+
+class TcpConnection : public ChannelCallBack
 {
   private:
     TcpChannel *pTcpChannel_;
@@ -30,8 +32,8 @@ class TcpConnection
     TcpConnection(int sockfd, EventLoop *pLoop);
     ~TcpConnection();
 
-    int read();
-    int write();
+    int handleRead();
+    int handleWrite();
     int send(char *outBuf);
 };
 

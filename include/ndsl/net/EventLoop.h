@@ -73,7 +73,7 @@ class QueueChannel : public Channel
     void addWork(work_struct *work);
 
     // 没有重载
-    int onRead();
+    int onRead(char *inBuf);
     // 发送中断信号
     int onWrite();
     // 处理队列中的任务
@@ -83,6 +83,8 @@ class QueueChannel : public Channel
     uint32_t getEvents();
     int setRevents(uint32_t revents);
     int enableReading();
+
+  private:
 };
 
 /**
@@ -103,7 +105,7 @@ class InterruptChannel : public Channel
     ~InterruptChannel();
 
     // 没有重载
-    int onRead();
+    int onRead(char *inBuf);
     // 发送中断信号
     int onWrite();
     // 没有重载
