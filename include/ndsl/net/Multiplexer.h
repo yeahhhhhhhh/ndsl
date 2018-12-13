@@ -1,0 +1,95 @@
+/** 
+* @file Multiplexer.h
+* @brief 
+*
+* 消息分发器，实现不同通信实体对tcp长连接的复用，每个通信实体拥有一个id，
+* 将通信实体的id与回调函数作为键值对存入map方便进行检索，回调相应的回调函数。
+* 分发器绑定在connection上，即 one multiplexer per connection.
+* 实现功能：
+*  1.绑定connection
+*  2.插入通信实体
+*  3.删除通信实体
+*  4.发送消息
+*  5.分发消息给实体
+*
+* @author zzt
+* @emial 429834658@qq.com 
+**/
+
+#ifndef __NDSL_NET_MULTIPLEXER_H__
+#define __NDSL_NET_MULTIPLEXER_H__
+
+#include <map>
+#include <iostream>
+#include <boost/function.hpp>
+#include "ndsl/net/Connection.h" // connection抽象类
+#include "ndsl/net/Eventloop.h"
+namespace ndsl{
+namespace net{
+// 自定义消息结构体 
+#pragma pack(push) 
+#pragma pack(1) // 一字节对齐
+struct Message{
+    int len; // 负载长度
+    int id; // 通信实体的id
+    char data[1]; // 负载
+}
+#pragma pack(pop)
+
+// 自定义addwork传入的参数结构体
+struct para{
+    int id;
+    Multiplexer::CallBack cb;
+}
+
+/**
+ * @class: Multiplexer
+ * @brief:
+ * 多路复用类
+ **/
+class Multiplexer
+{
+  public:
+    // 消息回调函数
+    using Callback = Boost::function<void (char *data, int len)>;
+
+  private:
+    // 回调函数映射容器
+    using CallbackMap = std::map<int, Callback>;
+
+    ndsl::net::Connection *conn_; // 绑定的connection
+    CallbackMap cbMap_; // 回调函数映射容器
+    int id_ = 0; // 当前未读完数据的实体id
+    int left_ = 0; // 剩余未读取的数据
+
+  public:
+    Multiplexer(ndsl::net::Connection *conn,
+    const CallbackMap &CallBackMap)
+    : conn_(conn), cbMap_(CallBackMap)
+
+    // 在loop工作队列中加入insert任务
+    void addInsertWork(int id, Callback cb);
+
+    // 在loop工作队列中加入remove任务
+    void addRemoveWork(int id);
+
+    // 插入id对应的回调函数
+    static void insert(int id, Callback cb);
+
+    // 删除id对应的回调函数
+    static void remove(int id);
+
+    // 向上层提供发送消息接口
+    static void sendMessage(
+        int id,
+        int len,
+        char *data);
+
+    // 分发消息给通信实体
+    void dispatch(char *data, int rlen); TODO;
+};
+
+} // namespace net
+} // namespace ndsl 
+
+#endif // __NDSL_NET_MULTIPLEXER_H__
