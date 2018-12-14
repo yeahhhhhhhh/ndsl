@@ -18,10 +18,6 @@ set(TEST ${TEST} GuidTest.cc)
 
 add_executable(utest3 ${TEST})
 
-<<<<<<< HEAD
-target_link_libraries(utest3 ndsl)
-=======
 target_link_libraries(utest ndsl)
 target_link_libraries(utest libuuid.so)
->>>>>>> dev_2rxj
 
