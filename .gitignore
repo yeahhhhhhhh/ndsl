@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 build/*
 .vscode/sftp.json
 !.gitkeep
@@ -16,3 +17,24 @@ bin/
 *.synctex.gz
 __latexindent_temp.tex
 *.synctex(busy)
+=======
+build/*
+.vscode/sftp.json
+!.gitkeep
+bin/
+docs/
+
+*.log
+*.fls
+*.blg
+*.bbl
+*.aux
+*.fdb_latexmk
+*.toc
+*.pdf
+*.out
+*.thm
+*.synctex.gz
+__latexindent_temp.tex
+*.synctex(busy)
+>>>>>>> dev_rxj
