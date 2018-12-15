@@ -19,12 +19,14 @@ const char* IPV6_ANYADDR = "::"; // 原基类是 "::1"
 
 SocketAddress4::SocketAddress4()
 {
+	sin_family = AF_INET;
 	sin_port = htons(0);
 	sin_addr.s_addr = htonl(INADDR_ANY); 
 }
 
 SocketAddress6::SocketAddress6()
 {
+	sin_family = AF_INET6;
 	sin6_port = htons(0);
 	sin6_addr = in6addr_any; 
 }
