@@ -13,24 +13,24 @@
 namespace ndsl {
 namespace net {
 
-// class ChannelCallBack
-// {
-//   public:
-//     virtual int handleRead() = 0;
-//     virtual int handleWrite() {}
+class ChannelCallBack
+{
+  public:
+    virtual int handleRead() = 0;
+    virtual int handleWrite() = 0；
 
-//     TcpConnection::handleRead();
+    // TcpConnection::handleRead();
 
-//     static void handleRead(void *param)
-//     {
-//         SomeChannel *pThis = reinterpret_cast<SomeChannel *>(param);
-//         ...
-//     }
-// };
+    // static void handleRead(void *param)
+    // {
+    //     SomeChannel *pThis = reinterpret_cast<SomeChannel *>(param);
+    //     ...
+    // }
+};
 
 struct Channel
 {
-    using Callback = void (*)(void *);
+    // using Callback = void (*)(void *);
 
   public:
     uint32_t events_;  // 注册事件
@@ -39,14 +39,14 @@ struct Channel
 
     virtual ~Channel() {} // 虚析构函数
 
-    virtual int onRead() = 0;  // read结束回调函数
-    virtual int onWrite() = 0; // write结束回调函数
+    // virtual int onRead() = 0;  // read结束回调函数
+    // virtual int onWrite() = 0; // write结束回调函数
 
     virtual int handleEvent() = 0; // loop的事件处理函数
     virtual int getFd() = 0;       // rdma的fd在结构内部
 
-    CallBack onRead = NULL;
-    Callback onWrite = NULL;
+    // CallBack handleRead = NULL;
+    // Callback handleWrite = NULL;
 };
 
 } // namespace net
