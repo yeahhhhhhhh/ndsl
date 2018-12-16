@@ -18,7 +18,6 @@ class BaseChannel
     , public ChannelCallBack
 {
   private:
-    // epoll事件注册 FIXME: 看看什么时候注册这个比较好
     int regist();
     int update();
     int del();

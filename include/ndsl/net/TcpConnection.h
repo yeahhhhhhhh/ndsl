@@ -25,7 +25,7 @@ class TcpConnection : public ChannelCallBack
     TcpChannel *pTcpChannel_;
 
     // 用户主动调用onRecv/onSend函数的参数存在这
-    typedef struct SSendInfo
+    typedef struct SInfo
     {
         void *buf_;  // 用户给的buf地址
         size_t len_; // buf长度
@@ -64,6 +64,7 @@ class TcpConnection : public ChannelCallBack
         int *errno_);
 
     // 正常执行accept的流程
+    // TODO:
     int onAccept(
         TcpConnection *pCon,
         struct sockaddr *addr,

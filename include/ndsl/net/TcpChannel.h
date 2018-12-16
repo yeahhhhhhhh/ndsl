@@ -5,18 +5,13 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
-
 #ifndef __TCPCHANNEL_H__
 #define __TCPCHANNEL_H__
-#include "Channel.h"
-#include "TcpConnection.h"
-#include "ChannelCallBack.h"
+#include "BaseChannel.h"
 #include "EventLoop.h"
 
 namespace ndsl {
 namespace net {
-
-class TcpConnection;
 
 class TcpChannel : public BaseChannel
 {
@@ -25,6 +20,7 @@ class TcpChannel : public BaseChannel
 
   public:
     TcpChannel(int sockfd, EventLoop *loop);
+    ~TcpChannel();
 
     int getFd();
 

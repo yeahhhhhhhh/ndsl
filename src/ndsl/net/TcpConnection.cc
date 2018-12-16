@@ -1,4 +1,4 @@
-/*
+/**
  * @file TcpConnection.cc
  * @brief
  *
@@ -7,13 +7,7 @@
  */
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/temp_define.h"
-#include "ndsl/net/Multiplexer.h"
-#include "ndsl/net/CallbackIoChannel.h"
-#include <cstring>
 #include <unistd.h>
-#include <fcntl.h>
-#include <iostream>
-using namespace std;
 
 namespace ndsl {
 namespace net {
@@ -28,8 +22,6 @@ int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
     pTcpChannel_ = new TcpChannel(sockfd, pLoop);
     pTcpChannel_->setCallBack(this);
-
-    // FIXME: accept的时候要设置描述符为非阻塞
 
     return S_OK;
 }
@@ -161,11 +153,13 @@ int TcpConnection::onRecv(
     return S_OK;
 }
 
-// 只读4个字节
+// 只读8个字节
 int TcpConnection::onRecvmsg(char *buf, Callback cb, void *param)
 {
+    // TODO: 异步
+
     int sockfd = pTcpChannel_->getFd();
-    read(sockfd, buf, 4);
+    read(sockfd, buf, 8);
     if (cb != NULL) cb(param);
 }
 

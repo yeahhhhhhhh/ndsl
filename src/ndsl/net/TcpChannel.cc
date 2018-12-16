@@ -13,7 +13,16 @@ namespace net {
 TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
     : sockfd_(sockfd)
     , pLoop_(loop)
-{}
+{
+    // 将自身注册到eventloop上面
+    regist();
+}
+
+TcpChannel::~TcpChannel()
+{
+    // 将自身从eventloop上面删掉
+    del();
+}
 
 int TcpChannel::getFd() { return sockfd_; }
 
