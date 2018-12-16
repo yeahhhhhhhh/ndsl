@@ -1,11 +1,9 @@
 #include <string.h>
 #include <stdio.h>
-#include <iostream>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include "SocketAddress.h"
 
-using namespace std;
+#include "SocketAddress.h"
 
 namespace ndsl{
 namespace net{
@@ -17,17 +15,16 @@ const char* ANYADDR = "0";
 const char* IPV4_ANYADDR = "0.0.0.0"; // 原基类是 "0.0.0"
 const char* IPV6_ANYADDR = "::"; // 原基类是 "::1"
 
+
 SocketAddress4::SocketAddress4()
 {
-	sin_family = AF_INET;
-	sin_port = htons(0);
+	sin_port = 0;
 	sin_addr.s_addr = htonl(INADDR_ANY); 
 }
 
 SocketAddress6::SocketAddress6()
 {
-	sin_family = AF_INET6;
-	sin6_port = htons(0);
+	sin6_port = 0;
 	sin6_addr = in6addr_any; 
 }
 
@@ -35,7 +32,7 @@ SocketAddress4::SocketAddress4( const char* buf, unsigned short p )
 {
     
 	sin_family = AF_INET;
-	sin_port = htons(p);
+	sin_port = p;
     if ( strlen( buf ) > IPV4LEN || strcmp( buf, ANYADDR ) == 0 ) // ip要是大于255了需要处理吗？
     {
         sin_addr.s_addr = htonl(INADDR_ANY);
@@ -50,7 +47,7 @@ SocketAddress6::SocketAddress6( const char* buf, unsigned short p )
 {
     
 	sin6_family = AF_INET6;
-	sin6_port = htons(p);   
+	sin6_port = p;   
 	if ( strlen( buf ) > IPV6LEN || strcmp( buf, ANYADDR ) == 0 )    // ip要是大于ffff了需要处理吗？ 
 	{
 		sin6_addr = in6addr_any; 
@@ -71,19 +68,19 @@ SocketAddress6::~SocketAddress6()
 
 void SocketAddress4::setPort( unsigned short p )
 {
-    sin_port = htons(p);
+    sin_port = p;
 }
 
 void SocketAddress6::setPort( unsigned short p )
 {
-    sin6_port = htons(p);
+    sin6_port = p;
 }
 
 void SocketAddress4::setAddress( const char* buf, unsigned short p )
 {
     
 	sin_family = AF_INET;
-	sin_port = htons(p);
+	sin_port = p;
     {
         if ( strlen( buf ) <=  IPV4LEN && strcmp( buf, ANYADDR ) != 0 )   
         {
@@ -96,47 +93,53 @@ void SocketAddress6::setAddress( const char* buf, unsigned short p )
 {
     
 	sin6_family = AF_INET6;
-	sin6_port = htons(p);
+	sin6_port = p;
 	if ( strlen( buf ) <= IPV6LEN && strcmp( buf, ANYADDR ) != 0 )   
 	{
 		inet_pton(AF_INET6, buf, &sin6_addr);
 	}
 }
 
-void SocketAddress4::getIP( char* strbuf4 )const
+const char* SocketAddress4::getIP( void )const
 {
-	inet_ntop(AF_INET, (void *)&sin_addr, strbuf4, 16); 
+	char str[INET_ADDRSTRLEN];
+	return inet_ntop(AF_INET, &sin_addr, str, sizeof(str)); //need fix
 }
 
-void SocketAddress6::getIP( char* strbuf4 )const
+const char* SocketAddress6::getIP( void )const
 {
-	inet_ntop(AF_INET6, (void *)&sin6_addr, strbuf4, 40); 
+	char str[INET6_ADDRSTRLEN];
+	return inet_ntop(AF_INET, &sin6_addr, str, sizeof(str)); //need fix
 }
 
 unsigned short SocketAddress4::getPort( void )const
 {
-	return ntohs(sin_port);
+	return sin_port;
 }
 
 unsigned short SocketAddress6::getPort( void )const
 {
-	return ntohs(sin6_port);
+	return sin6_port;
 }
 	
-void SocketAddress4::convertToString( string& str ) 
+string& SocketAddress4::convertToString( void ) 
 {
+	static string str;
     char buf[ MAXSOCKADDRLEN ] = { 0 };
     sprintf( buf, "%s %u", inet_ntop(AF_INET, &sin_addr, buf, 
-	sizeof(buf)), ntohs(sin_port) );
+	sizeof(buf)), sin_port );
 	str = buf;
+    return str;
 }
 
-void SocketAddress6::convertToString( string& str ) 
+string& SocketAddress6::convertToString( void ) 
 {
+	static string str;
     char buf[ MAXSOCKADDRLEN ] = { 0 };
     sprintf( buf, "%s %u", inet_ntop(AF_INET6, &sin6_addr, buf, 
-	sizeof(buf)), ntohs(sin6_port) );
+	sizeof(buf)), sin6_port );
 	str = buf;
+    return str;
 }
 
 bool SocketAddress4::operator == ( const SocketAddress4& h )const
@@ -153,11 +156,8 @@ bool SocketAddress4::operator == ( const SocketAddress4& h )const
 
 bool SocketAddress6::operator == ( const SocketAddress6& h )const
 {
-	char buf1[50];
-	char buf2[50];
-	getIP(buf1);
-	getIP(buf2);
-    if (strcmp(buf1, buf2) == 0 && sin6_port == h.sin6_port )
+    if ( strcmp((char*)sin6_addr.s6_addr, (char*)h.sin6_addr.s6_addr ) == 0 && 
+	sin6_port == h.sin6_port )
     {
         return true;
     }
@@ -189,7 +189,7 @@ sockaddr_in SocketAddress4::getAddr()
     memset( &addr, 0, sizeof( addr ) );
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = sin_addr.s_addr;
-    addr.sin_port = sin_port;
+    addr.sin_port = htons( sin_port );
     return addr;
 }
 
@@ -199,7 +199,7 @@ sockaddr_in6 SocketAddress6::getAddr()
     memset( &addr, 0, sizeof( addr ) );
     addr.sin6_family = AF_INET6;
     memcpy(addr.sin6_addr.s6_addr,  sin6_addr.s6_addr, 16);
-    addr.sin6_port = sin6_port;
+    addr.sin6_port = htons( sin6_port );
     return addr;
 }
 

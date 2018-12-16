@@ -1,36 +1,34 @@
-/*
- * File: TcpChannel.h
- * brief:
+/**
+ * @file TcpChannel.h
+ * @brief
  *
- * Author: gyz
- * Email: mni_gyz@163.com
- * Last Modified: Saturday, 20th October 2018 3:46:27 pm
- * -----
- * Copyright 2018 - 2018
+ * @author gyz
+ * @email mni_gyz@163.com
  */
 
 #ifndef __TCPCHANNEL_H__
 #define __TCPCHANNEL_H__
 #include "Channel.h"
 #include "TcpConnection.h"
+#include "ChannelCallBack.h"
+#include "EventLoop.h"
 
 namespace ndsl {
 namespace net {
 
-class TcpChannel : public Channel
+class TcpConnection;
+
+class TcpChannel : public BaseChannel
 {
   private:
-    TcpConnection *pCon_;
+    int sockfd_;
 
   public:
-    TcpChannel(EventLoop *loop, int sockfd);
+    TcpChannel(int sockfd, EventLoop *loop);
 
-    // 回调
-    int onRead(TcpConnection *pCon, char *inBuf);
-    int onWrite();
+    int getFd();
 
-    int handleEvent();
-    int setCallBack(TcpConnection *pCon);
+    int newConnection(int connfd);
 };
 
 } // namespace net
