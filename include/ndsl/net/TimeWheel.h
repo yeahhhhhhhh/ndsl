@@ -57,43 +57,44 @@ class TimerfdChannel : public Channel
     int del();
 };
 
-class TimerWheel
+class TimeWheel
 {
   public:
-    struct task
+    struct Task
     {
         using Taskfunc = void (*)(void *);
-        int interval;  // 时间间隔
-        int times;     // 0:无限制响应   1:响应次数
-        int circle;    // 每几个周期响应一次
-        Taskfunc doit; // 函数指针
-        void *para;    // 函数参数
+        int setTick = -1;      // 记录放在哪个slot位置上
+        int setInterval = -1;  // 设置的时间间隔
+        int restInterval = -1; // 剩余时间间隔
+        int times = 1;         // -1:无限制响应   1:响应次数
+        Taskfunc doit;         // 函数指针
+        void *para;            // 函数参数
     };
+    // 转一圈需要1min,一共有60个槽,两个槽之间间隙为1s
+    static const int SLOTNUM = 60; // 一共有60个时间槽
+    static const int INTERVAL = 1; // 每两个槽之间的间隔为1s
 
   private:
-    EventLoop *pLoop_;
-    TimerfdChannel *ptimerfdChannel_;
-    long intervalMs_; // 时间间隔,以微秒为单位
-    int slotNum_;     // 时间刻度个数
-    int tick_;
-    std::list<std::list *> slot;
+    int curTick_;                     // 指示当前刻度
+    EventLoop *pLoop_;                // TimerfdChannel注册的eventloop
+    TimerfdChannel *ptimerfdChannel_; // 注册在epoll上的channel
+    std::list<Task *> slot[SLOTNUM]; // 每个刻度上的任务队列(双向链表)
 
   public:
-    TimerWheel(EventLoop *loop, long intervalMs, int slotNum);
-    ~TimerWheel();
+    TimeWheel(EventLoop *loop);
+    ~TimeWheel();
 
-    int init();  // 初始化TimerfdChannel
+    int init();  // 初始化TimerfdChannel和slot
     int start(); // 开始运行时间轮
     int stop();  // 停止运行时间轮
 
-    int addTask();    // 增加新任务
-    int removeTask(); // 删除任务
-    int updateTask(); // 更新任务
+    int addTask(Task *Task);    // 增加新任务
+    int removeTask(Task *task); // 删除任务
 
-    int tickHandler(); // 处理事件
+    int onTick(); // 处理事件
 };
 
 } // namespace net
 } // namespace ndsl
 
-#endif // __NDSL_NET_TIMERFDCHANNEL_H__
+#endif // __NDSL_NET_TIMEWHEEL_H__
