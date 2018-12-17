@@ -16,11 +16,35 @@ TcpAcceptor::TcpAcceptor(int listenfd, EventLoop *pLoop)
     , pLoop_(pLoop)
 {}
 
+TcpAcceptor::~TcpAcceptor() { delete pTcpChannel_; }
+
+TcpAcceptor::TcpAcceptor(
+    int listenfd,
+    EventLoop *pLoop,
+    TcpConnection *pCon,
+    struct sockaddr *addr,
+    socklen_t *addrlen,
+    Callback cb,
+    void *param,
+    TcpConnection *pCbCon)
+    : listenfd_(-1)
+    , pLoop_(pLoop)
+    , info.pCon_(pCon)
+    , info.addr_(addr)
+    , info.addrlen_(addrlen)
+    , info.cb_(cb)
+    , info.param_(param)
+    , info.inUse_ = true
+{
+    memset(info, 0, sizeof(struct Info));
+};
+
 int TcpAcceptor::start()
 {
     listenfd_ = createAndListen();
     pTcpChannel_ = new TcpChannel(listenfd_, pLoop_);
     pTcpChannel_->setCallBack(this);
+    pTcpChannel_->enableReading();
 }
 
 int TcpAcceptor::createAndListen()
@@ -43,11 +67,11 @@ int TcpAcceptor::createAndListen()
 
     if (-1 ==
         bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
-        cout << "bind error, errno:" << errno << endl;
+        // cout << "bind error, errno:" << errno << endl;
     }
 
     if (-1 == listen(listenfd_, LISTENQ)) {
-        cout << "listen error, errno:" << errno << endl;
+        // cout << "listen error, errno:" << errno << endl;
     }
 
     return listenfd_;
@@ -58,7 +82,8 @@ int TcpAcceptor::handleRead()
     int connfd;
     struct sockaddr_in cliaddr;
     socklen_t clilen = sizeof(struct sockaddr_in);
-    connfd = accept(listenfd_, (sockaddr *) &cliaddr, (socklen_t *) &clilen);
+    connfd =
+        accept(listenfd_, (struct sockaddr *) &cliaddr, (socklen_t *) &clilen);
     if (connfd > 0) {
         // 连接成功
 
@@ -75,8 +100,17 @@ int TcpAcceptor::handleRead()
 
     // 设置非阻塞io
     fcntl(connfd, F_SETFL, O_NONBLOCK);
+    TcpConnection *tCon = pTcpChannel_->newConnection(connfd);
 
-    pTcpChannel_->newConnection(connfd);
+    if (info.inUse_) {
+        info.pCon_ = tCon;
+        info.addr_ = (struct sockaddr *) &cliaddr;
+        info.addrlen_ = (socklen_t *) &clilen;
+        if (info.cb_ != NULL) info.cb_(info.param_);
+        pTcpChannel_->disableReading();
+
+        this->~TcpAcceptor();
+    }
 }
 
 // 空函数 无此功能

@@ -36,47 +36,47 @@ EventLoop *BaseChannel::getEventLoop() { return pLoop_; }
 
 uint32_t BaseChannel::getEvents() { return events_; }
 
-int TcpChannel::enableReading()
+int BaseChannel::enableReading()
 {
     events_ |= EPOLLIN;
     update();
     return S_OK;
 }
 
-int TcpChannel::enableWriting()
+int BaseChannel::enableWriting()
 {
     events_ |= EPOLLOUT;
     update();
     return S_OK;
 }
 
-int TcpChannel::disableReading()
+int BaseChannel::disableReading()
 {
     events_ &= ~EPOLLIN;
     update();
     return S_OK;
 }
 
-int TcpChannel::disableWriting()
+int BaseChannel::disableWriting()
 {
     events_ &= ~EPOLLOUT;
     update();
     return S_OK;
 }
 
-int TcpChannel::regist()
+int BaseChannel::regist()
 {
     getEventLoop()->regist(this);
     return S_OK;
 }
 
-int TcpChannel::update()
+int BaseChannel::update()
 {
     getEventLoop()->update(this);
     return S_OK;
 }
 
-int TcpChannel::del()
+int BaseChannel::del()
 {
     getEventLoop()->del(this);
     return S_OK;

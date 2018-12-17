@@ -26,9 +26,10 @@ TcpChannel::~TcpChannel()
 
 int TcpChannel::getFd() { return sockfd_; }
 
-int TcpChannel::newConnection(int connfd)
+TcpConnection *TcpChannel::newConnection(int connfd)
 {
     TcpConnection *pCon = new TcpConnection(connfd, pLoop_);
+    return pCon;
 }
 
 } // namespace net

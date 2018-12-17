@@ -1,4 +1,4 @@
-/*
+/**
  * @file TcpClient.cc
  * @brief
  *
@@ -12,7 +12,7 @@
 #include <netinet/in.h>
 #include "ndsl/utils/temp_define.h"
 
-// TODO: 重写
+// TODO: 用来模拟用户？
 
 int main()
 {

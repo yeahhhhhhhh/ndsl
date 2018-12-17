@@ -8,6 +8,7 @@
 #ifndef __TCPCHANNEL_H__
 #define __TCPCHANNEL_H__
 #include "BaseChannel.h"
+#include "TcpConnection.h"
 #include "EventLoop.h"
 
 namespace ndsl {
@@ -24,7 +25,7 @@ class TcpChannel : public BaseChannel
 
     int getFd();
 
-    int newConnection(int connfd);
+    TcpConnection *newConnection(int connfd);
 };
 
 } // namespace net

@@ -142,7 +142,6 @@ int TcpConnection::onRecv(
             recvInfo_.errno_ = errno;
             return S_OK;
         } else {
-            // FIXME: 这样写可以么
             errno = ::errno;
             return S_FAIL;
         }
@@ -161,6 +160,47 @@ int TcpConnection::onRecvmsg(char *buf, Callback cb, void *param)
     int sockfd = pTcpChannel_->getFd();
     read(sockfd, buf, 8);
     if (cb != NULL) cb(param);
+}
+
+// int onAccept(
+// TcpConnection *pCon,
+// struct sockaddr *addr,
+// socklen_t *addrlen,
+// Callback cb,
+// void *param);
+int TcpConnection::onAccept(
+    TcpConnection *pCon,
+    struct sockaddr *addr,
+    socklen_t *addrlen,
+    Callback cb,
+    void *param)
+{
+    // onAcceptor()和TcpAcceptor函数的功能不重复么
+
+    int connfd;
+    if ((connfd = accept(pTcpChannel_->getFd(), addr, addrlen)) > 0) {
+        // accept成功
+        TcpChannel *pTcpChannel = new TcpChannel(connfd, getEventLoop());
+        pTcpChannel->setCallBack(this);
+
+        pCon->pTcpChannel_ = pTcpChannel;
+
+        if (cb != NULL) cb(param);
+    } else {
+        // accept不成功，转异步处理
+        // 异步理解为用户没有启TcpAcceptor函数
+        TcpAcceptor *ta = new TcpAcceptor(
+            pTcpChannel_->getFd(),
+            getEventLoop(),
+            pCon,
+            addr,
+            addrlen,
+            cb,
+            param);
+        ta->start();
+    }
+
+    return S_OK;
 }
 
 } // namespace net

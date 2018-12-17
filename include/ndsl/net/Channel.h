@@ -30,7 +30,7 @@ class ChannelCallBack
 
 struct Channel
 {
-    // using Callback = void (*)(void *);
+    using Callback = void (*)(void *);
 
   public:
     uint32_t events_;  // 注册事件
