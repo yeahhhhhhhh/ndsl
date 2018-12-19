@@ -38,7 +38,7 @@ int TimeWheel::init()
     ptimerfdChannel_ = new TimerfdChannel(fd, pLoop_);
 
     for (int i = 0; i < SLOTNUM; i++)
-        slot[i].clear();
+        slot_[i].clear();
 
     return S_OK;
 }
@@ -84,15 +84,17 @@ int TimeWheel::stop()
     return S_OK;
 }
 
-// FIXME:需要加锁吗?
 int TimeWheel::addTask(Task *task)
 {
     // 若task为空,直接返回
-    if (task->setInterval == -1 || task->doit == NULL) return S_FAIL;
+    if (task->setInterval == -1 || task->doit == NULL) {
+        LOG(LEVEL_ERROR, "TimeWheel::addTask invalid task!\n");
+        return S_FAIL;
+    }
 
     int setTick = (curTick_ + task->setInterval) % SLOTNUM;
 
-    slot[setTick].push_back(task);
+    slot_[setTick].push_back(task);
 
     task->setTick = setTick;
 
@@ -102,10 +104,12 @@ int TimeWheel::addTask(Task *task)
 int TimeWheel::removeTask(Task *task)
 {
     // task为空,直接返回
-    if (task->setInterval == -1 || task->setTick == -1 || task->doit == NULL)
+    if (task->setInterval == -1 || task->setTick == -1 || task->doit == NULL) {
+        LOG(LEVEL_ERROR, "TimeWheel::removeTask invalid task!\n");
         return S_FAIL;
+    }
 
-    auto slotList = slot[task->setTick];
+    auto slotList = slot_[task->setTick];
 
     // 标准模板库提供的find函数
     auto iter = std::find(slotList.begin(), slotList.end(), task);
@@ -119,21 +123,40 @@ int TimeWheel::removeTask(Task *task)
 
 int TimeWheel::onTick()
 {
+    // 刻度自增
     ++curTick_;
 
     // 若队列为空,则直接返回
-    if (slot[curTick_].empty()) return S_OK;
+    if (slot_[curTick_].empty()) return S_OK;
 
-    for (auto it = slot[curTick_].begin(); it != slot[curTick_].end(); ++it) {
+    std::list<Task *> curSlot;
+
+    // 将对应的list拉下来一一处理
+    curSlot.swap(slot_[curTick_]);
+
+    for (auto it = curSlot.begin(); it != curSlot.end(); ++it) {
         // 若不在本轮,则减少轮数
         if ((*it)->restInterval >= SLOTNUM) {
             (*it)->restInterval -= SLOTNUM;
         } else {
             (*it)->doit((*it)->para);
             if ((*it)->times > 0) (*it)->times--;
-            // TODO:判断是否还有下一次执行,若有,则在时间轮上设置
+
+            if ((*it)->times == 0) {
+                // FIXME:是否需要释放内存?
+                delete (*it);
+                continue;
+            }
+
+            // 若任务是周期性执行,即(*it)->times == -1 或 (*it)->times > 0
+            // ,则再次插入,并重新选择时间槽和设置restInterval值
+            (*it)->setTick = (curTick_ + (*it)->setInterval) % SLOTNUM;
+            (*it)->restInterval = (*it)->setInterval;
+            slot_[(*it)->setTick].push_back((*it));
         }
     }
+
+    return S_OK;
 }
 } // namespace net
 } // namespace ndsl

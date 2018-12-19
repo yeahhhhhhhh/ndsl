@@ -13,14 +13,14 @@
 
 #include <sys/timerfd.h>
 #include <list>
-#include "ndsl/net/Channel.h"
+#include "ndsl/net/BaseChannel.h"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/utils/temp_define.h"
 
 namespace ndsl {
 namespace net {
 
-class TimerfdChannel : public Channel
+class TimerfdChannel : public BaseChannel
 {
   private:
     int fd_;
@@ -78,7 +78,7 @@ class TimeWheel
     int curTick_;                     // 指示当前刻度
     EventLoop *pLoop_;                // TimerfdChannel注册的eventloop
     TimerfdChannel *ptimerfdChannel_; // 注册在epoll上的channel
-    std::list<Task *> slot[SLOTNUM]; // 每个刻度上的任务队列(双向链表)
+    std::list<Task *> slot_[SLOTNUM]; // 每个刻度上的任务队列(双向链表)
 
   public:
     TimeWheel(EventLoop *loop);
