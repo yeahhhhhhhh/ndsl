@@ -11,7 +11,9 @@
 
 namespace ndsl {
 namespace net {
-TimerfdChannel::TimerfdChannel(int fd, EventLoop *loop) {}
+TimerfdChannel::TimerfdChannel(int fd, EventLoop *loop)
+    : BaseChannel(fd, loop)
+{}
 
 TimerfdChannel::~TimerfdChannel() {}
 
@@ -35,6 +37,7 @@ int TimeWheel::init()
         return errno;
     }
 
+    // FIXME:是否要使用handleRead/handleWrite
     ptimerfdChannel_ = new TimerfdChannel(fd, pLoop_);
 
     for (int i = 0; i < SLOTNUM; i++)

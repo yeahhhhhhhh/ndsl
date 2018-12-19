@@ -11,6 +11,11 @@
 namespace ndsl {
 namespace net {
 
+BaseChannel::BaseChannel(int fd, EventLoop *loop)
+    : fd_(fd)
+    , Channel(loop)
+{}
+
 int BaseChannel::handleEvent()
 {
     if (getRevents() & EPOLLIN) { pCb_->handleRead(); }
@@ -18,67 +23,69 @@ int BaseChannel::handleEvent()
     return S_OK;
 }
 
+int BaseChannel::getFd() { return fd_; }
+
 int BaseChannel::setCallBack(ChannelCallBack *pCb)
 {
     pCb_ = pCb;
     return S_OK;
 }
 
-uint32_t BaseChannel::getRevents() { return revents_; }
-
-int BaseChannel::setRevents(uint32_t revents)
+int BaseChannel::enableReading()
 {
-    revents_ = revents;
-    return S_OK;
-}
-
-EventLoop *BaseChannel::getEventLoop() { return pLoop_; }
-
-uint32_t BaseChannel::getEvents() { return events_; }
-
-int TcpChannel::enableReading()
-{
-    events_ |= EPOLLIN;
+    setEvents(getEvents() | EPOLLIN);
     update();
     return S_OK;
 }
 
-int TcpChannel::enableWriting()
+int BaseChannel::enableWriting()
 {
-    events_ |= EPOLLOUT;
+    setEvents(getEvents() | EPOLLOUT);
     update();
     return S_OK;
 }
 
-int TcpChannel::disableReading()
+int BaseChannel::disableReading()
 {
-    events_ &= ~EPOLLIN;
+    setEvents(getEvents() & ~EPOLLIN);
     update();
     return S_OK;
 }
 
-int TcpChannel::disableWriting()
+int BaseChannel::disableWriting()
 {
-    events_ &= ~EPOLLOUT;
+    setEvents(getEvents() & ~EPOLLOUT);
     update();
     return S_OK;
 }
 
-int TcpChannel::regist()
+int BaseChannel::regist()
 {
     getEventLoop()->regist(this);
     return S_OK;
 }
 
-int TcpChannel::update()
+int BaseChannel::update()
 {
     getEventLoop()->update(this);
     return S_OK;
 }
 
-int TcpChannel::del()
+int BaseChannel::del()
 {
     getEventLoop()->del(this);
+    return S_OK;
+}
+
+int BaseChannel::changeMode2ET()
+{
+    getEventLoop()->changeMode2ET();
+    return S_OK;
+}
+
+int BaseChannel::changeMode2LT()
+{
+    getEventLoop()->changeMode2LT();
     return S_OK;
 }
 

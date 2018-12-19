@@ -22,39 +22,45 @@ namespace net {
 
 class TimerfdChannel : public BaseChannel
 {
-  private:
-    int fd_;
-    uint32_t events_;
-    uint32_t revents_;
-    EventLoop *pLoop_;
+    // FIXME:使用BaseChannel的问题
+    // 1.使用Callback类,还是使用函数指针?
+    // (用Callback(handleEvent不方便),个人认为使用using更加方便)
+    // 2.缺少头文件(S_OK)
+    // 3.EventLoop提供ET/LT转换,还是Channel自己去更新?(调用顺序?regist时指定?)
+
+    // private:
+    //   int fd_;
+    //   uint32_t events_;
+    //   uint32_t revents_;
+    //   EventLoop *pLoop_;
 
   public:
     TimerfdChannel(int fd, EventLoop *loop);
     ~TimerfdChannel();
 
     // 回调
-    int onRead(char *inBuf);
-    int onWrite();
+    // int onRead(char *inBuf);
+    // int onWrite();
 
-    int getFd();
-    uint32_t getRevents();
-    int setRevents(uint32_t revents);
-    uint32_t getEvents();
-    EventLoop *getEventLoop();
+    // int getFd();
+    // uint32_t getRevents();
+    // int setRevents(uint32_t revents);
+    // uint32_t getEvents();
+    // EventLoop *getEventLoop();
 
-    int handleEvent();
+    // int handleEvent();
 
-    // epoll 事件管理
-    int enableReading();
-    int enableWriting();
-    int disableWriting();
-    int isWriting();
+    // // epoll 事件管理
+    // int enableReading();
+    // int enableWriting();
+    // int disableWriting();
+    // int isWriting();
 
   private:
     // epoll事件注册
-    int update();
-    int regist();
-    int del();
+    // int update();
+    // int regist();
+    // int del();
 };
 
 class TimeWheel

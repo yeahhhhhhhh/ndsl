@@ -12,13 +12,14 @@
 
 #include <list>
 #include <mutex>
-#include "ndsl/net/Channel.h"
+#include "ndsl/net/BaseChannel.h"
 #include "ndsl/net/Epoll.h"
 
 namespace ndsl {
 namespace net {
 
 class EventLoop;
+// class Epoll;
 
 // 定义work结构体
 struct work_struct
@@ -56,14 +57,10 @@ class WorkQueue
  * @brief:
  * 维护任务队列
  */
-class QueueChannel : public Channel
+class QueueChannel : public BaseChannel
 {
   private:
-    uint32_t events_;
-    uint32_t revents_;
-    int fd_;
     WorkQueue workqueue_; // 任务队列
-    EventLoop *loop_;
 
   public:
     QueueChannel(int fd, EventLoop *loop);
@@ -78,11 +75,6 @@ class QueueChannel : public Channel
     int onWrite();
     // 处理队列中的任务
     int handleEvent();
-    // 同TcpChannel
-    int getFd();
-    uint32_t getEvents();
-    int setRevents(uint32_t revents);
-    int enableReading();
 
   private:
 };
@@ -92,7 +84,7 @@ class QueueChannel : public Channel
  * @brief: 中断EventLoop,退出循环
  */
 
-class InterruptChannel : public Channel
+class InterruptChannel : public BaseChannel
 {
   private:
     uint32_t revents_;
@@ -110,11 +102,6 @@ class InterruptChannel : public Channel
     int onWrite();
     // 没有重载
     int handleEvent();
-    // 同TcpChannel
-    int getFd();
-    uint32_t getEvents();
-    int setRevents(uint32_t revents);
-    int enableReading();
 };
 
 /**

@@ -64,13 +64,12 @@ void WorkQueue::enQueue(work_struct *work)
  * 维护任务队列
  */
 QueueChannel::QueueChannel(int fd, EventLoop *loop)
-    : fd_(fd)
-    , loop_(loop)
+    : BaseChannel(fd, loop)
 {}
 
 QueueChannel::~QueueChannel()
 {
-    if (fd_ >= 0) { ::close(fd_); }
+    // if (fd_ >= 0) { ::close(fd_); }
 }
 
 // 添加任务
@@ -87,7 +86,7 @@ int QueueChannel::onRead(char *inBuf)
 int QueueChannel::onWrite()
 {
     uint64_t data = 1;
-    int ret = ::write(fd_, &data, sizeof(data));
+    int ret = ::write(getFd(), &data, sizeof(data));
 
     if (ret == -1) {
         LOG(LEVEL_ERROR, "QueueChannel::onWrite write");
@@ -106,30 +105,13 @@ int QueueChannel::handleEvent()
     return S_OK;
 }
 
-int QueueChannel::getFd() { return fd_; }
-
-uint32_t QueueChannel::getEvents() { return events_; }
-
-int QueueChannel::setRevents(uint32_t revents)
-{
-    revents_ = revents;
-    return S_OK;
-}
-
-int QueueChannel::enableReading()
-{
-    events_ |= EPOLLIN;
-    return loop_->regist(this);
-}
-
 /**
  * @class InterruptChannel
  * @brief
  * 中断EventLoop,退出循环
  */
 InterruptChannel::InterruptChannel(int fd, EventLoop *loop)
-    : fd_(fd)
-    , loop_(loop)
+    : BaseChannel(fd, loop)
 {}
 
 InterruptChannel::~InterruptChannel()
@@ -162,22 +144,6 @@ int InterruptChannel::handleEvent()
 {
     LOG(LEVEL_ERROR, "Wrong call InterruptChannel::handleEvent");
     return S_FAIL;
-}
-
-int InterruptChannel::getFd() { return fd_; }
-
-uint32_t InterruptChannel::getEvents() { return events_; }
-
-int InterruptChannel::setRevents(uint32_t revents)
-{
-    revents_ = revents;
-    return S_OK;
-}
-
-int InterruptChannel::enableReading()
-{
-    events_ |= EPOLLIN;
-    return loop_->regist(this);
 }
 
 /**

@@ -18,24 +18,27 @@ class BaseChannel
     , public ChannelCallBack
 {
   private:
-    int regist();
+    int fd_;
     int update();
-    int del();
+
     ChannelCallBack *pCb_;
 
   public:
-    uint32_t getRevents();
-    int setRevents(uint32_t revents);
-    uint32_t getEvents();
-    EventLoop *getEventLoop();
+    BaseChannel(int fd, EventLoop *loop);
 
     int handleEvent();
 
+    int getFd();
+
     // epoll 事件管理
+    int del();
+    int regist();
     int enableReading();
     int enableWriting();
     int disableReading();
     int disableWriting();
+    int changeMode2ET();
+    int changeMode2LT();
 
     int setCallBack(ChannelCallBack *pCb);
 };
