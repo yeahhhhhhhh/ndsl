@@ -7,6 +7,9 @@
  */
 #include "ndsl/net/TcpChannel.h"
 
+#include <iostream>
+using namespace std;
+
 namespace ndsl {
 namespace net {
 

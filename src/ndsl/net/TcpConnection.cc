@@ -5,6 +5,7 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
+
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/temp_define.h"
 #include <unistd.h>
@@ -65,6 +66,9 @@ int TcpConnection::onSend(
 int TcpConnection::handleWrite()
 {
     int sockfd = pTcpChannel_->getFd();
+
+    cout << "fd = " << sockfd << endl;
+
     if (sockfd < 0) { return -1; }
     int n;
 
