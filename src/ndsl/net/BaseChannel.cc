@@ -11,6 +11,11 @@
 namespace ndsl {
 namespace net {
 
+BaseChannel::BaseChannel(int fd, EventLoop *loop)
+    : fd_(fd)
+    , Channel(loop)
+{}
+
 int BaseChannel::handleEvent()
 {
     if (getRevents() & EPOLLIN) { pCb_->handleRead(); }
@@ -18,27 +23,17 @@ int BaseChannel::handleEvent()
     return S_OK;
 }
 
+int BaseChannel::getFd() { return fd_; }
+
 int BaseChannel::setCallBack(ChannelCallBack *pCb)
 {
     pCb_ = pCb;
     return S_OK;
 }
 
-uint32_t BaseChannel::getRevents() { return revents_; }
-
-int BaseChannel::setRevents(uint32_t revents)
-{
-    revents_ = revents;
-    return S_OK;
-}
-
-EventLoop *BaseChannel::getEventLoop() { return pLoop_; }
-
-uint32_t BaseChannel::getEvents() { return events_; }
-
 int BaseChannel::enableReading()
 {
-    events_ |= EPOLLIN;
+    setEvents(getEvents() | EPOLLIN);
     update();
     return S_OK;
 }
@@ -79,6 +74,18 @@ int BaseChannel::update()
 int BaseChannel::del()
 {
     getEventLoop()->del(this);
+    return S_OK;
+}
+
+int BaseChannel::changeMode2ET()
+{
+    getEventLoop()->changeMode2ET();
+    return S_OK;
+}
+
+int BaseChannel::changeMode2LT()
+{
+    getEventLoop()->changeMode2LT();
     return S_OK;
 }
 

@@ -33,7 +33,7 @@ int TcpConnection::onSend(
     int flags,
     Callback cb,
     void *param,
-    int &errno)
+    int &errn)
 {
     int sockfd = pTcpChannel_->getFd();
     int n = write(sockfd, buf, len);
@@ -43,7 +43,7 @@ int TcpConnection::onSend(
         return S_OK;
     } else if (n < 0) {
         // 出错 通知用户
-        errno = ::errno;
+        errn = errno;
         return S_FAIL;
     }
 
@@ -139,7 +139,7 @@ int TcpConnection::onRecv(
     int &len,
     Callback cb,
     void *param,
-    int &errno)
+    int &errn)
 {
     int sockfd = pTcpChannel_->getFd();
     if ((len = read(sockfd, buf, MAXLINE)) < 0) {
@@ -156,7 +156,7 @@ int TcpConnection::onRecv(
             qRecvInfo_.push(tsi);
             return S_OK;
         } else {
-            errno = ::errno;
+            errn = errno;
             return S_FAIL;
         }
     }
@@ -165,7 +165,7 @@ int TcpConnection::onRecv(
     return S_OK;
 }
 
-int TcpConnection::onRecvmsg(char *buf, Callback cb, void *param, int &error)
+int TcpConnection::onRecvmsg(char *buf, Callback cb, void *param, int &errn)
 {
     // 异步
 }

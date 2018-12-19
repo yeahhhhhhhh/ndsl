@@ -14,11 +14,10 @@ namespace ndsl {
 namespace net {
 
 TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
-    : sockfd_(sockfd)
-    , pLoop_(loop)
+    : BaseChannel(sockfd, loop)
 {
     // 将自身注册到eventloop上面
-    this->regist();
+    regist();
 }
 
 TcpChannel::~TcpChannel()
@@ -27,11 +26,9 @@ TcpChannel::~TcpChannel()
     del();
 }
 
-int TcpChannel::getFd() { return sockfd_; }
-
 TcpConnection *TcpChannel::newConnection(int connfd)
 {
-    TcpConnection *pCon = new TcpConnection(connfd, pLoop_);
+    TcpConnection *pCon = new TcpConnection(connfd, getEventLoop());
     return pCon;
 }
 

@@ -16,14 +16,9 @@ namespace net {
 
 class TcpChannel : public BaseChannel
 {
-  private:
-    int sockfd_;
-
   public:
     TcpChannel(int sockfd, EventLoop *loop);
     ~TcpChannel();
-
-    int getFd();
 
     TcpConnection *newConnection(int connfd);
 };

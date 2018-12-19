@@ -8,6 +8,7 @@
 #ifndef __TCPCONNECTION_H__
 #define __TCPCONNECTION_H__
 #include <queue>
+#include <sys/socket.h>
 #include "TcpChannel.h"
 #include "EventLoop.h"
 #include "Channel.h"
@@ -49,10 +50,10 @@ class TcpConnection : public ChannelCallBack
     int handleWrite();
 
     // TODO: 给Multipliter的接口 没有实现的必要？
-    int onRecvmsg(char *buf, Callback cb, void *param);
+    int onRecvmsg(char *buf, Callback cb, void *param, int &errn);
 
     // onSend onRecv 的语义是异步通知
-    int onRecv(char *buffer, int &len, Callback cb, void *param, int &errno);
+    int onRecv(char *buffer, int &len, Callback cb, void *param, int &errn);
 
     // 会有好多人同时调用这个进行send，需要一个队列
     int onSend(
@@ -61,7 +62,7 @@ class TcpConnection : public ChannelCallBack
         int flags,
         Callback cb,
         void *param,
-        int *errno);
+        int &errn);
 
     // 正常执行accept的流程
     int onAccept(
