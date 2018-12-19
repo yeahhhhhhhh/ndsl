@@ -40,21 +40,21 @@ int BaseChannel::enableReading()
 
 int BaseChannel::enableWriting()
 {
-    events_ |= EPOLLOUT;
+    setEvents(getEvents() | EPOLLOUT);
     update();
     return S_OK;
 }
 
 int BaseChannel::disableReading()
 {
-    events_ &= ~EPOLLIN;
+    setEvents(getEvents() & ~EPOLLIN);
     update();
     return S_OK;
 }
 
 int BaseChannel::disableWriting()
 {
-    events_ &= ~EPOLLOUT;
+    setEvents(getEvents() & ~EPOLLOUT);
     update();
     return S_OK;
 }

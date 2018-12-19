@@ -42,6 +42,12 @@ struct Channel
 
     uint32_t getEvents() { return events_; }
 
+    int setEvents(uint32_t events)
+    {
+        events_ = events;
+        return S_OK;
+    }
+
     virtual int handleEvent() = 0; // loop的事件处理函数
     virtual int getFd() = 0;       // rdma的fd在结构内部
 };
@@ -52,14 +58,6 @@ class ChannelCallBack
     using Callback = void (*)(void *); // Callback 函数指针原型
     virtual int handleRead() = 0;
     virtual int handleWrite() = 0;
-
-    // TcpConnection::handleRead();
-
-    // static void handleRead(void *param)
-    // {
-    //     SomeChannel *pThis = reinterpret_cast<SomeChannel *>(param);
-    //     ...
-    // }
 };
 
 } // namespace net

@@ -25,10 +25,6 @@ class BaseChannel
 
   public:
     BaseChannel(int fd, EventLoop *loop);
-    uint32_t getRevents();
-    int setRevents(uint32_t revents);
-    uint32_t getEvents();
-    EventLoop *getEventLoop();
 
     int handleEvent();
 
