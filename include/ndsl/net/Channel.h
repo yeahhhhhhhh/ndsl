@@ -17,7 +17,7 @@ class ChannelCallBack
 {
   public:
     virtual int handleRead() = 0;
-    virtual int handleWrite() = 0；
+    virtual int handleWrite() = 0;
 
     // TcpConnection::handleRead();
 
@@ -35,7 +35,7 @@ struct Channel
   public:
     uint32_t events_;  // 注册事件
     uint32_t revents_; // 发生事件
-    EventLoop *ploop_; // 指向EventLoop
+    EventLoop *pLoop_; // 指向EventLoop
 
     virtual ~Channel() {} // 虚析构函数
 

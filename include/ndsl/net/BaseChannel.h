@@ -18,9 +18,8 @@ class BaseChannel
     , public ChannelCallBack
 {
   private:
-    int regist();
     int update();
-    int del();
+
     ChannelCallBack *pCb_;
 
   public:
@@ -32,6 +31,8 @@ class BaseChannel
     int handleEvent();
 
     // epoll 事件管理
+    int del();
+    int regist();
     int enableReading();
     int enableWriting();
     int disableReading();

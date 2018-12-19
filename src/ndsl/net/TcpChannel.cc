@@ -15,7 +15,7 @@ TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
     , pLoop_(loop)
 {
     // 将自身注册到eventloop上面
-    regist();
+    this->regist();
 }
 
 TcpChannel::~TcpChannel()
