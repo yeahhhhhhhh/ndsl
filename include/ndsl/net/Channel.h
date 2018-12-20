@@ -9,6 +9,7 @@
 #ifndef __NDSL_NET_CHANNEL_H__
 #define __NDSL_NET_CHANNEL_H__
 #include "EventLoop.h"
+#include "ndsl/utils/temp_define.h"
 
 namespace ndsl {
 namespace net {

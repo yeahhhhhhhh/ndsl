@@ -19,11 +19,13 @@ namespace net {
 
 // class TcpChannel;
 
-class TcpConnection : public ChannelCallBack
+class TcpConnection
 {
-  private:
+  public:
     // TcpChannel *pTcpChannel_;
+    using Callback = void (*)(void *); // Callback 函数指针原型
 
+  private:
     // 用户主动调用onRecv/onSend函数的参数存在这
     typedef struct SInfo
     {
@@ -38,16 +40,16 @@ class TcpConnection : public ChannelCallBack
 
     std::queue<pInfo> qSendInfo_; // 等待发送的队列
     std::queue<pInfo> qRecvInfo_; // 等待接收的队列
-    // Info recvInfo_;
-
-    int createChannel(int sockfd_, EventLoop *pLoop);
+                                  // Info recvInfo_;
 
   public:
-    TcpConnection(int sockfd, EventLoop *pLoop);
+    TcpConnection();
     ~TcpConnection();
 
     static int handleRead();
     static int handleWrite();
+
+    int createChannel(int sockfd_, EventLoop *pLoop);
 
     // TODO: 给Multipliter的接口 没有实现的必要？
     int onRecvmsg(char *buf, Callback cb, void *param, int &errn);

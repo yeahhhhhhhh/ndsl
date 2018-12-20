@@ -13,9 +13,7 @@
 namespace ndsl {
 namespace net {
 
-class BaseChannel
-    : public Channel
-    , public ChannelCallBack
+class BaseChannel : public Channel
 {
   private:
     int fd_;

@@ -1,7 +1,8 @@
-/*
- * @file: Epoll.h
+/**
+ * @file Epoll.h
  * @brief
  * 封装epoll
+ *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
@@ -24,7 +25,9 @@ class Channel;
 class Epoll
 {
   private:
-    int epfd_;                        // epoll文件描述符
+    int epfd_; // epoll文件描述符
+
+  public:
     static const int MAX_EVENTS = 64; // 设置最大事件响应数
 
   public:
@@ -45,8 +48,8 @@ class Epoll
     int update(Channel *);
     int del(Channel *);
 
-    // 返回响应事件，默认为一直阻塞
-    int wait(std::vector<Channel *> &channels, int timeMs = -1);
+    // 默认为一直阻塞,nEvents返回响应事件数
+    int wait(Channel *channels[], int &nEvents, int timeMs = -1);
 };
 
 } // namespace net

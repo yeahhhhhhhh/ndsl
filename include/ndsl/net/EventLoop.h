@@ -1,7 +1,8 @@
-/*
- * @file: EventLoop.h
+/**
+ * @file EventLoop.h
  * @brief
  * 事件循环的封装
+ *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
@@ -10,14 +11,13 @@
 #define __NDSL_NET_EVENTLOOP_H__
 
 #include <list>
-// #include <queue>
 #include <mutex>
 #include "ndsl/net/Channel.h"
+#include "ndsl/net/Epoll.h"
 
 namespace ndsl {
 namespace net {
 
-class Epoll;
 class EventLoop;
 
 // 定义work结构体
@@ -125,12 +125,12 @@ class InterruptChannel : public Channel
 class EventLoop
 {
   private:
-    Epoll *epoll_;
+    Epoll epoll_;               // 用于监听事件
     QueueChannel *pQueCh_;      // 用于维护任务队列的Channel
-    InterruptChannel *pIntrCh_; // 用于中断的channel
+    InterruptChannel *pIntrCh_; // 用于退出的channel
 
   public:
-    EventLoop(Epoll *epoll);
+    EventLoop();
     ~EventLoop();
 
     // 初始化中断器
