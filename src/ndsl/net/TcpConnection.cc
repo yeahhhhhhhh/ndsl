@@ -13,16 +13,14 @@
 namespace ndsl {
 namespace net {
 
-TcpConnection::TcpConnection(int sockfd, EventLoop *pLoop)
-{
-    createChannel(sockfd, pLoop);
-}
+TcpConnection::TcpConnection() {}
 TcpConnection::~TcpConnection() {}
 
 int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
     pTcpChannel_ = new TcpChannel(sockfd, pLoop);
-    pTcpChannel_->setCallBack(this);
+    pTcpChannel_->setCallBack(handleRead);
+    pTcpChannel_->regist(true);
 
     return S_OK;
 }
@@ -63,7 +61,7 @@ int TcpConnection::onSend(
     return S_OK;
 }
 
-int TcpConnection::handleWrite()
+static int TcpConnection::handleWrite()
 {
     int sockfd = pTcpChannel_->getFd();
 
@@ -107,31 +105,6 @@ int TcpConnection::handleWrite()
     return S_OK;
 }
 
-int TcpConnection::handleRead()
-{
-    int sockfd = pTcpChannel_->getFd();
-    if (sockfd < 0) { return S_FAIL; }
-
-    if (qRecvInfo_.size() > 0) {
-        pinfo tsi = qRecvInfo_.push();
-        if ((tsi->len_ = read(sockfd, tsi->buf_, MAXLINE)) < 0) {
-            // 出错就设置错误码
-            tsi->errno_ = ::errno;
-        }
-    }
-
-    // 无论出错还是完成数据读取之后都得通知用户
-    if (recvInfo_.cb != NULL) recvInfo_.cb_(recvInfo_.param_);
-    qRecvInfo_.pop();
-    delete tsi;
-    if (qRecvInfo_.size() == 0) {
-        // 将读事件移除
-        pTcpChannel_->disableReading();
-    }
-
-    return S_OK;
-}
-
 // 如果执行成功，返回值就为 S_OK；如果出现错误，返回值就为 S_FAIL，并设置 errno
 // 的值。
 int TcpConnection::onRecv(
@@ -162,6 +135,31 @@ int TcpConnection::onRecv(
     }
     if (cb != NULL) cb(param);
     // 先返回，最终的处理在onRead()里面
+    return S_OK;
+}
+
+static int TcpConnection::handleRead()
+{
+    int sockfd = pTcpChannel_->getFd();
+    if (sockfd < 0) { return S_FAIL; }
+
+    if (qRecvInfo_.size() > 0) {
+        pinfo tsi = qRecvInfo_.push();
+        if ((tsi->len_ = read(sockfd, tsi->buf_, MAXLINE)) < 0) {
+            // 出错就设置错误码
+            tsi->errno_ = ::errno;
+        }
+    }
+
+    // 无论出错还是完成数据读取之后都得通知用户
+    if (recvInfo_.cb != NULL) recvInfo_.cb_(recvInfo_.param_);
+    qRecvInfo_.pop();
+    delete tsi;
+    if (qRecvInfo_.size() == 0) {
+        // 将读事件移除
+        pTcpChannel_->disableReading();
+    }
+
     return S_OK;
 }
 

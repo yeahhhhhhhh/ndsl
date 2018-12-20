@@ -9,7 +9,7 @@
 #define __TCPCONNECTION_H__
 #include <queue>
 #include <sys/socket.h>
-#include "TcpChannel.h"
+// #include "TcpChannel.h"
 #include "EventLoop.h"
 #include "Channel.h"
 #include "../utils/temp_define.h"
@@ -17,12 +17,12 @@
 namespace ndsl {
 namespace net {
 
-class TcpChannel;
+// class TcpChannel;
 
 class TcpConnection : public ChannelCallBack
 {
   private:
-    TcpChannel *pTcpChannel_;
+    // TcpChannel *pTcpChannel_;
 
     // 用户主动调用onRecv/onSend函数的参数存在这
     typedef struct SInfo
@@ -46,8 +46,8 @@ class TcpConnection : public ChannelCallBack
     TcpConnection(int sockfd, EventLoop *pLoop);
     ~TcpConnection();
 
-    int handleRead();
-    int handleWrite();
+    static int handleRead();
+    static int handleWrite();
 
     // TODO: 给Multipliter的接口 没有实现的必要？
     int onRecvmsg(char *buf, Callback cb, void *param, int &errn);

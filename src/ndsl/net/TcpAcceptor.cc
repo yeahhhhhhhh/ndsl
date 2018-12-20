@@ -34,10 +34,8 @@ TcpAcceptor::TcpAcceptor(
     , info.addrlen_(addrlen)
     , info.cb_(cb)
     , info.param_(param)
-    , info.inUse_ = true
-{
-    memset(info, 0, sizeof(struct Info));
-};
+    , info.inUse_(true)
+{}
 
 int TcpAcceptor::start()
 {
@@ -77,7 +75,7 @@ int TcpAcceptor::createAndListen()
     return listenfd_;
 }
 
-int TcpAcceptor::handleRead()
+static int TcpAcceptor::handleRead()
 {
     int connfd;
     struct sockaddr_in cliaddr;
@@ -112,9 +110,6 @@ int TcpAcceptor::handleRead()
         this->~TcpAcceptor();
     }
 }
-
-// 空函数 无此功能
-int TcpAcceptor::handleWrite() {}
 
 } // namespace net
 } // namespace ndsl

@@ -19,12 +19,17 @@ class BaseChannel
 {
   private:
     int fd_;
-    int update();
+    int update(bool isET);
 
-    ChannelCallBack *pCb_;
+    // ChannelCallBack *pCb_;
+    // using Callback = void (*)(void *); // Callback 函数指针原型
+    using ChannelCallBack = int (*)();
 
   public:
     BaseChannel(int fd, EventLoop *loop);
+
+    // 指向被调用的函数
+    ChannelCallBack handleRead_, handleWrite_;
 
     int handleEvent();
 
@@ -37,10 +42,8 @@ class BaseChannel
     int enableWriting();
     int disableReading();
     int disableWriting();
-    int changeMode2ET();
-    int changeMode2LT();
 
-    int setCallBack(ChannelCallBack *pCb);
+    int setCallBack(ChannelCallBack handleRead, ChannelCallBack handleWrite);
 };
 
 } // namespace net

@@ -6,6 +6,7 @@
  * @email mni_gyz@163.com
  */
 #include "ndsl/net/BaseChannel.h"
+#include "ndsl/utils/temp_define.h"
 #include <sys/epoll.h>
 
 namespace ndsl {
@@ -18,16 +19,33 @@ BaseChannel::BaseChannel(int fd, EventLoop *loop)
 
 int BaseChannel::handleEvent()
 {
-    if (getRevents() & EPOLLIN) { pCb_->handleRead(); }
-    if (getRevents() & EPOLLOUT) { pCb_->handleWrite(); }
+    if (getRevents() & EPOLLIN) {
+        if (handleRead_) handleRead_();
+    }
+
+    if (getRevents() & EPOLLOUT) {
+        if (handleWrite_) handleWrite_();
+    }
+
     return S_OK;
 }
 
 int BaseChannel::getFd() { return fd_; }
 
-int BaseChannel::setCallBack(ChannelCallBack *pCb)
+int BaseChannel::setCallBack(
+    ChannelCallBack handleRead,
+    ChannelCallBack handleWrite);
 {
-    pCb_ = pCb;
+    if (handleRead)
+        handleRead_ = handleRead;
+    else
+        handleRead_ = NULL;
+
+    if (handleWrite)
+        handleWrite_ = handleWrite;
+    else
+        handleWrite_ = NULL;
+
     return S_OK;
 }
 
@@ -59,8 +77,13 @@ int BaseChannel::disableWriting()
     return S_OK;
 }
 
-int BaseChannel::regist()
+int BaseChannel::regist(bool isET)
 {
+    if (isET) {
+        setEvents(getEvents() & ~EPOLLET);
+    } else {
+        setEvents(getEvents() & ~EPOLLLT);
+    }
     getEventLoop()->regist(this);
     return S_OK;
 }
@@ -74,18 +97,6 @@ int BaseChannel::update()
 int BaseChannel::del()
 {
     getEventLoop()->del(this);
-    return S_OK;
-}
-
-int BaseChannel::changeMode2ET()
-{
-    getEventLoop()->changeMode2ET();
-    return S_OK;
-}
-
-int BaseChannel::changeMode2LT()
-{
-    getEventLoop()->changeMode2LT();
     return S_OK;
 }
 

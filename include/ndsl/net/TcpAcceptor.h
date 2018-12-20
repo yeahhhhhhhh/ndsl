@@ -51,8 +51,7 @@ class TcpAcceptor : public ChannelCallBack
         void *param,
         TcpConnection *pCbCon);
 
-    int handleRead();
-    int handleWrite();
+    static int handleRead();
     int start();
 
   private:

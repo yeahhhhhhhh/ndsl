@@ -7,18 +7,12 @@
  */
 #include "ndsl/net/TcpChannel.h"
 
-#include <iostream>
-using namespace std;
-
 namespace ndsl {
 namespace net {
 
 TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
     : BaseChannel(sockfd, loop)
-{
-    // 将自身注册到eventloop上面
-    regist();
-}
+{}
 
 TcpChannel::~TcpChannel()
 {
@@ -28,7 +22,8 @@ TcpChannel::~TcpChannel()
 
 TcpConnection *TcpChannel::newConnection(int connfd)
 {
-    TcpConnection *pCon = new TcpConnection(connfd, getEventLoop());
+    TcpConnection *pCon = new TcpConnection();
+    pCon->createChannel(connfd, getEventLoop());
     return pCon;
 }
 

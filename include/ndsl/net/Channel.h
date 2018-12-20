@@ -18,12 +18,11 @@ struct Channel
   public:
     using Callback = void (*)(void *); // Callback 函数指针原型
 
+    // TODO: 是否改为protected 有待商榷
   private:
     uint32_t events_;  // 注册事件
     uint32_t revents_; // 发生事件
     EventLoop *pLoop_; // 指向EventLoop
-
-    // TODO: get set 方法 5个 gete sete getr setr getp
 
   public:
     Channel(EventLoop *loop)
@@ -52,13 +51,13 @@ struct Channel
     virtual int getFd() = 0;       // rdma的fd在结构内部
 };
 
-class ChannelCallBack
-{
-  public:
-    using Callback = void (*)(void *); // Callback 函数指针原型
-    virtual int handleRead() = 0;
-    virtual int handleWrite() = 0;
-};
+// class ChannelCallBack
+// {
+//   public:
+//     using Callback = void (*)(void *); // Callback 函数指针原型
+//     virtual int handleRead() = 0;
+//     virtual int handleWrite() = 0;
+// };
 
 } // namespace net
 } // namespace ndsl
