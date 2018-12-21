@@ -18,6 +18,7 @@
 namespace ndsl {
 namespace net {
 
+class Channel;
 class EventLoop;
 
 // 定义work结构体

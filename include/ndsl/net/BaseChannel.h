@@ -13,6 +13,8 @@
 namespace ndsl {
 namespace net {
 
+class EventLoop;
+
 class BaseChannel : public Channel
 {
   private:
@@ -30,12 +32,11 @@ class BaseChannel : public Channel
     ChannelCallBack handleRead_, handleWrite_;
 
     int handleEvent();
-
     int getFd();
 
     // epoll 事件管理
     int del();
-    int regist();
+    int regist(bool isET);
     int enableReading();
     int enableWriting();
     int disableReading();

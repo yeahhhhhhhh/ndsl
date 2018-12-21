@@ -8,6 +8,8 @@
 
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/net/TcpChannel.h"
+#include <errno.h>
 #include <unistd.h>
 
 namespace ndsl {
@@ -19,7 +21,7 @@ TcpConnection::~TcpConnection() {}
 int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
     pTcpChannel_ = new TcpChannel(sockfd, pLoop);
-    pTcpChannel_->setCallBack(handleRead);
+    pTcpChannel_->setCallBack(handleRead, handleWrite);
     pTcpChannel_->regist(true);
 
     return S_OK;
@@ -34,7 +36,7 @@ int TcpConnection::onSend(
     int &errn)
 {
     int sockfd = pTcpChannel_->getFd();
-    int n = write(sockfd, buf, len);
+    size_t n = write(sockfd, buf, len);
     if (n == len) {
         // 写完 通知用户
         if (cb != NULL) cb(param);
@@ -52,7 +54,7 @@ int TcpConnection::onSend(
     tsi->flags_ = flags;
     tsi->cb_ = cb;
     tsi->param_ = param;
-    tsi->errno_ = errno;
+    *tsi->errno_ = errno;
 
     qSendInfo_.push(tsi);
 
@@ -61,14 +63,15 @@ int TcpConnection::onSend(
     return S_OK;
 }
 
-static int TcpConnection::handleWrite()
+// 函数指针不能用
+int TcpConnection::handleWrite()
 {
     int sockfd = pTcpChannel_->getFd();
 
-    cout << "fd = " << sockfd << endl;
+    // cout << "fd = " << sockfd << endl;
 
     if (sockfd < 0) { return -1; }
-    int n;
+    size_t n;
 
     if (qSendInfo_.size() > 0) {
         pInfo tsi = qSendInfo_.front();
@@ -109,7 +112,7 @@ static int TcpConnection::handleWrite()
 // 的值。
 int TcpConnection::onRecv(
     char *buf,
-    int &len,
+    size_t &len,
     Callback cb,
     void *param,
     int &errn)
@@ -138,7 +141,7 @@ int TcpConnection::onRecv(
     return S_OK;
 }
 
-static int TcpConnection::handleRead()
+int TcpConnection::handleRead()
 {
     int sockfd = pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FAIL; }

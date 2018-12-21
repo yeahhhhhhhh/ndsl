@@ -10,14 +10,15 @@
 #include <queue>
 #include <sys/socket.h>
 // #include "TcpChannel.h"
-#include "EventLoop.h"
-#include "Channel.h"
+// #include "EventLoop.h"
+// #include "Channel.h"
 #include "../utils/temp_define.h"
 
 namespace ndsl {
 namespace net {
 
-// class TcpChannel;
+class TcpChannel;
+class EventLoop;
 
 class TcpConnection
 {
@@ -29,8 +30,8 @@ class TcpConnection
     // 用户主动调用onRecv/onSend函数的参数存在这
     typedef struct SInfo
     {
-        void *buf_;  // 用户给的buf地址
-        size_t len_; // buf长度
+        const void *buf_; // 用户给的buf地址
+        size_t len_;      // buf长度
         int flags_;
         Callback cb_; // 存储用户传过来的回调函数
         void *param_; // 回调函数的参数
@@ -40,7 +41,8 @@ class TcpConnection
 
     std::queue<pInfo> qSendInfo_; // 等待发送的队列
     std::queue<pInfo> qRecvInfo_; // 等待接收的队列
-                                  // Info recvInfo_;
+
+    TcpChannel *pTcpChannel_;
 
   public:
     TcpConnection();
@@ -55,7 +57,7 @@ class TcpConnection
     int onRecvmsg(char *buf, Callback cb, void *param, int &errn);
 
     // onSend onRecv 的语义是异步通知
-    int onRecv(char *buffer, int &len, Callback cb, void *param, int &errn);
+    int onRecv(char *buffer, size_t &len, Callback cb, void *param, int &errn);
 
     // 会有好多人同时调用这个进行send，需要一个队列
     int onSend(

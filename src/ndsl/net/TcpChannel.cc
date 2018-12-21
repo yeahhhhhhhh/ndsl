@@ -6,6 +6,7 @@
  * @email mni_gyz@163.com
  */
 #include "ndsl/net/TcpChannel.h"
+#include "ndsl/net/TcpConnection.h"
 
 namespace ndsl {
 namespace net {

@@ -7,6 +7,7 @@
  */
 #include "ndsl/net/BaseChannel.h"
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/net/EventLoop.h"
 #include <sys/epoll.h>
 
 namespace ndsl {
