@@ -37,7 +37,6 @@ class TcpAcceptor : public ChannelCallBack
 
   public:
     TcpAcceptor(int listenfd, EventLoop *pLoop);
-
     ~TcpAcceptor();
 
     // 为用户主动调用onAcceptor()而生
@@ -48,10 +47,10 @@ class TcpAcceptor : public ChannelCallBack
         struct sockaddr *addr,
         socklen_t *addrlen,
         Callback cb,
-        void *param,
-        TcpConnection *pCbCon);
+        void *param);
 
-    static int handleRead();
+    int handleRead();
+    int handleWrite();
     int start();
 
   private:

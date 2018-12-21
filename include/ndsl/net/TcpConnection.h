@@ -12,6 +12,7 @@
 // #include "TcpChannel.h"
 // #include "EventLoop.h"
 // #include "Channel.h"
+#include "Channel.h"
 #include "../utils/temp_define.h"
 
 namespace ndsl {
@@ -19,24 +20,25 @@ namespace net {
 
 class TcpChannel;
 class EventLoop;
+class ChannelCallBack;
 
-class TcpConnection
+class TcpConnection : public ChannelCallBack
 {
   public:
-    // TcpChannel *pTcpChannel_;
-    using Callback = void (*)(void *); // Callback 函数指针原型
+    // using Callback = void (*)(void *); // Callback 函数指针原型
 
   private:
     // 用户主动调用onRecv/onSend函数的参数存在这
     typedef struct SInfo
     {
-        const void *buf_; // 用户给的buf地址
-        size_t len_;      // buf长度
-        int flags_;
-        Callback cb_; // 存储用户传过来的回调函数
-        void *param_; // 回调函数的参数
-        int offset_;  // 一次没发送完的发送偏移
-        int *errno_;  // 记录错误码
+        const void *sendBuf_; // 用户给的写地址
+        void *readBuf_;       // 用户给的读地址
+        size_t len_;          // buf长度
+        int flags_;           // send()的参数
+        Callback cb_;         // 存储用户传过来的回调函数
+        void *param_;         // 回调函数的参数
+        size_t offset_;       // 一次没发送完的发送偏移
+        int *errno_;          // 记录错误码
     } Info, *pInfo;
 
     std::queue<pInfo> qSendInfo_; // 等待发送的队列
@@ -48,8 +50,8 @@ class TcpConnection
     TcpConnection();
     ~TcpConnection();
 
-    static int handleRead();
-    static int handleWrite();
+    int handleRead();
+    int handleWrite();
 
     int createChannel(int sockfd_, EventLoop *pLoop);
 

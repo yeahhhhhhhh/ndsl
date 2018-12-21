@@ -14,39 +14,54 @@ namespace ndsl {
 namespace net {
 
 BaseChannel::BaseChannel(int fd, EventLoop *loop)
-    : fd_(fd)
-    , Channel(loop)
+    : Channel(loop)
+    , fd_(fd)
 {}
+
+int BaseChannel::getFd() { return fd_; }
+
+// int BaseChannel::handleEvent()
+// {
+//     if (getRevents() & EPOLLIN) {
+//         if (handleRead_) handleRead_();
+//     }
+
+//     if (getRevents() & EPOLLOUT) {
+//         if (handleWrite_) handleWrite_();
+//     }
+
+//     return S_OK;
+// }
+
+// int BaseChannel::setCallBack(
+//     ChannelCallBack handleRead,
+//     ChannelCallBack handleWrite);
+// {
+//     if (handleRead)
+//         handleRead_ = handleRead;
+//     else
+//         handleRead_ = NULL;
+
+//     if (handleWrite)
+//         handleWrite_ = handleWrite;
+//     else
+//         handleWrite_ = NULL;
+
+//     return S_OK;
+// }
 
 int BaseChannel::handleEvent()
 {
-    if (getRevents() & EPOLLIN) {
-        if (handleRead_) handleRead_();
-    }
+    if (getRevents() & EPOLLIN) { pCb_->handleRead(); }
 
-    if (getRevents() & EPOLLOUT) {
-        if (handleWrite_) handleWrite_();
-    }
+    if (getRevents() & EPOLLOUT) { pCb_->handleWrite(); }
 
     return S_OK;
 }
 
-int BaseChannel::getFd() { return fd_; }
-
-int BaseChannel::setCallBack(
-    ChannelCallBack handleRead,
-    ChannelCallBack handleWrite);
+int BaseChannel::setCallBack(ChannelCallBack *cb)
 {
-    if (handleRead)
-        handleRead_ = handleRead;
-    else
-        handleRead_ = NULL;
-
-    if (handleWrite)
-        handleWrite_ = handleWrite;
-    else
-        handleWrite_ = NULL;
-
+    pCb_ = cb;
     return S_OK;
 }
 
@@ -81,9 +96,9 @@ int BaseChannel::disableWriting()
 int BaseChannel::regist(bool isET)
 {
     if (isET) {
-        setEvents(getEvents() & ~EPOLLET);
+        setEvents(getEvents() & EPOLLET);
     } else {
-        setEvents(getEvents() & ~EPOLLLT);
+        setEvents(getEvents());
     }
     getEventLoop()->regist(this);
     return S_OK;

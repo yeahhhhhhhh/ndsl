@@ -5,8 +5,11 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
+#include <sys/socket.h>
+#include <fcntl.h>
 #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/TcpAcceptor.h"
+#include "ndsl/net/SocketAddress.h"
 
 namespace ndsl {
 namespace net {
@@ -25,17 +28,17 @@ TcpAcceptor::TcpAcceptor(
     struct sockaddr *addr,
     socklen_t *addrlen,
     Callback cb,
-    void *param,
-    TcpConnection *pCbCon)
+    void *param)
     : listenfd_(-1)
     , pLoop_(pLoop)
-    , info.pCon_(pCon)
-    , info.addr_(addr)
-    , info.addrlen_(addrlen)
-    , info.cb_(cb)
-    , info.param_(param)
-    , info.inUse_(true)
-{}
+{
+    info.pCon_ = pCon;
+    info.addr_ = addr;
+    info.addrlen_ = addrlen;
+    info.cb_ = cb;
+    info.param_ = param;
+    info.inUse_ = true;
+}
 
 int TcpAcceptor::start()
 {
@@ -43,6 +46,8 @@ int TcpAcceptor::start()
     pTcpChannel_ = new TcpChannel(listenfd_, pLoop_);
     pTcpChannel_->setCallBack(this);
     pTcpChannel_->enableReading();
+
+    return S_OK;
 }
 
 int TcpAcceptor::createAndListen()
@@ -51,7 +56,7 @@ int TcpAcceptor::createAndListen()
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
     // struct sockaddr_in serevaddr;
-    struct SocketAddress4 servaddr();
+    struct SocketAddress4 servaddr;
 
     // 设置非阻塞
     fcntl(listenfd_, F_SETFL, O_NONBLOCK);
@@ -75,7 +80,7 @@ int TcpAcceptor::createAndListen()
     return listenfd_;
 }
 
-static int TcpAcceptor::handleRead()
+int TcpAcceptor::handleRead()
 {
     int connfd;
     struct sockaddr_in cliaddr;
@@ -109,7 +114,12 @@ static int TcpAcceptor::handleRead()
 
         this->~TcpAcceptor();
     }
+
+    return S_OK;
 }
+
+// 空函数 无功能
+int TcpAcceptor::handleWrite() { return S_OK; }
 
 } // namespace net
 } // namespace ndsl

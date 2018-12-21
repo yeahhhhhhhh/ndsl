@@ -17,7 +17,16 @@ namespace net {
 
 class EventLoop;
 
-class Channel
+class ChannelCallBack
+{
+  public:
+    using Callback = void (*)(void *); // Callback 函数指针原型
+
+    virtual int handleRead() = 0;
+    virtual int handleWrite() = 0;
+};
+
+struct Channel
 {
   public:
     using Callback = void (*)(void *); // Callback 函数指针原型
