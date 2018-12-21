@@ -38,7 +38,7 @@ int TcpConnection::onSend(
     int &errn)
 {
     int sockfd = pTcpChannel_->getFd();
-    size_t n = write(sockfd, buf, len);
+    size_t n = send(sockfd, buf, len, flags);
     if (n == len) {
         // 写完 通知用户
         if (cb != NULL) cb(param);
@@ -78,11 +78,11 @@ int TcpConnection::handleWrite()
     if (qSendInfo_.size() > 0) {
         pInfo tsi = qSendInfo_.front();
 
-        // FIXME: read recv write send
-        if ((n = write(
+        if ((n = send(
                  sockfd,
                  (char *) tsi->sendBuf_ + tsi->offset_,
-                 tsi->len_ - tsi->offset_)) > 0) {
+                 tsi->len_ - tsi->offset_,
+                 tsi->flags_)) > 0) {
             tsi->offset_ += n;
 
             if (tsi->offset_ == tsi->len_) {
@@ -117,18 +117,20 @@ int TcpConnection::handleWrite()
 int TcpConnection::onRecv(
     char *buf,
     size_t &len,
+    int flags,
     Callback cb,
     void *param,
     int &errn)
 {
     int sockfd = pTcpChannel_->getFd();
-    if ((len = read(sockfd, buf, MAXLINE)) < 0) {
+    if ((len = recv(sockfd, buf, MAXLINE, flags)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             pTcpChannel_->enableReading();
 
             pInfo tsi = new Info;
             tsi->readBuf_ = buf;
             tsi->sendBuf_ = NULL;
+            tsi->flags_ = flags;
             tsi->len_ = len;
             tsi->cb_ = cb;
             tsi->param_ = param;
@@ -153,7 +155,8 @@ int TcpConnection::handleRead()
     pInfo tsi = qRecvInfo_.front();
 
     if (qRecvInfo_.size() > 0) {
-        if ((tsi->len_ = read(sockfd, tsi->readBuf_, MAXLINE)) < 0) {
+        if ((tsi->len_ = recv(sockfd, tsi->readBuf_, MAXLINE, tsi->flags_)) <
+            0) {
             // 出错就设置错误码
             *tsi->errno_ = errno;
         }

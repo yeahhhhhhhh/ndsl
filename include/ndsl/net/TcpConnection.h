@@ -59,7 +59,13 @@ class TcpConnection : public ChannelCallBack
     int onRecvmsg(char *buf, Callback cb, void *param, int &errn);
 
     // onSend onRecv 的语义是异步通知
-    int onRecv(char *buffer, size_t &len, Callback cb, void *param, int &errn);
+    int onRecv(
+        char *buffer,
+        size_t &len,
+        int flags,
+        Callback cb,
+        void *param,
+        int &errn);
 
     // 会有好多人同时调用这个进行send，需要一个队列
     int onSend(
