@@ -1,3 +1,0 @@
-/media/sf_shareVirtualBox/yunndsl/yunndsl/tests/mtest/build/CMakeFiles/rebuild_cache.dir
-/media/sf_shareVirtualBox/yunndsl/yunndsl/tests/mtest/build/CMakeFiles/edit_cache.dir
-/media/sf_shareVirtualBox/yunndsl/yunndsl/tests/mtest/build/CMakeFiles/testTcpConnection.dir

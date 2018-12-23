@@ -1,12 +1,11 @@
-/*
- * File: TcpChannelTest.cc
- * brief:
+/**
+ * @file TcpConnectionTest.cc
+ * @brief
  *
- * Author: gyz
- * Email: mni_gyz@163.com
- * Last Modified: Thursday, 29th November 2018 11:39:46 am
+ * @author gyz
+ * @email mni_gyz@163.com
  */
-
+#define CATCH_CONFIG_MAIN
 #include "../catch.hpp"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/Epoll.h"
@@ -18,7 +17,13 @@
 using namespace ndsl;
 using namespace net;
 
-TEST_CASE("net/TcpConnection")
+// char *sayHello() { return "Hello"; }
+
+bool recv = FALSE;
+
+void fun1() { recv = TRUE; }
+
+TEST_CASE("net/TcpConnection(onRecv)")
 {
     SECTION("send write")
     {
@@ -29,14 +34,24 @@ TEST_CASE("net/TcpConnection")
         REQUIRE(loop.init() == S_OK);
 
         // 初始化 TcpConnection
-        int fd = 1;
-        TcpConnection pConn(fd, &loop);
+        int fd = 342;
+        TcpConnection *pConn = new TcpConnection(fd, &loop);
 
         // 写数据过去
-        write(fd, "hello world", sizeof("hello world"));
-        char buf[MAXLINE];
-        read(fd, buf, MAXLINE);
-        REQUIRE(strcmp(buf, "received") == 0);
+        size_t len;
+        char buf[24];
+        memset(buf, 0, sizeof(buf));
+        int errn;
+
+        write(fd, "hello", sizeof("hello"));
+        pConn->onRecv(buf, len, 0, cb1, NULL, errn);
+
+        while (TRUE) {
+            if (recv) {
+                REQUIRE(strcmp(buf, "hello") == 0);
+                break;
+            }
+        }
 
         // 停止loop循环
         loop.quit();

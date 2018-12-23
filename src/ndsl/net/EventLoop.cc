@@ -15,6 +15,8 @@
 #include "ndsl/net/Channel.h"
 #include "ndsl/net/EventLoop.h"
 
+#include <cstdio>
+
 namespace ndsl {
 namespace net {
 
@@ -248,11 +250,15 @@ int EventLoop::loop()
     int nEvents = 0;
     // 进入事件循环
     while (true) {
+        printf("EventLoop.cc while(true)\n");
+
         Channel *channels[Epoll::MAX_EVENTS];
         if (S_OK != epoll_.wait(channels, nEvents, -1)) {
             // LOG(LEVEL_ERROR, "EventLoop::loop epoll->wait\n");
             break;
         }
+
+        printf("epoll_wait back\n");
 
         bool quit = false;    // 退出标志
         bool haswork = false; // 中断标志
@@ -270,7 +276,10 @@ int EventLoop::loop()
         // 处理任务队列
         if (haswork) { pQueCh_->handleEvent(); }
         // 退出
-        if (quit) break;
+        if (quit) {
+            printf("quit\n");
+            break;
+        }
     }
     return S_OK;
 }

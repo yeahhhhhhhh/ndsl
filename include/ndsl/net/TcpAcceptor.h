@@ -15,14 +15,16 @@
 namespace ndsl {
 namespace net {
 
-class TcpAcceptor : public ChannelCallBack
+class TcpAcceptor
 {
   private:
     int listenfd_;
     EventLoop *pLoop_;
     TcpChannel *pTcpChannel_;
+    using Callback = void (*)(void *); // Callback 函数指针原型
+
+    // 测试专用
     Callback cb_;
-    void *param_;
 
     // 用于保存用户回调信息
     struct Info
@@ -36,12 +38,14 @@ class TcpAcceptor : public ChannelCallBack
     } info;
 
   public:
-    TcpAcceptor(int listenfd, EventLoop *pLoop);
+    TcpAcceptor(EventLoop *pLoop);
     ~TcpAcceptor();
+
+    // 测试专用
+    TcpAcceptor(Callback cb, EventLoop *pLoop);
 
     // 为用户主动调用onAcceptor()而生
     TcpAcceptor(
-        int listenfd,
         EventLoop *pLoop,
         TcpConnection *pCon,
         struct sockaddr *addr,
@@ -49,8 +53,8 @@ class TcpAcceptor : public ChannelCallBack
         Callback cb,
         void *param);
 
-    int handleRead();
-    int handleWrite();
+    static int handleRead(void *pthis);
+    // int handleWrite();
     int start();
 
   private:
