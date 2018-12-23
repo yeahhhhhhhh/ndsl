@@ -5,7 +5,6 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
-
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/TcpChannel.h"
@@ -22,8 +21,8 @@ TcpConnection::~TcpConnection() {}
 int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
     pTcpChannel_ = new TcpChannel(sockfd, pLoop);
-    // pTcpChannel_->setCallBack(handleRead, handleWrite);
-    pTcpChannel_->setCallBack(this);
+    pTcpChannel_->setCallBack(handleRead, handleWrite, this);
+    // pTcpChannel_->setCallBack(this);
     pTcpChannel_->regist(true);
 
     return S_OK;
@@ -66,17 +65,18 @@ int TcpConnection::onSend(
     return S_OK;
 }
 
-int TcpConnection::handleWrite()
+int TcpConnection::handleWrite(void *pthis)
 {
-    int sockfd = pTcpChannel_->getFd();
+    TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
+    int sockfd = pThis->pTcpChannel_->getFd();
 
     // cout << "fd = " << sockfd << endl;
 
     if (sockfd < 0) { return -1; }
     size_t n;
 
-    if (qSendInfo_.size() > 0) {
-        pInfo tsi = qSendInfo_.front();
+    if (pThis->qSendInfo_.size() > 0) {
+        pInfo tsi = pThis->qSendInfo_.front();
 
         if ((n = send(
                  sockfd,
@@ -87,9 +87,10 @@ int TcpConnection::handleWrite()
 
             if (tsi->offset_ == tsi->len_) {
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
-                qSendInfo_.pop();
+                pThis->qSendInfo_.pop();
                 // 无写事件 注销写事件
-                if (qSendInfo_.size() == 0) pTcpChannel_->disableWriting();
+                if (pThis->qSendInfo_.size() == 0)
+                    pThis->pTcpChannel_->disableWriting();
                 delete tsi; // 删除申请的内存
             } else if (n == 0) {
                 // 发送缓冲区满 等待下一次被调用
@@ -100,11 +101,12 @@ int TcpConnection::handleWrite()
             *tsi->errno_ = errno;
             if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
 
-            qSendInfo_.pop();
+            pThis->qSendInfo_.pop();
             delete tsi;
 
             // 无写事件 注销写事件
-            if (qSendInfo_.size() == 0) pTcpChannel_->disableWriting();
+            if (pThis->qSendInfo_.size() == 0)
+                pThis->pTcpChannel_->disableWriting();
 
             return S_FAIL;
         }
@@ -148,13 +150,14 @@ int TcpConnection::onRecv(
     return S_OK;
 }
 
-int TcpConnection::handleRead()
+int TcpConnection::handleRead(void *pthis)
 {
-    int sockfd = pTcpChannel_->getFd();
+    TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
+    int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FAIL; }
-    pInfo tsi = qRecvInfo_.front();
+    pInfo tsi = pThis->qRecvInfo_.front();
 
-    if (qRecvInfo_.size() > 0) {
+    if (pThis->qRecvInfo_.size() > 0) {
         if ((tsi->len_ = recv(sockfd, tsi->readBuf_, MAXLINE, tsi->flags_)) <
             0) {
             // 出错就设置错误码
@@ -164,11 +167,11 @@ int TcpConnection::handleRead()
 
     // 无论出错还是完成数据读取之后都得通知用户
     if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
-    qRecvInfo_.pop();
+    pThis->qRecvInfo_.pop();
     delete tsi;
-    if (qRecvInfo_.size() == 0) {
+    if (pThis->qRecvInfo_.size() == 0) {
         // 将读事件移除
-        pTcpChannel_->disableReading();
+        pThis->pTcpChannel_->disableReading();
     }
 
     return S_OK;
@@ -190,24 +193,15 @@ int TcpConnection::onAccept(
     int connfd;
     if ((connfd = accept(pTcpChannel_->getFd(), addr, addrlen)) > 0) {
         // accept成功
-        TcpChannel *pTcpChannel =
-            new TcpChannel(connfd, pTcpChannel_->getEventLoop());
-        pTcpChannel->setCallBack(this);
-
-        pCon->pTcpChannel_ = pTcpChannel;
+        TcpConnection *pTcpConn = new TcpConnection();
+        pTcpConn->createChannel(connfd, pTcpChannel_->getEventLoop());
 
         if (cb != NULL) cb(param);
     } else {
         // accept不成功，转异步处理
         // 异步理解为用户没有启TcpAcceptor函数
         TcpAcceptor *ta = new TcpAcceptor(
-            pTcpChannel_->getFd(),
-            pTcpChannel_->getEventLoop(),
-            pCon,
-            addr,
-            addrlen,
-            cb,
-            param);
+            pTcpChannel_->getEventLoop(), pCon, addr, addrlen, cb, param);
         ta->start();
     }
 

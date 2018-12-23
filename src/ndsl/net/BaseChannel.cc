@@ -20,50 +20,53 @@ BaseChannel::BaseChannel(int fd, EventLoop *loop)
 
 int BaseChannel::getFd() { return fd_; }
 
-// int BaseChannel::handleEvent()
-// {
-//     if (getRevents() & EPOLLIN) {
-//         if (handleRead_) handleRead_();
-//     }
-
-//     if (getRevents() & EPOLLOUT) {
-//         if (handleWrite_) handleWrite_();
-//     }
-
-//     return S_OK;
-// }
-
-// int BaseChannel::setCallBack(
-//     ChannelCallBack handleRead,
-//     ChannelCallBack handleWrite);
-// {
-//     if (handleRead)
-//         handleRead_ = handleRead;
-//     else
-//         handleRead_ = NULL;
-
-//     if (handleWrite)
-//         handleWrite_ = handleWrite;
-//     else
-//         handleWrite_ = NULL;
-
-//     return S_OK;
-// }
-
 int BaseChannel::handleEvent()
 {
-    if (getRevents() & EPOLLIN) { pCb_->handleRead(); }
+    if (getRevents() & EPOLLIN) {
+        if (handleRead_) handleRead_(pThis_);
+    }
 
-    if (getRevents() & EPOLLOUT) { pCb_->handleWrite(); }
+    if (getRevents() & EPOLLOUT) {
+        if (handleWrite_) handleWrite_(pThis_);
+    }
 
     return S_OK;
 }
 
-int BaseChannel::setCallBack(ChannelCallBack *cb)
+int BaseChannel::setCallBack(
+    ChannelCallBack handleRead,
+    ChannelCallBack handleWrite,
+    void *thi)
 {
-    pCb_ = cb;
+    if (handleRead)
+        handleRead_ = handleRead;
+    else
+        handleRead_ = NULL;
+
+    if (handleWrite)
+        handleWrite_ = handleWrite;
+    else
+        handleWrite_ = NULL;
+
+    pThis_ = thi;
+
     return S_OK;
 }
+
+// int BaseChannel::handleEvent()
+// {
+//     if (getRevents() & EPOLLIN) { pCb_->handleRead(); }
+
+//     if (getRevents() & EPOLLOUT) { pCb_->handleWrite(); }
+
+//     return S_OK;
+// }
+
+// int BaseChannel::setCallBack(ChannelCallBack *cb)
+// {
+//     pCb_ = cb;
+//     return S_OK;
+// }
 
 int BaseChannel::enableReading()
 {
@@ -100,8 +103,8 @@ int BaseChannel::regist(bool isET)
     } else {
         setEvents(getEvents());
     }
-    getEventLoop()->regist(this);
-    return S_OK;
+    return getEventLoop()->regist(this);
+    // return S_OK;
 }
 
 int BaseChannel::update()

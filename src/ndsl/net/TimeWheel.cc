@@ -6,8 +6,9 @@
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
-#include "ndsl/net/TimeWheel.h"
 #include <algorithm>
+#include <string.h>
+#include "ndsl/net/TimeWheel.h"
 
 namespace ndsl {
 namespace net {
@@ -15,12 +16,16 @@ TimerfdChannel::TimerfdChannel(int fd, EventLoop *loop)
     : BaseChannel(fd, loop)
 {}
 
-TimerfdChannel::~TimerfdChannel() {}
+TimerfdChannel::~TimerfdChannel()
+{
+    if (getFd()) ::close(getFd());
+}
 
 TimeWheel::TimeWheel(EventLoop *loop)
-    : pLoop_(loop)
+    : curTick_(0)
+    , pLoop_(loop)
     , ptimerfdChannel_(NULL)
-    , curTick_(0)
+
 {}
 
 TimeWheel::~TimeWheel()
@@ -32,14 +37,18 @@ TimeWheel::~TimeWheel()
 int TimeWheel::init()
 {
     int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
+    printf("TimeWheel::init fd = %d\n", fd);
     if (fd == -1) {
         LOG(LEVEL_ERROR, "TimeWheel::init timerfd_create error!\n");
         return errno;
     }
 
-    // FIXME:是否要使用handleRead/handleWrite
     ptimerfdChannel_ = new TimerfdChannel(fd, pLoop_);
-    ptimerfdChannel_->setCallBack(this);
+    ptimerfdChannel_->setCallBack(onTick, NULL, this);
+    printf("After setCallBack\n");
+    int ret = ptimerfdChannel_->regist(false);
+    printf("ret = %d\n", ret);
+    if (ret != S_OK) return ret;
 
     for (int i = 0; i < SLOTNUM; i++)
         slot_[i].clear();
@@ -50,7 +59,7 @@ int TimeWheel::init()
 int TimeWheel::start()
 {
     int ret = init();
-    if (ret != S_OK) { return ret; }
+    if (ret != S_OK) return ret;
 
     // 设置时间轮的时间间隔
     struct itimerspec new_value;
@@ -69,10 +78,12 @@ int TimeWheel::start()
 
     if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &new_value, NULL) == -1) {
         LOG(LEVEL_ERROR, "TimeWheel::init timerfd_settime error!\n");
+        perror(strerror(errno));
         return errno;
     }
 
-    ptimerfdChannel_->enableReading();
+    ret = ptimerfdChannel_->enableReading();
+    if (ret != S_OK) return ret;
 
     return S_OK;
 }
@@ -125,14 +136,14 @@ int TimeWheel::removeTask(Task *task)
     return S_OK;
 }
 
-void TimeWheel::handleRead(void *pThis)
+int TimeWheel::onTick(void *pThis)
 {
     TimeWheel *ptw = (TimeWheel *) pThis;
     // 刻度自增
     ++ptw->curTick_;
 
     // 若队列为空,则直接返回
-    if (ptw->slot_[ptw->curTick_].empty()) return;
+    if (ptw->slot_[ptw->curTick_].empty()) return S_OK;
 
     std::list<TimeWheel::Task *> curSlot;
 
@@ -161,6 +172,7 @@ void TimeWheel::handleRead(void *pThis)
             ptw->slot_[(*it)->setTick].push_back((*it));
         }
     }
+    return S_OK;
 }
 } // namespace net
 } // namespace ndsl

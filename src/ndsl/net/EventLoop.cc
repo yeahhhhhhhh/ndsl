@@ -69,18 +69,11 @@ QueueChannel::QueueChannel(int fd, EventLoop *loop)
 
 QueueChannel::~QueueChannel()
 {
-    // if (fd_ >= 0) { ::close(fd_); }
+    if (getFd() >= 0) { ::close(getFd()); }
 }
 
 // 添加任务
 void QueueChannel::addWork(work_struct *work) { workqueue_.enQueue(work); }
-
-// 没有重载
-int QueueChannel::onRead(char *inBuf)
-{
-    LOG(LEVEL_ERROR, "Wrong call QueueChannel::onRead");
-    return S_FAIL;
-}
 
 // 发送中断信号
 int QueueChannel::onWrite()
@@ -89,20 +82,19 @@ int QueueChannel::onWrite()
     int ret = ::write(getFd(), &data, sizeof(data));
 
     if (ret == -1) {
-        LOG(LEVEL_ERROR, "QueueChannel::onWrite write");
+        LOG(LEVEL_ERROR, "QueueChannel::onWrite write\n");
         return errno;
     }
 
     return S_OK;
 }
 
-void QueueChannel::handleRead(void *pThis) {}
-
 // 处理队列中的任务
-int QueueChannel::handleEvent()
+int QueueChannel::onQueue(void *pThis)
 {
-    while (!workqueue_.empty()) {
-        workqueue_.doit();
+    QueueChannel *pQc = (QueueChannel *) pThis;
+    while (!pQc->workqueue_.empty()) {
+        pQc->workqueue_.doit();
     }
     return S_OK;
 }
@@ -118,13 +110,7 @@ InterruptChannel::InterruptChannel(int fd, EventLoop *loop)
 
 InterruptChannel::~InterruptChannel()
 {
-    if (fd_ >= 0) { ::close(fd_); }
-}
-
-int InterruptChannel::onRead(char *inBuf)
-{
-    LOG(LEVEL_ERROR, "Wrong call InterruptChannel::onRead");
-    return S_FAIL;
+    if (getFd() >= 0) { ::close(getFd()); }
 }
 
 int InterruptChannel::onWrite()
@@ -132,20 +118,14 @@ int InterruptChannel::onWrite()
     uint64_t data;
     data = 1;
 
-    int ret = ::write(fd_, &data, sizeof(data));
+    int ret = ::write(getFd(), &data, sizeof(data));
 
     if (ret == -1) {
-        LOG(LEVEL_ERROR, "InterruptChannel::onWrite");
+        LOG(LEVEL_ERROR, "InterruptChannel::onWrite\n");
         return errno;
     }
 
     return S_OK;
-}
-
-int InterruptChannel::handleEvent()
-{
-    LOG(LEVEL_ERROR, "Wrong call InterruptChannel::handleEvent");
-    return S_FAIL;
 }
 
 /**
@@ -186,10 +166,13 @@ int EventLoop::init()
         // 创建QueueChannel
         pQueCh_ = new QueueChannel(evfd, this);
 
-        // printf("pQueCh_ = %d\n", pQueCh_->getFd());
-
+        pQueCh_->setCallBack(pQueCh_->onQueue, NULL, pQueCh_);
+        ret = pQueCh_->regist(false);
+        if (ret != S_OK) return ret; // 若不成功直接返回
         ret = pQueCh_->enableReading();
         if (ret != S_OK) return ret; // 若不成功直接返回
+
+        // printf("pQueCh_ = %d\n", pQueCh_->getFd());
     }
 
     // 若pIntrCh_为空,则分配eventfd
@@ -202,11 +185,13 @@ int EventLoop::init()
 
         // 创建InterruptChannel
         pIntrCh_ = new InterruptChannel(evfd, this);
-
-        // printf("pIntrCh_ = %d\n", pIntrCh_->getFd());
-
+        // pIntrCh_->setCallBack(NULL, NULL, pIntrCh_);
+        ret = pIntrCh_->regist(false);
+        if (ret != S_OK) return ret; // 若不成功直接返回
         ret = pIntrCh_->enableReading();
         if (ret != S_OK) return ret; // 若不成功直接返回
+
+        // printf("pIntrCh_ = %d\n", pIntrCh_->getFd());
     }
     return S_OK;
 }

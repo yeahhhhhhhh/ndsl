@@ -69,12 +69,12 @@ class TimeWheel
     struct Task
     {
         using Taskfunc = void (*)(void *);
-        int setTick = -1;      // 记录放在哪个slot位置上
         int setInterval = -1;  // 设置的时间间隔
-        int restInterval = -1; // 剩余时间间隔
-        int times = 1;         // -1:无限制响应   1:响应次数
-        Taskfunc doit;         // 函数指针
-        void *para;            // 函数参数
+        int restInterval = -1; // 剩余时间间隔(不由用户设置)
+        int setTick = -1; // 记录放在哪个slot位置上(不由用户设置)
+        int times = 1;    // -1:无限制响应   1:响应次数
+        Taskfunc doit;    // 函数指针
+        void *para;       // 函数参数
     };
     // 转一圈需要1min,一共有60个槽,两个槽之间间隙为1s
     static const int SLOTNUM = 60; // 一共有60个时间槽
@@ -97,7 +97,7 @@ class TimeWheel
     int addTask(Task *Task);    // 增加新任务
     int removeTask(Task *task); // 删除任务
 
-    static void handleRead(void *pThis); // 处理事件
+    static int onTick(void *pThis); // 处理事件
 };
 
 } // namespace net

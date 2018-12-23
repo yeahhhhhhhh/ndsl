@@ -12,7 +12,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # 设置单元测试的文件
-set(TEST testMain.cc  net/EventLoopTest.cc) #net/EpollTest.cc)
+set(TEST testMain.cc  net/EventLoopTest.cc) #net/TimeWheelTest.cc) #net/EpollTest.cc)
 # set(TEST test.cc
 #    utils/TimeStampTest.cc utils/LogTest.cc utils/ThreadTest.cc
 # utils/SemaphoreTest.cc utils/SpinlockTest.cc
@@ -29,4 +29,4 @@ target_link_libraries(utest ndsl pthread boost_system)
 
 # add_executable(tmpMain tmpMain.cc)
 # add_dependencies(tmpMain ndsl)
-# target_link_libraries(tmpMain ndsl)
+# target_link_libraries(tmpMain ndsl pthread)

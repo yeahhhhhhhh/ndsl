@@ -73,8 +73,8 @@ class QueueChannel : public BaseChannel
     // int onRead(char *inBuf);
     // 发送中断信号
     int onWrite();
-    // // 处理队列中的任务
-    // int handleEvent();
+    // 处理队列中的任务
+    static int onQueue(void *);
 
   private:
 };
@@ -98,8 +98,8 @@ class InterruptChannel : public BaseChannel
 
     // // 没有重载
     // int onRead(char *inBuf);
-    // // 发送中断信号
-    // int onWrite();
+    // 发送中断信号
+    int onWrite();
     // // 没有重载
     // int handleEvent();
 };
