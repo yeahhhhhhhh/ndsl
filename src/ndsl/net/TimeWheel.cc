@@ -39,6 +39,7 @@ int TimeWheel::init()
 
     // FIXME:是否要使用handleRead/handleWrite
     ptimerfdChannel_ = new TimerfdChannel(fd, pLoop_);
+    ptimerfdChannel_->setCallBack(this);
 
     for (int i = 0; i < SLOTNUM; i++)
         slot_[i].clear();
@@ -124,23 +125,24 @@ int TimeWheel::removeTask(Task *task)
     return S_OK;
 }
 
-int TimeWheel::onTick()
+void TimeWheel::handleRead(void *pThis)
 {
+    TimeWheel *ptw = (TimeWheel *) pThis;
     // 刻度自增
-    ++curTick_;
+    ++ptw->curTick_;
 
     // 若队列为空,则直接返回
-    if (slot_[curTick_].empty()) return S_OK;
+    if (ptw->slot_[ptw->curTick_].empty()) return;
 
-    std::list<Task *> curSlot;
+    std::list<TimeWheel::Task *> curSlot;
 
     // 将对应的list拉下来一一处理
-    curSlot.swap(slot_[curTick_]);
+    curSlot.swap(ptw->slot_[ptw->curTick_]);
 
     for (auto it = curSlot.begin(); it != curSlot.end(); ++it) {
         // 若不在本轮,则减少轮数
-        if ((*it)->restInterval >= SLOTNUM) {
-            (*it)->restInterval -= SLOTNUM;
+        if ((*it)->restInterval >= ptw->SLOTNUM) {
+            (*it)->restInterval -= ptw->SLOTNUM;
         } else {
             (*it)->doit((*it)->para);
             if ((*it)->times > 0) (*it)->times--;
@@ -153,13 +155,12 @@ int TimeWheel::onTick()
 
             // 若任务是周期性执行,即(*it)->times == -1 或 (*it)->times > 0
             // ,则再次插入,并重新选择时间槽和设置restInterval值
-            (*it)->setTick = (curTick_ + (*it)->setInterval) % SLOTNUM;
+            (*it)->setTick =
+                (ptw->curTick_ + (*it)->setInterval) % ptw->SLOTNUM;
             (*it)->restInterval = (*it)->setInterval;
-            slot_[(*it)->setTick].push_back((*it));
+            ptw->slot_[(*it)->setTick].push_back((*it));
         }
     }
-
-    return S_OK;
 }
 } // namespace net
 } // namespace ndsl

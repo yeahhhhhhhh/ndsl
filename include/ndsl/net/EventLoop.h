@@ -69,12 +69,12 @@ class QueueChannel : public BaseChannel
     // 增加任务
     void addWork(work_struct *work);
 
-    // 没有重载
-    int onRead(char *inBuf);
+    // // 没有重载
+    // int onRead(char *inBuf);
     // 发送中断信号
     int onWrite();
-    // 处理队列中的任务
-    int handleEvent();
+    // // 处理队列中的任务
+    // int handleEvent();
 
   private:
 };
@@ -96,12 +96,12 @@ class InterruptChannel : public BaseChannel
     InterruptChannel(int fd, EventLoop *loop);
     ~InterruptChannel();
 
-    // 没有重载
-    int onRead(char *inBuf);
-    // 发送中断信号
-    int onWrite();
-    // 没有重载
-    int handleEvent();
+    // // 没有重载
+    // int onRead(char *inBuf);
+    // // 发送中断信号
+    // int onWrite();
+    // // 没有重载
+    // int handleEvent();
 };
 
 /**

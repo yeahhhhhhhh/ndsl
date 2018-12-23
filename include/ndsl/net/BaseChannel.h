@@ -13,34 +13,37 @@
 namespace ndsl {
 namespace net {
 
-class BaseChannel
-    : public Channel
-    , public ChannelCallBack
+class EventLoop;
+
+class BaseChannel : public Channel
 {
   private:
     int fd_;
     int update();
 
     ChannelCallBack *pCb_;
+    // using Callback = void (*)(void *); // Callback 函数指针原型
+    // using ChannelCallBack = int (*)();
 
   public:
     BaseChannel(int fd, EventLoop *loop);
 
-    int handleEvent();
+    // 指向被调用的函数
+    // ChannelCallBack handleRead_, handleWrite_;
 
+    int handleEvent();
     int getFd();
 
     // epoll 事件管理
     int del();
-    int regist();
+    int regist(bool isET);
     int enableReading();
     int enableWriting();
     int disableReading();
     int disableWriting();
-    int changeMode2ET();
-    int changeMode2LT();
 
-    int setCallBack(ChannelCallBack *pCb);
+    // int setCallBack(ChannelCallBack handleRead, ChannelCallBack handleWrite);
+    int setCallBack(void *cb);
 };
 
 } // namespace net

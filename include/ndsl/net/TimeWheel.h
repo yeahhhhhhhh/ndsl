@@ -97,7 +97,7 @@ class TimeWheel
     int addTask(Task *Task);    // 增加新任务
     int removeTask(Task *task); // 删除任务
 
-    int onTick(); // 处理事件
+    static void handleRead(void *pThis); // 处理事件
 };
 
 } // namespace net

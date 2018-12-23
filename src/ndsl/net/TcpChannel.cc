@@ -6,17 +6,14 @@
  * @email mni_gyz@163.com
  */
 #include "ndsl/net/TcpChannel.h"
+#include "ndsl/net/TcpConnection.h"
 
 namespace ndsl {
 namespace net {
 
 TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
-    : sockfd_(sockfd)
-    , pLoop_(loop)
-{
-    // 将自身注册到eventloop上面
-    regist();
-}
+    : BaseChannel(sockfd, loop)
+{}
 
 TcpChannel::~TcpChannel()
 {
@@ -24,11 +21,11 @@ TcpChannel::~TcpChannel()
     del();
 }
 
-int TcpChannel::getFd() { return sockfd_; }
-
-int TcpChannel::newConnection(int connfd)
+TcpConnection *TcpChannel::newConnection(int connfd)
 {
-    TcpConnection *pCon = new TcpConnection(connfd, pLoop_);
+    TcpConnection *pCon = new TcpConnection();
+    pCon->createChannel(connfd, getEventLoop());
+    return pCon;
 }
 
 } // namespace net

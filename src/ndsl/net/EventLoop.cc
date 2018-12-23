@@ -96,6 +96,8 @@ int QueueChannel::onWrite()
     return S_OK;
 }
 
+void QueueChannel::handleRead(void *pThis) {}
+
 // 处理队列中的任务
 int QueueChannel::handleEvent()
 {
