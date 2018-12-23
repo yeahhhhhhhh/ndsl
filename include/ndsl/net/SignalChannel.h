@@ -9,13 +9,13 @@
 #ifndef __SIGNAL_CHANNEL_H__
 #define __SIGNAL_CHANNEL_H__
 
-#include "Channel.h"
+#include "BaseChannel.h"
 #include "EventLoop.h"
 #include "SignalHandler.h"
 
 namespace ndsl{
 namespace net{
-class SignalChannel : public Channel{
+class SignalChannel : public BaseChannel{
 	public:
 	  SignalChannel (int signalfd, EventLoop *loop);
 	  virtual ~SignalChannel ();

@@ -29,7 +29,7 @@ class SignalHandler {
 	  Callback handleFunc_; // 用于信号发生后的处理函数
 	   
 	public:
-	  int registSignalfd(int signum); // 将信号生成文件描述符fd，并发送给channel
+	  int registSignalfd(int signum, Callback handleFunc); // 将信号生成文件描述符fd，并发送给channel
 	  int handleRead(); // 事件发生后的处理
       int handleWrite();
 	  
