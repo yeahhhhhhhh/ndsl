@@ -10,44 +10,48 @@
 #include <queue>
 #include <sys/socket.h>
 // #include "TcpChannel.h"
-#include "EventLoop.h"
+// #include "EventLoop.h"
+// #include "Channel.h"
 #include "Channel.h"
 #include "../utils/temp_define.h"
 
 namespace ndsl {
 namespace net {
 
-// class TcpChannel;
+class TcpChannel;
+class EventLoop;
+class ChannelCallBack;
 
-class TcpConnection
+class TcpConnection : public ChannelCallBack
 {
   public:
-    // TcpChannel *pTcpChannel_;
-    using Callback = void (*)(void *); // Callback 函数指针原型
+    // using Callback = void (*)(void *); // Callback 函数指针原型
 
   private:
     // 用户主动调用onRecv/onSend函数的参数存在这
     typedef struct SInfo
     {
-        void *buf_;  // 用户给的buf地址
-        size_t len_; // buf长度
-        int flags_;
-        Callback cb_; // 存储用户传过来的回调函数
-        void *param_; // 回调函数的参数
-        int offset_;  // 一次没发送完的发送偏移
-        int *errno_;  // 记录错误码
+        const void *sendBuf_; // 用户给的写地址
+        void *readBuf_;       // 用户给的读地址
+        size_t len_;          // buf长度
+        int flags_;           // send()的参数
+        Callback cb_;         // 存储用户传过来的回调函数
+        void *param_;         // 回调函数的参数
+        size_t offset_;       // 一次没发送完的发送偏移
+        int *errno_;          // 记录错误码
     } Info, *pInfo;
 
     std::queue<pInfo> qSendInfo_; // 等待发送的队列
     std::queue<pInfo> qRecvInfo_; // 等待接收的队列
-                                  // Info recvInfo_;
+
+    TcpChannel *pTcpChannel_;
 
   public:
     TcpConnection();
     ~TcpConnection();
 
-    static int handleRead();
-    static int handleWrite();
+    int handleRead();
+    int handleWrite();
 
     int createChannel(int sockfd_, EventLoop *pLoop);
 
@@ -55,7 +59,13 @@ class TcpConnection
     int onRecvmsg(char *buf, Callback cb, void *param, int &errn);
 
     // onSend onRecv 的语义是异步通知
-    int onRecv(char *buffer, int &len, Callback cb, void *param, int &errn);
+    int onRecv(
+        char *buffer,
+        size_t &len,
+        int flags,
+        Callback cb,
+        void *param,
+        int &errn);
 
     // 会有好多人同时调用这个进行send，需要一个队列
     int onSend(

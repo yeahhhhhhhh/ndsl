@@ -8,11 +8,14 @@
 #ifndef __TCPCHANNEL_H__
 #define __TCPCHANNEL_H__
 #include "BaseChannel.h"
-#include "TcpConnection.h"
-#include "EventLoop.h"
+// #include "TcpConnection.h"
+// #include "EventLoop.h"
 
 namespace ndsl {
 namespace net {
+
+class TcpConnection;
+class EventLoop;
 
 class TcpChannel : public BaseChannel
 {

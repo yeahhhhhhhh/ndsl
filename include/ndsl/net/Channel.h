@@ -8,11 +8,23 @@
  */
 #ifndef __NDSL_NET_CHANNEL_H__
 #define __NDSL_NET_CHANNEL_H__
-#include "EventLoop.h"
+// #include "EventLoop.h"
+#include <stdint.h>
 #include "ndsl/utils/temp_define.h"
 
 namespace ndsl {
 namespace net {
+
+class EventLoop;
+
+class ChannelCallBack
+{
+  public:
+    using Callback = void (*)(void *); // Callback 函数指针原型
+
+    virtual int handleRead() = 0;
+    virtual int handleWrite() = 0;
+};
 
 struct Channel
 {
@@ -29,6 +41,7 @@ struct Channel
     Channel(EventLoop *loop)
         : pLoop_(loop)
     {}
+    Channel() {}
     virtual ~Channel() {} // 虚析构函数
 
     EventLoop *getEventLoop() { return pLoop_; }
@@ -51,14 +64,6 @@ struct Channel
     virtual int handleEvent() = 0; // loop的事件处理函数
     virtual int getFd() = 0;       // rdma的fd在结构内部
 };
-
-// class ChannelCallBack
-// {
-//   public:
-//     using Callback = void (*)(void *); // Callback 函数指针原型
-//     virtual int handleRead() = 0;
-//     virtual int handleWrite() = 0;
-// };
 
 } // namespace net
 } // namespace ndsl

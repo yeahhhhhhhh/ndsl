@@ -8,6 +8,9 @@
 
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/net/TcpChannel.h"
+#include "ndsl/net/TcpAcceptor.h"
+#include <errno.h>
 #include <unistd.h>
 
 namespace ndsl {
@@ -19,7 +22,8 @@ TcpConnection::~TcpConnection() {}
 int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
     pTcpChannel_ = new TcpChannel(sockfd, pLoop);
-    pTcpChannel_->setCallBack(handleRead);
+    // pTcpChannel_->setCallBack(handleRead, handleWrite);
+    pTcpChannel_->setCallBack(this);
     pTcpChannel_->regist(true);
 
     return S_OK;
@@ -34,7 +38,7 @@ int TcpConnection::onSend(
     int &errn)
 {
     int sockfd = pTcpChannel_->getFd();
-    int n = write(sockfd, buf, len);
+    size_t n = send(sockfd, buf, len, flags);
     if (n == len) {
         // 写完 通知用户
         if (cb != NULL) cb(param);
@@ -47,12 +51,13 @@ int TcpConnection::onSend(
 
     pInfo tsi = new Info;
     tsi->offset_ = n;
-    tsi->buf_ = buf;
+    tsi->sendBuf_ = buf;
+    tsi->readBuf_ = NULL;
     tsi->len_ = len;
     tsi->flags_ = flags;
     tsi->cb_ = cb;
     tsi->param_ = param;
-    tsi->errno_ = errno;
+    *tsi->errno_ = errno;
 
     qSendInfo_.push(tsi);
 
@@ -61,21 +66,23 @@ int TcpConnection::onSend(
     return S_OK;
 }
 
-static int TcpConnection::handleWrite()
+int TcpConnection::handleWrite()
 {
     int sockfd = pTcpChannel_->getFd();
 
-    cout << "fd = " << sockfd << endl;
+    // cout << "fd = " << sockfd << endl;
 
     if (sockfd < 0) { return -1; }
-    int n;
+    size_t n;
 
     if (qSendInfo_.size() > 0) {
         pInfo tsi = qSendInfo_.front();
 
-        if ((n = write(
-                 sockfd, tsi->buf_ + tsi->offset_, tsi->len_ - tsi->offset_)) >
-            0) {
+        if ((n = send(
+                 sockfd,
+                 (char *) tsi->sendBuf_ + tsi->offset_,
+                 tsi->len_ - tsi->offset_,
+                 tsi->flags_)) > 0) {
             tsi->offset_ += n;
 
             if (tsi->offset_ == tsi->len_) {
@@ -90,7 +97,7 @@ static int TcpConnection::handleWrite()
             }
         } else if (n < 0) {
             // 写过程中出错 出错之后处理不了 注销事件 并交给用户处理
-            tsi->errno_ = ::errno;
+            *tsi->errno_ = errno;
             if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
 
             qSendInfo_.pop();
@@ -109,22 +116,25 @@ static int TcpConnection::handleWrite()
 // 的值。
 int TcpConnection::onRecv(
     char *buf,
-    int &len,
+    size_t &len,
+    int flags,
     Callback cb,
     void *param,
     int &errn)
 {
     int sockfd = pTcpChannel_->getFd();
-    if ((len = read(sockfd, buf, MAXLINE)) < 0) {
+    if ((len = recv(sockfd, buf, MAXLINE, flags)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             pTcpChannel_->enableReading();
 
             pInfo tsi = new Info;
-            tsi.buf_ = buf;
-            tsi.len_ = len;
-            tsi.cb_ = cb;
-            tsi.param_ = param;
-            tsi.errno_ = errno;
+            tsi->readBuf_ = buf;
+            tsi->sendBuf_ = NULL;
+            tsi->flags_ = flags;
+            tsi->len_ = len;
+            tsi->cb_ = cb;
+            tsi->param_ = param;
+            *tsi->errno_ = errno;
 
             qRecvInfo_.push(tsi);
             return S_OK;
@@ -138,21 +148,22 @@ int TcpConnection::onRecv(
     return S_OK;
 }
 
-static int TcpConnection::handleRead()
+int TcpConnection::handleRead()
 {
     int sockfd = pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FAIL; }
+    pInfo tsi = qRecvInfo_.front();
 
     if (qRecvInfo_.size() > 0) {
-        pinfo tsi = qRecvInfo_.push();
-        if ((tsi->len_ = read(sockfd, tsi->buf_, MAXLINE)) < 0) {
+        if ((tsi->len_ = recv(sockfd, tsi->readBuf_, MAXLINE, tsi->flags_)) <
+            0) {
             // 出错就设置错误码
-            tsi->errno_ = ::errno;
+            *tsi->errno_ = errno;
         }
     }
 
     // 无论出错还是完成数据读取之后都得通知用户
-    if (recvInfo_.cb != NULL) recvInfo_.cb_(recvInfo_.param_);
+    if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
     qRecvInfo_.pop();
     delete tsi;
     if (qRecvInfo_.size() == 0) {
@@ -166,14 +177,9 @@ static int TcpConnection::handleRead()
 int TcpConnection::onRecvmsg(char *buf, Callback cb, void *param, int &errn)
 {
     // 异步
+    return S_OK;
 }
 
-// int onAccept(
-// TcpConnection *pCon,
-// struct sockaddr *addr,
-// socklen_t *addrlen,
-// Callback cb,
-// void *param);
 int TcpConnection::onAccept(
     TcpConnection *pCon,
     struct sockaddr *addr,
@@ -181,12 +187,11 @@ int TcpConnection::onAccept(
     Callback cb,
     void *param)
 {
-    // onAcceptor()和TcpAcceptor函数的功能不重复么
-
     int connfd;
     if ((connfd = accept(pTcpChannel_->getFd(), addr, addrlen)) > 0) {
         // accept成功
-        TcpChannel *pTcpChannel = new TcpChannel(connfd, getEventLoop());
+        TcpChannel *pTcpChannel =
+            new TcpChannel(connfd, pTcpChannel_->getEventLoop());
         pTcpChannel->setCallBack(this);
 
         pCon->pTcpChannel_ = pTcpChannel;
@@ -197,7 +202,7 @@ int TcpConnection::onAccept(
         // 异步理解为用户没有启TcpAcceptor函数
         TcpAcceptor *ta = new TcpAcceptor(
             pTcpChannel_->getFd(),
-            getEventLoop(),
+            pTcpChannel_->getEventLoop(),
             pCon,
             addr,
             addrlen,
