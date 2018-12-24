@@ -99,12 +99,12 @@ int BaseChannel::disableWriting()
 int BaseChannel::regist(bool isET)
 {
     if (isET) {
-        setEvents(getEvents() & EPOLLET);
+        setEvents(getEvents() | EPOLLET);
     } else {
         setEvents(getEvents());
     }
-    getEventLoop()->regist(this);
-    return S_OK;
+    return getEventLoop()->regist(this);
+    // return S_OK;
 }
 
 int BaseChannel::update()

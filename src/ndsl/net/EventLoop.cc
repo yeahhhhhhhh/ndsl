@@ -15,8 +15,6 @@
 #include "ndsl/net/Channel.h"
 #include "ndsl/net/EventLoop.h"
 
-#include <cstdio>
-
 namespace ndsl {
 namespace net {
 
@@ -66,33 +64,25 @@ void WorkQueue::enQueue(work_struct *work)
  * 维护任务队列
  */
 QueueChannel::QueueChannel(int fd, EventLoop *loop)
-    : fd_(fd)
-    , loop_(loop)
+    : BaseChannel(fd, loop)
 {}
 
 QueueChannel::~QueueChannel()
 {
-    if (fd_ >= 0) { ::close(fd_); }
+    if (getFd() >= 0) { ::close(getFd()); }
 }
 
 // 添加任务
 void QueueChannel::addWork(work_struct *work) { workqueue_.enQueue(work); }
 
-// 没有重载
-int QueueChannel::onRead(char *inBuf)
-{
-    LOG(LEVEL_ERROR, "Wrong call QueueChannel::onRead");
-    return S_FAIL;
-}
-
 // 发送中断信号
 int QueueChannel::onWrite()
 {
     uint64_t data = 1;
-    int ret = ::write(fd_, &data, sizeof(data));
+    int ret = ::write(getFd(), &data, sizeof(data));
 
     if (ret == -1) {
-        LOG(LEVEL_ERROR, "QueueChannel::onWrite write");
+        LOG(LEVEL_ERROR, "QueueChannel::onWrite write\n");
         return errno;
     }
 
@@ -100,28 +90,13 @@ int QueueChannel::onWrite()
 }
 
 // 处理队列中的任务
-int QueueChannel::handleEvent()
+int QueueChannel::onQueue(void *pThis)
 {
-    while (!workqueue_.empty()) {
-        workqueue_.doit();
+    QueueChannel *pQc = (QueueChannel *) pThis;
+    while (!pQc->workqueue_.empty()) {
+        pQc->workqueue_.doit();
     }
     return S_OK;
-}
-
-int QueueChannel::getFd() { return fd_; }
-
-uint32_t QueueChannel::getEvents() { return events_; }
-
-int QueueChannel::setRevents(uint32_t revents)
-{
-    revents_ = revents;
-    return S_OK;
-}
-
-int QueueChannel::enableReading()
-{
-    events_ |= EPOLLIN;
-    return loop_->regist(this);
 }
 
 /**
@@ -130,19 +105,12 @@ int QueueChannel::enableReading()
  * 中断EventLoop,退出循环
  */
 InterruptChannel::InterruptChannel(int fd, EventLoop *loop)
-    : fd_(fd)
-    , loop_(loop)
+    : BaseChannel(fd, loop)
 {}
 
 InterruptChannel::~InterruptChannel()
 {
-    if (fd_ >= 0) { ::close(fd_); }
-}
-
-int InterruptChannel::onRead(char *inBuf)
-{
-    LOG(LEVEL_ERROR, "Wrong call InterruptChannel::onRead");
-    return S_FAIL;
+    if (getFd() >= 0) { ::close(getFd()); }
 }
 
 int InterruptChannel::onWrite()
@@ -150,36 +118,14 @@ int InterruptChannel::onWrite()
     uint64_t data;
     data = 1;
 
-    int ret = ::write(fd_, &data, sizeof(data));
+    int ret = ::write(getFd(), &data, sizeof(data));
 
     if (ret == -1) {
-        LOG(LEVEL_ERROR, "InterruptChannel::onWrite");
+        LOG(LEVEL_ERROR, "InterruptChannel::onWrite\n");
         return errno;
     }
 
     return S_OK;
-}
-
-int InterruptChannel::handleEvent()
-{
-    LOG(LEVEL_ERROR, "Wrong call InterruptChannel::handleEvent");
-    return S_FAIL;
-}
-
-int InterruptChannel::getFd() { return fd_; }
-
-uint32_t InterruptChannel::getEvents() { return events_; }
-
-int InterruptChannel::setRevents(uint32_t revents)
-{
-    revents_ = revents;
-    return S_OK;
-}
-
-int InterruptChannel::enableReading()
-{
-    events_ |= EPOLLIN;
-    return loop_->regist(this);
 }
 
 /**
@@ -220,10 +166,13 @@ int EventLoop::init()
         // 创建QueueChannel
         pQueCh_ = new QueueChannel(evfd, this);
 
-        // printf("pQueCh_ = %d\n", pQueCh_->getFd());
-
+        pQueCh_->setCallBack(pQueCh_->onQueue, NULL, pQueCh_);
+        ret = pQueCh_->regist(false);
+        if (ret != S_OK) return ret; // 若不成功直接返回
         ret = pQueCh_->enableReading();
         if (ret != S_OK) return ret; // 若不成功直接返回
+
+        // printf("pQueCh_ = %d\n", pQueCh_->getFd());
     }
 
     // 若pIntrCh_为空,则分配eventfd
@@ -236,11 +185,13 @@ int EventLoop::init()
 
         // 创建InterruptChannel
         pIntrCh_ = new InterruptChannel(evfd, this);
-
-        // printf("pIntrCh_ = %d\n", pIntrCh_->getFd());
-
+        // pIntrCh_->setCallBack(NULL, NULL, pIntrCh_);
+        ret = pIntrCh_->regist(false);
+        if (ret != S_OK) return ret; // 若不成功直接返回
         ret = pIntrCh_->enableReading();
         if (ret != S_OK) return ret; // 若不成功直接返回
+
+        // printf("pIntrCh_ = %d\n", pIntrCh_->getFd());
     }
     return S_OK;
 }
@@ -250,15 +201,11 @@ int EventLoop::loop()
     int nEvents = 0;
     // 进入事件循环
     while (true) {
-        printf("EventLoop.cc while(true)\n");
-
         Channel *channels[Epoll::MAX_EVENTS];
         if (S_OK != epoll_.wait(channels, nEvents, -1)) {
             // LOG(LEVEL_ERROR, "EventLoop::loop epoll->wait\n");
             break;
         }
-
-        printf("epoll_wait back\n");
 
         bool quit = false;    // 退出标志
         bool haswork = false; // 中断标志
@@ -276,10 +223,7 @@ int EventLoop::loop()
         // 处理任务队列
         if (haswork) { pQueCh_->handleEvent(); }
         // 退出
-        if (quit) {
-            printf("quit\n");
-            break;
-        }
+        if (quit) break;
     }
     return S_OK;
 }

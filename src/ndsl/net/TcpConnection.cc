@@ -196,6 +196,7 @@ int TcpConnection::onAccept(
         TcpConnection *pTcpConn = new TcpConnection();
         pTcpConn->createChannel(connfd, pTcpChannel_->getEventLoop());
 
+        pCon = pTcpConn;
         if (cb != NULL) cb(param);
     } else {
         // accept不成功，转异步处理

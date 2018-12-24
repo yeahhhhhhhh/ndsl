@@ -13,48 +13,65 @@
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/temp_define.h"
 #include <cstring>
+#include <sys/socket.h>
+#include <arpa/inet.h>
 
 using namespace ndsl;
 using namespace net;
 
 // char *sayHello() { return "Hello"; }
 
-bool recv = FALSE;
+bool flag = false;
 
-void fun1() { recv = TRUE; }
+void fun1(void *) { flag = true; }
 
 TEST_CASE("net/TcpConnection(onRecv)")
 {
-    SECTION("send write")
+    SECTION("onAccept")
     {
+        // 启动服务
         // 初始化EPOLL
-        Epoll ep;
-        ep.init();
-        EventLoop loop(&ep);
+        EventLoop loop;
         REQUIRE(loop.init() == S_OK);
 
-        // 初始化 TcpConnection
-        int fd = 342;
-        TcpConnection *pConn = new TcpConnection(fd, &loop);
+        TcpConnection *oConn = new TcpConnection();
 
-        // 写数据过去
-        size_t len;
-        char buf[24];
-        memset(buf, 0, sizeof(buf));
-        int errn;
+        // 准备接收的数据结构
+        struct sockaddr_in rservaddr;
+        bzero(&rservaddr, sizeof(rservaddr));
+        socklen_t addrlen;
+        // FIXME: 传空指针进去还是传实进去
+        TcpConnection *Conn = new TcpConnection();
 
-        write(fd, "hello", sizeof("hello"));
-        pConn->onRecv(buf, len, 0, cb1, NULL, errn);
+        oConn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
 
-        while (TRUE) {
-            if (recv) {
-                REQUIRE(strcmp(buf, "hello") == 0);
-                break;
-            }
-        }
+        // 启动一个客户端
+        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        struct sockaddr_in servaddr;
+        bzero(&servaddr, sizeof(servaddr));
+        servaddr.sin_family = AF_INET;
+        servaddr.sin_port = htons(SERV_PORT);
+        inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+        connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
 
-        // 停止loop循环
+        // 添加中断
         loop.quit();
         REQUIRE(loop.loop() == S_OK);
+
+        // 测试是否接收到了客户的连接
+        REQUIRE(flag == true);
     }
 }
+
+// // 初始化tcpConnection
+// TcpAcceptor *pAc = new TcpAcceptor(fun1, &loop);
+// REQUIRE(pAc->start() == S_OK);
+
+// // // 启动一个客户端
+// int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+// struct sockaddr_in servaddr;
+// bzero(&servaddr, sizeof(servaddr));
+// servaddr.sin_family = AF_INET;
+// servaddr.sin_port = htons(SERV_PORT);
+// inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+// connect(sockfd, (SA *) &servaddr, sizeof(servaddr));

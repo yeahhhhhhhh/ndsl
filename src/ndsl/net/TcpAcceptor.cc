@@ -7,6 +7,7 @@
  */
 #include <sys/socket.h>
 #include <fcntl.h>
+#include <string.h>
 #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/SocketAddress.h"
@@ -19,7 +20,9 @@ namespace net {
 TcpAcceptor::TcpAcceptor(EventLoop *pLoop)
     : listenfd_(-1)
     , pLoop_(pLoop)
-{}
+{
+    info.inUse_ = false;
+}
 
 TcpAcceptor::~TcpAcceptor() { delete pTcpChannel_; }
 
@@ -27,7 +30,9 @@ TcpAcceptor::~TcpAcceptor() { delete pTcpChannel_; }
 TcpAcceptor::TcpAcceptor(Callback cb, EventLoop *pLoop)
     : pLoop_(pLoop)
     , cb_(cb)
-{}
+{
+    info.inUse_ = false;
+}
 
 TcpAcceptor::TcpAcceptor(
     EventLoop *pLoop,
@@ -49,10 +54,13 @@ TcpAcceptor::TcpAcceptor(
 
 int TcpAcceptor::start()
 {
+    printf("start\n");
+
     createAndListen();
     pTcpChannel_ = new TcpChannel(listenfd_, pLoop_);
     pTcpChannel_->setCallBack(handleRead, NULL, this);
     pTcpChannel_->regist(false);
+    pTcpChannel_->enableReading();
 
     return S_OK;
 }
@@ -62,25 +70,29 @@ int TcpAcceptor::createAndListen()
     // int on = 1;
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
-    // struct sockaddr_in serevaddr;
-    struct SocketAddress4 servaddr;
+    struct sockaddr_in servaddr;
+    bzero(&servaddr, sizeof(servaddr));
+    // struct SocketAddress4 servaddr;
 
     // 设置非阻塞
     fcntl(listenfd_, F_SETFL, O_NONBLOCK);
     // setsockopt(listenfd_, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
 
-    servaddr.setPort(SERV_PORT);
+    // servaddr.setPort(SERV_PORT);
 
-    // servaddr.sin_family = AF_INET;
-    // servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    // servaddr.sin_port = htons(SERV_PORT);
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servaddr.sin_port = htons(SERV_PORT);
 
     if (-1 ==
         bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
+        printf("bind error\n");
+
         // cout << "bind error, errno:" << errno << endl;
     }
 
     if (-1 == listen(listenfd_, LISTENQ)) {
+        printf("listen error\n");
         // cout << "listen error, errno:" << errno << endl;
     }
 
@@ -125,11 +137,11 @@ int TcpAcceptor::handleRead(void *pthis)
         if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
         pThis->pTcpChannel_->disableReading();
 
+        // 测试专用
+        pThis->cb_(NULL);
+
         pThis->~TcpAcceptor();
     }
-
-    // 测试专用
-    pThis->cb_(NULL);
 
     return S_OK;
 }
