@@ -21,15 +21,19 @@ class BaseChannel : public Channel
     int fd_;
     int update();
 
-    ChannelCallBack *pCb_;
+    // 存储上层的this
+    void *pThis_;
+
+    // ChannelCallBack *pCb_;
     // using Callback = void (*)(void *); // Callback 函数指针原型
-    // using ChannelCallBack = int (*)();
+    using ChannelCallBack =
+        int (*)(void *); // 定义handleRead handleWrite函数指针原型
 
   public:
     BaseChannel(int fd, EventLoop *loop);
 
     // 指向被调用的函数
-    // ChannelCallBack handleRead_, handleWrite_;
+    ChannelCallBack handleRead_, handleWrite_;
 
     int handleEvent();
     int getFd();
@@ -43,7 +47,11 @@ class BaseChannel : public Channel
     int disableWriting();
 
     // int setCallBack(ChannelCallBack handleRead, ChannelCallBack handleWrite);
-    int setCallBack(ChannelCallBack *cb);
+    // int setCallBack(ChannelCallBack *cb);
+    int setCallBack(
+        ChannelCallBack handleRead,
+        ChannelCallBack handleWrite,
+        void *thi);
 };
 
 } // namespace net

@@ -25,15 +25,16 @@ int SignalHandler:;registSignalfd(int signum, Callback handleFunc){
     sfd = signalfd(-1, &mask, 0);
     
     pSignalChannel_ = new SignalChannel(sfd, pLoop_);
-    pSignalChannel_ -> setCallBack(this);
+    pSignalChannel_ -> setCallBack(handleRead, NULL, this);
     return pSignalChannel_ -> enableReading();
 }
 
-int handleRead(){
+int handleRead(void *pthis){
 	struct signalfd_siginfo fdsi;
 	memset(&fdsi, 0, sizeof(struct signalfd_siginfo));
 	
-	int sfd = pSignalChannel_ -> signalfd_;
+	SignalChannel *pSignalChannel = (SignalChannel *)(pthis);
+	int sfd = pSignalChannel_ -> getFd();
 	int s = read(sfd, &fdsi, sizeof(struct signalfd_siginfo));
 	
 	if(s != sizeof(struct signalfd_siginfo)){

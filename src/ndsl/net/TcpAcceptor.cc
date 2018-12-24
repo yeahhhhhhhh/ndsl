@@ -11,18 +11,25 @@
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/SocketAddress.h"
 
+#include <cstdio>
+
 namespace ndsl {
 namespace net {
 
-TcpAcceptor::TcpAcceptor(int listenfd, EventLoop *pLoop)
+TcpAcceptor::TcpAcceptor(EventLoop *pLoop)
     : listenfd_(-1)
     , pLoop_(pLoop)
 {}
 
 TcpAcceptor::~TcpAcceptor() { delete pTcpChannel_; }
 
+// 测试专用构造函数
+TcpAcceptor::TcpAcceptor(Callback cb, EventLoop *pLoop)
+    : pLoop_(pLoop)
+    , cb_(cb)
+{}
+
 TcpAcceptor::TcpAcceptor(
-    int listenfd,
     EventLoop *pLoop,
     TcpConnection *pCon,
     struct sockaddr *addr,
@@ -42,10 +49,10 @@ TcpAcceptor::TcpAcceptor(
 
 int TcpAcceptor::start()
 {
-    listenfd_ = createAndListen();
+    createAndListen();
     pTcpChannel_ = new TcpChannel(listenfd_, pLoop_);
-    pTcpChannel_->setCallBack(this);
-    pTcpChannel_->enableReading();
+    pTcpChannel_->setCallBack(handleRead, NULL, this);
+    pTcpChannel_->regist(false);
 
     return S_OK;
 }
@@ -77,24 +84,30 @@ int TcpAcceptor::createAndListen()
         // cout << "listen error, errno:" << errno << endl;
     }
 
-    return listenfd_;
+    return S_OK;
 }
 
-int TcpAcceptor::handleRead()
+int TcpAcceptor::handleRead(void *pthis)
 {
+    TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
+    printf("TcpAcceptor.cc handleRead()\n");
+
     int connfd;
     struct sockaddr_in cliaddr;
     socklen_t clilen = sizeof(struct sockaddr_in);
-    connfd =
-        accept(listenfd_, (struct sockaddr *) &cliaddr, (socklen_t *) &clilen);
+    connfd = accept(
+        pThis->listenfd_, (struct sockaddr *) &cliaddr, (socklen_t *) &clilen);
     if (connfd > 0) {
         // 连接成功
+
+        printf("connect succ\n");
 
         // cout << "new connection from "
         //      << "[" << inet_ntoa(cliaddr.sin_addr) << ":"
         //      << ntohs(cliaddr.sin_port) << "]"
         //      << " new socket fd:" << connfd << endl;
     } else {
+        printf("connect fail\n");
         // 连接失败
 
         // cout << "accept error, connfd:" << connfd << " errno:" << errno <<
@@ -103,23 +116,23 @@ int TcpAcceptor::handleRead()
 
     // 设置非阻塞io
     fcntl(connfd, F_SETFL, O_NONBLOCK);
-    TcpConnection *tCon = pTcpChannel_->newConnection(connfd);
+    TcpConnection *tCon = pThis->pTcpChannel_->newConnection(connfd);
 
-    if (info.inUse_) {
-        info.pCon_ = tCon;
-        info.addr_ = (struct sockaddr *) &cliaddr;
-        info.addrlen_ = (socklen_t *) &clilen;
-        if (info.cb_ != NULL) info.cb_(info.param_);
-        pTcpChannel_->disableReading();
+    if (pThis->info.inUse_) {
+        pThis->info.pCon_ = tCon;
+        pThis->info.addr_ = (struct sockaddr *) &cliaddr;
+        pThis->info.addrlen_ = (socklen_t *) &clilen;
+        if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
+        pThis->pTcpChannel_->disableReading();
 
-        this->~TcpAcceptor();
+        pThis->~TcpAcceptor();
     }
+
+    // 测试专用
+    pThis->cb_(NULL);
 
     return S_OK;
 }
-
-// 空函数 无功能
-int TcpAcceptor::handleWrite() { return S_OK; }
 
 } // namespace net
 } // namespace ndsl

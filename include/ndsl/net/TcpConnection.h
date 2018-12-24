@@ -20,12 +20,11 @@ namespace net {
 
 class TcpChannel;
 class EventLoop;
-class ChannelCallBack;
 
-class TcpConnection : public ChannelCallBack
+class TcpConnection
 {
   public:
-    // using Callback = void (*)(void *); // Callback 函数指针原型
+    using Callback = void (*)(void *); // Callback 函数指针原型
 
   private:
     // 用户主动调用onRecv/onSend函数的参数存在这
@@ -50,8 +49,8 @@ class TcpConnection : public ChannelCallBack
     TcpConnection();
     ~TcpConnection();
 
-    int handleRead();
-    int handleWrite();
+    static int handleRead(void *pthis);
+    static int handleWrite(void *pthis);
 
     int createChannel(int sockfd_, EventLoop *pLoop);
 
