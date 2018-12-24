@@ -56,36 +56,46 @@ int Guid::toGuid_t(char* str){
 }
 
 bool Guid::operator==(const Guid& guid) const{
-	char str1[32], str2[32];
-	toString(str1);
-	guid.toString(str2);
-	if((strcmp(str1, str2)) == 0){
-		return true;
-	}else{
-		return false;
+	for(int i = 0; i < 16; i++){
+		if(gu[i] != guid.gu[i]){
+			return false;
+		}
 	}
+	return true;
 }
 
 bool Guid::operator<(const Guid& guid) const{
-	char str1[32], str2[32];
-	toString(str1);
-	guid.toString(str2);
-	if((strcmp(str1, str2)) < 0){
-		return true;
-	}else{
-		return false;
+	int n = 128;
+	for (int i = 0; i < 16; i++){
+		for (int j = 0; j < 8; j++){
+			if((gu[i]&n) < (guid.gu[i]&n)){
+				return true;
+			}else if((gu[i]&n) > (guid.gu[i]&n)){
+				return false;
+			}else{
+				n /= 2;
+			}
+		}
+		n = 128;
 	}
+	return false;
 }
 
 bool Guid::operator>(const Guid& guid) const{
-	char str1[32], str2[32];
-	toString(str1);
-	guid.toString(str2);
-	if((strcmp(str1, str2)) > 0){
-		return true;
-	}else{
-		return false;
+	int n = 128;
+	for (int i = 0; i < 16; i++){
+		for (int j = 0; j < 8; j++){
+			if((gu[i]&n) > (guid.gu[i]&n)){
+				return true;
+			}else if((gu[i]&n) < (guid.gu[i]&n)){
+				return false;
+			}else{
+				n /= 2;
+			}
+		}
+		n = 128;
 	}
+	return false;
 }
 
 

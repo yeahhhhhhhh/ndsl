@@ -18,7 +18,7 @@ class Guid{
     public:
       Guid();
       
-    private:
+    public:
       guid_t gu;
     
     public:
