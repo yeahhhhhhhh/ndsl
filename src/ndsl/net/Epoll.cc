@@ -37,6 +37,8 @@ int Epoll::regist(Channel *pCh)
 
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_ADD, pCh->getFd(), &ev);
 
+    // printf("ev.events = 0x%x\n", pCh->getEvents());
+
     if (ret < 0) {
         printf(
             "epfd = %d, fd =  %d, ret = %d, errno = %d, strerr = %s\n",

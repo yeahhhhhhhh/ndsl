@@ -202,6 +202,7 @@ int EventLoop::loop()
     // 进入事件循环
     while (true) {
         Channel *channels[Epoll::MAX_EVENTS];
+        // LOG(LEVEL_DEBUG, "onWait\n");
         if (S_OK != epoll_.wait(channels, nEvents, -1)) {
             // LOG(LEVEL_ERROR, "EventLoop::loop epoll->wait\n");
             break;

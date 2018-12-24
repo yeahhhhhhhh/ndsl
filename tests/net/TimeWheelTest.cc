@@ -13,10 +13,9 @@
 using namespace ndsl;
 using namespace net;
 
-void onTick(void *)
+void func3(void *para)
 {
-    static int ticks = 0;
-    printf("Timer onTick: ticks = %d\n", ++ticks);
+    printf("Call func2 and para is %s!\n", (char *) para);
 }
 
 TEST_CASE("net/TimeWheel")
@@ -31,19 +30,22 @@ TEST_CASE("net/TimeWheel")
         REQUIRE(tw.stop() == S_OK);
     }
 
-    SECTION("addTask")
-    {
-        EventLoop eloop;
-        REQUIRE(eloop.init() == S_OK);
+    // 如何测?
+    // SECTION("addTask")
+    // {
+    //     EventLoop eloop;
+    //     REQUIRE(eloop.init() == S_OK);
 
-        TimeWheel tw(&eloop);
-        TimeWheel::Task *task = new TimeWheel::Task;
+    //     TimeWheel tw(&eloop);
+    //     TimeWheel::Task *task = new TimeWheel::Task;
 
-        task->doit = onTick;
-        task->para = NULL;
-        task->setInterval = 2;
-        task->times = 5;
+    //     task->doit = func2;
+    //     task->para = (void *) "Hello World";
+    //     task->setInterval = 2;
+    //     task->times = 5;
 
-        tw.addTask(task);
-    }
+    //     tw.addTask(task);
+
+    //     eloop.loop();
+    // }
 }

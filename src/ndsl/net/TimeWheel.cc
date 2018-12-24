@@ -18,7 +18,7 @@ TimerfdChannel::TimerfdChannel(int fd, EventLoop *loop)
 
 TimerfdChannel::~TimerfdChannel()
 {
-    if (getFd()) ::close(getFd());
+    if (getFd() > 0) ::close(getFd());
 }
 
 TimeWheel::TimeWheel(EventLoop *loop)
@@ -45,9 +45,8 @@ int TimeWheel::init()
 
     ptimerfdChannel_ = new TimerfdChannel(fd, pLoop_);
     ptimerfdChannel_->setCallBack(onTick, NULL, this);
-    printf("After setCallBack\n");
+    // 注册ptimerChannel
     int ret = ptimerfdChannel_->regist(false);
-    printf("ret = %d\n", ret);
     if (ret != S_OK) return ret;
 
     for (int i = 0; i < SLOTNUM; i++)
@@ -60,28 +59,30 @@ int TimeWheel::start()
 {
     int ret = init();
     if (ret != S_OK) return ret;
+    printf("TimeWheel init end!\n");
 
     // 设置时间轮的时间间隔
     struct itimerspec new_value;
     struct timespec now;
 
     if (clock_gettime(CLOCK_MONOTONIC, &now) == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::init clock_gettime error!\n");
+        LOG(LEVEL_ERROR, "TimeWheel::start clock_gettime error!\n");
         return errno;
     }
 
-    new_value.it_value.tv_sec = now.tv_sec;
-    new_value.it_value.tv_nsec = now.tv_nsec;
+    new_value.it_value.tv_sec = INTERVAL;
+    new_value.it_value.tv_nsec = 0;
 
     new_value.it_interval.tv_sec = INTERVAL;
     new_value.it_interval.tv_nsec = 0;
 
     if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &new_value, NULL) == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::init timerfd_settime error!\n");
+        LOG(LEVEL_ERROR, "TimeWheel::start timerfd_settime error!\n");
         perror(strerror(errno));
         return errno;
     }
 
+    // 启用ptimerChannel
     ret = ptimerfdChannel_->enableReading();
     if (ret != S_OK) return ret;
 
@@ -91,8 +92,17 @@ int TimeWheel::start()
 // 停止时间轮
 int TimeWheel::stop()
 {
-    if (timerfd_settime(ptimerfdChannel_->getFd(), 0, 0, NULL) == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::init timerfd_settime error!\n");
+    struct itimerspec stop_value;
+
+    stop_value.it_interval.tv_nsec = 0;
+    stop_value.it_interval.tv_sec = 0;
+
+    stop_value.it_value.tv_sec = 0;
+    stop_value.it_value.tv_nsec = 0;
+
+    if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &stop_value, NULL) ==
+        -1) {
+        LOG(LEVEL_ERROR, "TimeWheel::stop timerfd_settime error!\n");
         return errno;
     }
 
@@ -138,7 +148,19 @@ int TimeWheel::removeTask(Task *task)
 
 int TimeWheel::onTick(void *pThis)
 {
+    printf("TimeWheel::onTick\n");
     TimeWheel *ptw = (TimeWheel *) pThis;
+
+    uint64_t exp;
+
+    int ret = read(ptw->ptimerfdChannel_->getFd(), &exp, sizeof(uint64_t));
+    if (ret == -1) {
+        LOG(LEVEL_ERROR, "TimeWheel::onTick read\n");
+        return errno;
+    }
+
+    printf("exp = %ld\n", exp);
+
     // 刻度自增
     ++ptw->curTick_;
 
