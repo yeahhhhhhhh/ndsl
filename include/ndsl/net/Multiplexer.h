@@ -21,25 +21,23 @@
 
 #include <map>
 #include <iostream>
-#include <boost/function.hpp>
 #include "ndsl/net/Connection.h" // connection抽象类
 #include "ndsl/net/Eventloop.h"
 namespace ndsl{
 namespace net{
-// 自定义消息结构体 
+// 自定义消息结构体 TODO 小序
 #pragma pack(push) 
 #pragma pack(1) // 一字节对齐
 struct Message{
-    int len; // 负载长度
     int id; // 通信实体的id
-    char data[1]; // 负载
+    int len; // 负载长度
 }
 #pragma pack(pop)
 
 // 自定义addwork传入的参数结构体
 struct para{
     int id;
-    Multiplexer::CallBack cb;
+    ndsl::net::Multiplexer::CallBack cb;
 }
 
 /**
@@ -50,8 +48,8 @@ struct para{
 class Multiplexer
 {
   public:
-    // 消息回调函数
-    using Callback = Boost::function<void (char *data, int len)>;
+    // 定义消息回调函数
+    using Callback = void (*)(char *, int, int);
 
   private:
     // 回调函数映射容器
@@ -59,13 +57,20 @@ class Multiplexer
 
     ndsl::net::Connection *conn_; // 绑定的connection
     CallbackMap cbMap_; // 回调函数映射容器
-    int id_ = 0; // 当前未读完数据的实体id
-    int left_ = 0; // 剩余未读取的数据
+	int errno_;
+    int id_;
+	int len_;
+    int left_;
+	int rlen_;
+
+	char *msghead_[ sizeof(char)* MAXLINE ];
+	char *databuf_ = NULL;
+	char *location_ = NULL;
 
   public:
     Multiplexer(ndsl::net::Connection *conn,
     const CallbackMap &CallBackMap)
-    : conn_(conn), cbMap_(CallBackMap)
+    :conn_(conn), cbMap_(CallBackMap){}
 
     // 在loop工作队列中加入insert任务
     void addInsertWork(int id, Callback cb);
@@ -84,9 +89,11 @@ class Multiplexer
         int id,
         int len,
         char *data);
-
+    
     // 分发消息给通信实体
-    void dispatch(char *data, int rlen); TODO;
+    static void dispatch();
+  private:
+	  int ctoi(char *ch);
 };
 
 } // namespace net

@@ -11,7 +11,7 @@
 * @author zzt
 * @emial 429834658@qq.com
 **/
-
+#include<string.h>
 #include "ndsl/net/Mutiplexer.h"
 #include "ndsl/net/Eventloop.h"
 
@@ -59,36 +59,79 @@ void Multiplexer::addRemoveWork(int id)
 }
 
 // 向上层提供发送消息接口 
-static void Multiplexer::sendMessage(int id, int len,char *data)
+static void Multiplexer::sendMessage(int len, char *message)
 {
+	/*onSend没有提供分片发送的接口，要求用户将message封装好
     struct Message message;
     message.id = id;
-    message.len = len;
+    message.len = len;*/
 
-    conn_->send(-1, data, message.len, -1, NULL, NULL); // 调用connection的send函数将message与data分片发出去
-    //ssize_t send(int sockfd, const void *buf, size_t len, int flags, Callback cb, void *param);
+	conn_->onSend(data, len, -1, NULL, NULL, &errno_); // 调用connection的onSend函数
+	//ssize_t onSend(const void *buf, size_t len, int flags, Callback cb, void *param, int &errno);
+
+	conn_->onRecvMsg(msghead_, &rlen_, dispatch, NULL, &errno_); // 注册一个读事件读取消息头部
+	// 函数原型 int onRecv(char *buffer, int &len, Callback cb, void *param, int &errno);
+}
+
+// 将char转换为int
+int Multiplexer::ctoi(char *ch)
+{
+	int result = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		if (*ch >= '0' && *ch <= '9')
+		{
+			result = result * 10 + (*ch - '0');
+			ch++;
+		}
+	}
+	return result;
 }
 
 // 分发消息给上层通信实体
-void Multiplexer::dispatch(void *m, int rlen)
+void Multiplexer::dispatch()
 {
-    char *location = static_cast<char *>(m);
-    if(left_ == 0) // 是新任务
+    if(left_ == 0) // 是新任务，处理读取消息头的逻辑
     {
-        struct Message *message = reinterpret_cast<struct Message *>(m); // 这里强转好像有问题
+		/*  这样强转好像有问题
+        struct Message *message = reinterpret_cast<struct Message *>(m); 
         id_ = message->id;
         left_ = message->len;
-        location += 2*sizeof(int); // 后移八个字节，定位到负载
-        MultiplexerCallbackMap::iterator iter = cbMap_.find(id_);
-            if (iter != cbMap_.end()) iter->second(location, rlen); // 在这里调用了实体对应的回调函数
-        left_ = left_-rlen-2*sizeof(int); // 更新剩余字节数,减去message头部
+		*/
+		location_ = msghead_;
+		id_ = ctoi(location_); // 获取msg中的id
+		location_ += sizeof(int);
+		len_ = ctoi(location_); // 获取msg中的len
+		left_ = len_;
+		left_ -= (rlen_ - sizeof(int) * 2); // 对left_做更新
+		location_ += sizeof(int); // 定位到负载
+
+		if (left_== 0) // 已读完消息
+		{
+			MultiplexerCallbackMap::iterator iter = cbMap_.find(id_);
+			if (iter != cbMap_.end()) iter->second(location_, rlen_ - sizeof(int) * 2, errno_); // 在这里调用了实体对应的回调函数
+		}
+		else if (left_ > 0)
+		{
+            databuf_ = (char *)malloc(sizeof(char) * len_);
+            memcpy( databuf_, location_, rlen_-sizeof(int)*2 ); // 将后面的数据部分复制到databuf里
+		    // 原型void *memcpy(void*dest, const void *src, size_t n)
+			location_ = databuf_;
+			location_ += rlen_-sizeof(int)*2; // location指针向后滑动
+			conn_->onRecvMsg(location_, &rlen_, dispatch, NULL, &errno_);
+		}
     }
     else if(left_ > 0) // 有剩余字节数未读
     {
-        MultiplexerCallbackMap::iterator iter = cbMap_.find(id_);
-            if (iter != cbMap_.end()) iter->second(location, rlen); 
-        left_ -= rlen;
-        if(left_ == 0) id_=0;
+		left_ -= rlen_;
+		location_ += rlen_; // location指针向后滑动
+		if (left_== 0) // 已读完消息
+		{
+			MultiplexerCallbackMap::iterator iter = cbMap_.find(id_);
+			if (iter != cbMap_.end()) iter->second(databuf_, len_, errno_);
+		}
+		else if(left_ > 0) // 继续读取数据
+			conn_->onRecvMsg(location_, &rlen_, dispatch, NULL, &errno_);
     }
 }
 
