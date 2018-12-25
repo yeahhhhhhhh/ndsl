@@ -1,8 +1,9 @@
 ////
+// @file SocketAddressUn.h
 // @brief
 // fengzhuang unixsocketaddress
 //
-// @auther ranxiangjun
+// @author ranxiangjun
 // @email ranxianshen@gmail.com
 //
 #ifndef _SOCKETADDRESSUN_H_

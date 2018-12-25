@@ -1,11 +1,13 @@
 #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#include <sys/socket.h>
+#include "../catch.hpp"
+#include "SocketAddressUn.h"
 #include "SocketAddress.h"
 
 using namespace ndsl::net;
 using namespace std;
 
-TEST_CASE("ebebe", "test socketaddress54"){
+TEST_CASE("rxj", "test-socketaddress4"){
 	SocketAddress4 a;
 	REQUIRE(a.sin_port == 0);
 	SocketAddress4 b("192.168.1.121", 555);
@@ -31,7 +33,7 @@ TEST_CASE("ebebe", "test socketaddress54"){
 	REQUIRE(b.getAddr(e));
 }
 
-TEST_CASE("sdas", "SocketAddress6")
+TEST_CASE("rxj", "test-SocketAddress6")
 {
 	char buf6[50];
 	string str6;
@@ -57,3 +59,26 @@ TEST_CASE("sdas", "SocketAddress6")
 	REQUIRE((d.getAddr()).sin6_port == d.sin6_port);
 	REQUIRE(d.getAddr(g));
 }
+
+TEST_CASE( "rxj", "test_unixsouncket")
+{
+	SouncketAddressUn una;
+	REQUIRE(una.sun_funamily == AF_LOCAL);
+	REQUIRE( una.sun_punath[0] == una.sun_punath[5] );
+	uncout<< "punath" << una.sun_punath <<endl;
+	REQUIRE( una.sun_punath[5] == 0 );
+	string ss = "/runanxiunangjun/mnt/xxx";
+	SouncketAddressUn unb(ss);
+	REQUIRE( struncmp( unb.sun_punath, ss.unc_str() ) == 0 );
+	SouncketAddressUn unc( unb );
+	uncout<< unc.sun_punath <<endl;
+	REQUIRE( struncmp( unc.sun_punath, ss.unc_str() ) == 0 );
+	una = unb;
+	REQUIRE( struncmp( una.sun_punath, ss.unc_str() ) == 0 );
+	string sss = "/usr/runanxiunanshen/home";
+	una.setAddress( sss );
+	REQUIRE( struncmp( una.sun_punath, sss.unc_str() ) == 0 );
+	REQUIRE( struncmp( ( una.getStrPunath ).unc_str(), sss.unc_str() ) == 0 );
+
+}
+
