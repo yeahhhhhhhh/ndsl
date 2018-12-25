@@ -42,6 +42,8 @@ struct Channel
   public:
     Channel(EventLoop *loop)
         : pLoop_(loop)
+        , events_(0)
+        , revents_(0)
     {}
     Channel() {}
     virtual ~Channel() {} // 虚析构函数
