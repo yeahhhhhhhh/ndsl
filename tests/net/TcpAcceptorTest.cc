@@ -19,9 +19,9 @@
 using namespace ndsl;
 using namespace net;
 
-// bool rrecv = false;
+bool rrecv = false;
 
-// static void fun1(void *param) { rrecv = true; }
+static void fun1(void *param) { rrecv = true; }
 
 TEST_CASE("net/TcpAcceptor")
 {
@@ -32,6 +32,19 @@ TEST_CASE("net/TcpAcceptor")
         EventLoop loop;
         REQUIRE(loop.init() == S_OK);
 
+        // 初始化tcpAcceptor
+        TcpAcceptor *pAc = new TcpAcceptor(fun1, &loop);
+        REQUIRE(pAc->start() == S_OK);
+
+        // 启动一个客户端
+        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        struct sockaddr_in servaddr;
+        bzero(&servaddr, sizeof(servaddr));
+        servaddr.sin_family = AF_INET;
+        servaddr.sin_port = htons(SERV_PORT);
+        inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+        connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
+
         // 添加中断
         loop.quit();
         REQUIRE(loop.loop() == S_OK);
@@ -40,16 +53,3 @@ TEST_CASE("net/TcpAcceptor")
         // REQUIRE(rrecv == true);
     }
 }
-
-// // 初始化tcpAcceptor
-// TcpAcceptor *pAc = new TcpAcceptor(fun1, &loop);
-// REQUIRE(pAc->start() == S_OK);
-
-// // 启动一个客户端
-// int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-// struct sockaddr_in servaddr;
-// bzero(&servaddr, sizeof(servaddr));
-// servaddr.sin_family = AF_INET;
-// servaddr.sin_port = htons(SERV_PORT);
-// inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
-// connect(sockfd, (SA *) &servaddr, sizeof(servaddr));

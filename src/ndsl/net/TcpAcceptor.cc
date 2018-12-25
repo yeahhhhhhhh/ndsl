@@ -28,7 +28,8 @@ TcpAcceptor::~TcpAcceptor() { delete pTcpChannel_; }
 
 // 测试专用构造函数
 TcpAcceptor::TcpAcceptor(Callback cb, EventLoop *pLoop)
-    : pLoop_(pLoop)
+    : listenfd_(-1)
+    , pLoop_(pLoop)
     , cb_(cb)
 {
     info.inUse_ = false;
@@ -54,8 +55,6 @@ TcpAcceptor::TcpAcceptor(
 
 int TcpAcceptor::start()
 {
-    printf("start\n");
-
     createAndListen();
     pTcpChannel_ = new TcpChannel(listenfd_, pLoop_);
     pTcpChannel_->setCallBack(handleRead, NULL, this);
@@ -86,13 +85,13 @@ int TcpAcceptor::createAndListen()
 
     if (-1 ==
         bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
-        printf("bind error\n");
+        printf("TcpAcceptor bind error\n");
 
         // cout << "bind error, errno:" << errno << endl;
     }
 
     if (-1 == listen(listenfd_, LISTENQ)) {
-        printf("listen error\n");
+        printf("TcpAcceptor listen error\n");
         // cout << "listen error, errno:" << errno << endl;
     }
 
@@ -135,13 +134,13 @@ int TcpAcceptor::handleRead(void *pthis)
         pThis->info.addr_ = (struct sockaddr *) &cliaddr;
         pThis->info.addrlen_ = (socklen_t *) &clilen;
         if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
-        pThis->pTcpChannel_->disableReading();
+        pThis->pTcpChannel_->del();
 
-        // 测试专用
-        pThis->cb_(NULL);
-
-        pThis->~TcpAcceptor();
+        // pThis->~TcpAcceptor();
     }
+
+    // 测试专用
+    if (pThis->cb_ != NULL) pThis->cb_(NULL);
 
     return S_OK;
 }

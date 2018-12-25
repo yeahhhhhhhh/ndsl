@@ -14,6 +14,8 @@
 #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/Channel.h"
 
+#include <cstdio>
+
 namespace ndsl {
 namespace net {
 

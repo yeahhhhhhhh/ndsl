@@ -11,6 +11,11 @@
 #include "ndsl/net/TcpAcceptor.h"
 #include <errno.h>
 #include <unistd.h>
+#include <cstring>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+#include <cstdio>
 
 namespace ndsl {
 namespace net {
@@ -190,21 +195,10 @@ int TcpConnection::onAccept(
     Callback cb,
     void *param)
 {
-    int connfd;
-    if ((connfd = accept(pTcpChannel_->getFd(), addr, addrlen)) > 0) {
-        // accept成功
-        TcpConnection *pTcpConn = new TcpConnection();
-        pTcpConn->createChannel(connfd, pTcpChannel_->getEventLoop());
-
-        pCon = pTcpConn;
-        if (cb != NULL) cb(param);
-    } else {
-        // accept不成功，转异步处理
-        // 异步理解为用户没有启TcpAcceptor函数
-        TcpAcceptor *ta = new TcpAcceptor(
-            pTcpChannel_->getEventLoop(), pCon, addr, addrlen, cb, param);
-        ta->start();
-    }
+    // 异步理解为用户没有启TcpAcceptor函数
+    TcpAcceptor *ta = new TcpAcceptor(
+        pTcpChannel_->getEventLoop(), pCon, addr, addrlen, cb, param);
+    ta->start();
 
     return S_OK;
 }

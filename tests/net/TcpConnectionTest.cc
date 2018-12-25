@@ -5,7 +5,6 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
-#define CATCH_CONFIG_MAIN
 #include "../catch.hpp"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/Epoll.h"
@@ -15,6 +14,7 @@
 #include <cstring>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
 
 using namespace ndsl;
 using namespace net;
@@ -34,7 +34,11 @@ TEST_CASE("net/TcpConnection(onRecv)")
         EventLoop loop;
         REQUIRE(loop.init() == S_OK);
 
+        int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+        // fcntl(listenfd, F_SETFL, O_NONBLOCK);
+
         TcpConnection *oConn = new TcpConnection();
+        oConn->createChannel(listenfd, &loop);
 
         // 准备接收的数据结构
         struct sockaddr_in rservaddr;
