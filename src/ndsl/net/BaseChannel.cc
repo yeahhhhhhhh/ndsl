@@ -22,11 +22,11 @@ int BaseChannel::getFd() { return fd_; }
 
 int BaseChannel::handleEvent()
 {
-    if (getRevents() & EPOLLIN) {
+    if (revents_ & EPOLLIN) {
         if (handleRead_) handleRead_(pThis_);
     }
 
-    if (getRevents() & EPOLLOUT) {
+    if (revents_ & EPOLLOUT) {
         if (handleWrite_) handleWrite_(pThis_);
     }
 
@@ -53,52 +53,34 @@ int BaseChannel::setCallBack(
     return S_OK;
 }
 
-// int BaseChannel::handleEvent()
-// {
-//     if (getRevents() & EPOLLIN) { pCb_->handleRead(); }
-
-//     if (getRevents() & EPOLLOUT) { pCb_->handleWrite(); }
-
-//     return S_OK;
-// }
-
-// int BaseChannel::setCallBack(ChannelCallBack *cb)
-// {
-//     pCb_ = cb;
-//     return S_OK;
-// }
-
 int BaseChannel::enableReading()
 {
-    setEvents(getEvents() | EPOLLIN);
+    events_ |= EPOLLIN;
     return update();
 }
 
 int BaseChannel::enableWriting()
 {
-    setEvents(getEvents() | EPOLLOUT);
+    events_ |= EPOLLOUT;
     return update();
 }
 
 int BaseChannel::disableReading()
 {
-    setEvents(getEvents() & ~EPOLLIN);
+    events_ &= ~EPOLLIN;
     return update();
 }
 
 int BaseChannel::disableWriting()
 {
-    setEvents(getEvents() & ~EPOLLOUT);
+    events_ &= ~EPOLLOUT;
     return update();
 }
 
 int BaseChannel::regist(bool isET)
 {
-    if (isET) {
-        setEvents(getEvents() | EPOLLET);
-    } else {
-        setEvents(getEvents());
-    }
+    if (isET) events_ |= EPOLLET;
+
     return getEventLoop()->regist(this);
 }
 

@@ -21,10 +21,10 @@ TcpChannel::~TcpChannel()
     del();
 }
 
-TcpConnection *TcpChannel::newConnection(int connfd)
+TcpConnection *TcpChannel::newConnection(int connfd, TcpAcceptor *pTa)
 {
-    TcpConnection *pCon = new TcpConnection();
-    pCon->createChannel(connfd, getEventLoop());
+    TcpConnection *pCon = new TcpConnection(pTa);
+    pCon->createChannel(connfd, pLoop);
     return pCon;
 }
 

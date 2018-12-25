@@ -10,6 +10,7 @@
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpConnection.h"
+#include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/utils/temp_define.h"
 #include <cstring>
 #include <sys/socket.h>
@@ -34,20 +35,19 @@ TEST_CASE("net/TcpConnection(onRecv)")
         EventLoop loop;
         REQUIRE(loop.init() == S_OK);
 
-        int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+        // int listenfd = socket(AF_INET, SOCK_STREAM, 0);
         // fcntl(listenfd, F_SETFL, O_NONBLOCK);
 
-        TcpConnection *oConn = new TcpConnection();
-        oConn->createChannel(listenfd, &loop);
+        TcpAcceptor *tAc = new TcpAcceptor(&loop);
+        tAc->start();
 
         // 准备接收的数据结构
         struct sockaddr_in rservaddr;
         bzero(&rservaddr, sizeof(rservaddr));
         socklen_t addrlen;
-        // FIXME: 传空指针进去还是传实进去
-        TcpConnection *Conn = new TcpConnection();
 
-        oConn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
+        TcpConnection *Conn = new TcpConnection(tAc);
+        Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
 
         // 启动一个客户端
         int sockfd = socket(AF_INET, SOCK_STREAM, 0);

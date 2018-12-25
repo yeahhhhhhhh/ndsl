@@ -8,11 +8,11 @@
 #include <sys/socket.h>
 #include <fcntl.h>
 #include <string.h>
+
 #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/SocketAddress.h"
-
-#include <cstdio>
+#include "ndsl/net/TcpConnection.h"
 
 namespace ndsl {
 namespace net {
@@ -35,15 +35,30 @@ TcpAcceptor::TcpAcceptor(Callback cb, EventLoop *pLoop)
     info.inUse_ = false;
 }
 
-TcpAcceptor::TcpAcceptor(
-    EventLoop *pLoop,
+// TcpAcceptor::TcpAcceptor(
+//     EventLoop *pLoop,
+//     TcpConnection *pCon,
+//     struct sockaddr *addr,
+//     socklen_t *addrlen,
+//     Callback cb,
+//     void *param)
+//     : listenfd_(-1)
+//     , pLoop_(pLoop)
+// {
+//     info.pCon_ = pCon;
+//     info.addr_ = addr;
+//     info.addrlen_ = addrlen;
+//     info.cb_ = cb;
+//     info.param_ = param;
+//     info.inUse_ = true;
+// }
+
+int TcpAcceptor::setInfo(
     TcpConnection *pCon,
     struct sockaddr *addr,
     socklen_t *addrlen,
     Callback cb,
     void *param)
-    : listenfd_(-1)
-    , pLoop_(pLoop)
 {
     info.pCon_ = pCon;
     info.addr_ = addr;
@@ -51,7 +66,11 @@ TcpAcceptor::TcpAcceptor(
     info.cb_ = cb;
     info.param_ = param;
     info.inUse_ = true;
+
+    return S_OK;
 }
+
+TcpChannel *TcpAcceptor::getTcpChannel() { return pTcpChannel_; }
 
 int TcpAcceptor::start()
 {
@@ -127,16 +146,15 @@ int TcpAcceptor::handleRead(void *pthis)
 
     // 设置非阻塞io
     fcntl(connfd, F_SETFL, O_NONBLOCK);
-    TcpConnection *tCon = pThis->pTcpChannel_->newConnection(connfd);
+    // TcpConnection *tCon = pThis->pTcpChannel_->newConnection(connfd, this);
 
     if (pThis->info.inUse_) {
-        pThis->info.pCon_ = tCon;
+        ((pThis->info).pCon_)
+            ->createChannel(connfd, pThis->pTcpChannel_->getEventLoop());
         pThis->info.addr_ = (struct sockaddr *) &cliaddr;
         pThis->info.addrlen_ = (socklen_t *) &clilen;
         if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
-        pThis->pTcpChannel_->del();
-
-        // pThis->~TcpAcceptor();
+        pThis->pTcpChannel_->disableReading();
     }
 
     // 测试专用

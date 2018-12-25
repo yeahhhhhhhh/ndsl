@@ -8,12 +8,13 @@
 #ifndef __TCPACCEPTOR_H__
 #define __TCPACCEPTOR_H__
 
-#include "Channel.h"
 #include "TcpChannel.h"
 #include "EventLoop.h"
 
 namespace ndsl {
 namespace net {
+
+class TcpConnection;
 
 class TcpAcceptor
 {
@@ -44,9 +45,11 @@ class TcpAcceptor
     // 测试专用
     TcpAcceptor(Callback cb, EventLoop *pLoop);
 
-    // 为用户主动调用onAcceptor()而生
-    TcpAcceptor(
-        EventLoop *pLoop,
+    // TcpConnection用
+    TcpChannel *getTcpChannel();
+
+    // 保存用户信息
+    int setInfo(
         TcpConnection *pCon,
         struct sockaddr *addr,
         socklen_t *addrlen,
@@ -54,7 +57,6 @@ class TcpAcceptor
         void *param);
 
     static int handleRead(void *pthis);
-    // int handleWrite();
     int start();
 
   private:
