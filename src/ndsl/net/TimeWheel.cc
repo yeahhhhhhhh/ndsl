@@ -18,7 +18,11 @@ TimerfdChannel::TimerfdChannel(int fd, EventLoop *loop)
 
 TimerfdChannel::~TimerfdChannel()
 {
-    if (getFd() > 0) ::close(getFd());
+    if (getFd() > 0) {
+        del();
+        // printf("TimerfdChannel close fd = %d\n", getFd());
+        ::close(getFd());
+    }
 }
 
 TimeWheel::TimeWheel(EventLoop *loop)
@@ -37,7 +41,6 @@ TimeWheel::~TimeWheel()
 int TimeWheel::init()
 {
     int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
-    printf("TimeWheel::init fd = %d\n", fd);
     if (fd == -1) {
         LOG(LEVEL_ERROR, "TimeWheel::init timerfd_create error!\n");
         return errno;
@@ -59,7 +62,6 @@ int TimeWheel::start()
 {
     int ret = init();
     if (ret != S_OK) return ret;
-    printf("TimeWheel init end!\n");
 
     // 设置时间轮的时间间隔
     struct itimerspec new_value;
@@ -134,15 +136,15 @@ int TimeWheel::removeTask(Task *task)
         return S_FAIL;
     }
 
-    auto slotList = slot_[task->setTick];
-
     // 标准模板库提供的find函数
-    auto iter = std::find(slotList.begin(), slotList.end(), task);
+    auto iter = std::find(
+        slot_[task->setTick].begin(), slot_[task->setTick].end(), task);
 
     // 若没有找到,则直接返回
-    if (iter == slotList.end()) return S_FAIL;
+    if (iter == slot_[task->setTick].end()) return S_FAIL;
 
-    slotList.erase(iter);
+    slot_[task->setTick].erase(iter);
+    LOG(LEVEL_DEBUG, "TImeWheel::removeTask erased!\n");
     return S_OK;
 }
 

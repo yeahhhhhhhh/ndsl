@@ -20,32 +20,44 @@ void func3(void *para)
 
 TEST_CASE("net/TimeWheel")
 {
+    // 初始化EventLoop
+    EventLoop eloop;
+    REQUIRE(eloop.init() == S_OK);
+    TimeWheel tw(&eloop);
+
     SECTION("start and stop")
     {
-        EventLoop eloop;
-        REQUIRE(eloop.init() == S_OK);
-
-        TimeWheel tw(&eloop);
         REQUIRE(tw.start() == S_OK);
         REQUIRE(tw.stop() == S_OK);
     }
 
     // 如何测?
-    // SECTION("addTask")
-    // {
-    //     EventLoop eloop;
-    //     REQUIRE(eloop.init() == S_OK);
+    SECTION("addTask")
+    {
+        TimeWheel::Task *task = new TimeWheel::Task;
 
-    //     TimeWheel tw(&eloop);
-    //     TimeWheel::Task *task = new TimeWheel::Task;
+        task->doit = func3;
+        task->para = (void *) "Hello World";
+        task->setInterval = 2;
+        task->times = 5;
 
-    //     task->doit = func2;
-    //     task->para = (void *) "Hello World";
-    //     task->setInterval = 2;
-    //     task->times = 5;
+        REQUIRE(tw.addTask(task) == S_OK);
 
-    //     tw.addTask(task);
+        // eloop.loop();
+    }
 
-    //     eloop.loop();
-    // }
+    // 如何测?
+    SECTION("removeTask")
+    {
+        TimeWheel::Task *task = new TimeWheel::Task;
+
+        task->doit = func3;
+        task->para = (void *) "Goodbye World";
+        task->setInterval = 1;
+
+        REQUIRE(tw.addTask(task) == S_OK);
+
+        REQUIRE(tw.removeTask(task) == S_OK);
+        // eloop.loop();
+    }
 }
