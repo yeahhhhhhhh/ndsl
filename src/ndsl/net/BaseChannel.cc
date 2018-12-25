@@ -71,53 +71,41 @@ int BaseChannel::setCallBack(
 int BaseChannel::enableReading()
 {
     setEvents(getEvents() | EPOLLIN);
-    update();
-    return S_OK;
+    return update();
 }
 
 int BaseChannel::enableWriting()
 {
     setEvents(getEvents() | EPOLLOUT);
-    update();
-    return S_OK;
+    return update();
 }
 
 int BaseChannel::disableReading()
 {
     setEvents(getEvents() & ~EPOLLIN);
-    update();
-    return S_OK;
+    return update();
 }
 
 int BaseChannel::disableWriting()
 {
     setEvents(getEvents() & ~EPOLLOUT);
-    update();
-    return S_OK;
+    return update();
 }
 
 int BaseChannel::regist(bool isET)
 {
     if (isET) {
+<<<<<<< HEAD
         setEvents(getEvents() & EPOLLET);
     } else {
         setEvents(getEvents());
     }
-    getEventLoop()->regist(this);
-    return S_OK;
 }
 
-int BaseChannel::update()
-{
-    getEventLoop()->update(this);
-    return S_OK;
-}
+int BaseChannel::update() { return getEventLoop()->update(this); }
 
-int BaseChannel::del()
-{
-    getEventLoop()->del(this);
-    return S_OK;
-}
+int BaseChannel::del() { return getEventLoop()->del(this); }
+>>>>>>> dev_gyz
 
 } // namespace net
 } // namespace ndsl

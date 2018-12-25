@@ -16,6 +16,10 @@ set(LIB_NDSL_SRC
  net/EventLoop.cc
  net/TcpChannel.cc
  net/TcpConnection.cc
+ net/BaseChannel.cc
+ net/SocketAddress.cc
+ net/SocketAddressUn.cc
+ net/TcpAcceptor.cc
 
  #net/WorkQueue.cc
  #net/InterruptChannel.cc

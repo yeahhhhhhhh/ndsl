@@ -10,21 +10,23 @@
 #define __NDSL_NET_CHANNEL_H__
 // #include "EventLoop.h"
 #include <stdint.h>
-#include "../utils/temp_define.h"
+#include "ndsl/utils/temp_define.h"
+
+#include <cstdio>
 
 namespace ndsl {
 namespace net {
 
 class EventLoop;
 
-class ChannelCallBack
-{
-  public:
-    using Callback = void (*)(void *); // Callback 函数指针原型
+// class ChannelCallBack
+// {
+//   public:
+//     using Callback = void (*)(void *); // Callback 函数指针原型
 
-    virtual int handleRead() = 0;
-    virtual int handleWrite() = 0;
-};
+//     virtual int handleRead() = 0;
+//     virtual int handleWrite() = 0;
+// };
 
 struct Channel
 {
@@ -40,6 +42,8 @@ struct Channel
   public:
     Channel(EventLoop *loop)
         : pLoop_(loop)
+        , events_(0)
+        , revents_(0)
     {}
     Channel() {}
     virtual ~Channel() {} // 虚析构函数

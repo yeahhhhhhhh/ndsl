@@ -40,7 +40,6 @@ class TimeWheel
         Taskfunc doit;    // 函数指针
         void *para;       // 函数参数
     };
-
     // 转一圈需要1min,一共有60个槽,两个槽之间间隙为1s
     static const int SLOTNUM = 60; // 一共有60个时间槽
     static const int INTERVAL = 1; // 每两个槽之间的间隔为1s

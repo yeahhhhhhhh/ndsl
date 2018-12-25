@@ -1,4 +1,4 @@
-/*
+/**
  * @file TcpConnection.cc
  * @brief
  *
@@ -7,71 +7,29 @@
  */
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/temp_define.h"
-#include "ndsl/net/Multiplexer.h"
-#include "ndsl/net/CallbackIoChannel.h"
-#include <cstring>
+#include "ndsl/net/TcpChannel.h"
+#include "ndsl/net/TcpAcceptor.h"
+#include <errno.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <iostream>
-using namespace std;
+#include <cstring>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+#include <cstdio>
 
 namespace ndsl {
 namespace net {
 
-TcpConnection::TcpConnection(int sockfd, EventLoop *pLoop)
-{
-    createChannel(sockfd, pLoop);
-}
+TcpConnection::TcpConnection() {}
 TcpConnection::~TcpConnection() {}
 
 int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
     pTcpChannel_ = new TcpChannel(sockfd, pLoop);
-    pTcpChannel_->setCallBack(this);
+    pTcpChannel_->setCallBack(handleRead, handleWrite, this);
+    // pTcpChannel_->setCallBack(this);
+    pTcpChannel_->regist(true);
 
-    // FIXME: accept的时候要设置描述符为非阻塞
-
-    return S_OK;
-}
-
-int TcpConnection::handleWrite()
-{
-    int sockfd = pTcpChannel_->getFd();
-    if (sockfd < 0) { return -1; }
-    int n;
-
-    if (qSendInfo_.size() > 0) {
-        pInfo tsi = qSendInfo_.front();
-
-        if ((n = write(
-                 sockfd, tsi->buf_ + tsi->offset_, tsi->len_ - tsi->offset_)) >
-            0) {
-            tsi->offset_ += n;
-
-            if (tsi->offset_ == tsi->len_) {
-                if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
-                qSendInfo_.pop();
-                // 无写事件 注销写事件
-                if (qSendInfo_.size() == 0) pTcpChannel_->disableWriting();
-                delete tsi; // 删除申请的内存
-            } else if (n == 0) {
-                // 发送缓冲区满 等待下一次被调用
-                return S_OK;
-            }
-        } else if (n < 0) {
-            // 写过程中出错 出错之后处理不了 注销事件 并交给用户处理
-            tsi->errno_ = ::errno;
-            if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
-
-            qSendInfo_.pop();
-            delete tsi;
-
-            // 无写事件 注销写事件
-            if (qSendInfo_.size() == 0) pTcpChannel_->disableWriting();
-
-            return S_FAIL;
-        }
-    }
     return S_OK;
 }
 
@@ -81,50 +39,83 @@ int TcpConnection::onSend(
     int flags,
     Callback cb,
     void *param,
-    int &errno)
+    int &errn)
 {
     int sockfd = pTcpChannel_->getFd();
-    int n = write(sockfd, buf, len);
+    size_t n = send(sockfd, buf, len, flags);
     if (n == len) {
         // 写完 通知用户
         if (cb != NULL) cb(param);
         return S_OK;
     } else if (n < 0) {
         // 出错 通知用户
-        errno = ::errno;
-        if (cb != NULL) cb(param);
+        errn = errno;
         return S_FAIL;
     }
 
     pInfo tsi = new Info;
     tsi->offset_ = n;
-    tsi->buf_ = buf;
+    tsi->sendBuf_ = buf;
+    tsi->readBuf_ = NULL;
     tsi->len_ = len;
     tsi->flags_ = flags;
     tsi->cb_ = cb;
     tsi->param_ = param;
-    tsi->errno_ = errno;
+    *tsi->errno_ = errno;
 
-    qInfo_.push(tsi);
+    qSendInfo_.push(tsi);
 
     pTcpChannel_->enableWriting();
 
     return S_OK;
 }
 
-int TcpConnection::handleRead()
+int TcpConnection::handleWrite(void *pthis)
 {
-    int sockfd = pTcpChannel_->getFd();
-    if (sockfd < 0) { return S_FAIL; }
-    if ((recvInfo_.len_ = read(sockfd, recvInfo_.buf_, MAXLINE)) < 0) {
-        recvInfo_.errno_ = ::errno;
+    TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
+    int sockfd = pThis->pTcpChannel_->getFd();
+
+    // cout << "fd = " << sockfd << endl;
+
+    if (sockfd < 0) { return -1; }
+    size_t n;
+
+    if (pThis->qSendInfo_.size() > 0) {
+        pInfo tsi = pThis->qSendInfo_.front();
+
+        if ((n = send(
+                 sockfd,
+                 (char *) tsi->sendBuf_ + tsi->offset_,
+                 tsi->len_ - tsi->offset_,
+                 tsi->flags_)) > 0) {
+            tsi->offset_ += n;
+
+            if (tsi->offset_ == tsi->len_) {
+                if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
+                pThis->qSendInfo_.pop();
+                // 无写事件 注销写事件
+                if (pThis->qSendInfo_.size() == 0)
+                    pThis->pTcpChannel_->disableWriting();
+                delete tsi; // 删除申请的内存
+            } else if (n == 0) {
+                // 发送缓冲区满 等待下一次被调用
+                return S_OK;
+            }
+        } else if (n < 0) {
+            // 写过程中出错 出错之后处理不了 注销事件 并交给用户处理
+            *tsi->errno_ = errno;
+            if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
+
+            pThis->qSendInfo_.pop();
+            delete tsi;
+
+            // 无写事件 注销写事件
+            if (pThis->qSendInfo_.size() == 0)
+                pThis->pTcpChannel_->disableWriting();
+
+            return S_FAIL;
+        }
     }
-
-    // 无论出错还是完成数据读取之后都得通知用户
-    if (recvInfo_.cb != NULL) recvInfo_.cb_(recvInfo_.param_);
-
-    // 将读事件移除
-    pTcpChannel_->disableReading();
     return S_OK;
 }
 
@@ -132,41 +123,84 @@ int TcpConnection::handleRead()
 // 的值。
 int TcpConnection::onRecv(
     char *buf,
-    int &len,
+    size_t &len,
+    int flags,
     Callback cb,
     void *param,
-    int &errno)
+    int &errn)
 {
     int sockfd = pTcpChannel_->getFd();
-    if (read(sockfd, buf_, MAXLINE) < 0) {
+    if ((len = recv(sockfd, buf, MAXLINE, flags)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             pTcpChannel_->enableReading();
-            // 使用之前 结构体里面数据清0
-            memset(&recvInfo_, 0, sizeof(Info));
-            recvInfo_.buf_ = buf;
-            recvInfo_.len_ = len;
-            recvInfo_.cb_ = cb;
-            recvInfo_.param_ = param;
-            recvInfo_.errno_ = errno;
+
+            pInfo tsi = new Info;
+            tsi->readBuf_ = buf;
+            tsi->sendBuf_ = NULL;
+            tsi->flags_ = flags;
+            tsi->len_ = len;
+            tsi->cb_ = cb;
+            tsi->param_ = param;
+            *tsi->errno_ = errno;
+
+            qRecvInfo_.push(tsi);
             return S_OK;
         } else {
-            // FIXME: 这样写可以么
-            errno = ::errno;
+            errn = errno;
             return S_FAIL;
         }
     }
     if (cb != NULL) cb(param);
-
     // 先返回，最终的处理在onRead()里面
     return S_OK;
 }
 
-// 只读4个字节
-int TcpConnection::onRecvmsg(char *buf, Callback cb, void *param)
+int TcpConnection::handleRead(void *pthis)
 {
-    int sockfd = pTcpChannel_->getFd();
-    read(sockfd, buf, 4);
-    if (cb != NULL) cb(param);
+    TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
+    int sockfd = pThis->pTcpChannel_->getFd();
+    if (sockfd < 0) { return S_FAIL; }
+    pInfo tsi = pThis->qRecvInfo_.front();
+
+    if (pThis->qRecvInfo_.size() > 0) {
+        if ((tsi->len_ = recv(sockfd, tsi->readBuf_, MAXLINE, tsi->flags_)) <
+            0) {
+            // 出错就设置错误码
+            *tsi->errno_ = errno;
+        }
+    }
+
+    // 无论出错还是完成数据读取之后都得通知用户
+    if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
+    pThis->qRecvInfo_.pop();
+    delete tsi;
+    if (pThis->qRecvInfo_.size() == 0) {
+        // 将读事件移除
+        pThis->pTcpChannel_->disableReading();
+    }
+
+    return S_OK;
+}
+
+int TcpConnection::onRecvmsg(char *buf, Callback cb, void *param, int &errn)
+{
+    // 异步
+    return S_OK;
+}
+
+int TcpConnection::onAccept(
+    TcpConnection *pCon,
+    struct sockaddr *addr,
+    socklen_t *addrlen,
+    Callback cb,
+    void *param)
+{
+    // 异步理解为用户没有启TcpAcceptor函数
+    TcpAcceptor *ta = new TcpAcceptor(
+        pTcpChannel_->getEventLoop(), pCon, addr, addrlen, cb, param);
+    ta->start();
+
+    return S_OK;
 }
 
 } // namespace net
