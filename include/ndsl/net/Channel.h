@@ -24,8 +24,8 @@ struct Channel
   public:
     using Callback = void (*)(void *); // Callback 函数指针原型
 
-    // TODO: 是否改为protected 有待商榷
-  protected:
+    // protected:
+  public:
     uint32_t events_;  // 注册事件
     uint32_t revents_; // 发生事件
     EventLoop *pLoop_; // 指向EventLoop

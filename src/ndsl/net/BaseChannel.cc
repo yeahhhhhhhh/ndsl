@@ -10,6 +10,8 @@
 #include "ndsl/net/EventLoop.h"
 #include <sys/epoll.h>
 
+#include <cstdio>
+
 namespace ndsl {
 namespace net {
 
@@ -38,16 +40,8 @@ int BaseChannel::setCallBack(
     ChannelCallBack handleWrite,
     void *thi)
 {
-    if (handleRead)
-        handleRead_ = handleRead;
-    else
-        handleRead_ = NULL;
-
-    if (handleWrite)
-        handleWrite_ = handleWrite;
-    else
-        handleWrite_ = NULL;
-
+    handleRead_ = handleRead;
+    handleWrite_ = handleWrite;
     pThis_ = thi;
 
     return S_OK;
@@ -56,37 +50,37 @@ int BaseChannel::setCallBack(
 int BaseChannel::enableReading()
 {
     events_ |= EPOLLIN;
-    return update();
+    return modify();
 }
 
 int BaseChannel::enableWriting()
 {
     events_ |= EPOLLOUT;
-    return update();
+    return modify();
 }
 
 int BaseChannel::disableReading()
 {
     events_ &= ~EPOLLIN;
-    return update();
+    return modify();
 }
 
 int BaseChannel::disableWriting()
 {
     events_ &= ~EPOLLOUT;
-    return update();
+    return modify();
 }
 
-int BaseChannel::regist(bool isET)
+int BaseChannel::enroll(bool isET)
 {
     if (isET) events_ |= EPOLLET;
 
-    return getEventLoop()->regist(this);
+    return pLoop_->enroll(this);
 }
 
-int BaseChannel::update() { return getEventLoop()->update(this); }
+int BaseChannel::modify() { return pLoop_->modify(this); }
 
-int BaseChannel::del() { return getEventLoop()->del(this); }
+int BaseChannel::erase() { return pLoop_->erase(this); }
 
 } // namespace net
 } // namespace ndsl

@@ -18,15 +18,15 @@ TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
 TcpChannel::~TcpChannel()
 {
     // 将自身从eventloop上面删掉
-    del();
+    erase();
 }
 
-TcpConnection *TcpChannel::newConnection(int connfd, TcpAcceptor *pTa)
-{
-    TcpConnection *pCon = new TcpConnection(pTa);
-    pCon->createChannel(connfd, pLoop);
-    return pCon;
-}
+// TcpConnection *TcpChannel::newConnection(int connfd, TcpAcceptor *pTa)
+// {
+//     TcpConnection *pCon = new TcpConnection(pTa);
+//     pCon->createChannel(connfd, pLoop);
+//     return pCon;
+// }
 
 } // namespace net
 } // namespace ndsl

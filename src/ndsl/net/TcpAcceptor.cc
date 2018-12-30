@@ -35,24 +35,6 @@ TcpAcceptor::TcpAcceptor(Callback cb, EventLoop *pLoop)
     info.inUse_ = false;
 }
 
-// TcpAcceptor::TcpAcceptor(
-//     EventLoop *pLoop,
-//     TcpConnection *pCon,
-//     struct sockaddr *addr,
-//     socklen_t *addrlen,
-//     Callback cb,
-//     void *param)
-//     : listenfd_(-1)
-//     , pLoop_(pLoop)
-// {
-//     info.pCon_ = pCon;
-//     info.addr_ = addr;
-//     info.addrlen_ = addrlen;
-//     info.cb_ = cb;
-//     info.param_ = param;
-//     info.inUse_ = true;
-// }
-
 int TcpAcceptor::setInfo(
     TcpConnection *pCon,
     struct sockaddr *addr,
@@ -60,6 +42,8 @@ int TcpAcceptor::setInfo(
     Callback cb,
     void *param)
 {
+    memset(&info, 0, sizeof(struct Info));
+
     info.pCon_ = pCon;
     info.addr_ = addr;
     info.addrlen_ = addrlen;
@@ -77,7 +61,7 @@ int TcpAcceptor::start()
     createAndListen();
     pTcpChannel_ = new TcpChannel(listenfd_, pLoop_);
     pTcpChannel_->setCallBack(handleRead, NULL, this);
-    pTcpChannel_->regist(false);
+    pTcpChannel_->enroll(false);
     pTcpChannel_->enableReading();
 
     return S_OK;
@@ -85,9 +69,9 @@ int TcpAcceptor::start()
 
 int TcpAcceptor::createAndListen()
 {
-    // int on = 1;
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
+    // TODO: 换成另一个
     struct sockaddr_in servaddr;
     bzero(&servaddr, sizeof(servaddr));
     // struct SocketAddress4 servaddr;
@@ -105,13 +89,10 @@ int TcpAcceptor::createAndListen()
     if (-1 ==
         bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
         printf("TcpAcceptor bind error\n");
-
-        // cout << "bind error, errno:" << errno << endl;
     }
 
     if (-1 == listen(listenfd_, LISTENQ)) {
         printf("TcpAcceptor listen error\n");
-        // cout << "listen error, errno:" << errno << endl;
     }
 
     return S_OK;
@@ -120,7 +101,7 @@ int TcpAcceptor::createAndListen()
 int TcpAcceptor::handleRead(void *pthis)
 {
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
-    printf("TcpAcceptor.cc handleRead()\n");
+    // printf("TcpAcceptor.cc handleRead()\n");
 
     int connfd;
     struct sockaddr_in cliaddr;
@@ -129,28 +110,18 @@ int TcpAcceptor::handleRead(void *pthis)
         pThis->listenfd_, (struct sockaddr *) &cliaddr, (socklen_t *) &clilen);
     if (connfd > 0) {
         // 连接成功
-
         printf("connect succ\n");
-
-        // cout << "new connection from "
-        //      << "[" << inet_ntoa(cliaddr.sin_addr) << ":"
-        //      << ntohs(cliaddr.sin_port) << "]"
-        //      << " new socket fd:" << connfd << endl;
     } else {
-        printf("connect fail\n");
         // 连接失败
-
-        // cout << "accept error, connfd:" << connfd << " errno:" << errno <<
-        // endl;
+        printf("connect fail\n");
     }
 
     // 设置非阻塞io
     fcntl(connfd, F_SETFL, O_NONBLOCK);
-    // TcpConnection *tCon = pThis->pTcpChannel_->newConnection(connfd, this);
 
     if (pThis->info.inUse_) {
         ((pThis->info).pCon_)
-            ->createChannel(connfd, pThis->pTcpChannel_->getEventLoop());
+            ->createChannel(connfd, pThis->pTcpChannel_->pLoop_);
         pThis->info.addr_ = (struct sockaddr *) &cliaddr;
         pThis->info.addrlen_ = (socklen_t *) &clilen;
         if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);

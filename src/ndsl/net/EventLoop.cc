@@ -167,7 +167,8 @@ int EventLoop::init()
         pQueCh_ = new QueueChannel(evfd, this);
 
         pQueCh_->setCallBack(pQueCh_->onQueue, NULL, pQueCh_);
-        ret = pQueCh_->regist(false);
+        // ret = pQueCh_->regist(false);
+        ret = pQueCh_->enroll(false);
         if (ret != S_OK) return ret; // 若不成功直接返回
         ret = pQueCh_->enableReading();
         if (ret != S_OK) return ret; // 若不成功直接返回
@@ -186,7 +187,8 @@ int EventLoop::init()
         // 创建InterruptChannel
         pIntrCh_ = new InterruptChannel(evfd, this);
         // pIntrCh_->setCallBack(NULL, NULL, pIntrCh_);
-        ret = pIntrCh_->regist(false);
+        // ret = pIntrCh_->regist(false);
+        ret = pIntrCh_->enroll(false);
         if (ret != S_OK) return ret; // 若不成功直接返回
         ret = pIntrCh_->enableReading();
         if (ret != S_OK) return ret; // 若不成功直接返回
@@ -235,11 +237,11 @@ void EventLoop::addWork(work_struct *work)
     pQueCh_->onWrite();
 }
 
-int EventLoop::regist(Channel *pCh) { return epoll_.regist(pCh); }
+int EventLoop::enroll(Channel *pCh) { return epoll_.enroll(pCh); }
 
-int EventLoop::update(Channel *pCh) { return epoll_.update(pCh); }
+int EventLoop::modify(Channel *pCh) { return epoll_.modify(pCh); }
 
-int EventLoop::del(Channel *pCh) { return epoll_.del(pCh); }
+int EventLoop::erase(Channel *pCh) { return epoll_.erase(pCh); }
 
 void EventLoop::quit() { pIntrCh_->onWrite(); }
 

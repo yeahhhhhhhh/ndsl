@@ -30,12 +30,13 @@ int Epoll::init()
     return S_OK;
 }
 
-int Epoll::regist(Channel *pCh)
+int Epoll::enroll(Channel *pCh)
 {
     struct epoll_event ev;
 
     ev.data.ptr = pCh;
-    ev.events = pCh->getEvents();
+    // ev.events = pCh->getEvents();
+    ev.events = pCh->events_;
 
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_ADD, pCh->getFd(), &ev);
 
@@ -54,12 +55,13 @@ int Epoll::regist(Channel *pCh)
     return S_OK;
 }
 
-int Epoll::update(Channel *pCh)
+int Epoll::modify(Channel *pCh)
 {
     struct epoll_event ev;
 
     ev.data.ptr = pCh;
-    ev.events = pCh->getEvents();
+    // ev.events = pCh->getEvents();
+    ev.events = pCh->events_;
 
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_MOD, pCh->getFd(), &ev);
 
@@ -71,7 +73,7 @@ int Epoll::update(Channel *pCh)
     return S_OK;
 }
 
-int Epoll::del(Channel *pCh)
+int Epoll::erase(Channel *pCh)
 {
     struct epoll_event ev;
 
@@ -102,7 +104,8 @@ int Epoll::wait(Channel *channels[], int &nEvents, int timeoutMs)
     // 依次读取事件，并返回事件
     for (int i = 0; i < ret; i++) {
         Channel *channel = static_cast<Channel *>(events[i].data.ptr);
-        channel->setRevents(events[i].events);
+        // channel->setRevents(events[i].events);
+        channel->revents_ = events[i].events;
         channels[i] = channel;
     }
 

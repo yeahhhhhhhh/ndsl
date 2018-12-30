@@ -10,8 +10,24 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include "ndsl/net/TcpClient.h"
 #include "ndsl/utils/temp_define.h"
 
-// TODO: 用来模拟用户？
+namespace ndsl {
+namespace net {
 
-int onConnect() {}
+int TcpClient::onConnect()
+{
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in servaddr;
+    bzero(&servaddr, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(SERV_PORT);
+    inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+    connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
+
+    return S_OK;
+}
+
+} // namespace net
+} // namespace ndsl

@@ -20,11 +20,18 @@
 using namespace ndsl;
 using namespace net;
 
-// char *sayHello() { return "Hello"; }
-
 bool flag = false;
 
-void fun1(void *) { flag = true; }
+void fun1(void *a) { flag = true; }
+
+bool flagsend = false;
+static void sendTest(void *a) { flagsend = true; }
+
+bool flagerror = false;
+static void iserror(int a, int b) { flagerror = true; }
+
+bool flagrecv = false;
+static void recvTest(void *a) { flagrecv = true; }
 
 TEST_CASE("net/TcpConnection(onRecv)")
 {
@@ -34,9 +41,6 @@ TEST_CASE("net/TcpConnection(onRecv)")
         // 初始化EPOLL
         EventLoop loop;
         REQUIRE(loop.init() == S_OK);
-
-        // int listenfd = socket(AF_INET, SOCK_STREAM, 0);
-        // fcntl(listenfd, F_SETFL, O_NONBLOCK);
 
         TcpAcceptor *tAc = new TcpAcceptor(&loop);
         tAc->start();
@@ -64,18 +68,36 @@ TEST_CASE("net/TcpConnection(onRecv)")
 
         // 测试是否接收到了客户的连接
         REQUIRE(flag == true);
+
+        // 测试onSend
+        Conn->onError(iserror);
+        Conn->onSend("hello world", sizeof("hello world"), 0, sendTest, NULL);
+
+        char recvBuf[15];
+        memset(recvBuf, 0, sizeof(recvBuf));
+        read(sockfd, recvBuf, MAXLINE);
+
+        REQUIRE(strcmp("hello world", recvBuf) == 0);
+        REQUIRE(flagsend == true);
+
+        // 测试onRecv
+        memset(recvBuf, 0, sizeof(recvBuf));
+        size_t len;
+        write(sockfd, "hello world", sizeof("hello world"));
+
+        REQUIRE(Conn->onRecv(recvBuf, len, 0, recvTest, NULL) == S_OK);
+        REQUIRE(flagrecv == true);
+
+        // 第二次不需要添加中断
+        REQUIRE(loop.loop() == S_OK);
     }
+
+    // TODO: handleRead handleWrite 好像没法测
+    // SECTION("onRecv onSecd handleRead hanleWrite")
+    // {
+    //     // 启动服务
+    //     // 初始化EPOLL
+    //     EventLoop loop;
+    //     REQUIRE(loop.init() == S_OK);
+    // }
 }
-
-// // 初始化tcpConnection
-// TcpAcceptor *pAc = new TcpAcceptor(fun1, &loop);
-// REQUIRE(pAc->start() == S_OK);
-
-// // // 启动一个客户端
-// int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-// struct sockaddr_in servaddr;
-// bzero(&servaddr, sizeof(servaddr));
-// servaddr.sin_family = AF_INET;
-// servaddr.sin_port = htons(SERV_PORT);
-// inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
-// connect(sockfd, (SA *) &servaddr, sizeof(servaddr));

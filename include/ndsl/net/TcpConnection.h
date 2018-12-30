@@ -21,7 +21,8 @@ class TcpAcceptor;
 class TcpConnection
 {
   public:
-    using Callback = void (*)(void *); // Callback 函数指针原型
+    using Callback = void (*)(void *);      // Callback 函数指针原型
+    using ErrorHandle = void (*)(int, int); // error回调函数
 
   private:
     // 用户主动调用onRecv/onSend函数的参数存在这
@@ -39,9 +40,12 @@ class TcpConnection
     std::queue<pInfo> qSendInfo_; // 等待发送的队列
     std::queue<pInfo> qRecvInfo_; // 等待接收的队列
 
+    // TcpChannel的指针
     TcpChannel *pTcpChannel_;
     // 存储Acceptor的TcpChannel
     TcpAcceptor *pTcpAcceptor_;
+    // 错误处理的回调函数
+    ErrorHandle errorHandle_;
 
   public:
     TcpConnection(TcpAcceptor *tcpAcceptor);
@@ -50,13 +54,11 @@ class TcpConnection
     static int handleRead(void *pthis);
     static int handleWrite(void *pthis);
 
+    // 新建一个Channel
     int createChannel(int sockfd_, EventLoop *pLoop);
 
-    // TODO: error汇总
-    int onError();
-
-    // // TODO: 给Multipliter的接口 没有实现的必要？
-    // int onRecvmsg(char *buf, Callback cb, void *param);
+    // error汇总 注册error回调函数
+    int onError(ErrorHandle cb);
 
     // onSend onRecv 的语义是异步通知
     int onRecv(char *buffer, size_t &len, int flags, Callback cb, void *param);
@@ -65,7 +67,7 @@ class TcpConnection
     int
     onSend(const void *buf, size_t len, int flags, Callback cb, void *param);
 
-    // 正常执行accept的流程
+    // 准备接收一个新连接
     int onAccept(
         TcpConnection *pCon,
         struct sockaddr *addr,

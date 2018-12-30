@@ -29,8 +29,7 @@ int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
     pTcpChannel_ = new TcpChannel(sockfd, pLoop);
     pTcpChannel_->setCallBack(handleRead, handleWrite, this);
-    // pTcpChannel_->setCallBack(this);
-    pTcpChannel_->regist(true);
+    pTcpChannel_->enroll(true);
 
     return S_OK;
 }
@@ -50,6 +49,7 @@ int TcpConnection::onSend(
         return S_OK;
     } else if (n < 0) {
         // 出错 通知用户
+        errorHandle_(errno, pTcpChannel_->getFd());
         return S_FAIL;
     }
 
@@ -63,7 +63,6 @@ int TcpConnection::onSend(
     tsi->param_ = param;
 
     qSendInfo_.push(tsi);
-
     pTcpChannel_->enableWriting();
 
     return S_OK;
@@ -100,7 +99,7 @@ int TcpConnection::handleWrite(void *pthis)
             }
         } else if (n < 0) {
             // 写过程中出错 出错之后处理不了 注销事件 并交给用户处理
-            if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
+            pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
 
             pThis->qSendInfo_.pop();
             delete tsi;
@@ -140,11 +139,13 @@ int TcpConnection::onRecv(
             qRecvInfo_.push(tsi);
             return S_OK;
         } else {
+            // 出错 回调用户
+            errorHandle_(errno, pTcpChannel_->getFd());
             return S_FAIL;
         }
     }
+    // 一次性读完之后通知用户
     if (cb != NULL) cb(param);
-    // 先返回，最终的处理在onRead()里面
     return S_OK;
 }
 
@@ -159,10 +160,12 @@ int TcpConnection::handleRead(void *pthis)
         if ((tsi->len_ = recv(sockfd, tsi->readBuf_, MAXLINE, tsi->flags_)) <
             0) {
             // 出错
+            pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
+            return S_FAIL;
         }
     }
 
-    // 无论出错还是完成数据读取之后都得通知用户
+    // 完成数据读取之后得通知用户
     if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
     pThis->qRecvInfo_.pop();
     delete tsi;
@@ -184,6 +187,13 @@ int TcpConnection::onAccept(
     pTcpAcceptor_->setInfo(pCon, addr, addrlen, cb, param);
     pTcpAcceptor_->getTcpChannel()->enableReading();
 
+    return S_OK;
+}
+
+// 错误处理 交给用户
+int TcpConnection::onError(ErrorHandle cb)
+{
+    errorHandle_ = cb;
     return S_OK;
 }
 

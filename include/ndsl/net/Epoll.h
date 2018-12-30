@@ -44,9 +44,13 @@ class Epoll
     int init();
 
     // 注册、更新、删除事件
-    int regist(Channel *);
-    int update(Channel *);
-    int del(Channel *);
+    // int regist(Channel *);
+    // int update(Channel *);
+    // int del(Channel *);
+
+    int enroll(Channel *);
+    int modify(Channel *);
+    int erase(Channel *);
 
     // 默认为一直阻塞,nEvents返回响应事件数
     int wait(Channel *channels[], int &nEvents, int timeMs = -1);

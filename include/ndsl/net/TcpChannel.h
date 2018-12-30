@@ -21,7 +21,9 @@ class TcpChannel : public BaseChannel
     TcpChannel(int sockfd, EventLoop *loop);
     ~TcpChannel();
 
-    TcpConnection *newConnection(int connfd, TcpAcceptor *pta);
+    // TODO: 还需要这个么
+    // 服务器还需要用户调用onAccept么
+    // TcpConnection *newConnection(int connfd, TcpAcceptor *pta);
 };
 
 } // namespace net
