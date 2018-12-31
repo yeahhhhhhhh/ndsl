@@ -32,15 +32,8 @@ namespace net{
 struct Message{
     int id; // 通信实体的id
     int len; // 负载长度
-}
+};
 #pragma pack(pop)
-
-// 自定义addwork传入的参数结构体
-struct para{
-    Multiplexer *pthis;
-    int id;
-    ndsl::net::Multiplexer::Callback cb;
-}
 
 /**
  * @class: Multiplexer
@@ -62,10 +55,10 @@ class Multiplexer
 	int error_;
     int id_;
 	int len_; // 负载长度
-    int left_;
-	int rlen_;
+    size_t left_;
+	size_t rlen_;
 
-	char *msghead_[ sizeof(char)* MAXLINE ];
+	char msghead_[ sizeof(char)* MAXLINE ];
 	char *databuf_ = NULL;
 	char *location_ = NULL;
 
@@ -81,15 +74,15 @@ class Multiplexer
     void addRemoveWork(int id);
 
     // 插入id对应的回调函数
-    static void insert(int id, Callback cb);
+    static void insert(void *pa );
 
     // 删除id对应的回调函数
-    static void remove(int id);
+    static void remove(void *pa );
 
     // 向上层提供发送消息接口
     void sendMessage(
         int id,
-        int len,
+        int length,
         char *data);
 
     // 分发消息给通信实体
@@ -99,6 +92,14 @@ class Multiplexer
 	// 回调，释放已使用的内存
 	void freecb(void *p);
 };
+
+// 自定义addwork传入的参数结构体
+struct para{
+    Multiplexer *pthis;
+    int id;
+    ndsl::net::Multiplexer::Callback cb;
+};
+
 
 } // namespace net
 } // namespace ndsl
