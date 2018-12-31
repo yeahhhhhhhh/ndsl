@@ -98,7 +98,7 @@ int TcpConnection::handleWrite(void *pthis)
                 if (pThis->qSendInfo_.size() == 0)
                     pThis->pTcpChannel_->disableWriting();
                 // 释放掉buf占用的空间
-                if (buf != NULL) free(tsi->sendBuf_);
+                if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
 
                 delete tsi; // 删除申请的内存
             } else if (n == 0) {
@@ -112,7 +112,7 @@ int TcpConnection::handleWrite(void *pthis)
             pThis->qSendInfo_.pop();
 
             // 释放掉buf占用的空间
-            if (buf != NULL) free(tsi->sendBuf_);
+            if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
 
             delete tsi;
 

@@ -28,13 +28,13 @@ class TcpConnection
     // 用户主动调用onRecv/onSend函数的参数存在这
     typedef struct SInfo
     {
-        const void *sendBuf_; // 用户给的写地址
-        void *readBuf_;       // 用户给的读地址
-        size_t len_;          // buf长度
-        int flags_;           // send()的参数
-        Callback cb_;         // 存储用户传过来的回调函数
-        void *param_;         // 回调函数的参数
-        size_t offset_;       // 一次没发送完的发送偏移
+        void *sendBuf_; // 用户给的写地址
+        void *readBuf_; // 用户给的读地址
+        size_t len_;    // buf长度
+        int flags_;     // send()的参数
+        Callback cb_;   // 存储用户传过来的回调函数
+        void *param_;   // 回调函数的参数
+        size_t offset_; // 一次没发送完的发送偏移
     } Info, *pInfo;
 
     std::queue<pInfo> qSendInfo_; // 等待发送的队列
