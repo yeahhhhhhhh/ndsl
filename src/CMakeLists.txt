@@ -6,4 +6,5 @@
 # @author niexw
 # @email xiaowen.nie.cn@gmail.com
 #
-add_subdirectory(lib)
+
+add_subdirectory(ndsl)
