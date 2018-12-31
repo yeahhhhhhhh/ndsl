@@ -18,7 +18,7 @@ set(LIB_NDSL_SRC
  net/TcpChannel.cc
  net/TcpConnection.cc
  net/TcpAcceptor.cc
-
+ net/Multiplexer.cc
 
  net/SocketAddress.cc
  net/SocketAddressUn.cc
