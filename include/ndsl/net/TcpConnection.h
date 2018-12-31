@@ -64,8 +64,7 @@ class TcpConnection
     int onRecv(char *buffer, size_t &len, int flags, Callback cb, void *param);
 
     // 会有好多人同时调用这个进行send，需要一个队列
-    int
-    onSend(const void *buf, size_t len, int flags, Callback cb, void *param);
+    int onSend(void *buf, size_t len, int flags, Callback cb, void *param);
 
     // 准备接收一个新连接
     int onAccept(

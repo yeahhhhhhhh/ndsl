@@ -34,8 +34,9 @@ int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
     return S_OK;
 }
 
+// TODO: 释放buf
 int TcpConnection::onSend(
-    const void *buf,
+    void *buf,
     size_t len,
     int flags,
     Callback cb,
@@ -46,10 +47,14 @@ int TcpConnection::onSend(
     if (n == len) {
         // 写完 通知用户
         if (cb != NULL) cb(param);
+        // 释放掉buf占用的空间
+        if (buf != NULL) free(buf);
         return S_OK;
     } else if (n < 0) {
         // 出错 通知用户
         errorHandle_(errno, pTcpChannel_->getFd());
+        // 释放掉buf占用的空间
+        if (buf != NULL) free(buf);
         return S_FAIL;
     }
 
@@ -92,6 +97,9 @@ int TcpConnection::handleWrite(void *pthis)
                 // 无写事件 注销写事件
                 if (pThis->qSendInfo_.size() == 0)
                     pThis->pTcpChannel_->disableWriting();
+                // 释放掉buf占用的空间
+                if (buf != NULL) free(tsi->sendBuf_);
+
                 delete tsi; // 删除申请的内存
             } else if (n == 0) {
                 // 发送缓冲区满 等待下一次被调用
@@ -102,6 +110,10 @@ int TcpConnection::handleWrite(void *pthis)
             pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
 
             pThis->qSendInfo_.pop();
+
+            // 释放掉buf占用的空间
+            if (buf != NULL) free(tsi->sendBuf_);
+
             delete tsi;
 
             // 无写事件 注销写事件
