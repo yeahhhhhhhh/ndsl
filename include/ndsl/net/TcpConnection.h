@@ -40,8 +40,6 @@ class TcpConnection
     std::queue<pInfo> qSendInfo_; // 等待发送的队列
     std::queue<pInfo> qRecvInfo_; // 等待接收的队列
 
-    // TcpChannel的指针
-    TcpChannel *pTcpChannel_;
     // 存储Acceptor的TcpChannel
     TcpAcceptor *pTcpAcceptor_;
     // 错误处理的回调函数
@@ -53,6 +51,9 @@ class TcpConnection
 
     static int handleRead(void *pthis);
     static int handleWrite(void *pthis);
+
+    // TcpChannel的指针 方便Mulpipleter拿
+    TcpChannel *pTcpChannel_;
 
     // 新建一个Channel
     int createChannel(int sockfd_, EventLoop *pLoop);

@@ -34,6 +34,7 @@ int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
     return S_OK;
 }
 
+// TODO: 释放掉buf
 int TcpConnection::onSend(
     const void *buf,
     size_t len,

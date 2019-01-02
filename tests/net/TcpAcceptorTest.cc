@@ -50,6 +50,6 @@ TEST_CASE("net/TcpAcceptor")
         REQUIRE(loop.loop() == S_OK);
 
         // // 测试是否接收到了客户的连接
-        // REQUIRE(rrecv == true);
+        REQUIRE(rrecv == true);
     }
 }
