@@ -21,12 +21,5 @@ TcpChannel::~TcpChannel()
     erase();
 }
 
-// TcpConnection *TcpChannel::newConnection(int connfd, TcpAcceptor *pTa)
-// {
-//     TcpConnection *pCon = new TcpConnection(pTa);
-//     pCon->createChannel(connfd, pLoop);
-//     return pCon;
-// }
-
 } // namespace net
 } // namespace ndsl
