@@ -6,15 +6,15 @@
 // @author ranxiangjun
 // @email ranxianshen@gmail.com
 //
-#ifndef __UNIXCHANNEL_H__
-#define __UNIXCHANNEL_H__
+#ifndef __NDSL_NET_UNIXCHANNEL_H__
+#define __NDSL_NET_UNIXCHANNEL_H__
 #include "BaseChannel.h"
 
 namespace ndsl {
 namespace net {
 
 class UnixConnection;
-class EventLoop;
+class TcpAcceptor;
 
 class UnixChannel : public BaseChannel
 {
@@ -22,10 +22,11 @@ class UnixChannel : public BaseChannel
     UnixChannel(int sockfd, EventLoop *loop);
     ~UnixChannel();
 
-    UnixConnection *newConnection(int connfd);
+	// not decided
+    // UnixConnection *newConnection(int connfd);
 };
 
 } // namespace net
 } // namespace ndsl
 
-#endif // __UNIXCHANNEL_H__
+#endif // __NDSL_NET_UNIXCHANNEL_H__

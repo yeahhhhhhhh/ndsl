@@ -4,7 +4,7 @@
 // unixacceptor shixian
 //
 // @author ranxaingjun
-// @email ransianshen@gmail.com
+// @email ranxianshen@gmail.com
 //
 #include <sys/socket.h>
 #include <fcntl.h>
@@ -15,6 +15,7 @@
 #include "../../../include/ndsl/utils/temp_define.h"
 #include "../../../include/ndsl/net/UnixAcceptor.h"
 #include "../../../include/ndsl/net/SocketAddressUn.h"
+#include "../../../include/ndsl/net/UnixConnection.h"
 
 using namespace std;
 
@@ -22,40 +23,51 @@ namespace ndsl {
 namespace net {
 
 UnixAcceptor::UnixAcceptor(EventLoop *pLoop)
-    : listenfd_(-1)
-    , pLoop_(pLoop)
-{}
+    : listenfd_(-1), pLoop_(pLoop)
+{
+	info.inUse_ = false;
+}
 
 UnixAcceptor::~UnixAcceptor() { delete pUnixChannel_; }
 
-UnixAcceptor::UnixAcceptor(Callback cb, EventLoop *pLoop) : pLoop_(pLoop), cb_(cb)
-{}
+UnixAcceptor::UnixAcceptor(Callback cb, EventLoop *pLoop) 
+	:listenfd_(-1), pLoop_(pLoop), cb_(cb)
+{
+	info.inUse_ = false;
 
-UnixAcceptor::UnixAcceptor(
-    EventLoop *pLoop,
+}
+
+int UnixAcceptor::setInfo(
     UnixConnection *pCon,
     struct sockaddr *addr,
     socklen_t *addrlen,
     Callback cb,
     void *param)
-    : listenfd_(-1)
-    , pLoop_(pLoop)
 {
+	memset(&info, 0, sizeof(struct Info));
+
     info.pCon_ = pCon;
     info.addr_ = addr;
     info.addrlen_ = addrlen;
     info.cb_ = cb;
     info.param_ = param;
     info.inUse_ = true;
+
+	return S_OK;
+}
+
+UnixChannel *UnixAcceptor::getUnixChannel()
+{
+	return pUnixChannel_;
 }
 
 int UnixAcceptor::start(const string& path)
 {
-    listenfd_ = createAndListen( path);
+    createAndListen( path);
     pUnixChannel_ = new UnixChannel(listenfd_, pLoop_);
     pUnixChannel_->setCallBack(handleRead, NULL, this);
-    pUnixChannel_->regist(false);
-    // pUnixChannel_->enableReading();
+    pUnixChannel_->enroll(false);
+	pUnixChannel_->enableReading();
 
     return S_OK;
 }
@@ -67,17 +79,18 @@ int UnixAcceptor::createAndListen(const string& path)
 
 	// in case the address was used
 	unlink(path.c_str());
+
     // 设置非阻塞
     fcntl(listenfd_, F_SETFL, O_NONBLOCK);
 
-    if (-1 ==
-        bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
-    }
+    if (-1 ==bind(listenfd_, (struct sockaddr *) &servaddr, 
+				sizeof(servaddr))) 
+	{}
 
-    if (-1 == listen(listenfd_, LISTENQ)) {
-    }
+    if (-1 == listen(listenfd_, LISTENQ)) 
+	{}
 
-    return listenfd_;
+    return S_OK;
 }
 
 int UnixAcceptor::handleRead(void *pthis)
@@ -98,25 +111,20 @@ int UnixAcceptor::handleRead(void *pthis)
 
     // 设置非阻塞io
     fcntl(connfd, F_SETFL, O_NONBLOCK);
-    UnixConnection *uCon =pThis-> pUnixChannel_->newConnection(connfd);
 
     if (pThis->info.inUse_) {
-        pThis->info.pCon_ = uCon;
+        ((pThis->info).pCon_)->createChannel(connfd, pThis->pUnixChannel_->pLoop_);
         pThis->info.addr_ = (struct sockaddr *) &cliaddr;
         pThis->info.addrlen_ = (socklen_t *) &clilen;
-        if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
+        if (pThis->info.cb_ != NULL) 
+			pThis->info.cb_(pThis->info.param_);
         pThis->pUnixChannel_->disableReading();
-
-        pThis->~UnixAcceptor();
     }
 
 	// test use
-	pThis->cb_(NULL);
+	if(pThis->cb_ != NULL) pThis->cb_(NULL);
     return S_OK;
 }
-
-// 空函数 无功能
-// int UnixAcceptor::handleWrite() { return S_OK; }
 
 } // namespace net
 } // namespace ndsl

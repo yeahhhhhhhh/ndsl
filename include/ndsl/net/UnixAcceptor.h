@@ -5,18 +5,17 @@
 // @author ranxiangjun
 // @email ranxianshen@gmail.com
 //
-#ifndef __UNIXACCEPTOR_H__
-#define __UNXIACCEPTOR_H__
-
+#ifndef __NDSL_NET_UNIXACCEPTOR_H__
+#define __NDSL_NET_UNXIACCEPTOR_H__
 #include <cstring>
-#include "Channel.h"
 #include "UnixChannel.h"
 #include "EventLoop.h"
 
 namespace ndsl {
 namespace net {
 
-class UnixAcceptor // : public ChannelCallBack
+class UnixConnection;
+class UnixAcceptor
 {
   private:
     int listenfd_;
@@ -24,7 +23,6 @@ class UnixAcceptor // : public ChannelCallBack
     UnixChannel *pUnixChannel_;
 	using Callback = void (*)(void *); //callbak function pointer type
     Callback cb_;
-    // void *param_;
 
     // 用于保存用户回调信息
     struct Info
@@ -41,19 +39,20 @@ class UnixAcceptor // : public ChannelCallBack
     UnixAcceptor(EventLoop *pLoop);
     ~UnixAcceptor();
 
+	// UnixConnection uses 
+	UnixChannel *getUnixChannel();
 	// test use
 	UnixAcceptor(Callback cb, EventLoop *pLoop);
 
     // 为用户主动调用onAcceptor()而生
-    UnixAcceptor(
-        EventLoop *pLoop,
+    int setInfo(
         UnixConnection *pCon,			//should be unixconnection?
         struct sockaddr *addr,
         socklen_t *addrlen,
         Callback cb,
         void *param);
 
-static int handleRead(void *);
+	static int handleRead(void *);
     // int handleWrite();
     int start(const std::string& );
 
@@ -64,4 +63,4 @@ static int handleRead(void *);
 } // namespace net
 } // namespace ndsl
 
-#endif // __UNIXACCEPTOR_H__
+#endif // _NDSL_NET__UNIXACCEPTOR_H__

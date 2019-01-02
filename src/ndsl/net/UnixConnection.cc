@@ -16,14 +16,15 @@
 namespace ndsl {
 namespace net {
 
-UnixConnection::UnixConnection() {}
+UnixConnection::UnixConnection(UnixAcceptor *unixAcceptor)
+	:pUnixAcceptor_(unixAcceptor){}
 UnixConnection::~UnixConnection() {}
 
 int UnixConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
     pUnixChannel_ = new UnixChannel(sockfd, pLoop);
     pUnixChannel_->setCallBack(handleRead, handleWrite, this);
-    pUnixChannel_->regist(true);
+    pUnixChannel_->enroll(true);
 
     return S_OK;
 }
@@ -33,8 +34,7 @@ int UnixConnection::onSend(
     size_t len,
     int flags,
     Callback cb,
-    void *param,
-    int &errn)
+    void *param)
 {
     int sockfd = pUnixChannel_->getFd();
     size_t n = send(sockfd, buf, len, flags);
@@ -43,7 +43,8 @@ int UnixConnection::onSend(
         if (cb != NULL) cb(param);
         return S_OK;
     } else if (n < 0) {      // 出错 通知用户
-        errn = errno;
+		// error occurs, tell user
+		errorHandle_(errno, pUnixChannel_->getFd());
         return S_FAIL;
     }
 
@@ -55,7 +56,6 @@ int UnixConnection::onSend(
     tsi->flags_ = flags;
     tsi->cb_ = cb;
     tsi->param_ = param;
-    *tsi->errno_ = errno;
 
     qSendInfo_.push(tsi);
 
@@ -84,21 +84,21 @@ int UnixConnection::handleWrite(void *pthis)
             if (tsi->offset_ == tsi->len_) {
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();    // 无写事件 注销写事件
-                if (pThis->qSendInfo_.size() == 0) pThis->pUnixChannel_->disableWriting();
+                if (pThis->qSendInfo_.size() == 0) 
+					pThis->pUnixChannel_->disableWriting();
                 delete tsi; // 删除申请的内存
             } else if (n == 0) {  // 发送缓冲区满 等待下一次被调用
                 return S_OK;
             }
         } else if (n < 0) {
             // 写过程中出错 出错之后处理不了 注销事件 并交给用户处理
-            *tsi->errno_ = errno;
-            if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
-
+			pThis->errorHandle_(errno, pThis->pUnixChannel_->getFd());
             pThis->qSendInfo_.pop();
             delete tsi;
 
             // 无写事件 注销写事件
-            if (pThis->qSendInfo_.size() == 0) pThis->pUnixChannel_->disableWriting();
+            if (pThis->qSendInfo_.size() == 0) 
+				pThis->pUnixChannel_->disableWriting();
 
             return S_FAIL;
         }
@@ -112,8 +112,7 @@ int UnixConnection::onRecv(
     size_t &len,
     int flags,
     Callback cb,
-    void *param,
-    int &errn)
+    void *param)
 {
     int sockfd = pUnixChannel_->getFd();
     if ((len = recv(sockfd, buf, MAXLINE, flags)) < 0) {
@@ -127,15 +126,16 @@ int UnixConnection::onRecv(
             tsi->len_ = len;
             tsi->cb_ = cb;
             tsi->param_ = param;
-            *tsi->errno_ = errno;
 
             qRecvInfo_.push(tsi);
             return S_OK;
         } else {
-            errn = errno;
+			// error occurs,callback user
+			errorHandle_(errno, pUnixChannel_->getFd());
             return S_FAIL;
         }
     }
+	// tell user after reading successfully in one time
     if (cb != NULL) cb(param);
     // 先返回，最终的处理在onRead()里面
     return S_OK;
@@ -145,12 +145,17 @@ int UnixConnection::handleRead(void *pthis)
 {
 	UnixConnection *pThis = static_cast<UnixConnection *>(pthis);
     int sockfd = pThis->pUnixChannel_->getFd();
-    if (sockfd < 0) { return S_FAIL; }
+    if (sockfd < 0) 
+	{ 
+		return S_FAIL; 
+	}
     pInfo tsi = pThis->qRecvInfo_.front();
 
     if (pThis->qRecvInfo_.size() > 0) {
         if ((tsi->len_ = recv(sockfd, tsi->readBuf_, MAXLINE, tsi->flags_)) <0) {   // 出错就设置错误码
-            *tsi->errno_ = errno;
+			// error occurs
+			pThis->errorHandle_(errno, pThis->pUnixChannel_->getFd());
+			return S_FAIL;
         }
     }
 
@@ -165,12 +170,6 @@ int UnixConnection::handleRead(void *pthis)
     return S_OK;
 }
 
-int UnixConnection::onRecvmsg(char *buf, Callback cb, void *param, int &errn)
-{
-    // 异步
-    return S_OK;
-}
-
 int UnixConnection::onAccept(
     UnixConnection *pCon,
     struct sockaddr *addr,
@@ -178,30 +177,16 @@ int UnixConnection::onAccept(
     Callback cb,
     void *param)
 {
-    int connfd;
-    if ((connfd = accept(pUnixChannel_->getFd(), addr, addrlen)) > 0) {
-        // accept成功
-        UnixConnection *pUnixCon = new UnixConnection();
-        pUnixCon->createChannel(connfd, pUnixChannel_->getEventLoop());
-        // pUnixChannel->setCallBack(this);
+	pUnixAcceptor_->setInfo(pCon, addr, addrlen, cb, param);
+	pUnixAcceptor_->getUnixChannel()->enableReading();
 
-        // pCon->pUnixChannel_ = pUnixChannel;
+	return S_OK;
+}
 
-        if (cb != NULL) cb(param);
-    } else {
-        // accept不成功，转异步处理
-        // 异步理解为用户没有启UnixAcceptor函数
-        UnixAcceptor *ta = new UnixAcceptor(
-            pUnixChannel_->getEventLoop(),
-            pCon,
-            addr,
-            addrlen,
-            cb,
-            param);
-        ta->start(((sockaddr_un*)addr)->sun_path);
-    }
-
-    return S_OK;
+int UnixConnection::onError(ErrorHandle cb)
+{
+	errorHandle_ = cb;
+	return S_OK;
 }
 
 } // namespace net
