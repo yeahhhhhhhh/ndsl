@@ -10,7 +10,9 @@
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpConnection.h"
+#include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/net/TcpClient.h"
 #include <cstring>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -19,11 +21,18 @@
 using namespace ndsl;
 using namespace net;
 
-// char *sayHello() { return "Hello"; }
-
 bool flag = false;
 
-void fun1(void *) { flag = true; }
+void fun1(void *a) { flag = true; }
+
+bool flagsend = false;
+static void sendTest(void *a) { flagsend = true; }
+
+bool flagerror = false;
+static void iserror(int a, int b) { flagerror = true; }
+
+bool flagrecv = false;
+static void recvTest(void *a) { flagrecv = true; }
 
 TEST_CASE("net/TcpConnection(onRecv)")
 {
@@ -34,29 +43,20 @@ TEST_CASE("net/TcpConnection(onRecv)")
         EventLoop loop;
         REQUIRE(loop.init() == S_OK);
 
-        int listenfd = socket(AF_INET, SOCK_STREAM, 0);
-        // fcntl(listenfd, F_SETFL, O_NONBLOCK);
-
-        TcpConnection *oConn = new TcpConnection();
-        oConn->createChannel(listenfd, &loop);
+        TcpAcceptor *tAc = new TcpAcceptor(&loop);
+        tAc->start();
 
         // 准备接收的数据结构
         struct sockaddr_in rservaddr;
         bzero(&rservaddr, sizeof(rservaddr));
         socklen_t addrlen;
-        // FIXME: 传空指针进去还是传实进去
-        TcpConnection *Conn = new TcpConnection();
 
-        oConn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
+        TcpConnection *Conn = new TcpConnection(tAc);
+        Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
 
         // 启动一个客户端
-        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-        struct sockaddr_in servaddr;
-        bzero(&servaddr, sizeof(servaddr));
-        servaddr.sin_family = AF_INET;
-        servaddr.sin_port = htons(SERV_PORT);
-        inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
-        connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
+        TcpClient *pCli = new TcpClient();
+        REQUIRE(pCli->onConnect() == S_OK);
 
         // 添加中断
         loop.quit();
@@ -64,7 +64,33 @@ TEST_CASE("net/TcpConnection(onRecv)")
 
         // 测试是否接收到了客户的连接
         REQUIRE(flag == true);
+
+        // 测试onSend
+        Conn->onError(iserror);
+        char *sendbuf = (char *) malloc(sizeof(char) * 12);
+        // sendbuf = 'hello world';
+        strcpy(sendbuf, "hello world\0");
+        Conn->onSend(sendbuf, sizeof("hello world"), 0, sendTest, NULL);
+
+        char recvBuf[15];
+        memset(recvBuf, 0, sizeof(recvBuf));
+        read(pCli->sockfd_, recvBuf, MAXLINE);
+
+        REQUIRE(strcmp("hello world", recvBuf) == 0);
+        REQUIRE(flagsend == true);
+
+        // 测试onRecv
+        memset(recvBuf, 0, sizeof(recvBuf));
+        size_t len;
+        write(pCli->sockfd_, "hello world", sizeof("hello world"));
+
+        REQUIRE(Conn->onRecv(recvBuf, len, 0, recvTest, NULL) == S_OK);
+        REQUIRE(flagrecv == true);
+
+        // 第二次不需要添加中断
+        REQUIRE(loop.loop() == S_OK);
     }
+<<<<<<< HEAD
 }
 
 // // 初始化tcpConnection
@@ -79,3 +105,15 @@ TEST_CASE("net/TcpConnection(onRecv)")
 // servaddr.sin_port = htons(SERV_PORT);
 // inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 // connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
+=======
+
+    // TODO: handleRead handleWrite 好像没法测
+    // SECTION("onRecv onSecd handleRead hanleWrite")
+    // {
+    //     // 启动服务
+    //     // 初始化EPOLL
+    //     EventLoop loop;
+    //     REQUIRE(loop.init() == S_OK);
+    // }
+}
+>>>>>>> dev_gyz

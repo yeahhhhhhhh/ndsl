@@ -15,11 +15,10 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 set(TEST 
 
 testMain.cc
-
+net/TcpConnectionTest.cc
 
 #pass
 #net/TcpAcceptorTest.cc
-#net/TcpConnectionTest.cc
 
 #net/EventLoopTest.cc
 #net/EpollTest.cc

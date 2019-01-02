@@ -22,11 +22,11 @@ int BaseChannel::getFd() { return fd_; }
 
 int BaseChannel::handleEvent()
 {
-    if (getRevents() & EPOLLIN) {
+    if (revents_ & EPOLLIN) {
         if (handleRead_) handleRead_(pThis_);
     }
 
-    if (getRevents() & EPOLLOUT) {
+    if (revents_ & EPOLLOUT) {
         if (handleWrite_) handleWrite_(pThis_);
     }
 
@@ -38,73 +38,60 @@ int BaseChannel::setCallBack(
     ChannelCallBack handleWrite,
     void *thi)
 {
-    if (handleRead)
-        handleRead_ = handleRead;
-    else
-        handleRead_ = NULL;
-
-    if (handleWrite)
-        handleWrite_ = handleWrite;
-    else
-        handleWrite_ = NULL;
-
+    handleRead_ = handleRead;
+    handleWrite_ = handleWrite;
     pThis_ = thi;
 
     return S_OK;
 }
 
-// int BaseChannel::handleEvent()
-// {
-//     if (getRevents() & EPOLLIN) { pCb_->handleRead(); }
-
-//     if (getRevents() & EPOLLOUT) { pCb_->handleWrite(); }
-
-//     return S_OK;
-// }
-
-// int BaseChannel::setCallBack(ChannelCallBack *cb)
-// {
-//     pCb_ = cb;
-//     return S_OK;
-// }
-
 int BaseChannel::enableReading()
 {
-    setEvents(getEvents() | EPOLLIN);
-    return update();
+    events_ |= EPOLLIN;
+    return modify();
 }
 
 int BaseChannel::enableWriting()
 {
-    setEvents(getEvents() | EPOLLOUT);
-    return update();
+    events_ |= EPOLLOUT;
+    return modify();
 }
 
 int BaseChannel::disableReading()
 {
-    setEvents(getEvents() & ~EPOLLIN);
-    return update();
+    events_ &= ~EPOLLIN;
+    return modify();
 }
 
 int BaseChannel::disableWriting()
 {
-    setEvents(getEvents() & ~EPOLLOUT);
-    return update();
+    events_ &= ~EPOLLOUT;
+    return modify();
 }
 
-int BaseChannel::regist(bool isET)
+int BaseChannel::enroll(bool isET)
 {
+<<<<<<< HEAD
     if (isET) {
 <<<<<<< HEAD
         setEvents(getEvents() & EPOLLET);
     } else {
         setEvents(getEvents());
     }
+=======
+    if (isET) events_ |= EPOLLET;
+
+    return pLoop_->enroll(this);
+>>>>>>> dev_gyz
 }
 
-int BaseChannel::update() { return getEventLoop()->update(this); }
+int BaseChannel::modify() { return pLoop_->modify(this); }
 
+<<<<<<< HEAD
 int BaseChannel::del() { return getEventLoop()->del(this); }
+>>>>>>> dev_gyz
+=======
+int BaseChannel::erase() { return pLoop_->erase(this); }
 >>>>>>> dev_gyz
 
 } // namespace net

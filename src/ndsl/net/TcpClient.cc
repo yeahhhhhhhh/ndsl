@@ -5,31 +5,26 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
-#include <string.h>
-#include <unistd.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
-#include <netinet/in.h>
+#include "ndsl/net/SocketAddress.h"
+#include "ndsl/net/TcpClient.h"
 #include "ndsl/utils/temp_define.h"
 
-// TODO: 用来模拟用户？
+namespace ndsl {
+namespace net {
 
-int main()
+int TcpClient::onConnect()
 {
-    int listenfd;
-    int n;
-    char buf[MAXLINE], recv[MAXLINE];
-    listenfd = init(CLIENT, argv[1]);
+    sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
-    for (;;) {
-        if ((n = Read(fileno(stdin), buf, MAXLINE)) > 0)
-            Write(listenfd, buf, n);
-        else if (n == 0)
-            break;
+    struct SocketAddress4 servaddr;
+    servaddr.setPort(SERV_PORT);
 
-        if ((n = Read(listenfd, recv, MAXLINE)) > 0)
-            Write(fileno(stdout), recv, n);
-    }
+    inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+    connect(sockfd_, (SA *) &servaddr, sizeof(servaddr));
 
-    return 0;
+    return S_OK;
 }
+
+} // namespace net
+} // namespace ndsl

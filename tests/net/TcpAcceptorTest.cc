@@ -7,14 +7,9 @@
  */
 #include "../catch.hpp"
 #include "ndsl/net/EventLoop.h"
-#include "ndsl/net/Epoll.h"
-#include "ndsl/net/TcpChannel.h"
-#include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/TcpAcceptor.h"
-#include <cstring>
-#include <sys/socket.h>
-#include <arpa/inet.h>
+#include "ndsl/net/TcpClient.h"
 
 using namespace ndsl;
 using namespace net;
@@ -37,19 +32,14 @@ TEST_CASE("net/TcpAcceptor")
         REQUIRE(pAc->start() == S_OK);
 
         // 启动一个客户端
-        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-        struct sockaddr_in servaddr;
-        bzero(&servaddr, sizeof(servaddr));
-        servaddr.sin_family = AF_INET;
-        servaddr.sin_port = htons(SERV_PORT);
-        inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
-        connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
+        TcpClient *pCli = new TcpClient();
+        REQUIRE(pCli->onConnect() == S_OK);
 
         // 添加中断
         loop.quit();
         REQUIRE(loop.loop() == S_OK);
 
         // // 测试是否接收到了客户的连接
-        // REQUIRE(rrecv == true);
+        REQUIRE(rrecv == true);
     }
 }
