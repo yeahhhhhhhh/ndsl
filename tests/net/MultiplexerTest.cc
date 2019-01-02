@@ -14,19 +14,25 @@
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/TcpAcceptor.h"
 #include <sys/socket.h>
+#include "ndsl/utils/temp_define.h"
+#include <cstring>
+#include <arpa/inet.h>
+#include <fcntl.h>
 
 using namespace ndsl;
 using namespace net;
 
 int id = 11;
-void fun1(char *data, int len);
+void entitycallbak(char *data, int len, int ero);
+
+bool flag = false;
+
+void fun1(void *a) { flag = true; }
 
 TEST_CASE("Mutiplexer/cbmaptest")
 {
-	using Callback = void (*)(char *buffer, int len, int error);
-	using CallbackMap = std::map<int, Callback>;
-
-
+    SECTION("onAccept")
+    {
 	// 启动服务
     // 初始化EPOLL
     EventLoop loop;
@@ -54,19 +60,39 @@ TEST_CASE("Mutiplexer/cbmaptest")
     loop.quit();
     REQUIRE(loop.loop() == S_OK);
 
-    // 测试是否接收到了客户的连接
-    REQUIRE(flag == true);
 
-
-	CallbackMap cbMap;
-	Multiplexer mymulti(conn, cbMap);
+	std::map<int, Multiplexer::Callback> cbMap;
+	Multiplexer *mymulti = new Multiplexer(Conn, cbMap);
 	
-	SECTION("insert")
+	SECTION("addInsertWork")
 	{
-		mymulti.insert(id, fun1);
+		mymulti->addInsertWork(id, entitycallbak);
 	}
-	SECTION("remove")
+	SECTION("addRemoveWork")
 	{
-		mymulti.remove(id);
+		mymulti->addRemoveWork(id);
 	}
+    SECTION("insert and remove")
+	{
+        struct para *p1 = new para; 
+        p1->id = id;
+        p1->cb = entitycallbak;
+	    p1->pthis = mymulti;
+
+		mymulti->insert((void *)p1);
+        std::map<int, Multiplexer::Callback>::iterator iter;
+        iter = cbMap.find(id);
+        REQUIRE(iter != cbMap.end());
+
+        struct para *p2 = new para; 
+        p2->id = id;
+        p2->cb = entitycallbak;
+	    p2->pthis = mymulti;
+
+        mymulti->remove((void *)p2);
+        std::map<int, Multiplexer::Callback>::iterator iter2;
+        iter2 = cbMap.find(id);
+        REQUIRE(iter2 == cbMap.end());
+	}
+    }
 }
