@@ -71,7 +71,10 @@ TEST_CASE("net/TcpConnection(onRecv)")
 
         // 测试onSend
         Conn->onError(iserror);
-        Conn->onSend("hello world", sizeof("hello world"), 0, sendTest, NULL);
+        char *sendbuf = (char *) malloc(sizeof(char) * 20);
+        // sendbuf = 'hello world';
+        strcpy(sendbuf, "helo world");
+        Conn->onSend(sendbuf, sizeof("hello world"), 0, sendTest, NULL);
 
         char recvBuf[15];
         memset(recvBuf, 0, sizeof(recvBuf));

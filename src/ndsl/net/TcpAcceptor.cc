@@ -72,19 +72,19 @@ int TcpAcceptor::createAndListen()
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
     // TODO: 换成另一个
-    struct sockaddr_in servaddr;
-    bzero(&servaddr, sizeof(servaddr));
-    // struct SocketAddress4 servaddr;
+    // struct sockaddr_in servaddr;
+    // bzero(&servaddr, sizeof(servaddr));
+    struct SocketAddress4 servaddr;
 
     // 设置非阻塞
     fcntl(listenfd_, F_SETFL, O_NONBLOCK);
     // setsockopt(listenfd_, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
 
-    // servaddr.setPort(SERV_PORT);
+    servaddr.setPort(SERV_PORT);
 
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr.sin_port = htons(SERV_PORT);
+    // servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    // servaddr.sin_port = htons(SERV_PORT);
 
     if (-1 ==
         bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
