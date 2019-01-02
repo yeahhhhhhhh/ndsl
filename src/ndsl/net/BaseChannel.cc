@@ -10,8 +10,6 @@
 #include "ndsl/net/EventLoop.h"
 #include <sys/epoll.h>
 
-#include <cstdio>
-
 namespace ndsl {
 namespace net {
 

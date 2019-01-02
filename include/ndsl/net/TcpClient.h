@@ -14,6 +14,8 @@ namespace net {
 class TcpClient
 {
   public:
+    int sockfd_; //用来保存链接fd
+
     // 与服务器建立连接
     int onConnect();
 };

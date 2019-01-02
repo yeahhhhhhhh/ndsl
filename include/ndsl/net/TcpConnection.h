@@ -51,9 +51,10 @@ class TcpConnection
 
     static int handleRead(void *pthis);
     static int handleWrite(void *pthis);
-    // TcpChannel的指针
+
+    // TcpChannel的指针 方便Mulpipleter拿
     TcpChannel *pTcpChannel_;
-    
+
     // 新建一个Channel
     int createChannel(int sockfd_, EventLoop *pLoop);
 

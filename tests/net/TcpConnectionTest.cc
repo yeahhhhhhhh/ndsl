@@ -12,6 +12,7 @@
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/net/TcpClient.h"
 #include <cstring>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -54,13 +55,8 @@ TEST_CASE("net/TcpConnection(onRecv)")
         Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
 
         // 启动一个客户端
-        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-        struct sockaddr_in servaddr;
-        bzero(&servaddr, sizeof(servaddr));
-        servaddr.sin_family = AF_INET;
-        servaddr.sin_port = htons(SERV_PORT);
-        inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
-        connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
+        TcpClient *pCli = new TcpClient();
+        REQUIRE(pCli->onConnect() == S_OK);
 
         // 添加中断
         loop.quit();
@@ -71,14 +67,14 @@ TEST_CASE("net/TcpConnection(onRecv)")
 
         // 测试onSend
         Conn->onError(iserror);
-        char *sendbuf = (char *) malloc(sizeof(char) * 20);
+        char *sendbuf = (char *) malloc(sizeof(char) * 12);
         // sendbuf = 'hello world';
-        strcpy(sendbuf, "helo world");
+        strcpy(sendbuf, "hello world\0");
         Conn->onSend(sendbuf, sizeof("hello world"), 0, sendTest, NULL);
 
         char recvBuf[15];
         memset(recvBuf, 0, sizeof(recvBuf));
-        read(sockfd, recvBuf, MAXLINE);
+        read(pCli->sockfd_, recvBuf, MAXLINE);
 
         REQUIRE(strcmp("hello world", recvBuf) == 0);
         REQUIRE(flagsend == true);
@@ -86,7 +82,7 @@ TEST_CASE("net/TcpConnection(onRecv)")
         // 测试onRecv
         memset(recvBuf, 0, sizeof(recvBuf));
         size_t len;
-        write(sockfd, "hello world", sizeof("hello world"));
+        write(pCli->sockfd_, "hello world", sizeof("hello world"));
 
         REQUIRE(Conn->onRecv(recvBuf, len, 0, recvTest, NULL) == S_OK);
         REQUIRE(flagrecv == true);

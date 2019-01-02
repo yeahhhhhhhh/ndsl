@@ -130,10 +130,6 @@ class EventLoop
     void addWork(work_struct *work);
 
     // 注册、更新、删除事件
-    // int regist(Channel *);
-    // int update(Channel *);
-    // int del(Channel *);
-
     int enroll(Channel *);
     int modify(Channel *);
     int erase(Channel *);
