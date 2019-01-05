@@ -22,6 +22,8 @@ int BaseChannel::getFd() { return fd_; }
 
 int BaseChannel::handleEvent()
 {
+    // TODO: EPOLL HUG 四个
+
     if (revents_ & EPOLLIN) {
         if (handleRead_) handleRead_(pThis_);
     }
@@ -45,38 +47,16 @@ int BaseChannel::setCallBack(
     return S_OK;
 }
 
-int BaseChannel::enableReading()
-{
-    events_ |= EPOLLIN;
-    return modify();
-}
-
-int BaseChannel::enableWriting()
-{
-    events_ |= EPOLLOUT;
-    return modify();
-}
-
-int BaseChannel::disableReading()
-{
-    events_ &= ~EPOLLIN;
-    return modify();
-}
-
-int BaseChannel::disableWriting()
-{
-    events_ &= ~EPOLLOUT;
-    return modify();
-}
-
 int BaseChannel::enroll(bool isET)
 {
     if (isET) events_ |= EPOLLET;
 
+    // 同时注册输入输出
+    events_ |= EPOLLIN;
+    events_ |= EPOLLOUT;
+
     return pLoop_->enroll(this);
 }
-
-int BaseChannel::modify() { return pLoop_->modify(this); }
 
 int BaseChannel::erase() { return pLoop_->erase(this); }
 

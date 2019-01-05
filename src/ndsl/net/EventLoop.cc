@@ -170,8 +170,8 @@ int EventLoop::init()
         // ret = pQueCh_->regist(false);
         ret = pQueCh_->enroll(false);
         if (ret != S_OK) return ret; // 若不成功直接返回
-        ret = pQueCh_->enableReading();
-        if (ret != S_OK) return ret; // 若不成功直接返回
+        // ret = pQueCh_->enableReading();
+        // if (ret != S_OK) return ret; // 若不成功直接返回
 
         // printf("pQueCh_ = %d\n", pQueCh_->getFd());
     }
@@ -190,8 +190,8 @@ int EventLoop::init()
         // ret = pIntrCh_->regist(false);
         ret = pIntrCh_->enroll(false);
         if (ret != S_OK) return ret; // 若不成功直接返回
-        ret = pIntrCh_->enableReading();
-        if (ret != S_OK) return ret; // 若不成功直接返回
+        // ret = pIntrCh_->enableReading();
+        // if (ret != S_OK) return ret; // 若不成功直接返回
 
         // printf("pIntrCh_ = %d\n", pIntrCh_->getFd());
     }

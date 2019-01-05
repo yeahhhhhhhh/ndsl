@@ -46,7 +46,7 @@ class TcpAcceptor
     TcpAcceptor(Callback cb, EventLoop *pLoop);
 
     // TcpConnection用
-    TcpChannel *getTcpChannel();
+    // TcpChannel *getTcpChannel();
 
     // 保存用户信息 填充上面的结构体
     int setInfo(

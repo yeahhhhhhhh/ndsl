@@ -70,7 +70,7 @@ TEST_CASE("net/TcpConnection(onRecv)")
         char *sendbuf = (char *) malloc(sizeof(char) * 12);
         // sendbuf = 'hello world';
         strcpy(sendbuf, "hello world\0");
-        Conn->onSend(sendbuf, sizeof("hello world"), 0, sendTest, NULL);
+        Conn->onSend(sendbuf, strlen("hello world"), 0, sendTest, NULL);
 
         char recvBuf[15];
         memset(recvBuf, 0, sizeof(recvBuf));
@@ -82,9 +82,10 @@ TEST_CASE("net/TcpConnection(onRecv)")
         // 测试onRecv
         memset(recvBuf, 0, sizeof(recvBuf));
         size_t len;
-        write(pCli->sockfd_, "hello world", sizeof("hello world"));
+        write(pCli->sockfd_, "hello world", strlen("hello world"));
 
-        REQUIRE(Conn->onRecv(recvBuf, len, 0, recvTest, NULL) == S_OK);
+        REQUIRE(Conn->onRecv(recvBuf, &len, 0, recvTest, NULL) == S_OK);
+        REQUIRE(len == strlen("hello world"));
         REQUIRE(flagrecv == true);
 
         // 第二次不需要添加中断

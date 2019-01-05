@@ -61,13 +61,12 @@ int TcpConnection::onSend(
     tsi->offset_ = n;
     tsi->sendBuf_ = buf;
     tsi->readBuf_ = NULL;
-    tsi->len_ = len;
+    (*tsi->len_) = len;
     tsi->flags_ = flags;
     tsi->cb_ = cb;
     tsi->param_ = param;
 
     qSendInfo_.push(tsi);
-    pTcpChannel_->enableWriting();
 
     return S_OK;
 }
@@ -80,22 +79,20 @@ int TcpConnection::handleWrite(void *pthis)
     if (sockfd < 0) { return -1; }
     size_t n;
 
+    // 有数据待写
     if (pThis->qSendInfo_.size() > 0) {
         pInfo tsi = pThis->qSendInfo_.front();
 
         if ((n = send(
                  sockfd,
                  (char *) tsi->sendBuf_ + tsi->offset_,
-                 tsi->len_ - tsi->offset_,
+                 (*tsi->len_) - tsi->offset_,
                  tsi->flags_)) > 0) {
             tsi->offset_ += n;
 
-            if (tsi->offset_ == tsi->len_) {
+            if (tsi->offset_ == (*tsi->len_)) {
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();
-                // 无写事件 注销写事件
-                if (pThis->qSendInfo_.size() == 0)
-                    pThis->pTcpChannel_->disableWriting();
                 // 释放掉buf占用的空间
                 if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
 
@@ -108,16 +105,12 @@ int TcpConnection::handleWrite(void *pthis)
             // 写过程中出错 出错之后处理不了 注销事件 并交给用户处理
             pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
 
+            // 将事件从队列中移除
             pThis->qSendInfo_.pop();
 
             // 释放掉buf占用的空间
             if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
-
             delete tsi;
-
-            // 无写事件 注销写事件
-            if (pThis->qSendInfo_.size() == 0)
-                pThis->pTcpChannel_->disableWriting();
 
             return S_FAIL;
         }
@@ -129,25 +122,22 @@ int TcpConnection::handleWrite(void *pthis)
 // 的值。
 int TcpConnection::onRecv(
     char *buf,
-    size_t &len,
+    size_t *len,
     int flags,
     Callback cb,
     void *param)
 {
     int sockfd = pTcpChannel_->getFd();
-    if ((len = recv(sockfd, buf, MAXLINE, flags)) < 0) {
+    if (((*len) = recv(sockfd, buf, MAXLINE, flags)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            pTcpChannel_->enableReading();
+            // 保存用户信息
+            RecvInfo_.readBuf_ = buf;
+            RecvInfo_.sendBuf_ = NULL;
+            RecvInfo_.flags_ = flags;
+            RecvInfo_.len_ = len;
+            RecvInfo_.cb_ = cb;
+            RecvInfo_.param_ = param;
 
-            pInfo tsi = new Info;
-            tsi->readBuf_ = buf;
-            tsi->sendBuf_ = NULL;
-            tsi->flags_ = flags;
-            tsi->len_ = len;
-            tsi->cb_ = cb;
-            tsi->param_ = param;
-
-            qRecvInfo_.push(tsi);
             return S_OK;
         } else {
             // 出错 回调用户
@@ -165,28 +155,23 @@ int TcpConnection::handleRead(void *pthis)
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FAIL; }
-    pInfo tsi = pThis->qRecvInfo_.front();
 
-    if (pThis->qRecvInfo_.size() > 0) {
-        if ((tsi->len_ = recv(sockfd, tsi->readBuf_, MAXLINE, tsi->flags_)) <
-            0) {
-            // 出错
-            pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
-            return S_FAIL;
-        }
+    if (((*pThis->RecvInfo_.len_) = recv(
+             sockfd,
+             pThis->RecvInfo_.readBuf_,
+             MAXLINE,
+             pThis->RecvInfo_.flags_)) < 0) {
+        // 出错
+        pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
+        return S_FAIL;
     }
 
-    // 完成数据读取之后得通知用户
-    if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
-    pThis->qRecvInfo_.pop();
-    delete tsi;
-    if (pThis->qRecvInfo_.size() == 0) {
-        // 将读事件移除
-        pThis->pTcpChannel_->disableReading();
-    }
+    // 完成数据读取之后通知mul
+    if (pThis->RecvInfo_.cb_ != NULL)
+        pThis->RecvInfo_.cb_(pThis->RecvInfo_.param_);
 
     return S_OK;
-}
+} // namespace net
 
 int TcpConnection::onAccept(
     TcpConnection *pCon,
@@ -196,7 +181,6 @@ int TcpConnection::onAccept(
     void *param)
 {
     pTcpAcceptor_->setInfo(pCon, addr, addrlen, cb, param);
-    pTcpAcceptor_->getTcpChannel()->enableReading();
 
     return S_OK;
 }
