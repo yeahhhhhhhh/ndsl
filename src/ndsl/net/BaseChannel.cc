@@ -33,10 +33,10 @@ int BaseChannel::handleEvent()
     // epoll_wait(2)  will always wait for this event; it is not
     // necessary to set it in events.
 
-    if ((revents_ & EPOLLIN) && (revents_ & EPOLLHUP)) { close(fd); }
-    if ((revents_ & EPOLLIN) && (revents_ & EPOLLRDHUP)) { close(fd); }
+    if ((revents_ & EPOLLIN) && (revents_ & EPOLLHUP)) { close(fd_); }
+    if ((revents_ & EPOLLIN) && (revents_ & EPOLLRDHUP)) { close(fd_); }
 
-    if ((revents_ & EPOLLIN) && (revents_ & EPOLLERR)) { close(fd); }
+    if ((revents_ & EPOLLIN) && (revents_ & EPOLLERR)) { close(fd_); }
 
     if (revents_ & EPOLLIN) {
         if (handleRead_) handleRead_(pThis_);
