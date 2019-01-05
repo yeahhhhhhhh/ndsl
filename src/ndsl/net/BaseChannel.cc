@@ -22,7 +22,21 @@ int BaseChannel::getFd() { return fd_; }
 
 int BaseChannel::handleEvent()
 {
-    // TODO: EPOLL HUG 四个
+    // EPOLLHUP EPOLLRDHUP
+    // Stream socket peer closed connection, or shut down writing half of
+    // connection.  (This flag is especially useful for writing simple code  to
+    // detect peer shutdown when using Edge Triggered monitoring.)
+    // EPOLLIN | EPOLLRDHUP 对端关闭
+
+    // EPOLLERR 表示相关联的fd发生了错误
+    // Error condition happened  on  the  associated  file  descriptor.
+    // epoll_wait(2)  will always wait for this event; it is not
+    // necessary to set it in events.
+
+    if ((revents_ & EPOLLIN) && (revents_ & EPOLLHUP)) { close(fd); }
+    if ((revents_ & EPOLLIN) && (revents_ & EPOLLRDHUP)) { close(fd); }
+
+    if ((revents_ & EPOLLIN) && (revents_ & EPOLLERR)) { close(fd); }
 
     if (revents_ & EPOLLIN) {
         if (handleRead_) handleRead_(pThis_);

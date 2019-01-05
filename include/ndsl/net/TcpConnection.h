@@ -74,6 +74,9 @@ class TcpConnection
         socklen_t *addrlen,
         Callback cb,
         void *param);
+
+    // 进程之前相互通信
+    int sendMsg(struct msghdr *msg, int flags, Callback cb, void *param);
 };
 
 } // namespace net

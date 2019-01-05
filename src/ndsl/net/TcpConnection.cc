@@ -42,7 +42,9 @@ int TcpConnection::onSend(
     void *param)
 {
     int sockfd = pTcpChannel_->getFd();
-    size_t n = send(sockfd, buf, len, flags);
+
+    // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
+    size_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
     if (n == len) {
         // 写完 通知用户
         if (cb != NULL) cb(param);
@@ -62,7 +64,7 @@ int TcpConnection::onSend(
     tsi->sendBuf_ = buf;
     tsi->readBuf_ = NULL;
     (*tsi->len_) = len;
-    tsi->flags_ = flags;
+    tsi->flags_ = flags | MSG_NOSIGNAL;
     tsi->cb_ = cb;
     tsi->param_ = param;
 
@@ -181,6 +183,42 @@ int TcpConnection::onAccept(
     void *param)
 {
     pTcpAcceptor_->setInfo(pCon, addr, addrlen, cb, param);
+
+    return S_OK;
+}
+
+int TcpConnection::sendMsg(
+    struct msghdr *msg,
+    int flags,
+    Callback cb,
+    void *param)
+{
+    int sockfd = pTcpChannel_->getFd();
+    size_t len = sizeof(struct msghdr);
+
+    // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
+    size_t n = send(sockfd, msg, len, flags | MSG_NOSIGNAL);
+    if (n == len) {
+        // 写完 通知用户
+        if (cb != NULL) cb(param);
+        return S_OK;
+    } else if (n < 0) {
+        // 出错 通知用户
+        errorHandle_(errno, pTcpChannel_->getFd());
+        return S_FAIL;
+    }
+
+    // 没写完 存起来 等待下次写
+    pInfo tsi = new Info;
+    tsi->offset_ = n;
+    tsi->sendBuf_ = reinterpret_cast<void *>(msg);
+    tsi->readBuf_ = NULL;
+    (*tsi->len_) = len;
+    tsi->flags_ = flags | MSG_NOSIGNAL;
+    tsi->cb_ = cb;
+    tsi->param_ = param;
+
+    qSendInfo_.push(tsi);
 
     return S_OK;
 }
