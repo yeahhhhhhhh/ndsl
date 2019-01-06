@@ -1,42 +1,41 @@
 /**
-* @file Multiplexer.cc
-* @brief
-* 实现功能：
-*  1.绑定connection
-*  2.插入通信实体
-*  3.删除通信实体
-*  4.发送消息
-*  5.分发消息给实体
-*
-* @author zzt
-* @emial 429834658@qq.com
-**/
-#include<string.h>
+ * @file Multiplexer.cc
+ * @brief
+ * 实现功能：
+ *  1.绑定connection
+ *  2.插入通信实体
+ *  3.删除通信实体
+ *  4.发送消息
+ *  5.分发消息给实体
+ *
+ * @author zzt
+ * @emial 429834658@qq.com
+ **/
+#include <string.h>
 #include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/TcpChannel.h"
 
-namespace ndsl{
-namespace net{
+namespace ndsl {
+namespace net {
 
 // 在map中插入<id,callback>
-void Multiplexer::insert(void *pa )
+void Multiplexer::insert(void *pa)
 {
     struct para *p = static_cast<struct para *>(pa);
-	Multiplexer *pthis = p->pthis;
+    Multiplexer *pthis = p->pthis;
 
-    Multiplexer::CallbackMap::iterator iter=pthis->cbMap_.lower_bound(p->id); // 返回map中第一个不小于id的迭代器指针
-    if(iter == pthis->cbMap_.end() || iter->first != p->id){
-        pthis->cbMap_.insert(iter,std::make_pair(p->id,p->cb));
+    Multiplexer::CallbackMap::iterator iter =
+        pthis->cbMap_.lower_bound(p->id); // 返回map中第一个不小于id的迭代器指针
+    if (iter == pthis->cbMap_.end() || iter->first != p->id) {
+        pthis->cbMap_.insert(std::make_pair(p->id, p->cb));
     }
 
-	if (p != NULL) // 释放para
-	{
-		delete p;
-		p = NULL;
-	}
-
-	pthis->conn_->onRecv(pthis->msghead_, pthis->rlen_, 0, pthis->dispatch, (void *)pthis); // 开始接收消息
+    if (p != NULL) // 释放para
+    {
+        delete p;
+        p = NULL;
+    }
 }
 
 // 在loop工作队列中加入insert任务
@@ -45,7 +44,7 @@ void Multiplexer::addInsertWork(int id, Callback cb)
     struct para *p = new para; // 在insert()中释放
     p->id = id;
     p->cb = cb;
-	p->pthis = this;
+    p->pthis = this;
 
     work_struct *w1 = new work_struct; // 在eventloop中释放
     w1->doit = insert;
@@ -54,28 +53,27 @@ void Multiplexer::addInsertWork(int id, Callback cb)
 }
 
 // 在map中删除<id,callback>对
-void Multiplexer::remove( void *pa )
+void Multiplexer::remove(void *pa)
 {
-	struct para *p = static_cast<struct para *>(pa);
+    struct para *p = static_cast<struct para *>(pa);
     int id = p->id;
-	printf("in remove\n");
+
     p->pthis->cbMap_.erase(id);
 
-	if (p != NULL) // 释放para
-	{
-		printf("in delete para\n");
-		delete p;
-		p = NULL;
-	}
+    if (p != NULL) // 释放para
+    {
+        delete p;
+        p = NULL;
+    }
 }
 
 // 在loop工作队列中加入remove任务
 void Multiplexer::addRemoveWork(int id)
 {
-	struct para *p = new para; // 在remove()中释放
+    struct para *p = new para; // 在remove()中释放
     p->id = id;
     p->cb = NULL;
-	p->pthis = this;
+    p->pthis = this;
 
     work_struct *w2 = new work_struct; // 在eventloop中释放
     w2->doit = remove;
@@ -96,60 +94,89 @@ void Multiplexer::addRemoveWork(int id)
 // 向上层提供发送消息接口
 void Multiplexer::sendMessage(int id, int length, char *data)
 {
-	char *buffer = (char *)malloc(sizeof(int)*2 + sizeof(char)*length);  // 在tcpconnection中释放
-	Message *message = reinterpret_cast<struct Message *>(buffer);
+    char *buffer = (char *) malloc(
+        sizeof(int) * 2 + sizeof(char) * length); // 在tcpconnection中释放
+    Message *message = reinterpret_cast<struct Message *>(buffer);
     message->id = id;
     message->len = length; // 消息头中的len为负载长度
-	memcpy(buffer + sizeof(Message), data, length);
-
-	conn_->onSend(buffer, length+sizeof(Message), -1, NULL, NULL);
+    memcpy(buffer + sizeof(Message), data, length);
+    printf("success memcpy\n");
+    conn_->onSend(buffer, length + sizeof(Message), -1, NULL, NULL);
 }
 
 // 分发消息给上层通信实体
 void Multiplexer::dispatch(void *p)
 {
-	Multiplexer *pthis  = static_cast<Multiplexer *>(p);
-    if(pthis->left_ == 0) // 是新任务，处理读取消息头的逻辑
+    Multiplexer *pthis = static_cast<Multiplexer *>(p);
+    if (pthis->left_ == 0) // 是新任务，处理读取消息头的逻辑
     {
-        struct Message *message = reinterpret_cast<struct Message *>(pthis->msghead_);
+        struct Message *message =
+            reinterpret_cast<struct Message *>(pthis->msghead_);
         pthis->id_ = message->id;
         pthis->len_ = message->len;
-		pthis->left_ = pthis->len_;
-		pthis->location_ = pthis->msghead_;
-	    pthis->rlen_ -=sizeof(int) * 2; // 对rlen_做更新，表示读到的数据长度
-		pthis->left_ -= pthis->rlen_; // 对left_做更新
-		pthis->location_ += sizeof(int)*2; // 定位到负载
+        pthis->left_ = pthis->len_;
+        pthis->location_ = pthis->msghead_;
+        pthis->rlen_ -= sizeof(int) * 2; // 对rlen_做更新，表示读到的数据长度
+        pthis->left_ -= pthis->rlen_;        // 对left_做更新
+        pthis->location_ += sizeof(int) * 2; // 定位到负载
 
-		if (pthis->left_== 0) // 已读完消息
-		{
-			Multiplexer::CallbackMap::iterator iter = pthis->cbMap_.find(pthis->id_);
-			if (iter != pthis->cbMap_.end()) iter->second(pthis->location_, pthis->rlen_, pthis->error_); // 在这里调用了实体对应的回调函数
+        if (pthis->left_ == 0) // 已读完消息
+        {
+            Multiplexer::CallbackMap::iterator iter =
+                pthis->cbMap_.find(pthis->id_);
+            if (iter != pthis->cbMap_.end())
+                iter->second(
+                    pthis->location_,
+                    pthis->rlen_,
+                    pthis->error_); // 在这里调用了实体对应的回调函数
 
-			pthis->conn_->onRecv(pthis->msghead_, pthis->rlen_, 0, pthis->dispatch, (void *)pthis); // 又开始新一轮读取
-		}
-		else if (pthis->left_ > 0)
-		{
-            pthis->databuf_ = (char *)malloc(sizeof(char) * pthis->len_);  // TODO:释放内存
-            memcpy( pthis->databuf_, pthis->location_, pthis->rlen_); // 做一次拷贝开销不大
-		    // 原型void *memcpy(void*dest, const void *src, size_t n)
-			pthis->location_ = pthis->databuf_;
-			pthis->location_ += pthis->rlen_; // location指针向后滑动
-			pthis->conn_->onRecv(pthis->location_, pthis->rlen_, 0, pthis->dispatch, (void *)pthis);
-		}
-    }
-    else if(pthis->left_ > 0) // 有剩余字节数未读
+            pthis->conn_->onRecv(
+                pthis->msghead_,
+                pthis->rlen_,
+                0,
+                pthis->dispatch,
+                (void *) pthis); // 又开始新一轮读取
+        } else if (pthis->left_ > 0) {
+            pthis->databuf_ =
+                (char *) malloc(sizeof(char) * pthis->len_); // TODO:释放内存
+            memcpy(
+                pthis->databuf_,
+                pthis->location_,
+                pthis->rlen_); // 做一次拷贝开销不大
+            // 原型void *memcpy(void*dest, const void *src, size_t n)
+            pthis->location_ = pthis->databuf_;
+            pthis->location_ += pthis->rlen_; // location指针向后滑动
+            pthis->conn_->onRecv(
+                pthis->location_,
+                pthis->rlen_,
+                0,
+                pthis->dispatch,
+                (void *) pthis);
+        }
+    } else if (pthis->left_ > 0) // 有剩余字节数未读
     {
-		pthis->left_ -= pthis->rlen_;
-		pthis->location_ += pthis->rlen_; // location指针向后滑动
-		if (pthis->left_== 0) // 已读完消息
-		{
-			Multiplexer::CallbackMap::iterator iter = pthis->cbMap_.find(pthis->id_);
-			if (iter != pthis->cbMap_.end()) iter->second(pthis->databuf_, pthis->len_, pthis->error_);
+        pthis->left_ -= pthis->rlen_;
+        pthis->location_ += pthis->rlen_; // location指针向后滑动
+        if (pthis->left_ == 0)            // 已读完消息
+        {
+            Multiplexer::CallbackMap::iterator iter =
+                pthis->cbMap_.find(pthis->id_);
+            if (iter != pthis->cbMap_.end())
+                iter->second(pthis->databuf_, pthis->len_, pthis->error_);
 
-			pthis->conn_->onRecv(pthis->msghead_, pthis->rlen_, 0, pthis->dispatch, (void *)pthis); // 又开始新一轮读取
-		}
-		else if(pthis->left_ > 0) // 继续读取数据
-			pthis->conn_->onRecv(pthis->location_, pthis->rlen_, 0, pthis->dispatch, (void *)pthis);
+            pthis->conn_->onRecv(
+                pthis->msghead_,
+                pthis->rlen_,
+                0,
+                pthis->dispatch,
+                (void *) pthis);     // 又开始新一轮读取
+        } else if (pthis->left_ > 0) // 继续读取数据
+            pthis->conn_->onRecv(
+                pthis->location_,
+                pthis->rlen_,
+                0,
+                pthis->dispatch,
+                (void *) pthis);
     }
 }
 
