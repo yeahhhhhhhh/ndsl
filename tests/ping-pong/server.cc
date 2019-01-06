@@ -21,27 +21,27 @@ using namespace net;
 
 #define BUFSIZE 1024
 
-// TcpConnection *Conn;
-// char sbuf[BUFSIZE];
-// size_t len;
+TcpConnection *Conn;
+char sbuf[BUFSIZE];
+size_t len;
 
-// static void onSendMessage(void *a) { printf("send a message\n"); }
+static void mError(int a, int b) { printf("there is a error\n"); }
 
-// static void onMessage(void *a)
-// {
-//     Conn->onSend(sbuf, len, 0, onSendMessage, NULL);
-// }
+static void onSendMessage(void *a) { printf("send a message\n"); }
 
-// static void onConnection(void *a)
-// {
-//     printf("connect\n");
+static void onMessage(void *a)
+{
+    Conn->onSend(sbuf, len, 0, onSendMessage, NULL);
+}
 
-//     // 初始化
-//     memset(sbuf, 0, sizeof(sbuf));
-//     len = 0;
+static void onConnection(void *a)
+{
+    // 初始化
+    memset(sbuf, 0, sizeof(sbuf));
+    len = 0;
 
-//     Conn->onRecv(sbuf, &len, 0, onMessage, NULL);
-// }
+    Conn->onRecv(sbuf, &len, 0, onMessage, NULL);
+}
 
 int main()
 {
@@ -51,22 +51,22 @@ int main()
 
     EventLoop loop;
     s = loop.init();
-    // if (s < 0) printf("loop init fail\n");
+    if (s < 0) printf("loop init fail\n");
 
-    // TcpAcceptor *tAc = new TcpAcceptor(&loop);
-    // s = tAc->start();
-    // if (s < 0) printf("tAc->start fail\n");
+    TcpAcceptor *tAc = new TcpAcceptor(&loop);
+    s = tAc->start();
+    if (s < 0) printf("tAc->start fail\n");
 
-    // // 准备接收的数据结构
-    // struct sockaddr_in rservaddr;
-    // bzero(&rservaddr, sizeof(rservaddr));
-    // socklen_t addrlen;
+    // 准备接收的数据结构
+    struct sockaddr_in rservaddr;
+    bzero(&rservaddr, sizeof(rservaddr));
+    socklen_t addrlen;
 
-    // Conn = new TcpConnection(tAc);
-    // Conn->onAccept(
-    //     Conn, (struct sockaddr *) &rservaddr, &addrlen, onConnection, NULL);
+    Conn = new TcpConnection(tAc);
+    Conn->onError(mError);
+    Conn->onAccept(
+        Conn, (struct sockaddr *) &rservaddr, &addrlen, onConnection, NULL);
 
     // 运行
-    s = loop.loop();
-    printf("s = %d\n", s);
+    loop.loop();
 }

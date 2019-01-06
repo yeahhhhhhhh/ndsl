@@ -48,7 +48,7 @@ TEST_CASE("net/EventLoop(WorkQueue)")
         w2->para = (void *) "Hello World!";
         loop.addWork(w2);
 
-        // loop.quit();
+        loop.quit();
 
         REQUIRE(loop.loop() == S_OK);
     }

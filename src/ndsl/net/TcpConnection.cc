@@ -48,14 +48,14 @@ int TcpConnection::onSend(
     if (n == len) {
         // 写完 通知用户
         if (cb != NULL) cb(param);
-        // 释放掉buf占用的空间
-        if (buf != NULL) free(buf);
+        // 释放掉buf占用的空间 TODO: 暂时注释
+        // if (buf != NULL) free(buf);
         return S_OK;
     } else if (n < 0) {
         // 出错 通知用户
         errorHandle_(errno, pTcpChannel_->getFd());
-        // 释放掉buf占用的空间
-        if (buf != NULL) free(buf);
+        // 释放掉buf占用的空间 TODO: 暂时注释
+        // if (buf != NULL) free(buf);
         return S_FAIL;
     }
 
@@ -95,8 +95,8 @@ int TcpConnection::handleWrite(void *pthis)
             if (tsi->offset_ == (*tsi->len_)) {
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();
-                // 释放掉buf占用的空间
-                if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
+                // 释放掉buf占用的空间 TODO: 暂时注释
+                // if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
 
                 delete tsi; // 删除申请的内存
             } else if (n == 0) {
@@ -110,8 +110,8 @@ int TcpConnection::handleWrite(void *pthis)
             // 将事件从队列中移除
             pThis->qSendInfo_.pop();
 
-            // 释放掉buf占用的空间
-            if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
+            // 释放掉buf占用的空间 TODO: 暂时注释
+            // if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
             delete tsi;
 
             return S_FAIL;

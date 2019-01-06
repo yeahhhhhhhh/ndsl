@@ -168,7 +168,7 @@ int EventLoop::init()
 
         pQueCh_->setCallBack(pQueCh_->onQueue, NULL, pQueCh_);
         // ret = pQueCh_->regist(false);
-        ret = pQueCh_->enroll(false);
+        ret = pQueCh_->enrollIn(false);
         if (ret != S_OK) return ret; // 若不成功直接返回
         // ret = pQueCh_->enableReading();
         // if (ret != S_OK) return ret; // 若不成功直接返回
@@ -188,7 +188,7 @@ int EventLoop::init()
         pIntrCh_ = new InterruptChannel(evfd, this);
         // pIntrCh_->setCallBack(NULL, NULL, pIntrCh_);
         // ret = pIntrCh_->regist(false);
-        ret = pIntrCh_->enroll(false);
+        ret = pIntrCh_->enrollIn(false);
         if (ret != S_OK) return ret; // 若不成功直接返回
         // ret = pIntrCh_->enableReading();
         // if (ret != S_OK) return ret; // 若不成功直接返回

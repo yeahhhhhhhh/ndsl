@@ -39,6 +39,9 @@ class BaseChannel : public Channel
     int erase();
     int enroll(bool isET);
 
+    // 内部使用 ps.留给EVentLoop
+    int enrollIn(bool isET);
+
     // 设置回调函数和上层指针
     int setCallBack(
         ChannelCallBack handleRead,

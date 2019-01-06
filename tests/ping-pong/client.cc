@@ -9,7 +9,7 @@
 #include "ndsl/net/TcpClient.h"
 #include "ndsl/net/EventLoop.h"
 
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 #include <cstring>
 #include <sys/time.h>
@@ -48,31 +48,34 @@ int main(int argc, char *argv[])
     TcpClient *pCli = new TcpClient();
     pCli->onConnect();
 
-    // 构造传输数据
-    makeMessage();
+    // // 构造传输数据
+    // makeMessage();
 
-    bytesRead = 0;
-    bool isEnd = false;
-    size_t n1, n2;
-    struct timeval t1, t2;
-    while (!isEnd) {
-        gettimeofday(&t1, NULL);
-        if ((n1 = write(pCli->sockfd_, cbuf, strlen(cbuf))) < 0) {
-            isEnd = true;
-        } else {
-            if ((n2 = read(pCli->sockfd_, cbuf, BUFSIZE)) < 0) {
-                isEnd = true;
-            } else {
-                bytesRead += n2;
-            }
-        }
-    }
-    gettimeofday(&t2, NULL);
+    // bytesRead = 0;
+    // bool isEnd = false;
+    // size_t n1, n2;
+    // struct timeval t1, t2;
+    // while (!isEnd) {
+    //     gettimeofday(&t1, NULL);
+    //     if ((n1 = write(pCli->sockfd_, cbuf, strlen(cbuf))) < 0) {
+    //         printf("write error\n");
+    //         isEnd = true;
+    //     } else {
+    //         if ((n2 = read(pCli->sockfd_, cbuf, BUFSIZE)) < 0) {
+    //             printf("read error\n");
+    //             isEnd = true;
+    //         } else {
+    //             bytesRead += n2;
+    //         }
+    //     }
+    // }
+    // gettimeofday(&t2, NULL);
 
-    mtime = (t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec;
+    // mtime = (t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec;
+    // printf("time = %ld", mtime);
 
-    // 计算
-    onDisconnect();
+    // // 计算
+    // onDisconnect();
 
     return 0;
 }
