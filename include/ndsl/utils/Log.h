@@ -26,7 +26,17 @@ enum
     LOG_WARN_LEVEL = 2,
     LOG_ERROR_LEVEL = 3
 };
-
+////
+// @brief
+// 日志源
+//
+enum
+{
+    LOG_SOURCE_EVENTLOOP = 0,
+    LOG_SOURCE_EPOLL = 1,
+    LOG_SOURCE_ADDRESS = 2,
+    LOG_SOURCE_TCPACCEPTOR = 3
+};
 void set_ndsl_log_sinks(int sinks);
 void ndsl_log_into_sink(int level,int source, const char *format, ...);
 

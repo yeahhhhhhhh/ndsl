@@ -87,7 +87,22 @@ void ndsl_log_into_sink(int level,int source, const char *format, ...)
         case 5 :
             ::write(m_file, buffer, ret1+ret2+ret3+1);
             break;
+        case 6:
+            ::write(m_file, buffer, ret1+ret2+ret3+1);
+            break;
+        case 7 :
+            ::write(m_file, buffer, ret1+ret2+ret3+1);
+            break;
+        case 8 :
+            ::write(m_file, buffer, ret1+ret2+ret3+1);
+            break;
+        case 9:
+            ::write(m_file, buffer, ret1+ret2+ret3+1);
+            break;
+        case 10 :
+            ::write(m_file, buffer, ret1+ret2+ret3+1);
         default:
+            ::write(m_file, buffer, ret1+ret2+ret3+1);
             break;
     }
 
