@@ -90,22 +90,6 @@ TEST_CASE("net/TcpConnection(onRecv)")
         // 第二次不需要添加中断
         REQUIRE(loop.loop() == S_OK);
     }
-<<<<<<< HEAD
-}
-
-// // 初始化tcpConnection
-// TcpAcceptor *pAc = new TcpAcceptor(fun1, &loop);
-// REQUIRE(pAc->start() == S_OK);
-
-// // // 启动一个客户端
-// int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-// struct sockaddr_in servaddr;
-// bzero(&servaddr, sizeof(servaddr));
-// servaddr.sin_family = AF_INET;
-// servaddr.sin_port = htons(SERV_PORT);
-// inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
-// connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
-=======
 
     // TODO: handleRead handleWrite 好像没法测
     // SECTION("onRecv onSecd handleRead hanleWrite")
@@ -116,4 +100,3 @@ TEST_CASE("net/TcpConnection(onRecv)")
     //     REQUIRE(loop.init() == S_OK);
     // }
 }
->>>>>>> dev_gyz

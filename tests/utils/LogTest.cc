@@ -10,12 +10,3 @@
 #include <string.h>
 #include <ndsl/utils/Log.h>
 
-TEST_CASE("utils/Log")
-{
-    SECTION("LOG")
-    {
-        set_ndsl_log_level(LOG_ERROR_LEVEL);
-        LOG(LOG_ERROR_LEVEL, "./test.log","hello, world\n");
-        set_ndsl_log_level(LOG_DEBUG_LEVEL);
-    }
-}

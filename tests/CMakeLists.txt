@@ -13,10 +13,12 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # 设置单元测试的文件
 set(TEST 
-
 testMain.cc
-net/TcpConnectionTest.cc
 
+
+utils/LogTest.cc
+utils/TimeStampTest.cc
+#net/TcpConnectionTest.cc
 #pass
 #net/TcpAcceptorTest.cc
 
@@ -35,12 +37,10 @@ net/TcpConnectionTest.cc
 # )
 # set(CMAKE_CXX_FLAGS "/EHsc ${CMAKE_CXX_FLAGS}")
 
-include_directories(${CMAKE_SOURCE_DIR}/tests)
+#include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
-target_link_libraries(utest ndsl pthread boost_system)
+target_link_libraries(utest ndsl pthread ) 
 
-# add_executable(tmpMain tmpMain.cc)
-# add_dependencies(tmpMain ndsl)
-# target_link_libraries(tmpMain ndsl)
+
