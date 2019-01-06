@@ -58,10 +58,12 @@ void Multiplexer::remove( void *pa )
 {
 	struct para *p = static_cast<struct para *>(pa);
     int id = p->id;
+	printf("in remove\n");
     p->pthis->cbMap_.erase(id);
 
 	if (p != NULL) // 释放para
 	{
+		printf("in delete para\n");
 		delete p;
 		p = NULL;
 	}
