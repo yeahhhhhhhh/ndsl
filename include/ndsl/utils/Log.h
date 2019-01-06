@@ -13,7 +13,8 @@
 extern "C" {
 #endif
 
-#define LOG(level, source,format, ...) ndsl_log_into_sink(level,source, format, ##__VA_ARGS__)
+#define LOG(level, source, format, ...)                                        \
+    ndsl_log_into_sink(level, source, format, ##__VA_ARGS__)
 
 ////
 // @brief
@@ -27,11 +28,18 @@ enum
     LOG_ERROR_LEVEL = 3
 };
 
+enum
+{
+    NDSL_SROUCE_EPOLL = 1,
+    NDSL_SROUCE_EVENTLOOP = 1 << 1,
+
+};
+
 void set_ndsl_log_sinks(int sinks);
-void ndsl_log_into_sink(int level,int source, const char *format, ...);
+void ndsl_log_into_sink(int level, int source, const char *format, ...);
 
 #if defined(__cplusplus)
 }
-#    endif
+#endif
 
 #endif // __NDSL_UTILS_LOG_H__

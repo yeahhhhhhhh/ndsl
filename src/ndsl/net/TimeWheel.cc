@@ -8,6 +8,7 @@
  */
 #include <algorithm>
 #include <sys/timerfd.h>
+#include "ndsl/utils/Log.h"
 #include "ndsl/net/TimeWheel.h"
 
 namespace ndsl {

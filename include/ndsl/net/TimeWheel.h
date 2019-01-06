@@ -13,7 +13,6 @@
 #include <list>
 #include "ndsl/net/BaseChannel.h"
 #include "ndsl/net/EventLoop.h"
-#include "ndsl/utils/temp_define.h"
 
 namespace ndsl {
 namespace net {

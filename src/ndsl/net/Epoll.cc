@@ -11,8 +11,7 @@
 #include <sys/epoll.h>
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/Channel.h"
-// FIXME:LOG
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/utils/Log.h"
 
 namespace ndsl {
 namespace net {
