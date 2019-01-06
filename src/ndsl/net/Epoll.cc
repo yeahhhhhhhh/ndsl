@@ -6,16 +6,25 @@
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
-
+#include <unistd.h>
 #include <errno.h>
 #include <sys/epoll.h>
-#include <string.h>
 #include "ndsl/net/Epoll.h"
-#include "ndsl/utils/temp_define.h"
 #include "ndsl/net/Channel.h"
+// FIXME:LOG
+#include "ndsl/utils/temp_define.h"
 
 namespace ndsl {
 namespace net {
+
+Epoll::Epoll()
+    : epfd_(-1)
+{}
+
+Epoll::~Epoll()
+{
+    if (epfd_ != -1) ::close(epfd_);
+}
 
 int Epoll::init()
 {
@@ -28,57 +37,48 @@ int Epoll::init()
     return S_OK;
 }
 
-int Epoll::regist(Channel *pCh)
+int Epoll::enroll(Channel *pCh)
 {
     struct epoll_event ev;
 
     ev.data.ptr = pCh;
-    ev.events = pCh->getEvents();
+    ev.events = pCh->events_;
 
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_ADD, pCh->getFd(), &ev);
 
-    // printf("ev.events = 0x%x\n", pCh->getEvents());
-
     if (ret < 0) {
-        printf(
-            "epfd = %d, fd =  %d, ret = %d, errno = %d, strerr = %s\n",
-            epfd_,
-            pCh->getFd(),
-            ret,
-            errno,
-            strerror(errno));
-        LOG(LEVEL_DEBUG, "epoll::control regist\n");
+        LOG(LEVEL_DEBUG, "Epoll::enroll epoll_ctl\n");
         return errno;
     }
 
     return S_OK;
 }
 
-int Epoll::update(Channel *pCh)
+int Epoll::modify(Channel *pCh)
 {
     struct epoll_event ev;
 
     ev.data.ptr = pCh;
-    ev.events = pCh->getEvents();
+    ev.events = pCh->events_;
 
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_MOD, pCh->getFd(), &ev);
 
     if (ret < 0) {
-        LOG(LEVEL_DEBUG, "epoll::control update\n");
+        LOG(LEVEL_DEBUG, "Epoll::modify epoll_ctl\n");
         return errno;
     }
 
     return S_OK;
 }
 
-int Epoll::del(Channel *pCh)
+int Epoll::erase(Channel *pCh)
 {
     struct epoll_event ev;
 
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_DEL, pCh->getFd(), &ev);
 
     if (ret < 0) {
-        LOG(LEVEL_DEBUG, "epoll::control del\n");
+        LOG(LEVEL_DEBUG, "Epoll::erase epoll_ctl\n");
         return errno;
     }
 
@@ -102,7 +102,7 @@ int Epoll::wait(Channel *channels[], int &nEvents, int timeoutMs)
     // 依次读取事件，并返回事件
     for (int i = 0; i < ret; i++) {
         Channel *channel = static_cast<Channel *>(events[i].data.ptr);
-        channel->setRevents(events[i].events);
+        channel->revents_ = events[i].events;
         channels[i] = channel;
     }
 

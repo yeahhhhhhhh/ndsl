@@ -34,12 +34,13 @@ TEST_CASE("net/TimeWheel")
     // 如何测?
     SECTION("addTask")
     {
+        // tw.start();
         TimeWheel::Task *task = new TimeWheel::Task;
 
         task->doit = func3;
-        task->para = (void *) "Hello World";
-        task->setInterval = 2;
-        task->times = 5;
+        task->param = (void *) "Hello World";
+        task->setInterval = 60;
+        task->times = 3;
 
         REQUIRE(tw.addTask(task) == S_OK);
 
@@ -52,8 +53,8 @@ TEST_CASE("net/TimeWheel")
         TimeWheel::Task *task = new TimeWheel::Task;
 
         task->doit = func3;
-        task->para = (void *) "Goodbye World";
-        task->setInterval = 1;
+        task->param = (void *) "Goodbye World";
+        task->setInterval = 61;
 
         REQUIRE(tw.addTask(task) == S_OK);
 

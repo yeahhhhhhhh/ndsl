@@ -38,14 +38,14 @@ TEST_CASE("net/EventLoop(WorkQueue)")
         // bind c++11特性
         // std::thread th(std::bind(&EventLoop::loop, &loop));
 
-        work_struct *w1 = new work_struct;
+        EventLoop::WorkItem *w1 = new EventLoop::WorkItem;
         w1->doit = func1;
-        w1->para = (void *) 100;
+        w1->param = (void *) 100;
         loop.addWork(w1);
 
-        work_struct *w2 = new work_struct;
+        EventLoop::WorkItem *w2 = new EventLoop::WorkItem;
         w2->doit = func2;
-        w2->para = (void *) "Hello World!";
+        w2->param = (void *) "Hello World!";
         loop.addWork(w2);
 
         loop.quit();

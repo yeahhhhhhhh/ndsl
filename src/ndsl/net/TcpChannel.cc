@@ -18,14 +18,7 @@ TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
 TcpChannel::~TcpChannel()
 {
     // 将自身从eventloop上面删掉
-    del();
-}
-
-TcpConnection *TcpChannel::newConnection(int connfd)
-{
-    TcpConnection *pCon = new TcpConnection();
-    pCon->createChannel(connfd, getEventLoop());
-    return pCon;
+    erase();
 }
 
 } // namespace net
