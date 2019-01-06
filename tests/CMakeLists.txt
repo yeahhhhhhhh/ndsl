@@ -34,7 +34,7 @@ include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
-target_link_libraries(utest ndsl pthread boost_system)
+target_link_libraries(utest ndsl pthread) # boost_system)
 
 add_executable(server ${pingserver})
 add_dependencies(server ndsl)
