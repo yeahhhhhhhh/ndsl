@@ -15,7 +15,7 @@
 #include <ndsl/utils/Log.h>
 #include <ndsl/utils/TimeStamp.h>
 
-int tag[64] = {0};
+int tag = 0;
 int m_file;      
 
 void init()
@@ -38,15 +38,16 @@ void init()
 void set_ndsl_log_sinks(int sinks)
 {
     if(sinks > 64 || sinks < 0) return ;
-
-    tag[sinks] = 1;
+    init();
+    tag = sinks;
 }
+
 void ndsl_log_into_sink(int level,int source, const char *format, ...)
 {
-    char buffer[4096];
-    set_ndsl_log_sinks(source);
-    init();
+    int i = 1;
     ndsl::utils::TimeStamp ts;
+    char buffer[4096];
+
     ts.now();
     buffer[0] = '[';
     ts.to_string(buffer + 1, 4096);
@@ -67,45 +68,13 @@ void ndsl_log_into_sink(int level,int source, const char *format, ...)
         buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
     if (ret3 < 0) return ;
         
-    switch(source)
-    {
-        case 0:
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-        case 1:
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-        case 2:
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-        case 3:
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-        case 4:
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-        case 5 :
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-        case 6:
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-        case 7 :
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-        case 8 :
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-        case 9:
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-        case 10 :
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-        default:
-            ::write(m_file, buffer, ret1+ret2+ret3+1);
-            break;
-    }
+      while(i)
+{  
+        if(source & i)
+        {
+         ::write(m_file, buffer, ret1+ret2+ret3+1);
 
-    va_end(ap);
-    close(m_file);
+        }
+        i = i * 2;
+    }
 }
