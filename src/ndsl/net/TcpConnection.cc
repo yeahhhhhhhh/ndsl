@@ -53,6 +53,7 @@ int TcpConnection::onSend(
         return S_OK;
     } else if (n < 0) {
         // 出错 通知用户
+        printf("send error\n");
         errorHandle_(errno, pTcpChannel_->getFd());
         // 释放掉buf占用的空间 TODO: 暂时注释
         // if (buf != NULL) free(buf);
@@ -61,25 +62,32 @@ int TcpConnection::onSend(
 
     pInfo tsi = new Info;
     tsi->offset_ = n;
-    tsi->sendBuf_ = buf;
+    tsi->sendBuf_ = (void *) buf;
     tsi->readBuf_ = NULL;
+
+    // TODO: memory leak
+    tsi->len_ = new size_t;
     (*tsi->len_) = len;
+
     tsi->flags_ = flags | MSG_NOSIGNAL;
     tsi->cb_ = cb;
     tsi->param_ = param;
 
     qSendInfo_.push(tsi);
-
     return S_OK;
 }
 
 int TcpConnection::handleWrite(void *pthis)
 {
+    // printf("handle write\n");
+
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
 
     if (sockfd < 0) { return -1; }
     size_t n;
+
+    // printf("qSendInfo_.size() = %lu\n", pThis->qSendInfo_.size());
 
     // 有数据待写
     if (pThis->qSendInfo_.size() > 0) {
@@ -91,20 +99,23 @@ int TcpConnection::handleWrite(void *pthis)
                  (*tsi->len_) - tsi->offset_,
                  tsi->flags_)) > 0) {
             tsi->offset_ += n;
+            printf("send1\n");
 
             if (tsi->offset_ == (*tsi->len_)) {
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();
                 // 释放掉buf占用的空间 TODO: 暂时注释
                 // if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
-
                 delete tsi; // 删除申请的内存
             } else if (n == 0) {
                 // 发送缓冲区满 等待下一次被调用
+                printf("send error next time\n");
                 return S_OK;
             }
         } else if (n < 0) {
             // 写过程中出错 出错之后处理不了 注销事件 并交给用户处理
+            printf("send error other\n");
+
             pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
 
             // 将事件从队列中移除
@@ -130,13 +141,20 @@ int TcpConnection::onRecv(
     Callback cb,
     void *param)
 {
+    // TODO:
+    // 作为下面recv接收的临时量，直接用(*len)接收会变成2^64-1 不知道为什么
+    int n;
+
     int sockfd = pTcpChannel_->getFd();
-    if (((*len) = recv(sockfd, buf, MAXLINE, flags)) < 0) {
+    if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
+        (*len) = n;
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             // 保存用户信息
+            printf("recv error EAGAIN\n");
+
             RecvInfo_.readBuf_ = buf;
             RecvInfo_.sendBuf_ = NULL;
-            RecvInfo_.flags_ = flags;
+            RecvInfo_.flags_ = flags | MSG_NOSIGNAL;
             RecvInfo_.len_ = len;
             RecvInfo_.cb_ = cb;
             RecvInfo_.param_ = param;
@@ -144,10 +162,18 @@ int TcpConnection::onRecv(
             return S_OK;
         } else {
             // 出错 回调用户
+            printf("recv error other\n");
             errorHandle_(errno, pTcpChannel_->getFd());
             return S_FAIL;
         }
     }
+    (*len) = n;
+
+    // printf("************\n");
+    // printf("buf = \"%s\"\n", buf);
+    // printf("len = %lu\n", *len);
+    // printf("************\n");
+
     // 一次性读完之后通知用户
     if (cb != NULL) cb(param);
     return S_OK;
@@ -159,15 +185,23 @@ int TcpConnection::handleRead(void *pthis)
     int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FAIL; }
 
-    if (((*pThis->RecvInfo_.len_) = recv(
+    int n;
+    if ((n = recv(
              sockfd,
              pThis->RecvInfo_.readBuf_,
              MAXLINE,
              pThis->RecvInfo_.flags_)) < 0) {
         // 出错
         pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
+        (*pThis->RecvInfo_.len_) = n;
         return S_FAIL;
     }
+
+    (*pThis->RecvInfo_.len_) = n;
+
+    // printf("************\n");
+    // printf("handleRead len = %lu\n", (*pThis->RecvInfo_.len_));
+    // printf("************\n");
 
     // 完成数据读取之后通知mul
     if (pThis->RecvInfo_.cb_ != NULL)

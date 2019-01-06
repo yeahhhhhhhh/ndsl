@@ -19,7 +19,7 @@
 using namespace ndsl;
 using namespace net;
 
-#define BUFSIZE 1024
+#define BUFSIZE 16384
 
 TcpConnection *Conn;
 char sbuf[BUFSIZE];
@@ -27,11 +27,11 @@ size_t len;
 
 static void mError(int a, int b) { printf("there is a error\n"); }
 
-static void onSendMessage(void *a) { printf("send a message\n"); }
+static void onSendMessage(void *a) {} // printf("send a message\n"); }
 
 static void onMessage(void *a)
 {
-    Conn->onSend(sbuf, len, 0, onSendMessage, NULL);
+    if (len > 0) Conn->onSend(sbuf, len, 0, onSendMessage, NULL);
 }
 
 static void onConnection(void *a)

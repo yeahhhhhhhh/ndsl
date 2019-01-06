@@ -17,7 +17,7 @@
 #define LEVEL_DEBUG 1
 #define LEVEL_ERROR 2
 #define LEVEL_INFO 3
-#define MAXLINE 1024
+#define MAXLINE 16384
 
 #define SERV_PORT 9877
 #define SA struct sockaddr

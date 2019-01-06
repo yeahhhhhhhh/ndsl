@@ -14,13 +14,14 @@
 #include <cstring>
 #include <sys/time.h>
 
-#define BUFSIZE 1024
+#define BUFSIZE 16384
 
 using namespace ndsl;
 using namespace net;
 
 size_t bytesRead;
 char cbuf[BUFSIZE];
+char recvbuf[BUFSIZE];
 int64_t mtime;
 
 void onDisconnect()
@@ -48,34 +49,43 @@ int main(int argc, char *argv[])
     TcpClient *pCli = new TcpClient();
     pCli->onConnect();
 
-    // // 构造传输数据
-    // makeMessage();
+    // 构造传输数据
+    makeMessage();
 
-    // bytesRead = 0;
-    // bool isEnd = false;
-    // size_t n1, n2;
-    // struct timeval t1, t2;
-    // while (!isEnd) {
-    //     gettimeofday(&t1, NULL);
-    //     if ((n1 = write(pCli->sockfd_, cbuf, strlen(cbuf))) < 0) {
-    //         printf("write error\n");
-    //         isEnd = true;
-    //     } else {
-    //         if ((n2 = read(pCli->sockfd_, cbuf, BUFSIZE)) < 0) {
-    //             printf("read error\n");
-    //             isEnd = true;
-    //         } else {
-    //             bytesRead += n2;
-    //         }
-    //     }
-    // }
-    // gettimeofday(&t2, NULL);
+    int count = 0; // 统计发送次数
+    memset(recvbuf, 0, sizeof(recvbuf));
+    bytesRead = 0;
+    bool isEnd = false;
+    size_t n1, n2;
+    struct timeval t1, t2;
+    gettimeofday(&t1, NULL);
+    while (!isEnd) {
+        // printf("bytesRead = %lu\n", bytesRead);
 
+        if ((n1 = write(pCli->sockfd_, cbuf, strlen(cbuf))) < 0) {
+            printf("write error\n");
+            isEnd = true;
+        } else {
+            if ((n2 = read(pCli->sockfd_, recvbuf, BUFSIZE)) < 0) {
+                printf("read error\n");
+                isEnd = true;
+            } else {
+                memset(recvbuf, 0, sizeof(recvbuf));
+                bytesRead += n2;
+                count++;
+            }
+        }
+        if (count > 15000) isEnd = true;
+        // printf("time1 = %ld\n", mtime);
+    }
+    gettimeofday(&t2, NULL);
     // mtime = (t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec;
-    // printf("time = %ld", mtime);
+    // if (mtime >= 5000000) isEnd = true;
+    mtime = (t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec;
+    printf("time = %ld\n", mtime);
 
-    // // 计算
-    // onDisconnect();
+    // 计算
+    onDisconnect();
 
     return 0;
 }
