@@ -59,9 +59,8 @@ int main(int argc, char *argv[])
     size_t n1, n2;
     struct timeval t1, t2;
     gettimeofday(&t1, NULL);
-    while (!isEnd) {
-        // printf("bytesRead = %lu\n", bytesRead);
 
+    while (!isEnd) {
         if ((n1 = write(pCli->sockfd_, cbuf, strlen(cbuf))) < 0) {
             printf("write error\n");
             isEnd = true;
@@ -76,11 +75,8 @@ int main(int argc, char *argv[])
             }
         }
         if (count > 15000) isEnd = true;
-        // printf("time1 = %ld\n", mtime);
     }
     gettimeofday(&t2, NULL);
-    // mtime = (t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec;
-    // if (mtime >= 5000000) isEnd = true;
     mtime = (t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec;
     printf("time = %ld\n", mtime);
 
