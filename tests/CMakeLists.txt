@@ -15,17 +15,20 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 set(TEST 
 
 testMain.cc
-net/TcpConnectionTest.cc
+#net/TcpConnectionTest.cc
 
 #pass
 #net/TcpAcceptorTest.cc
 
-#net/EventLoopTest.cc
+net/EventLoopTest.cc
 #net/EpollTest.cc
 
 )
 
+# 设置ping-pong单元测试的文件
+set(pingserver ping-pong/server.cc)
 
+set(pingclient ping-pong/client.cc)
 
 # set(TEST test.cc
 #    utils/TimeStampTest.cc utils/LogTest.cc utils/ThreadTest.cc
@@ -40,6 +43,14 @@ include_directories(${CMAKE_SOURCE_DIR}/tests)
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl pthread boost_system)
+
+add_executable(server ${pingserver})
+add_dependencies(server ndsl)
+target_link_libraries(server ndsl)
+
+add_executable(client ${pingclient})
+add_dependencies(client ndsl)
+target_link_libraries(client ndsl)
 
 # add_executable(tmpMain tmpMain.cc)
 # add_dependencies(tmpMain ndsl)

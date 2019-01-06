@@ -72,6 +72,15 @@ int BaseChannel::enroll(bool isET)
     return pLoop_->enroll(this);
 }
 
+// 内部使用 ps.留给EVentLoop
+int enrollIn(bool isET)
+{
+    if (isET) events_ |= EPOLLET;
+
+    events_ |= EPOLLIN;
+    return pLoop_->enroll(this);
+}
+
 int BaseChannel::erase() { return pLoop_->erase(this); }
 
 } // namespace net

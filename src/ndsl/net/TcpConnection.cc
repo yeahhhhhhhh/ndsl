@@ -122,6 +122,7 @@ int TcpConnection::handleWrite(void *pthis)
 
 // 如果执行成功，返回值就为 S_OK；如果出现错误，返回值就为 S_FAIL，并设置 errno
 // 的值。
+// 相当于注册一个回调函数
 int TcpConnection::onRecv(
     char *buf,
     size_t *len,

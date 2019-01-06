@@ -12,8 +12,6 @@
 #include <stdint.h>
 #include "ndsl/utils/temp_define.h"
 
-#include <cstdio>
-
 namespace ndsl {
 namespace net {
 
