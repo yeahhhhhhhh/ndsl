@@ -1,3 +1,10 @@
+////
+// @brief
+// unixsocketaddress'shixain
+//
+// @author ranxiangjun
+// @email ranxianshen@gmail.com
+//
 #include <string.h>
 #include <cstring>
 #include <sys/un.h>

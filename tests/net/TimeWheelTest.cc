@@ -13,37 +13,52 @@
 using namespace ndsl;
 using namespace net;
 
-void onTick(void *)
+void func3(void *para)
 {
-    static int ticks = 0;
-    printf("Timer onTick: ticks = %d\n", ++ticks);
+    printf("Call func2 and para is %s!\n", (char *) para);
 }
 
 TEST_CASE("net/TimeWheel")
 {
+    // 初始化EventLoop
+    EventLoop eloop;
+    REQUIRE(eloop.init() == S_OK);
+    TimeWheel tw(&eloop);
+
     SECTION("start and stop")
     {
-        EventLoop eloop;
-        REQUIRE(eloop.init() == S_OK);
-
-        TimeWheel tw(&eloop);
         REQUIRE(tw.start() == S_OK);
         REQUIRE(tw.stop() == S_OK);
     }
 
+    // 如何测?
     SECTION("addTask")
     {
-        EventLoop eloop;
-        REQUIRE(eloop.init() == S_OK);
-
-        TimeWheel tw(&eloop);
+        // tw.start();
         TimeWheel::Task *task = new TimeWheel::Task;
 
-        task->doit = onTick;
-        task->para = NULL;
-        task->setInterval = 2;
-        task->times = 5;
+        task->doit = func3;
+        task->param = (void *) "Hello World";
+        task->setInterval = 60;
+        task->times = 3;
 
-        tw.addTask(task);
+        REQUIRE(tw.addTask(task) == S_OK);
+
+        // eloop.loop();
+    }
+
+    // 如何测?
+    SECTION("removeTask")
+    {
+        TimeWheel::Task *task = new TimeWheel::Task;
+
+        task->doit = func3;
+        task->param = (void *) "Goodbye World";
+        task->setInterval = 61;
+
+        REQUIRE(tw.addTask(task) == S_OK);
+
+        REQUIRE(tw.removeTask(task) == S_OK);
+        // eloop.loop();
     }
 }

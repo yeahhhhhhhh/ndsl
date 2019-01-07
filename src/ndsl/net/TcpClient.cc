@@ -9,6 +9,7 @@
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/TcpClient.h"
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/utils/Error.h"
 
 namespace ndsl {
 namespace net {

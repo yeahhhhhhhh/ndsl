@@ -6,13 +6,10 @@
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
-
 #ifndef __NDSL_NET_EPOLL_H__
 #define __NDSL_NET_EPOLL_H__
 
-#include <unistd.h>
 #include <sys/epoll.h>
-#include <vector>
 
 namespace ndsl {
 namespace net {
@@ -31,14 +28,9 @@ class Epoll
     static const int MAX_EVENTS = 64; // 设置最大事件响应数
 
   public:
-    Epoll()
-        : epfd_(-1)
-    {}
+    Epoll();
 
-    ~Epoll()
-    {
-        if (epfd_ != -1) ::close(epfd_);
-    }
+    ~Epoll();
 
     // 初始化epfd
     int init();
