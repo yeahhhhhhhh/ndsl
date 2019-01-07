@@ -130,8 +130,8 @@ TEST_CASE("Mutiplexer/cbmaptest")
         iter2 = mymulti->cbMap_.find(id);
         REQUIRE(iter2 == mymulti->cbMap_.end());
 
-        char data[] = "helloworld";
-        int len = 10;
-        mymulti->sendMessage(id, len, data);
+        // char data[] = "helloworld";
+        // int len = 10;
+        // mymulti->sendMessage(id, len, data);
     }
 }

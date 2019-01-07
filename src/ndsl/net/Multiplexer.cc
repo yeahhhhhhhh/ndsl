@@ -81,15 +81,6 @@ void Multiplexer::addRemoveWork(int id)
     conn_->pTcpChannel_->pLoop_->addWork(w2);
 }
 
-// 回调，释放已使用的内存
-// void Multiplexer::freecb(void &p)
-// {
-// 	if (p != NULL)
-// 	{
-// 		free(p);
-// 		p = NULL;
-// 	}
-// }
 
 // 向上层提供发送消息接口
 void Multiplexer::sendMessage(int id, int length, char *data)
@@ -103,42 +94,55 @@ void Multiplexer::sendMessage(int id, int length, char *data)
     printf("success memcpy\n");
     conn_->onSend(buffer, length + sizeof(Message), -1, NULL, NULL);
 }
-
-// 分发消息给上层通信实体
+/********************
+ * 函数： Multiplexer::dispatch
+ * 功能：分发消息给上层通信实体
+ * 实现逻辑：
+ * 1.消息特别长，读一次缓冲区读不完，需要保留left_状态以备下次继续读取
+ * 2.消息特别短，读一次缓冲区会读到多个消息，需要根据rlen_和len_进行判断
+ * 3.在长消息的最后一次读取时可能会有别的消息在后面，需要根据rlen_进行判断
+********************/
 void Multiplexer::dispatch(void *p)
 {
     Multiplexer *pthis = static_cast<Multiplexer *>(p);
     if (pthis->left_ == 0) // 是新任务，处理读取消息头的逻辑
     {
         struct Message *message =
-            reinterpret_cast<struct Message *>(pthis->msghead_);
+            reinterpret_cast<struct Message *>(pthis->location_);
         pthis->id_ = message->id;
         pthis->len_ = message->len;
+
         pthis->left_ = pthis->len_;
-        pthis->location_ = pthis->msghead_;
-        pthis->rlen_ -= sizeof(int) * 2; // 对rlen_做更新，表示读到的数据长度
+        pthis->rlen_ -= sizeof(int) * 2; // 对rlen_做更新
         pthis->left_ -= pthis->rlen_;        // 对left_做更新
         pthis->location_ += sizeof(int) * 2; // 定位到负载
 
-        if (pthis->left_ == 0) // 已读完消息
+        if (pthis->left_ <= 0) // 刚好读完消息 或读完消息后还有别的实体消息
         {
             Multiplexer::CallbackMap::iterator iter =
                 pthis->cbMap_.find(pthis->id_);
             if (iter != pthis->cbMap_.end())
                 iter->second(
                     pthis->location_,
-                    pthis->rlen_,
+                    pthis->len_,
                     pthis->error_); // 在这里调用了实体对应的回调函数
 
-            pthis->conn_->onRecv(
-                pthis->msghead_,
-                pthis->rlen_,
-                0,
-                pthis->dispatch,
-                (void *) pthis); // 又开始新一轮读取
-        } else if (pthis->left_ > 0) {
+            if(pthis->left_ < 0)
+            {
+                pthis->rlen_ -= pthis->len_; //对rlen更新
+                pthis->left_ = 0; //对left_做更新
+                pthis->location_ += pthis->len_; // location_指针后移
+                dispatch((void *)pthis); // 递归 继续分发缓冲区剩下的消息
+            }
+            else
+            {
+                pthis->location_ =pthis->msg_;                
+            }
+        }
+        else if (pthis->left_ > 0) //没有读完该实体消息，申请一块len_大小的缓冲区
+        {
             pthis->databuf_ =
-                (char *) malloc(sizeof(char) * pthis->len_); // TODO:释放内存
+                (char *) malloc(sizeof(char) * pthis->len_); 
             memcpy(
                 pthis->databuf_,
                 pthis->location_,
@@ -146,37 +150,45 @@ void Multiplexer::dispatch(void *p)
             // 原型void *memcpy(void*dest, const void *src, size_t n)
             pthis->location_ = pthis->databuf_;
             pthis->location_ += pthis->rlen_; // location指针向后滑动
-            pthis->conn_->onRecv(
-                pthis->location_,
-                pthis->rlen_,
-                0,
-                pthis->dispatch,
-                (void *) pthis);
         }
-    } else if (pthis->left_ > 0) // 有剩余字节数未读
+    }        
+    else if (pthis->left_ > 0) // 有实体消息未读完
     {
-        pthis->left_ -= pthis->rlen_;
-        pthis->location_ += pthis->rlen_; // location指针向后滑动
-        if (pthis->left_ == 0)            // 已读完消息
+        if ((pthis->left_-pthis->rlen_) <= 0)  //刚好读完消息 或读完消息后还有别的实体消息
         {
+            memcpy( pthis->location_,
+                    pthis->msg_,
+                    pthis->left_); 
             Multiplexer::CallbackMap::iterator iter =
                 pthis->cbMap_.find(pthis->id_);
             if (iter != pthis->cbMap_.end())
                 iter->second(pthis->databuf_, pthis->len_, pthis->error_);
 
-            pthis->conn_->onRecv(
-                pthis->msghead_,
-                pthis->rlen_,
-                0,
-                pthis->dispatch,
-                (void *) pthis);     // 又开始新一轮读取
-        } else if (pthis->left_ > 0) // 继续读取数据
-            pthis->conn_->onRecv(
+            if(pthis->databuf_ != NULL) // 释放新生成的大块databuffer
+            {
+                free(pthis->databuf_);
+                pthis->databuf_=NULL;
+            }
+
+            pthis->location_ = pthis->msg_; 
+            //重新将location指针指向msg_，读取别的实体消息
+
+            if((pthis->left_-pthis->rlen_) < 0)
+            {
+                pthis->rlen_ -= pthis->left_; //对rlen更新
+                pthis->location_ += pthis->left_; // location_指针后移                
+                pthis->left_ = 0; //对left_做更新
+                dispatch((void *)pthis); // 递归 继续分发缓冲区剩下的消息             
+            }
+        }
+        else //太太太长了，还没读完
+        {
+            memcpy(
                 pthis->location_,
-                pthis->rlen_,
-                0,
-                pthis->dispatch,
-                (void *) pthis);
+                pthis->msg_,
+                pthis->rlen_); 
+            pthis->left_ -= pthis->rlen_;
+        }
     }
 }
 
