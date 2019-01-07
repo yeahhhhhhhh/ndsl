@@ -39,6 +39,7 @@ set(pingclient ping-pong/client.cc)
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl pthread) # boost_system)
+target_link_libraries(utest uuid)
 
 add_executable(server ${pingserver})
 add_dependencies(server ndsl)
@@ -47,4 +48,6 @@ target_link_libraries(server ndsl)
 add_executable(client ${pingclient})
 add_dependencies(client ndsl)
 target_link_libraries(client ndsl)
+
+
 

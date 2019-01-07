@@ -6,8 +6,10 @@
 // @author why
 // @email 136046355@qq.com
 //
-#include "test.h"
-#include "Guid.h"
+//#define CATCH_CONFIG_MAIN
+#include "../catch.hpp"
+#include "ndsl/utils/Guid.h"
+#include <iostream>
 
 TEST_CASE("Guid"){
 	

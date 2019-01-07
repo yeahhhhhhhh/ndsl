@@ -195,6 +195,7 @@ bin/utest: tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o
 bin/utest: tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o
 bin/utest: tests/CMakeFiles/utest.dir/build.make
 bin/utest: bin/libndsl.a
+bin/utest: bin/libplugin.so
 bin/utest: tests/CMakeFiles/utest.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable ../bin/utest"
 	cd /home/user/Desktop/ndsl/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/utest.dir/link.txt --verbose=$(VERBOSE)

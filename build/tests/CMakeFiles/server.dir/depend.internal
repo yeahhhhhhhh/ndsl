@@ -4,12 +4,9 @@
 tests/CMakeFiles/server.dir/ping-pong/server.cc.o
  ../include/ndsl/net/BaseChannel.h
  ../include/ndsl/net/Channel.h
- ../include/ndsl/net/Epoll.h
- ../include/ndsl/net/EventLoop.h
  ../include/ndsl/net/TcpAcceptor.h
  ../include/ndsl/net/TcpChannel.h
  ../include/ndsl/net/TcpConnection.h
- ../include/ndsl/utils/Error.h
  ../include/ndsl/utils/Log.h
  ../include/ndsl/utils/temp_define.h
  /home/user/Desktop/ndsl/tests/ping-pong/server.cc

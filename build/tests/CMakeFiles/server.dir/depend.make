@@ -3,12 +3,9 @@
 
 tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../include/ndsl/net/BaseChannel.h
 tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../include/ndsl/net/Channel.h
-tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../include/ndsl/net/Epoll.h
-tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../include/ndsl/net/EventLoop.h
 tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../include/ndsl/net/TcpAcceptor.h
 tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../include/ndsl/net/TcpChannel.h
 tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../include/ndsl/net/TcpConnection.h
-tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../include/ndsl/utils/Error.h
 tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../include/ndsl/utils/Log.h
 tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../include/ndsl/utils/temp_define.h
 tests/CMakeFiles/server.dir/ping-pong/server.cc.o: ../tests/ping-pong/server.cc

@@ -91,6 +91,7 @@ client_EXTERNAL_OBJECTS =
 bin/client: tests/CMakeFiles/client.dir/ping-pong/client.cc.o
 bin/client: tests/CMakeFiles/client.dir/build.make
 bin/client: bin/libndsl.a
+bin/client: bin/libplugin.so
 bin/client: tests/CMakeFiles/client.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ../bin/client"
 	cd /home/user/Desktop/ndsl/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/client.dir/link.txt --verbose=$(VERBOSE)

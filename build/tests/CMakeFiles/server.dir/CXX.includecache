@@ -18,26 +18,6 @@ ndsl/utils/temp_define.h
 ndsl/utils/Log.h
 ../include/ndsl/net/ndsl/utils/Log.h
 
-../include/ndsl/net/Epoll.h
-sys/epoll.h
--
-
-../include/ndsl/net/EventLoop.h
-list
--
-mutex
--
-unistd.h
--
-ndsl/utils/Log.h
-../include/ndsl/net/ndsl/utils/Log.h
-ndsl/utils/Error.h
-../include/ndsl/net/ndsl/utils/Error.h
-ndsl/net/Epoll.h
-../include/ndsl/net/ndsl/net/Epoll.h
-ndsl/net/BaseChannel.h
-../include/ndsl/net/ndsl/net/BaseChannel.h
-
 ../include/ndsl/net/TcpAcceptor.h
 TcpChannel.h
 ../include/ndsl/net/TcpChannel.h
@@ -57,20 +37,6 @@ ndsl/utils/temp_define.h
 ../include/ndsl/net/ndsl/utils/temp_define.h
 ndsl/utils/Log.h
 ../include/ndsl/net/ndsl/utils/Log.h
-
-../include/ndsl/utils/Error.h
-netinet/in.h
--
-arpa/inet.h
--
-sys/un.h
--
-errno.h
--
-unistd.h
--
-string
--
 
 ../include/ndsl/utils/Log.h
 

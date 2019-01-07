@@ -6,6 +6,7 @@
 // @author zhangsiqi
 // @email 1575033031@qq.com
 //
+#include "ndsl/config.h"
 #include "ndsl/utils/Plugin.h"
 
 #if defined(__cplusplus)
@@ -18,9 +19,18 @@ int ndsl::utils::Plugin::doit(functype func,int  para)
     {
         return (*func)(para);
     }
-    return -1;
+    return S_FALSE;
+}
+ndsl::utils::Plugin CreatPlugin()
+{
+    ndsl::utils::Plugin plugin;
+    ndsl::utils::Guid guid;
+    plugin.tag = guid.generate();
+    return plugin;
 }
 
 #if defined(__cplusplus)
 }
 #endif
+
+

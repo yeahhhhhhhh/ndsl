@@ -4,13 +4,6 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/user/Desktop/ndsl/src/ndsl/net/BaseChannel.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/BaseChannel.cc.o"
-  "/home/user/Desktop/ndsl/src/ndsl/net/SocketAddress.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddress.cc.o"
-  "/home/user/Desktop/ndsl/src/ndsl/net/SocketAddressUn.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o"
-  "/home/user/Desktop/ndsl/src/ndsl/net/TcpAcceptor.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/TcpAcceptor.cc.o"
-  "/home/user/Desktop/ndsl/src/ndsl/net/TcpChannel.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/TcpChannel.cc.o"
-  "/home/user/Desktop/ndsl/src/ndsl/net/TcpClient.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o"
-  "/home/user/Desktop/ndsl/src/ndsl/net/TcpConnection.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/TcpConnection.cc.o"
   "/home/user/Desktop/ndsl/src/ndsl/utils/Guid.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/Guid.cc.o"
   "/home/user/Desktop/ndsl/src/ndsl/utils/Log.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o"
   "/home/user/Desktop/ndsl/src/ndsl/utils/Plugin.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o"
@@ -25,6 +18,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
+  "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/libplugin.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.
