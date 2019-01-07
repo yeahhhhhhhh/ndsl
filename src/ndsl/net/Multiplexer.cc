@@ -46,9 +46,9 @@ void Multiplexer::addInsertWork(int id, Callback cb)
     p->cb = cb;
     p->pthis = this;
 
-    work_struct *w1 = new work_struct; // 在eventloop中释放
+    EventLoop::WorkItem *w1 = new EventLoop::WorkItem; // 在eventloop中释放
     w1->doit = insert;
-    w1->para = static_cast<void *>(p);
+    w1->param = static_cast<void *>(p);
     conn_->pTcpChannel_->pLoop_->addWork(w1);
 }
 
@@ -75,12 +75,11 @@ void Multiplexer::addRemoveWork(int id)
     p->cb = NULL;
     p->pthis = this;
 
-    work_struct *w2 = new work_struct; // 在eventloop中释放
+    EventLoop::WorkItem *w2 = new EventLoop::WorkItem; // 在eventloop中释放
     w2->doit = remove;
-    w2->para = static_cast<void *>(p);
+    w2->param = static_cast<void *>(p);
     conn_->pTcpChannel_->pLoop_->addWork(w2);
 }
-
 
 // 向上层提供发送消息接口
 void Multiplexer::sendMessage(int id, int length, char *data)
@@ -94,6 +93,7 @@ void Multiplexer::sendMessage(int id, int length, char *data)
     printf("success memcpy\n");
     conn_->onSend(buffer, length + sizeof(Message), -1, NULL, NULL);
 }
+
 /********************
  * 函数： Multiplexer::dispatch
  * 功能：分发消息给上层通信实体

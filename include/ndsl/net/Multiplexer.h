@@ -67,7 +67,7 @@ class Multiplexer
     Multiplexer(ndsl::net::TcpConnection *conn)
         : conn_(conn)
     {
-      conn_->onRecv(msg_, rlen_, 0, dispatch, (void *)this);
+      conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *)this);
     }
     CallbackMap cbMap_; // 回调函数映射容器
     // 在loop工作队列中加入insert任务
