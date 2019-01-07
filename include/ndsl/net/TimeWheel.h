@@ -30,7 +30,7 @@ class TimeWheel
         ~TimerfdChannel()
         {
             if (getFd() > 0) {
-                erase();
+                erase(); // 从EventLoop中取消注册
                 ::close(getFd());
             }
         }

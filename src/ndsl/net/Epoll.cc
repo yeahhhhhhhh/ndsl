@@ -12,6 +12,7 @@
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/Channel.h"
 #include "ndsl/utils/Log.h"
+#include "ndsl/utils/Error.h"
 
 namespace ndsl {
 namespace net {
@@ -29,7 +30,7 @@ int Epoll::init()
 {
     epfd_ = epoll_create(1);
     if (epfd_ < 0) {
-        LOG(LEVEL_ERROR, "Epoll::init epoll_create\n");
+        LOG(LOG_DEBUG_LEVEL, NDSL_SROUCE_EPOLL, "Epoll::init epoll_create\n");
         return errno;
     }
 
@@ -46,7 +47,7 @@ int Epoll::enroll(Channel *pCh)
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_ADD, pCh->getFd(), &ev);
 
     if (ret < 0) {
-        LOG(LEVEL_DEBUG, "Epoll::enroll epoll_ctl\n");
+        LOG(LOG_DEBUG_LEVEL, NDSL_SROUCE_EPOLL, "Epoll::enroll epoll_ctl\n");
         return errno;
     }
 
@@ -63,7 +64,7 @@ int Epoll::modify(Channel *pCh)
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_MOD, pCh->getFd(), &ev);
 
     if (ret < 0) {
-        LOG(LEVEL_DEBUG, "Epoll::modify epoll_ctl\n");
+        LOG(LOG_DEBUG_LEVEL, NDSL_SROUCE_EPOLL, "Epoll::modify epoll_ctl\n");
         return errno;
     }
 
@@ -77,7 +78,7 @@ int Epoll::erase(Channel *pCh)
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_DEL, pCh->getFd(), &ev);
 
     if (ret < 0) {
-        LOG(LEVEL_DEBUG, "Epoll::erase epoll_ctl\n");
+        LOG(LOG_DEBUG_LEVEL, NDSL_SROUCE_EPOLL, "Epoll::erase epoll_ctl\n");
         return errno;
     }
 
@@ -91,7 +92,7 @@ int Epoll::wait(Channel *channels[], int &nEvents, int timeoutMs)
     int ret = ::epoll_wait(epfd_, events, MAX_EVENTS, timeoutMs);
 
     if (ret < 0) {
-        LOG(LEVEL_ERROR, "Epoll::wait epoll_wait\n");
+        LOG(LOG_DEBUG_LEVEL, NDSL_SROUCE_EPOLL, "Epoll::wait epoll_wait\n");
         return errno;
     }
 

@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <sys/timerfd.h>
 #include "ndsl/utils/Log.h"
+#include "ndsl/utils/Error.h"
 #include "ndsl/net/TimeWheel.h"
 
 namespace ndsl {
@@ -31,7 +32,9 @@ int TimeWheel::init()
 {
     int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
     if (fd == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::init timerfd_create error!\n");
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SROUCE_TIMEWHEEL,
+            "TimeWheel::init timerfd_create error!\n");
         return errno;
     }
 
@@ -54,7 +57,9 @@ int TimeWheel::start()
     struct timespec now;
 
     if (clock_gettime(CLOCK_MONOTONIC, &now) == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::start clock_gettime error!\n");
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SROUCE_TIMEWHEEL,
+            "TimeWheel::start clock_gettime error!\n");
         return errno;
     }
 
@@ -65,7 +70,9 @@ int TimeWheel::start()
     new_value.it_interval.tv_nsec = 0;
 
     if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &new_value, NULL) == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::start timerfd_settime error!\n");
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SROUCE_TIMEWHEEL,
+            "TimeWheel::start timerfd_settime error!\n");
         return errno;
     }
 
@@ -89,7 +96,9 @@ int TimeWheel::stop()
 
     if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &stop_value, NULL) ==
         -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::stop timerfd_settime error!\n");
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SROUCE_TIMEWHEEL,
+            "TimeWheel::stop timerfd_settime error!\n");
         return errno;
     }
 
@@ -100,8 +109,10 @@ int TimeWheel::addTask(Task *task)
 {
     // 若task为空,直接返回
     if (task->setInterval < 0 || task->doit == NULL) {
-        LOG(LEVEL_ERROR, "TimeWheel::addTask invalid task!\n");
-        return S_FAIL;
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SROUCE_TIMEWHEEL,
+            "TimeWheel::addTask invalid task!\n");
+        return S_FALSE;
     }
     int setTick;
 
@@ -123,8 +134,10 @@ int TimeWheel::removeTask(Task *task)
 {
     // task为空,直接返回
     if (task->setInterval == -1 || task->setTick == -1 || task->doit == NULL) {
-        LOG(LEVEL_ERROR, "TimeWheel::removeTask invalid task!\n");
-        return S_FAIL;
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SROUCE_TIMEWHEEL,
+            "TimeWheel::removeTask invalid task!\n");
+        return S_FALSE;
     }
 
     // 标准模板库提供的find函数
@@ -132,10 +145,12 @@ int TimeWheel::removeTask(Task *task)
         slot_[task->setTick].begin(), slot_[task->setTick].end(), task);
 
     // 若没有找到,则直接返回
-    if (iter == slot_[task->setTick].end()) return S_FAIL;
+    if (iter == slot_[task->setTick].end()) return S_FALSE;
 
     slot_[task->setTick].erase(iter);
-    LOG(LEVEL_DEBUG, "TImeWheel::removeTask erased!\n");
+    LOG(LOG_DEBUG_LEVEL,
+        NDSL_SROUCE_TIMEWHEEL,
+        "TImeWheel::removeTask erased!\n");
     return S_OK;
 }
 
@@ -146,7 +161,7 @@ int TimeWheel::onTick(void *pThis)
 
     int ret = read(ptw->ptimerfdChannel_->getFd(), &exp, sizeof(uint64_t));
     if (ret == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::onTick read\n");
+        LOG(LOG_DEBUG_LEVEL, NDSL_SROUCE_TIMEWHEEL, "TimeWheel::onTick read\n");
         return errno;
     }
 

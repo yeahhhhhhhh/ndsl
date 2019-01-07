@@ -16,8 +16,10 @@ set(LIB_NDSL_SRC
   net/EventLoop.cc
   net/BaseChannel.cc
   net/TimeWheel.cc
-  
+
+  utils/TimeStamp.cc
   utils/Log.cc
+  utils/Error.cc
    )
 
 add_library(ndsl ${LIB_NDSL_SRC})

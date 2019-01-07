@@ -12,6 +12,8 @@
 #include <list>
 #include <mutex>
 #include <unistd.h>
+#include "ndsl/utils/Log.h"
+#include "ndsl/utils/Error.h"
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/BaseChannel.h"
 
@@ -120,7 +122,9 @@ class EventLoop
             int ret = ::write(getFd(), &data, sizeof(data));
 
             if (ret == -1) {
-                LOG(LEVEL_ERROR, "QueueChannel::onWrite write\n");
+                LOG(LOG_ERROR_LEVEL,
+                    NDSL_SROUCE_EVENTLOOP,
+                    "QueueChannel::onWrite write\n");
                 return errno;
             }
 
@@ -167,7 +171,9 @@ class EventLoop
             int ret = ::write(getFd(), &data, sizeof(data));
 
             if (ret == -1) {
-                LOG(LEVEL_ERROR, "InterruptChannel::onWrite\n");
+                LOG(LOG_ERROR_LEVEL,
+                    NDSL_SROUCE_EVENTLOOP,
+                    "InterruptChannel::onWrite\n");
                 return errno;
             }
 

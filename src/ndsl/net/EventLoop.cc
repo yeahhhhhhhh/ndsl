@@ -47,7 +47,9 @@ int EventLoop::init()
     if (!pQueCh_) {
         evfd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK | EFD_SEMAPHORE);
         if (evfd < 0) {
-            LOG(LEVEL_ERROR, "EventLoop::init pQueCh_ eventfd\n");
+            LOG(LOG_DEBUG_LEVEL,
+                NDSL_SROUCE_EVENTLOOP,
+                "EventLoop::init pQueCh_ eventfd\n");
             return errno;
         }
 
@@ -64,7 +66,9 @@ int EventLoop::init()
     if (!pIntrCh_) {
         evfd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK | EFD_SEMAPHORE);
         if (evfd < 0) {
-            LOG(LEVEL_ERROR, "EventLoop::init pIntrCh_ eventfd\n");
+            LOG(LOG_DEBUG_LEVEL,
+                NDSL_SROUCE_EVENTLOOP,
+                "EventLoop::init pIntrCh_ eventfd\n");
             return errno;
         }
 
@@ -82,9 +86,9 @@ int EventLoop::loop()
     // 进入事件循环
     while (true) {
         Channel *channels[Epoll::MAX_EVENTS];
-        // LOG(LEVEL_DEBUG, "onWait\n");
+        // LOG(LOG_DEBUG_LEVEL, "onWait\n");
         if (S_OK != epoll_.wait(channels, nEvents, -1)) {
-            // LOG(LEVEL_ERROR, "EventLoop::loop epoll->wait\n");
+            // LOG(LOG_DEBUG_LEVEL, "EventLoop::loop epoll->wait\n");
             break;
         }
 
