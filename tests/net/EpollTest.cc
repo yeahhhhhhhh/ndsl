@@ -8,7 +8,8 @@
 
 #include "../catch.hpp"
 #include "ndsl/net/Epoll.h"
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/utils/Log.h"
+#include "ndsl/utils/Error.h"
 
 using namespace ndsl;
 using namespace net;
