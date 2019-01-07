@@ -14,7 +14,7 @@
 #include <chrono>
 #include "ndsl/utils/TimeStamp.h"
 
-    bool ndsl::utils::TimeStamp::to_string(char *buffer, size_t size)
+    bool ndsl::utils::TimeStamp::to_string(char *buffer, size_t size)const 
     {
         struct tm tm;
         std::time_t tmt;

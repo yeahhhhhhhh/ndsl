@@ -123,7 +123,7 @@ class EventLoop
 
             if (ret == -1) {
                 LOG(LOG_ERROR_LEVEL,
-                    NDSL_SOURCE_EVENTLOOP,
+                    LOG_SOURCE_EVENTLOOP,
                     "QueueChannel::onWrite write\n");
                 return errno;
             }
@@ -172,7 +172,7 @@ class EventLoop
 
             if (ret == -1) {
                 LOG(LOG_ERROR_LEVEL,
-                    NDSL_SOURCE_EVENTLOOP,
+                    LOG_SOURCE_EVENTLOOP,
                     "InterruptChannel::onWrite\n");
                 return errno;
             }
