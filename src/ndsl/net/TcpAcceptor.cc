@@ -22,6 +22,9 @@ TcpAcceptor::TcpAcceptor(EventLoop *pLoop)
     , pLoop_(pLoop)
 {
     info.inUse_ = false;
+
+    // 将测试用回调函数置为空
+    cb_ = NULL;
 }
 
 TcpAcceptor::~TcpAcceptor() { delete pTcpChannel_; }
@@ -90,6 +93,8 @@ int TcpAcceptor::createAndListen()
 
 int TcpAcceptor::handleRead(void *pthis)
 {
+    printf("handleRead\n");
+
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
 
     int connfd;
