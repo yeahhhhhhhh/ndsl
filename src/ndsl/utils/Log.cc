@@ -15,37 +15,65 @@
 #include <ndsl/utils/Log.h>
 #include <ndsl/utils/TimeStamp.h>
 
-int tag[64] = {0};
-int m_file;
+int tag = 0;
 
-void init()
+////
+// @biref
+// 文件
+//
+
+class Filelog
 {
-    char path[256];
-    ndsl::utils::TimeStamp ts;
-    ts.now();
-    ts.to_string(path, 256);
-    int len = ::strlen(path);
-    sprintf(path + len, ".log");
+  private:
+    int m_file;
 
-    m_file = ::open(
-        path,                        // 路径
-        O_RDWR | O_APPEND | O_CREAT, // 追加数据
-        0666);                       // 其它进程可读
-    if (m_file == -1) printf("unable to open %s, error = %d\n", path, errno);
-}
+  public:
+    Filelog()
+        : m_file(-1)
+    {
+        // init();
+    }
+    ~Filelog()
+    {
+        if (m_file != -1) ::close(m_file);
+    }
+    void init()
+    {
+        char path[256];
+        ndsl::utils::TimeStamp ts;
+        ts.now();
+        ts.to_string(path, 256);
+        int len = ::strlen(path);
+        sprintf(path + len, ".log");
+
+        m_file = ::open(
+            path,                        // 路径
+            O_RDWR | O_APPEND | O_CREAT, // 追加数据
+            0666);                       // 其它进程可读
+        if (m_file == -1)
+            printf("unable to open %s, error = %d\n", path, errno);
+    }
+    void log(const char *data, size_t size) { ::write(m_file, data, size); }
+};
+
+////
+// @brief
+// 全局logger
+//
+static Filelog file_log;
 
 void set_ndsl_log_sinks(int sinks)
 {
     if (sinks > 64 || sinks < 0) return;
-
-    tag[sinks] = 1;
+    file_log.init();
 }
+
 void ndsl_log_into_sink(int level, int source, const char *format, ...)
 {
-    char buffer[4096];
-    set_ndsl_log_sinks(source);
-    init();
+    int i = 1;
     ndsl::utils::TimeStamp ts;
+    char buffer[4096] = {0};
+
     ts.now();
     buffer[0] = '[';
     ts.to_string(buffer + 1, 4096);
@@ -66,29 +94,8 @@ void ndsl_log_into_sink(int level, int source, const char *format, ...)
         vsnprintf(buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
     if (ret3 < 0) return;
 
-    switch (source) {
-    case 0:
-        ::write(m_file, buffer, ret1 + ret2 + ret3 + 1);
-        break;
-    case 1:
-        ::write(m_file, buffer, ret1 + ret2 + ret3 + 1);
-        break;
-    case 2:
-        ::write(m_file, buffer, ret1 + ret2 + ret3 + 1);
-        break;
-    case 3:
-        ::write(m_file, buffer, ret1 + ret2 + ret3 + 1);
-        break;
-    case 4:
-        ::write(m_file, buffer, ret1 + ret2 + ret3 + 1);
-        break;
-    case 5:
-        ::write(m_file, buffer, ret1 + ret2 + ret3 + 1);
-        break;
-    default:
-        break;
+    while (i <= source) {
+        if (source & i) { file_log.log(buffer, ret1 + ret2 + ret3 + 1); }
+        i = i * 2;
     }
-
-    va_end(ap);
-    close(m_file);
 }

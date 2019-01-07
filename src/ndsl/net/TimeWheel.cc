@@ -31,7 +31,6 @@ TimeWheel::~TimeWheel()
 int TimeWheel::init()
 {
     int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
-    printf("TimeWheel::init fd = %d\n", fd);
     if (fd == -1) {
         LOG(LOG_DEBUG_LEVEL,
             NDSL_SOURCE_TIMEWHEEL,
@@ -157,6 +156,7 @@ int TimeWheel::removeTask(Task *task)
 
 int TimeWheel::onTick(void *pThis)
 {
+    printf("TimeWheel::onTick\n");
     TimeWheel *ptw = (TimeWheel *) pThis;
     uint64_t exp;
 

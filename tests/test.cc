@@ -12,10 +12,6 @@
 
 int main(int argc, char *argv[])
 {
-<<<<<<< HEAD
-    set_ndsl_log_sinks(LOG_SINK_FILE);
-=======
->>>>>>> dev_lgr
     int result = Catch::Session().run(argc, argv);
     return result;
 }

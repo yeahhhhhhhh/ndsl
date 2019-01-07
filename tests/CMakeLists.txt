@@ -13,10 +13,12 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # 设置单元测试的文件
 set(TEST 
-
 testMain.cc
-net/TcpConnectionTest.cc
 
+
+utils/LogTest.cc
+utils/TimeStampTest.cc
+#net/TcpConnectionTest.cc
 #pass
 #net/TcpAcceptorTest.cc
 
@@ -30,7 +32,7 @@ set(pingserver ping-pong/server.cc)
 
 set(pingclient ping-pong/client.cc)
 
-include_directories(${CMAKE_SOURCE_DIR}/tests)
+#include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
@@ -44,6 +46,3 @@ add_executable(client ${pingclient})
 add_dependencies(client ndsl)
 target_link_libraries(client ndsl)
 
-# add_executable(tmpMain tmpMain.cc)
-# add_dependencies(tmpMain ndsl)
-# target_link_libraries(tmpMain ndsl)
