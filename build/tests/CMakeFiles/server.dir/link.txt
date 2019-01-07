@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Werror -Wno-attributes -ftemplate-backtrace-limit=0  -std="c++11" -g -DDEBUG   CMakeFiles/server.dir/ping-pong/server.cc.o  -o ../bin/server -rdynamic ../bin/libndsl.a 

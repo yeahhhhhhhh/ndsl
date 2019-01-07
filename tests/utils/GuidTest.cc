@@ -29,9 +29,11 @@ TEST_CASE("Guid"){
 		REQUIRE(g1.toGuid_t(str) == 0);
 	}
 	SECTION("operator=="){
-		g1.generate();
-		g2.generate();
-		REQUIRE((g1 == g2) == false);
+		char str[33] = "0D1A1E81BA3540B493340D84B61775E2";		
+		g1.toGuid_t(str);
+		char str2[33] = "0D1A1E81BA3540B493340D84B61775E2";		
+		g2.toGuid_t(str2);
+		REQUIRE((g1 == g2) == true);
 	}
 	SECTION("operator<"){
 		char str[33] = "0D1A1E81BA3540B493340D84B61775E2";		

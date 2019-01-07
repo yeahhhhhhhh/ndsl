@@ -38,6 +38,12 @@ int Guid::toGuid_t(char* str){
 				case 'D':tmp[i] = 13;break;
 				case 'E':tmp[i] = 14;break;
 				case 'F':tmp[i] = 15;break;
+				case 'a':tmp[i] = 10;break;
+				case 'b':tmp[i] = 11;break;
+				case 'c':tmp[i] = 12;break;
+				case 'd':tmp[i] = 13;break;
+				case 'e':tmp[i] = 14;break;
+				case 'f':tmp[i] = 15;break;
 				default:return -1;
 			}
 		}
@@ -49,37 +55,47 @@ int Guid::toGuid_t(char* str){
 	return 0;
 }
 
-bool Guid::operator==(Guid& guid){
-	char str1[32], str2[32];
-	toString(str1);
-	guid.toString(str2);
-	if((strcmp(str1, str2)) == 0){
-		return true;
-	}else{
-		return false;
+bool Guid::operator==(const Guid& guid) const{
+	for(int i = 0; i < 16; i++){
+		if(gu[i] != guid.gu[i]){
+			return false;
+		}
 	}
+	return true;
 }
 
-bool Guid::operator<(Guid& guid){
-	char str1[32], str2[32];
-	toString(str1);
-	guid.toString(str2);
-	if((strcmp(str1, str2)) < 0){
-		return true;
-	}else{
-		return false;
+bool Guid::operator<(const Guid& guid) const{
+	int n = 128;
+	for (int i = 0; i < 16; i++){
+		for (int j = 0; j < 8; j++){
+			if((gu[i]&n) < (guid.gu[i]&n)){
+				return true;
+			}else if((gu[i]&n) > (guid.gu[i]&n)){
+				return false;
+			}else{
+				n /= 2;
+			}
+		}
+		n = 128;
 	}
+	return false;
 }
 
-bool Guid::operator>(Guid& guid){
-	char str1[32], str2[32];
-	toString(str1);
-	guid.toString(str2);
-	if((strcmp(str1, str2)) > 0){
-		return true;
-	}else{
-		return false;
+bool Guid::operator>(const Guid& guid) const{
+	int n = 128;
+	for (int i = 0; i < 16; i++){
+		for (int j = 0; j < 8; j++){
+			if((gu[i]&n) > (guid.gu[i]&n)){
+				return true;
+			}else if((gu[i]&n) < (guid.gu[i]&n)){
+				return false;
+			}else{
+				n /= 2;
+			}
+		}
+		n = 128;
 	}
+	return false;
 }
 
 

@@ -19,6 +19,7 @@ testMain.cc
 utils/LogTest.cc
 utils/TimeStampTest.cc
 utils/PluginTest.cc
+utils/GuidTest.cc
 #net/TcpConnectionTest.cc
 #pass
 #net/TcpAcceptorTest.cc

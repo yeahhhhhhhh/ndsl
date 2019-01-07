@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -Wall -Werror -Wno-attributes -ftemplate-backtrace-limit=0 -fno-exceptions -std="c++11" -g -DDEBUG  -shared -Wl,-soname,libplugin.so -o ../../bin/libplugin.so CMakeFiles/libplugin.dir/utils/Plugin.cc.o 

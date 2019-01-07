@@ -28,6 +28,7 @@ set(LIB_NDSL_SRC
  utils/Log.cc
  utils/TimeStamp.cc
  utils/Plugin.cc
+ utils/Guid.cc
  #net/WorkQueue.cc
  #net/InterruptChannel.cc
  )
