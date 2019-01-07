@@ -9,20 +9,6 @@ src/ndsl/CMakeFiles/ndsl.dir/net/BaseChannel.cc.o
  ../include/ndsl/utils/Log.h
  ../include/ndsl/utils/temp_define.h
  /home/user/Desktop/ndsl/src/ndsl/net/BaseChannel.cc
-src/ndsl/CMakeFiles/ndsl.dir/net/Epoll.cc.o
- ../include/ndsl/net/Channel.h
- ../include/ndsl/net/Epoll.h
- ../include/ndsl/utils/Log.h
- ../include/ndsl/utils/temp_define.h
- /home/user/Desktop/ndsl/src/ndsl/net/Epoll.cc
-src/ndsl/CMakeFiles/ndsl.dir/net/EventLoop.cc.o
- ../include/ndsl/net/BaseChannel.h
- ../include/ndsl/net/Channel.h
- ../include/ndsl/net/Epoll.h
- ../include/ndsl/net/EventLoop.h
- ../include/ndsl/utils/Log.h
- ../include/ndsl/utils/temp_define.h
- /home/user/Desktop/ndsl/src/ndsl/net/EventLoop.cc
 src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddress.cc.o
  ../include/ndsl/net/SocketAddress.h
  /home/user/Desktop/ndsl/src/ndsl/net/SocketAddress.cc

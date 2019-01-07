@@ -167,60 +167,6 @@ net/BaseChannel.cc.s:
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/BaseChannel.cc.s
 .PHONY : net/BaseChannel.cc.s
 
-net/Epoll.o: net/Epoll.cc.o
-
-.PHONY : net/Epoll.o
-
-# target to build an object file
-net/Epoll.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/Epoll.cc.o
-.PHONY : net/Epoll.cc.o
-
-net/Epoll.i: net/Epoll.cc.i
-
-.PHONY : net/Epoll.i
-
-# target to preprocess a source file
-net/Epoll.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/Epoll.cc.i
-.PHONY : net/Epoll.cc.i
-
-net/Epoll.s: net/Epoll.cc.s
-
-.PHONY : net/Epoll.s
-
-# target to generate assembly for a file
-net/Epoll.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/Epoll.cc.s
-.PHONY : net/Epoll.cc.s
-
-net/EventLoop.o: net/EventLoop.cc.o
-
-.PHONY : net/EventLoop.o
-
-# target to build an object file
-net/EventLoop.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/EventLoop.cc.o
-.PHONY : net/EventLoop.cc.o
-
-net/EventLoop.i: net/EventLoop.cc.i
-
-.PHONY : net/EventLoop.i
-
-# target to preprocess a source file
-net/EventLoop.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/EventLoop.cc.i
-.PHONY : net/EventLoop.cc.i
-
-net/EventLoop.s: net/EventLoop.cc.s
-
-.PHONY : net/EventLoop.s
-
-# target to generate assembly for a file
-net/EventLoop.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/EventLoop.cc.s
-.PHONY : net/EventLoop.cc.s
-
 net/SocketAddress.o: net/SocketAddress.cc.o
 
 .PHONY : net/SocketAddress.o
@@ -507,12 +453,6 @@ help:
 	@echo "... net/BaseChannel.o"
 	@echo "... net/BaseChannel.i"
 	@echo "... net/BaseChannel.s"
-	@echo "... net/Epoll.o"
-	@echo "... net/Epoll.i"
-	@echo "... net/Epoll.s"
-	@echo "... net/EventLoop.o"
-	@echo "... net/EventLoop.i"
-	@echo "... net/EventLoop.s"
 	@echo "... net/SocketAddress.o"
 	@echo "... net/SocketAddress.i"
 	@echo "... net/SocketAddress.s"

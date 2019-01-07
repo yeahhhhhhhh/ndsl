@@ -1,6 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/ndsl.dir/net/Epoll.cc.o"
-  "CMakeFiles/ndsl.dir/net/EventLoop.cc.o"
   "CMakeFiles/ndsl.dir/net/BaseChannel.cc.o"
   "CMakeFiles/ndsl.dir/net/TcpChannel.cc.o"
   "CMakeFiles/ndsl.dir/net/TcpConnection.cc.o"
