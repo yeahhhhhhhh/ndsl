@@ -1,5 +1,5 @@
 ////
-// @file Log.h
+// @file Plugin.h
 // @brief
 // plugin头文件
 //
@@ -24,6 +24,7 @@ struct Plugin
 };
 
 ndsl::utils::Plugin CreatPlugin();
+
 
 
 

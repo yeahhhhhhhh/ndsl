@@ -1,1 +1,0 @@
-/usr/bin/c++   -Wall -Werror -Wno-attributes -ftemplate-backtrace-limit=0  -std="c++11" -g -DDEBUG   CMakeFiles/client.dir/ping-pong/client.cc.o  -o ../bin/client -rdynamic ../bin/libndsl.a -luuid ../bin/libplugin.so -Wl,-rpath,/home/user/Desktop/ndsl/build/bin 

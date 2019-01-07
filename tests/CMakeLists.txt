@@ -30,9 +30,9 @@ utils/GuidTest.cc
 )
 
 # 设置ping-pong单元测试的文件
-set(pingserver ping-pong/server.cc)
+#set(pingserver ping-pong/server.cc)
 
-set(pingclient ping-pong/client.cc)
+#set(pingclient ping-pong/client.cc)
 
 #include_directories(${CMAKE_SOURCE_DIR}/tests)
 
@@ -41,13 +41,13 @@ add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl pthread) # boost_system)
 target_link_libraries(utest uuid)
 
-add_executable(server ${pingserver})
-add_dependencies(server ndsl)
-target_link_libraries(server ndsl)
+#add_executable(server ${pingserver})
+#add_dependencies(server ndsl)
+#target_link_libraries(server ndsl)
 
-add_executable(client ${pingclient})
-add_dependencies(client ndsl)
-target_link_libraries(client ndsl)
+#add_executable(client ${pingclient})
+#add_dependencies(client ndsl)
+#target_link_libraries(client ndsl)
 
 
 

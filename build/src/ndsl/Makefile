@@ -111,21 +111,6 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-src/ndsl/CMakeFiles/libplugin.dir/rule:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 src/ndsl/CMakeFiles/libplugin.dir/rule
-.PHONY : src/ndsl/CMakeFiles/libplugin.dir/rule
-
-# Convenience name for target.
-libplugin: src/ndsl/CMakeFiles/libplugin.dir/rule
-
-.PHONY : libplugin
-
-# fast build rule for target.
-libplugin/fast:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/build
-.PHONY : libplugin/fast
-
-# Convenience name for target.
 src/ndsl/CMakeFiles/ndsl.dir/rule:
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 src/ndsl/CMakeFiles/ndsl.dir/rule
 .PHONY : src/ndsl/CMakeFiles/ndsl.dir/rule
@@ -200,7 +185,6 @@ utils/Plugin.o: utils/Plugin.cc.o
 
 # target to build an object file
 utils/Plugin.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.o
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o
 .PHONY : utils/Plugin.cc.o
 
@@ -210,7 +194,6 @@ utils/Plugin.i: utils/Plugin.cc.i
 
 # target to preprocess a source file
 utils/Plugin.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.i
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.i
 .PHONY : utils/Plugin.cc.i
 
@@ -220,7 +203,6 @@ utils/Plugin.s: utils/Plugin.cc.s
 
 # target to generate assembly for a file
 utils/Plugin.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.s
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.s
 .PHONY : utils/Plugin.cc.s
 
@@ -259,7 +241,6 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... libplugin"
 	@echo "... ndsl"
 	@echo "... utils/Guid.o"
 	@echo "... utils/Guid.i"

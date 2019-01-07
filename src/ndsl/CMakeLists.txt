@@ -30,12 +30,12 @@ set(LIB_NDSL_SRC
  #net/WorkQueue.cc
  #net/InterruptChannel.cc
  )
-set (LIB_SRC utils/Plugin.cc)
+#set (LIB_SRC utils/Plugin.cc)
 
 add_library(ndsl ${LIB_NDSL_SRC})
-add_library(libplugin SHARED ${LIB_SRC})
-target_link_libraries(ndsl uuid)
-target_link_libraries(ndsl libplugin)
+#add_library(libplugin SHARED ${LIB_SRC})
+#target_link_libraries(ndsl uuid)
+#target_link_libraries(ndsl libplugin)
 
-set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")
+#set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")
 

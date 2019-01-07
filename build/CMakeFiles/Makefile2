@@ -81,7 +81,6 @@ src/preinstall: src/ndsl/preinstall
 # Directory level rules for directory src/ndsl
 
 # Convenience name for "all" pass in the directory.
-src/ndsl/all: src/ndsl/CMakeFiles/libplugin.dir/all
 src/ndsl/all: src/ndsl/CMakeFiles/ndsl.dir/all
 src/ndsl/all: src/ndsl/net/all
 src/ndsl/all: src/ndsl/utils/all
@@ -89,7 +88,6 @@ src/ndsl/all: src/ndsl/utils/all
 .PHONY : src/ndsl/all
 
 # Convenience name for "clean" pass in the directory.
-src/ndsl/clean: src/ndsl/CMakeFiles/libplugin.dir/clean
 src/ndsl/clean: src/ndsl/CMakeFiles/ndsl.dir/clean
 src/ndsl/clean: src/ndsl/net/clean
 src/ndsl/clean: src/ndsl/utils/clean
@@ -103,50 +101,13 @@ src/ndsl/preinstall: src/ndsl/utils/preinstall
 .PHONY : src/ndsl/preinstall
 
 #=============================================================================
-# Target rules for target src/ndsl/CMakeFiles/libplugin.dir
-
-# All Build rule for target.
-src/ndsl/CMakeFiles/libplugin.dir/all:
-	$(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/depend
-	$(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=3,4 "Built target libplugin"
-.PHONY : src/ndsl/CMakeFiles/libplugin.dir/all
-
-# Include target in all.
-all: src/ndsl/CMakeFiles/libplugin.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-src/ndsl/CMakeFiles/libplugin.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 src/ndsl/CMakeFiles/libplugin.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 0
-.PHONY : src/ndsl/CMakeFiles/libplugin.dir/rule
-
-# Convenience name for target.
-libplugin: src/ndsl/CMakeFiles/libplugin.dir/rule
-
-.PHONY : libplugin
-
-# clean rule for target.
-src/ndsl/CMakeFiles/libplugin.dir/clean:
-	$(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/clean
-.PHONY : src/ndsl/CMakeFiles/libplugin.dir/clean
-
-# clean rule for target.
-clean: src/ndsl/CMakeFiles/libplugin.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
 # Target rules for target src/ndsl/CMakeFiles/ndsl.dir
 
 # All Build rule for target.
-src/ndsl/CMakeFiles/ndsl.dir/all: src/ndsl/CMakeFiles/libplugin.dir/all
+src/ndsl/CMakeFiles/ndsl.dir/all:
 	$(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/depend
 	$(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=5,6,7,8,9 "Built target ndsl"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target ndsl"
 .PHONY : src/ndsl/CMakeFiles/ndsl.dir/all
 
 # Include target in all.
@@ -156,7 +117,7 @@ all: src/ndsl/CMakeFiles/ndsl.dir/all
 
 # Build rule for subdir invocation for target.
 src/ndsl/CMakeFiles/ndsl.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 7
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 src/ndsl/CMakeFiles/ndsl.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 0
 .PHONY : src/ndsl/CMakeFiles/ndsl.dir/rule
@@ -217,15 +178,11 @@ src/ndsl/utils/preinstall:
 
 # Convenience name for "all" pass in the directory.
 tests/all: tests/CMakeFiles/utest.dir/all
-tests/all: tests/CMakeFiles/server.dir/all
-tests/all: tests/CMakeFiles/client.dir/all
 
 .PHONY : tests/all
 
 # Convenience name for "clean" pass in the directory.
 tests/clean: tests/CMakeFiles/utest.dir/clean
-tests/clean: tests/CMakeFiles/server.dir/clean
-tests/clean: tests/CMakeFiles/client.dir/clean
 
 .PHONY : tests/clean
 
@@ -238,11 +195,10 @@ tests/preinstall:
 # Target rules for target tests/CMakeFiles/utest.dir
 
 # All Build rule for target.
-tests/CMakeFiles/utest.dir/all: src/ndsl/CMakeFiles/libplugin.dir/all
 tests/CMakeFiles/utest.dir/all: src/ndsl/CMakeFiles/ndsl.dir/all
 	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/depend
 	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=12,13,14,15,16,17 "Built target utest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=6,7,8,9,10,11 "Built target utest"
 .PHONY : tests/CMakeFiles/utest.dir/all
 
 # Include target in all.
@@ -252,7 +208,7 @@ all: tests/CMakeFiles/utest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/utest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 11
 	$(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/utest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 0
 .PHONY : tests/CMakeFiles/utest.dir/rule
@@ -269,82 +225,6 @@ tests/CMakeFiles/utest.dir/clean:
 
 # clean rule for target.
 clean: tests/CMakeFiles/utest.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
-# Target rules for target tests/CMakeFiles/server.dir
-
-# All Build rule for target.
-tests/CMakeFiles/server.dir/all: src/ndsl/CMakeFiles/libplugin.dir/all
-tests/CMakeFiles/server.dir/all: src/ndsl/CMakeFiles/ndsl.dir/all
-	$(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/depend
-	$(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=10,11 "Built target server"
-.PHONY : tests/CMakeFiles/server.dir/all
-
-# Include target in all.
-all: tests/CMakeFiles/server.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-tests/CMakeFiles/server.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 9
-	$(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/server.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 0
-.PHONY : tests/CMakeFiles/server.dir/rule
-
-# Convenience name for target.
-server: tests/CMakeFiles/server.dir/rule
-
-.PHONY : server
-
-# clean rule for target.
-tests/CMakeFiles/server.dir/clean:
-	$(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/clean
-.PHONY : tests/CMakeFiles/server.dir/clean
-
-# clean rule for target.
-clean: tests/CMakeFiles/server.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
-# Target rules for target tests/CMakeFiles/client.dir
-
-# All Build rule for target.
-tests/CMakeFiles/client.dir/all: src/ndsl/CMakeFiles/libplugin.dir/all
-tests/CMakeFiles/client.dir/all: src/ndsl/CMakeFiles/ndsl.dir/all
-	$(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/depend
-	$(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=1,2 "Built target client"
-.PHONY : tests/CMakeFiles/client.dir/all
-
-# Include target in all.
-all: tests/CMakeFiles/client.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-tests/CMakeFiles/client.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 9
-	$(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/client.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/Desktop/ndsl/build/CMakeFiles 0
-.PHONY : tests/CMakeFiles/client.dir/rule
-
-# Convenience name for target.
-client: tests/CMakeFiles/client.dir/rule
-
-.PHONY : client
-
-# clean rule for target.
-tests/CMakeFiles/client.dir/clean:
-	$(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/clean
-.PHONY : tests/CMakeFiles/client.dir/clean
-
-# clean rule for target.
-clean: tests/CMakeFiles/client.dir/clean
 
 .PHONY : clean
 

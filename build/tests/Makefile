@@ -125,90 +125,6 @@ utest/fast:
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
 .PHONY : utest/fast
 
-# Convenience name for target.
-tests/CMakeFiles/server.dir/rule:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/server.dir/rule
-.PHONY : tests/CMakeFiles/server.dir/rule
-
-# Convenience name for target.
-server: tests/CMakeFiles/server.dir/rule
-
-.PHONY : server
-
-# fast build rule for target.
-server/fast:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/build
-.PHONY : server/fast
-
-# Convenience name for target.
-tests/CMakeFiles/client.dir/rule:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/client.dir/rule
-.PHONY : tests/CMakeFiles/client.dir/rule
-
-# Convenience name for target.
-client: tests/CMakeFiles/client.dir/rule
-
-.PHONY : client
-
-# fast build rule for target.
-client/fast:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/build
-.PHONY : client/fast
-
-ping-pong/client.o: ping-pong/client.cc.o
-
-.PHONY : ping-pong/client.o
-
-# target to build an object file
-ping-pong/client.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/ping-pong/client.cc.o
-.PHONY : ping-pong/client.cc.o
-
-ping-pong/client.i: ping-pong/client.cc.i
-
-.PHONY : ping-pong/client.i
-
-# target to preprocess a source file
-ping-pong/client.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/ping-pong/client.cc.i
-.PHONY : ping-pong/client.cc.i
-
-ping-pong/client.s: ping-pong/client.cc.s
-
-.PHONY : ping-pong/client.s
-
-# target to generate assembly for a file
-ping-pong/client.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/ping-pong/client.cc.s
-.PHONY : ping-pong/client.cc.s
-
-ping-pong/server.o: ping-pong/server.cc.o
-
-.PHONY : ping-pong/server.o
-
-# target to build an object file
-ping-pong/server.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/ping-pong/server.cc.o
-.PHONY : ping-pong/server.cc.o
-
-ping-pong/server.i: ping-pong/server.cc.i
-
-.PHONY : ping-pong/server.i
-
-# target to preprocess a source file
-ping-pong/server.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/ping-pong/server.cc.i
-.PHONY : ping-pong/server.cc.i
-
-ping-pong/server.s: ping-pong/server.cc.s
-
-.PHONY : ping-pong/server.s
-
-# target to generate assembly for a file
-ping-pong/server.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/ping-pong/server.cc.s
-.PHONY : ping-pong/server.cc.s
-
 testMain.o: testMain.cc.o
 
 .PHONY : testMain.o
@@ -351,16 +267,8 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... utest"
-	@echo "... server"
-	@echo "... client"
 	@echo "... rebuild_cache"
-	@echo "... ping-pong/client.o"
-	@echo "... ping-pong/client.i"
-	@echo "... ping-pong/client.s"
-	@echo "... ping-pong/server.o"
-	@echo "... ping-pong/server.i"
-	@echo "... ping-pong/server.s"
+	@echo "... utest"
 	@echo "... testMain.o"
 	@echo "... testMain.i"
 	@echo "... testMain.s"

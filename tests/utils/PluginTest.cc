@@ -20,7 +20,7 @@ int func(int para)
 TEST_CASE("Plugin")
 {
     ndsl::utils::Plugin plugin;
-    //plugin = CreatPlugin();
+    plugin = CreatPlugin();
     SECTION("doit")
     {
         REQUIRE(plugin.doit(func,5) == 6);
