@@ -30,9 +30,9 @@ enum
 
 enum
 {
-    NDSL_SROUCE_EPOLL = 1,
-    NDSL_SROUCE_EVENTLOOP = 1 << 1,
-    NDSL_SROUCE_TIMEWHEEL = 1 << 2
+    NDSL_SOURCE_EPOLL = 1,
+    NDSL_SOURCE_EVENTLOOP = 1 << 1,
+    NDSL_SOURCE_TIMEWHEEL = 1 << 2
 };
 
 void set_ndsl_log_sinks(int sinks);
