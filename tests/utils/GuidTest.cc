@@ -7,7 +7,7 @@
 // @email 136046355@qq.com
 //
 #include "test.h"
-#include "Guid.h"
+#include "ndsl/utils/Guid.h"
 
 TEST_CASE("Guid"){
 	

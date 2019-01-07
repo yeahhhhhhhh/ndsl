@@ -13,9 +13,13 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # 设置单元测试的文件
-set(TEST net/SignalfdTest.cc)
+set(TEST utils/GuidTest.cc)
+
 
 # 添加可执行文件
 add_executable(signalfdtest ${TEST})
-target_link_libraries(signalfdtest ndsl)
+target_link_libraries(signalfdtest ndsl uuid)
+
+
+
 

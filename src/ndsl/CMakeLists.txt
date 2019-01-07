@@ -29,7 +29,10 @@ set(LIB_NDSL_SRC
  #net/InterruptChannel.cc
  net/SignalChannel.cc
  net/SignalHandler.cc
+ 
+ utils/Guid.cc
  )
 
 add_library(ndsl ${LIB_NDSL_SRC})
+target_link_libraries(ndsl uuid)
 
