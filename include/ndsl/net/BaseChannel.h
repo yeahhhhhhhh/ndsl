@@ -18,19 +18,16 @@ class EventLoop;
 class BaseChannel : public Channel
 {
   private:
-    int fd_;
-    int update();
+    int fd_; // sockfd
 
-    // 存储上层的this
-    void *pThis_;
+    void *pThis_; // 存储上层的this Connecion Accept
 
-    // ChannelCallBack *pCb_;
-    // using Callback = void (*)(void *); // Callback 函数指针原型
-    using ChannelCallBack =
-        int (*)(void *); // 定义handleRead handleWrite函数指针原型
+    // 定义handleRead handleWrite函数指针原型
+    using ChannelCallBack = int (*)(void *);
 
   public:
     BaseChannel(int fd, EventLoop *loop);
+    // ~BaseChannel(); // TODO: 要不要去做fd的释放
 
     // 指向被调用的函数
     ChannelCallBack handleRead_, handleWrite_;
@@ -39,15 +36,13 @@ class BaseChannel : public Channel
     int getFd();
 
     // epoll 事件管理
-    int del();
-    int regist(bool isET);
-    int enableReading();
-    int enableWriting();
-    int disableReading();
-    int disableWriting();
+    int erase();
+    int enroll(bool isET);
 
-    // int setCallBack(ChannelCallBack handleRead, ChannelCallBack handleWrite);
-    // int setCallBack(ChannelCallBack *cb);
+    // 内部使用 ps.留给EVentLoop
+    int enrollIn(bool isET);
+
+    // 设置回调函数和上层指针
     int setCallBack(
         ChannelCallBack handleRead,
         ChannelCallBack handleWrite,

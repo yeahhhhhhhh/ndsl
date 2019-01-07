@@ -6,26 +6,30 @@
 # @author niexw
 # @email xiaowen.nie.cn@gmail.com
 #
-add_subdirectory(net)
-add_subdirectory(utils)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 set(LIB_NDSL_SRC
- net/TcpChannel.cc
  net/Epoll.cc
  net/EventLoop.cc
- net/TcpConnection.cc
  net/BaseChannel.cc
- net/SignalChannel.cc
- net/SignalHandler.cc
- net/SocketAddress.cc
- net/SocketAddressUn.cc
- net/TcpAcceptor.cc
+ #net/TcpChannel.cc
+ #net/TcpConnection.cc
+ #net/TcpAcceptor.cc
+ #net/TcpClient.cc
 
+ #net/SocketAddress.cc
+ #net/SocketAddressUn.cc
+
+ #net/SocketAddress.cc
+ #net/SocketAddressUn.cc
+ utils/Log.cc
+ utils/TimeStamp.cc
  #net/WorkQueue.cc
  #net/InterruptChannel.cc
+ net/SignalChannel.cc
+ net/SignalHandler.cc
  )
 
-
 add_library(ndsl ${LIB_NDSL_SRC})
+

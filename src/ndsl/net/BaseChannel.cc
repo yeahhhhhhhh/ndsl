@@ -7,6 +7,7 @@
  */
 #include "ndsl/net/BaseChannel.h"
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/utils/Log.h"
 #include "ndsl/net/EventLoop.h"
 #include <sys/epoll.h>
 
@@ -22,11 +23,27 @@ int BaseChannel::getFd() { return fd_; }
 
 int BaseChannel::handleEvent()
 {
-    if (getRevents() & EPOLLIN) {
+    // EPOLLHUP EPOLLRDHUP
+    // Stream socket peer closed connection, or shut down writing half of
+    // connection.  (This flag is especially useful for writing simple code  to
+    // detect peer shutdown when using Edge Triggered monitoring.)
+    // EPOLLIN | EPOLLRDHUP 对端关闭
+
+    // EPOLLERR 表示相关联的fd发生了错误
+    // Error condition happened  on  the  associated  file  descriptor.
+    // epoll_wait(2)  will always wait for this event; it is not
+    // necessary to set it in events.
+
+    if ((revents_ & EPOLLIN) && (revents_ & EPOLLHUP)) { close(fd_); }
+    if ((revents_ & EPOLLIN) && (revents_ & EPOLLRDHUP)) { close(fd_); }
+
+    if ((revents_ & EPOLLIN) && (revents_ & EPOLLERR)) { close(fd_); }
+
+    if (revents_ & EPOLLIN) {
         if (handleRead_) handleRead_(pThis_);
     }
 
-    if (getRevents() & EPOLLOUT) {
+    if (revents_ & EPOLLOUT) {
         if (handleWrite_) handleWrite_(pThis_);
     }
 
@@ -38,86 +55,33 @@ int BaseChannel::setCallBack(
     ChannelCallBack handleWrite,
     void *thi)
 {
-    if (handleRead)
-        handleRead_ = handleRead;
-    else
-        handleRead_ = NULL;
-
-    if (handleWrite)
-        handleWrite_ = handleWrite;
-    else
-        handleWrite_ = NULL;
-
+    handleRead_ = handleRead;
+    handleWrite_ = handleWrite;
     pThis_ = thi;
 
     return S_OK;
 }
 
-// int BaseChannel::handleEvent()
-// {
-//     if (getRevents() & EPOLLIN) { pCb_->handleRead(); }
-
-//     if (getRevents() & EPOLLOUT) { pCb_->handleWrite(); }
-
-//     return S_OK;
-// }
-
-// int BaseChannel::setCallBack(ChannelCallBack *cb)
-// {
-//     pCb_ = cb;
-//     return S_OK;
-// }
-
-int BaseChannel::enableReading()
+int BaseChannel::enroll(bool isET)
 {
-    setEvents(getEvents() | EPOLLIN);
-    update();
-    return S_OK;
+    if (isET) events_ |= EPOLLET;
+
+    // 同时注册输入输出
+    events_ |= EPOLLIN;
+    events_ |= EPOLLOUT;
+
+    return pLoop_->enroll(this);
 }
 
-int BaseChannel::enableWriting()
+int BaseChannel::enrollIn(bool isET)
 {
-    setEvents(getEvents() | EPOLLOUT);
-    update();
-    return S_OK;
+    if (isET) events_ |= EPOLLET;
+
+    events_ |= EPOLLIN;
+    return pLoop_->enroll(this);
 }
 
-int BaseChannel::disableReading()
-{
-    setEvents(getEvents() & ~EPOLLIN);
-    update();
-    return S_OK;
-}
-
-int BaseChannel::disableWriting()
-{
-    setEvents(getEvents() & ~EPOLLOUT);
-    update();
-    return S_OK;
-}
-
-int BaseChannel::regist(bool isET)
-{
-    if (isET) {
-        setEvents(getEvents() & EPOLLET);
-    } else {
-        setEvents(getEvents());
-    }
-    getEventLoop()->regist(this);
-    return S_OK;
-}
-
-int BaseChannel::update()
-{
-    getEventLoop()->update(this);
-    return S_OK;
-}
-
-int BaseChannel::del()
-{
-    getEventLoop()->del(this);
-    return S_OK;
-}
+int BaseChannel::erase() { return pLoop_->erase(this); }
 
 } // namespace net
 } // namespace ndsl

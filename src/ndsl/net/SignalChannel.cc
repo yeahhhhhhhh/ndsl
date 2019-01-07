@@ -1,10 +1,10 @@
-#include "SignalChannel.h"
+#include "ndsl/net/SignalChannel.h"
 
 namespace ndsl{
 namespace net{
 
 SignalChannel::SignalChannel(int signalfd, EventLoop *loop) : BaseChannel(signalfd, loop){}
-
+SignalChannel::~SignalChannel(){}
 //int SignalChannel::handleEvent(){
 
 //	if (revents_ & EPOLLIN) {

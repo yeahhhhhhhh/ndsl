@@ -1,7 +1,12 @@
 #include <string.h>
 #include <sys/signalfd.h>
+#include <signal.h>
 
-#include "SignalHandler.h"
+#include "ndsl/net/SignalHandler.h"
+#include "ndsl/utils/temp_define.h"
+
+#include <iostream>
+
 
 namespace ndsl{
 namespace net{
@@ -9,10 +14,12 @@ namespace net{
 SignalHandler::SignalHandler (EventLoop *pLoop){
 	pLoop_ = pLoop;
 }
+SignalHandler::~SignalHandler(){}
 
-int SignalHandler:;registSignalfd(int signum, Callback handleFunc){
+int SignalHandler::registSignalfd(int signum, Callback handleFunc, void *p){
 	signum_ = signum;
 	handleFunc_ = handleFunc;
+	p_ = p;
 	
 	sigset_t mask;  
     int sfd;  
@@ -25,32 +32,32 @@ int SignalHandler:;registSignalfd(int signum, Callback handleFunc){
     sfd = signalfd(-1, &mask, 0);
     
     pSignalChannel_ = new SignalChannel(sfd, pLoop_);
-    pSignalChannel_ -> setCallBack(handleRead, NULL, this);
-    return pSignalChannel_ -> enableReading();
+    pSignalChannel_ -> setCallBack(handleRead, handleWrite, this);
+    pSignalChannel_ -> enroll(true);
+    return S_OK;
 }
 
-int handleRead(void *pthis){
+int SignalHandler::handleRead(void *pthis){
+
 	struct signalfd_siginfo fdsi;
 	memset(&fdsi, 0, sizeof(struct signalfd_siginfo));
 	
-	SignalChannel *pSignalChannel = (SignalChannel *)(pthis);
-	int sfd = pSignalChannel_ -> getFd();
+	SignalHandler *pSignalHandler = (SignalHandler *)(pthis);
+	int sfd = pSignalHandler -> pSignalChannel_ -> getFd();
 	int s = read(sfd, &fdsi, sizeof(struct signalfd_siginfo));
 	
 	if(s != sizeof(struct signalfd_siginfo)){
+		std::cout << "error!" << std::endl;
 		return S_FALSE;
 	}
 	
-	if(fdsi.ssi_signo == signum_){
-		handleFunc_();
-		return S_OK;
-	}else{
-		return S_FALSE;
-	}
+	pSignalHandler->handleFunc_(pSignalHandler -> p_);
+	return S_OK;
+	
 }
 
-int handleWrite(){
-
+int SignalHandler::handleWrite(void *pthis){
+	return 0;
 }
 
 } // namespace net

@@ -12,6 +12,8 @@
 #include "SignalChannel.h"
 #include "EventLoop.h"
 
+class SignalChannel;
+
 namespace ndsl{
 namespace net{
 
@@ -20,18 +22,19 @@ using Callback = void (*)(void *);
 class SignalHandler {
 	public:
 	  SignalHandler (EventLoop *pLoop);
-	  virtual ~SignalHandler ();
+	  ~SignalHandler ();
 
-    private:
+    public:
 	  SignalChannel *pSignalChannel_;
 	  EventLoop *pLoop_;
-	  int signum_; // 信号编号
-	  Callback handleFunc_; // 用于信号发生后的处理函数
+	  unsigned int signum_; // 信号编号
+	  Callback handleFunc_; // 用于信号发生后的用户处理函数
+	  void *p_; // 信号发生后用户回调函数的参数
 	   
 	public:
-	  int registSignalfd(int signum, Callback handleFunc); // 将信号生成文件描述符fd，并发送给channel
-	  int handleRead(); // 事件发生后的处理
-      int handleWrite();
+	  int registSignalfd(int signum, Callback handleFunc, void *p); // 将信号生成文件描述符fd，并发送给channel, p为用户回调函数参数
+	  static int handleRead(void *pthis); // 事件发生后的处理
+      static int handleWrite(void *pthis);
 	  
 };
 	

@@ -15,11 +15,12 @@
 
 namespace ndsl{
 namespace net{
+
+
 class SignalChannel : public BaseChannel{
 	public:
 	  SignalChannel (int signalfd, EventLoop *loop);
 	  ~SignalChannel ();
-   
 };
 
 } // namespace net

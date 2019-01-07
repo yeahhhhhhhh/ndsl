@@ -81,7 +81,7 @@ configure_file(
 )
 
 # 指定编译子目录
-add_subdirectory(src/ndsl/utils)
-add_subdirectory(tests/utils)
+add_subdirectory(src)
+add_subdirectory(tests)
 
 message(STATUS "### Done ###")
