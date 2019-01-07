@@ -27,9 +27,13 @@ set(LIB_NDSL_SRC
  #net/SocketAddressUn.cc
  utils/Log.cc
  utils/TimeStamp.cc
+ utils/Plugin.cc
  #net/WorkQueue.cc
  #net/InterruptChannel.cc
  )
-
+set (LIB_SRC utils/Plugin.cc)
 
 add_library(ndsl ${LIB_NDSL_SRC})
+add_library(libplugin SHARED ${LIB_SRC})
+set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")
+
