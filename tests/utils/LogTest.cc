@@ -18,10 +18,5 @@ TEST_CASE("utils/Log")
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EVENTLOOP, "hello, world\n");
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "debug\n");
     }
-    SECTION("LOG")
-    {
-        set_ndsl_log_sinks(5,0);
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EVENTLOOP, "hello, world\n");
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "debug\n");
-    }
+
 }
