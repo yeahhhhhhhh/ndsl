@@ -53,23 +53,26 @@ class Multiplexer
 
     ndsl::net::TcpConnection *conn_; // 绑定的connection
 
-    int error_;
+    int error_ = 0;
     int id_;
     int len_; // 负载长度
-    size_t left_;
-    size_t rlen_;
+    int left_ = 0;
 
-    char msg_[sizeof(char) * MAXLINE];
     char *databuf_ = NULL;
-    char *location_ = msg_;
 
   public:
     Multiplexer(ndsl::net::TcpConnection *conn)
         : conn_(conn)
     {
-      conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *)this);
+        conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
     }
+
     CallbackMap cbMap_; // 回调函数映射容器
+
+    char msg_[sizeof(char) * MAXLINE];
+    char *location_ = msg_;
+    size_t rlen_;
+
     // 在loop工作队列中加入insert任务
     void addInsertWork(int id, Callback cb);
 

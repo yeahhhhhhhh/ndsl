@@ -43,7 +43,7 @@ int TcpConnection::onSend(
     void *param)
 {
     int sockfd = pTcpChannel_->getFd();
-
+    printf("get sockfd:%d\n", sockfd);
     // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
     size_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
     if (n == len) {
@@ -94,17 +94,26 @@ int TcpConnection::handleWrite(void *pthis)
     if (pThis->qSendInfo_.size() > 0) {
         pInfo tsi = pThis->qSendInfo_.front();
 
+        printf("********************\n");
+
+        printf("buf = %s\n", ((char *) tsi->sendBuf_ + 8));
+        printf("len = %lu\n", *tsi->len_);
+        printf("********************\n");
+
         if ((n = send(
                  sockfd,
                  (char *) tsi->sendBuf_ + tsi->offset_,
                  (*tsi->len_) - tsi->offset_,
                  tsi->flags_)) > 0) {
             tsi->offset_ += n;
-            printf("send1\n");
+
+            printf("send n = %lu\n", n);
 
             if (tsi->offset_ == (*tsi->len_)) {
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();
+                printf("send comp;ete\n");
+
                 // 释放掉buf占用的空间 TODO: 暂时注释
                 // if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
                 delete tsi; // 删除申请的内存
@@ -171,7 +180,7 @@ int TcpConnection::onRecv(
     (*len) = n;
 
     // printf("************\n");
-    // printf("buf = \"%s\"\n", buf);
+    // // printf("buf = \"%s\"\n", buf);
     // printf("len = %lu\n", *len);
     // printf("************\n");
 

@@ -24,14 +24,14 @@ public:
    // uint64_t 的整形数字由机器字节序转化为网络字节序 
      uint64_t hToN64(uint64_t host64);
    
-     uint32_t hToN32(uint32_t host32);
+     static uint32_t hToN32(uint32_t host32);
   
      uint16_t hToN16(uint16_t host16);
    
    // uint64_t 的整形数字由网络字节序转化为主句字节序 
      uint64_t nToH64(uint64_t net64);
   
-     uint32_t nToH32(uint32_t net32);
+     static uint32_t nToH32(uint32_t net32);
    
      uint16_t nToH16(uint16_t net16);
   

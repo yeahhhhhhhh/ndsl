@@ -10,7 +10,7 @@
 #ifndef __NDSL_NET_DEFINE_H__
 #define __NDSL_NET_DEFINE_H__
 
-#define MAXLINE 16384
+#define MAXLINE 50
 
 #define SERV_PORT 9877
 #define SA struct sockaddr
