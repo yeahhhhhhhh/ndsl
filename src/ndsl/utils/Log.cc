@@ -16,37 +16,66 @@
 #include <ndsl/utils/TimeStamp.h>
 
 int tag = 0;
-int m_file;      
+   
+////
+// @biref
+// 文件
+//
 
-void init()
+class Filelog
 {
-    char path[256];
-    ndsl::utils::TimeStamp ts;
-    ts.now();
-    ts.to_string(path, 256);
-    int len = ::strlen(path);
-    sprintf(path + len, ".log");
+    private:
+      int m_file;
+    public:
+     Filelog()
+       : m_file(-1)
+    {
+        //init();
+    }
+    ~Filelog()
+    {
+        if(m_file != -1) ::close(m_file);
+    }
+    void init()
+    {
+        char path[256];
+        ndsl::utils::TimeStamp ts;
+        ts.now();
+        ts.to_string(path, 256);
+        int len = ::strlen(path);
+        sprintf(path + len, ".log");
 
-    m_file = ::open(
-        path,                          // 路径
-        O_RDWR | O_APPEND | O_CREAT,            // 追加数据
-        0666);                         // 其它进程可读
-    if (m_file == -1)
-        printf("unable to open %s, error = %d\n", path, errno);
-}
+        m_file = ::open(
+            path,                          // 路径
+            O_RDWR | O_APPEND | O_CREAT,            // 追加数据
+            0666);                         // 其它进程可读
+        if (m_file == -1)
+            printf("unable to open %s, error = %d\n", path, errno);
+    }
+    void log(const char * data,size_t size)
+    {
+        ::write(m_file,data,size);
+    }
+
+};
+
+////
+// @brief
+// 全局logger
+//
+static Filelog file_log;
 
 void set_ndsl_log_sinks(int sinks)
 {
     if(sinks > 64 || sinks < 0) return ;
-    init();
-    tag = sinks;
+    file_log.init();
 }
 
 void ndsl_log_into_sink(int level,int source, const char *format, ...)
 {
     int i = 1;
     ndsl::utils::TimeStamp ts;
-    char buffer[4096];
+    char buffer[4096] = {0};
 
     ts.now();
     buffer[0] = '[';
@@ -68,13 +97,15 @@ void ndsl_log_into_sink(int level,int source, const char *format, ...)
         buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
     if (ret3 < 0) return ;
         
-      while(i)
-{  
+      while(i <= source)
+    {  
         if(source & i)
         {
-         ::write(m_file, buffer, ret1+ret2+ret3+1);
+         file_log.log(buffer,ret1 + ret2 + ret3 + 1);
 
         }
         i = i * 2;
     }
+    
+    
 }
