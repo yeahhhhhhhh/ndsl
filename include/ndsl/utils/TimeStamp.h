@@ -25,31 +25,31 @@ struct TimeStamp
 {
     std::chrono::system_clock::time_point stamp_;
     void now() { stamp_ = std::chrono::system_clock::now(); }
-    bool to_string(char *buffer, size_t size);
-    void from_string(const char *time);
+    bool to_string(char *buffer, size_t size)const ;
+    void from_string(const char *time) ;
     
 };
-inline bool operator<(TimeStamp lhs,TimeStamp rhs)
+inline bool operator<(const TimeStamp&  lhs,const TimeStamp& rhs) 
 {
     char buf_lhs[512];
     char buf_rhs[512];
     lhs.to_string(buf_lhs,512);
     rhs.to_string(buf_rhs,512);
     int i = 0;
-    while(buf_lhs[i])
-    {
+   while(buf_lhs[i])
+{
         if(buf_lhs[i] > buf_rhs[i])
         {
             return false;
         }else if(buf_lhs[i] < buf_rhs[i]){
             return true;
-        }else{
+       }else{
             i++;
         }
     }
     return false;
 }
-inline bool operator==(TimeStamp lhs,TimeStamp rhs)
+ inline bool operator==(const TimeStamp &lhs, const TimeStamp &rhs)
 {
     char buf_lhs[512];
     char buf_rhs[512];
