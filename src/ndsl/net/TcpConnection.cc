@@ -7,6 +7,7 @@
  */
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/utils/Log.h"
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpAcceptor.h"
 #include <errno.h>
@@ -57,7 +58,7 @@ int TcpConnection::onSend(
         errorHandle_(errno, pTcpChannel_->getFd());
         // 释放掉buf占用的空间 TODO: 暂时注释
         // if (buf != NULL) free(buf);
-        return S_FAIL;
+        return S_FALSE;
     }
 
     pInfo tsi = new Info;
@@ -125,13 +126,13 @@ int TcpConnection::handleWrite(void *pthis)
             // if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
             delete tsi;
 
-            return S_FAIL;
+            return S_FALSE;
         }
     }
     return S_OK;
 }
 
-// 如果执行成功，返回值就为 S_OK；如果出现错误，返回值就为 S_FAIL，并设置 errno
+// 如果执行成功，返回值就为 S_OK；如果出现错误，返回值就为 S_FALSE，并设置 errno
 // 的值。
 // 相当于注册一个回调函数
 int TcpConnection::onRecv(
@@ -164,7 +165,7 @@ int TcpConnection::onRecv(
             // 出错 回调用户
             printf("recv error other\n");
             errorHandle_(errno, pTcpChannel_->getFd());
-            return S_FAIL;
+            return S_FALSE;
         }
     }
     (*len) = n;
@@ -183,7 +184,7 @@ int TcpConnection::handleRead(void *pthis)
 {
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
-    if (sockfd < 0) { return S_FAIL; }
+    if (sockfd < 0) { return S_FALSE; }
 
     int n;
     if ((n = recv(
@@ -194,7 +195,7 @@ int TcpConnection::handleRead(void *pthis)
         // 出错
         pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
         (*pThis->RecvInfo_.len_) = n;
-        return S_FAIL;
+        return S_FALSE;
     }
 
     (*pThis->RecvInfo_.len_) = n;
@@ -240,7 +241,7 @@ int TcpConnection::sendMsg(
     } else if (n < 0) {
         // 出错 通知用户
         errorHandle_(errno, pTcpChannel_->getFd());
-        return S_FAIL;
+        return S_FALSE;
     }
 
     // 没写完 存起来 等待下次写

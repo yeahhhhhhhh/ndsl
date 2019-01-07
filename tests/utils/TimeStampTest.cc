@@ -14,7 +14,11 @@ TEST_CASE("utils/TimeStamp")
 {
     SECTION("to_from")
     {
+<<<<<<< HEAD
         TimeStamp ts;
+=======
+        ndsl::utils::TimeStamp ts;
+>>>>>>> dev_lgr
         ts.now();
         char buf[512];
         char* time;
@@ -29,5 +33,34 @@ TEST_CASE("utils/TimeStamp")
         REQUIRE(::strncmp(buf, time1, ::strlen(time1)) == 0);
 
     }
+<<<<<<< HEAD
 
+=======
+    SECTION("test_equal")
+    {
+        ndsl::utils::TimeStamp ts;
+        ndsl::utils::TimeStamp ts1;
+        ndsl::utils::TimeStamp ts2;
+        ndsl::utils::TimeStamp ts3;
+        ndsl::utils::TimeStamp ts4;
+
+
+        ts.now();
+        const char *time1 = "2018-12-02 14:40:08.521990";
+        const char *time2 = "2018-03-02 12:47:08.245690";
+        const char *time3 = "2019-12-02 14:40:08.521990";
+        const char *time4 = "2019-12-02 14:40:08.521990";
+
+        ts1.from_string(time1);
+        ts2.from_string(time2);
+        ts3.from_string(time3);
+        ts4.from_string(time4);
+
+        REQUIRE(ts2 < ts1);
+        REQUIRE(ts2 < ts3);
+        REQUIRE(ts1 < ts3);
+        REQUIRE(ts3 == ts4);
+
+    }
+>>>>>>> dev_lgr
 }

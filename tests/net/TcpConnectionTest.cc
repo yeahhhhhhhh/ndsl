@@ -13,6 +13,7 @@
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/TcpClient.h"
+#include "ndsl/utils/Log.h"
 #include <cstring>
 #include <sys/socket.h>
 #include <arpa/inet.h>
