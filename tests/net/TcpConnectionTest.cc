@@ -12,7 +12,7 @@
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpConnection.h"
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/utils/Log.h"
 #include <cstring>
 
 using namespace ndsl;

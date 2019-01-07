@@ -48,7 +48,7 @@ int EventLoop::init()
         evfd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK | EFD_SEMAPHORE);
         if (evfd < 0) {
             LOG(LOG_DEBUG_LEVEL,
-                NDSL_SROUCE_EVENTLOOP,
+                NDSL_SOURCE_EVENTLOOP,
                 "EventLoop::init pQueCh_ eventfd\n");
             return errno;
         }
@@ -67,7 +67,7 @@ int EventLoop::init()
         evfd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK | EFD_SEMAPHORE);
         if (evfd < 0) {
             LOG(LOG_DEBUG_LEVEL,
-                NDSL_SROUCE_EVENTLOOP,
+                NDSL_SOURCE_EVENTLOOP,
                 "EventLoop::init pIntrCh_ eventfd\n");
             return errno;
         }

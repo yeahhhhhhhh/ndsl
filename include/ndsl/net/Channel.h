@@ -1,30 +1,44 @@
-/*
- * File: Channel.h
- * brief:
+/**
+ * @file Channel.h
+ * @brief
+ * Channel 基类
  *
- * Author: gyz
- * Email: mni_gyz@163.com
- * Last Modified: Thursday, 29th November 2018 10:42:18 am
+ * @author gyz
+ * @email mni_gyz@163.com
  */
-
-#ifndef __CHANNEL_H__
-#define __CHANNEL_H__
+#ifndef __NDSL_NET_CHANNEL_H__
+#define __NDSL_NET_CHANNEL_H__
+// #include "EventLoop.h"
 #include <stdint.h>
+#include "ndsl/utils/Log.h"
 
 namespace ndsl {
 namespace net {
 
-class Channel
+class EventLoop;
+
+struct Channel
 {
   public:
-    virtual ~Channel(){};
-    virtual int onRead(char *inBuf) = 0;
-    virtual int onWrite() = 0;
+    using Callback = void (*)(void *); // Callback 函数指针原型
 
-    virtual int handleEvent() = 0;
-    virtual int getFd() = 0;
-    virtual uint32_t getEvents() = 0;
-    virtual int setRevents(uint32_t revents) = 0;
+    // protected:
+  public:
+    uint32_t events_;  // 注册事件
+    uint32_t revents_; // 发生事件
+    EventLoop *pLoop_; // 指向EventLoop
+
+  public:
+    Channel(EventLoop *loop)
+        : events_(0)
+        , revents_(0)
+        , pLoop_(loop)
+    {}
+    Channel() {}
+    virtual ~Channel() {} // 虚析构函数
+
+    virtual int handleEvent() = 0; // loop的事件处理函数
+    virtual int getFd() = 0;       // rdma的fd在结构内部
 };
 
 } // namespace net

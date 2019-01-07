@@ -33,7 +33,7 @@ int TimeWheel::init()
     int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
     if (fd == -1) {
         LOG(LOG_DEBUG_LEVEL,
-            NDSL_SROUCE_TIMEWHEEL,
+            NDSL_SOURCE_TIMEWHEEL,
             "TimeWheel::init timerfd_create error!\n");
         return errno;
     }
@@ -58,7 +58,7 @@ int TimeWheel::start()
 
     if (clock_gettime(CLOCK_MONOTONIC, &now) == -1) {
         LOG(LOG_DEBUG_LEVEL,
-            NDSL_SROUCE_TIMEWHEEL,
+            NDSL_SOURCE_TIMEWHEEL,
             "TimeWheel::start clock_gettime error!\n");
         return errno;
     }
@@ -71,7 +71,7 @@ int TimeWheel::start()
 
     if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &new_value, NULL) == -1) {
         LOG(LOG_DEBUG_LEVEL,
-            NDSL_SROUCE_TIMEWHEEL,
+            NDSL_SOURCE_TIMEWHEEL,
             "TimeWheel::start timerfd_settime error!\n");
         return errno;
     }
@@ -97,7 +97,7 @@ int TimeWheel::stop()
     if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &stop_value, NULL) ==
         -1) {
         LOG(LOG_DEBUG_LEVEL,
-            NDSL_SROUCE_TIMEWHEEL,
+            NDSL_SOURCE_TIMEWHEEL,
             "TimeWheel::stop timerfd_settime error!\n");
         return errno;
     }
@@ -110,7 +110,7 @@ int TimeWheel::addTask(Task *task)
     // 若task为空,直接返回
     if (task->setInterval < 0 || task->doit == NULL) {
         LOG(LOG_DEBUG_LEVEL,
-            NDSL_SROUCE_TIMEWHEEL,
+            NDSL_SOURCE_TIMEWHEEL,
             "TimeWheel::addTask invalid task!\n");
         return S_FALSE;
     }
@@ -135,7 +135,7 @@ int TimeWheel::removeTask(Task *task)
     // task为空,直接返回
     if (task->setInterval == -1 || task->setTick == -1 || task->doit == NULL) {
         LOG(LOG_DEBUG_LEVEL,
-            NDSL_SROUCE_TIMEWHEEL,
+            NDSL_SOURCE_TIMEWHEEL,
             "TimeWheel::removeTask invalid task!\n");
         return S_FALSE;
     }
@@ -149,7 +149,7 @@ int TimeWheel::removeTask(Task *task)
 
     slot_[task->setTick].erase(iter);
     LOG(LOG_DEBUG_LEVEL,
-        NDSL_SROUCE_TIMEWHEEL,
+        NDSL_SOURCE_TIMEWHEEL,
         "TImeWheel::removeTask erased!\n");
     return S_OK;
 }
@@ -161,7 +161,7 @@ int TimeWheel::onTick(void *pThis)
 
     int ret = read(ptw->ptimerfdChannel_->getFd(), &exp, sizeof(uint64_t));
     if (ret == -1) {
-        LOG(LOG_DEBUG_LEVEL, NDSL_SROUCE_TIMEWHEEL, "TimeWheel::onTick read\n");
+        LOG(LOG_DEBUG_LEVEL, NDSL_SOURCE_TIMEWHEEL, "TimeWheel::onTick read\n");
         return errno;
     }
 
