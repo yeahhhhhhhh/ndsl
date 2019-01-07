@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/ndsl/utils/Plugin.h
+stdio.h
+-
+
+/home/user/Desktop/ndsl/src/ndsl/utils/Plugin.cc
+ndsl/utils/Plugin.h
+/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Plugin.h
+
