@@ -1,29 +1,19 @@
 /**
  * @file TimeWheel.cc
  * @brief
- *
+ * 时间轮,方便事件管理
  *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
 #include <algorithm>
-#include <string.h>
+#include <sys/timerfd.h>
+#include "ndsl/utils/Log.h"
+#include "ndsl/utils/Error.h"
 #include "ndsl/net/TimeWheel.h"
 
 namespace ndsl {
 namespace net {
-TimerfdChannel::TimerfdChannel(int fd, EventLoop *loop)
-    : BaseChannel(fd, loop)
-{}
-
-TimerfdChannel::~TimerfdChannel()
-{
-    if (getFd() > 0) {
-        del();
-        // printf("TimerfdChannel close fd = %d\n", getFd());
-        ::close(getFd());
-    }
-}
 
 TimeWheel::TimeWheel(EventLoop *loop)
     : curTick_(0)
@@ -42,15 +32,14 @@ int TimeWheel::init()
 {
     int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
     if (fd == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::init timerfd_create error!\n");
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SOURCE_TIMEWHEEL,
+            "TimeWheel::init timerfd_create error!\n");
         return errno;
     }
 
     ptimerfdChannel_ = new TimerfdChannel(fd, pLoop_);
     ptimerfdChannel_->setCallBack(onTick, NULL, this);
-    // 注册ptimerChannel
-    int ret = ptimerfdChannel_->regist(false);
-    if (ret != S_OK) return ret;
 
     for (int i = 0; i < SLOTNUM; i++)
         slot_[i].clear();
@@ -68,7 +57,9 @@ int TimeWheel::start()
     struct timespec now;
 
     if (clock_gettime(CLOCK_MONOTONIC, &now) == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::start clock_gettime error!\n");
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SOURCE_TIMEWHEEL,
+            "TimeWheel::start clock_gettime error!\n");
         return errno;
     }
 
@@ -79,13 +70,14 @@ int TimeWheel::start()
     new_value.it_interval.tv_nsec = 0;
 
     if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &new_value, NULL) == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::start timerfd_settime error!\n");
-        perror(strerror(errno));
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SOURCE_TIMEWHEEL,
+            "TimeWheel::start timerfd_settime error!\n");
         return errno;
     }
 
-    // 启用ptimerChannel
-    ret = ptimerfdChannel_->enableReading();
+    // 注册ptimerChannel
+    ret = ptimerfdChannel_->enrollIn(false);
     if (ret != S_OK) return ret;
 
     return S_OK;
@@ -104,7 +96,9 @@ int TimeWheel::stop()
 
     if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &stop_value, NULL) ==
         -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::stop timerfd_settime error!\n");
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SOURCE_TIMEWHEEL,
+            "TimeWheel::stop timerfd_settime error!\n");
         return errno;
     }
 
@@ -114,16 +108,24 @@ int TimeWheel::stop()
 int TimeWheel::addTask(Task *task)
 {
     // 若task为空,直接返回
-    if (task->setInterval == -1 || task->doit == NULL) {
-        LOG(LEVEL_ERROR, "TimeWheel::addTask invalid task!\n");
-        return S_FAIL;
+    if (task->setInterval < 0 || task->doit == NULL) {
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SOURCE_TIMEWHEEL,
+            "TimeWheel::addTask invalid task!\n");
+        return S_FALSE;
     }
+    int setTick;
 
-    int setTick = (curTick_ + task->setInterval) % SLOTNUM;
-
-    slot_[setTick].push_back(task);
+    // 若setInterval为0,则下一时刻立即响应
+    if (task->setInterval == 0)
+        setTick = (curTick_ + 1) % SLOTNUM;
+    else
+        setTick = (curTick_ + task->setInterval) % SLOTNUM;
 
     task->setTick = setTick;
+    // 设置restInterval
+    task->restInterval = task->setInterval;
+    slot_[setTick].push_back(task);
 
     return S_OK;
 }
@@ -132,8 +134,10 @@ int TimeWheel::removeTask(Task *task)
 {
     // task为空,直接返回
     if (task->setInterval == -1 || task->setTick == -1 || task->doit == NULL) {
-        LOG(LEVEL_ERROR, "TimeWheel::removeTask invalid task!\n");
-        return S_FAIL;
+        LOG(LOG_DEBUG_LEVEL,
+            NDSL_SOURCE_TIMEWHEEL,
+            "TimeWheel::removeTask invalid task!\n");
+        return S_FALSE;
     }
 
     // 标准模板库提供的find函数
@@ -141,10 +145,12 @@ int TimeWheel::removeTask(Task *task)
         slot_[task->setTick].begin(), slot_[task->setTick].end(), task);
 
     // 若没有找到,则直接返回
-    if (iter == slot_[task->setTick].end()) return S_FAIL;
+    if (iter == slot_[task->setTick].end()) return S_FALSE;
 
     slot_[task->setTick].erase(iter);
-    LOG(LEVEL_DEBUG, "TImeWheel::removeTask erased!\n");
+    LOG(LOG_DEBUG_LEVEL,
+        NDSL_SOURCE_TIMEWHEEL,
+        "TImeWheel::removeTask erased!\n");
     return S_OK;
 }
 
@@ -152,19 +158,17 @@ int TimeWheel::onTick(void *pThis)
 {
     printf("TimeWheel::onTick\n");
     TimeWheel *ptw = (TimeWheel *) pThis;
-
     uint64_t exp;
 
     int ret = read(ptw->ptimerfdChannel_->getFd(), &exp, sizeof(uint64_t));
     if (ret == -1) {
-        LOG(LEVEL_ERROR, "TimeWheel::onTick read\n");
+        LOG(LOG_DEBUG_LEVEL, NDSL_SOURCE_TIMEWHEEL, "TimeWheel::onTick read\n");
         return errno;
     }
 
-    printf("exp = %ld\n", exp);
-
     // 刻度自增
     ++ptw->curTick_;
+    if (ptw->curTick_ >= 60) ptw->curTick_ %= ptw->SLOTNUM;
 
     // 若队列为空,则直接返回
     if (ptw->slot_[ptw->curTick_].empty()) return S_OK;
@@ -175,18 +179,18 @@ int TimeWheel::onTick(void *pThis)
     curSlot.swap(ptw->slot_[ptw->curTick_]);
 
     for (auto it = curSlot.begin(); it != curSlot.end(); ++it) {
-        // 若不在本轮,则减少轮数
-        if ((*it)->restInterval >= ptw->SLOTNUM) {
+        // 若不在本轮,则减少轮数后再加入相应的list
+        if ((*it)->restInterval > ptw->SLOTNUM) {
             (*it)->restInterval -= ptw->SLOTNUM;
+            ptw->slot_[ptw->curTick_].push_back(*it);
         } else {
-            (*it)->doit((*it)->para);
+            (*it)->doit((*it)->param);
             if ((*it)->times > 0) (*it)->times--;
 
-            if ((*it)->times == 0) {
-                // FIXME:是否需要释放内存?
-                delete (*it);
-                continue;
-            }
+            // FIXME:
+            // 若times减到0,由用户自己释放所分配的内存
+            // But,用户如何知道何时可以释放内存
+            if ((*it)->times == 0) continue;
 
             // 若任务是周期性执行,即(*it)->times == -1 或 (*it)->times > 0
             // ,则再次插入,并重新选择时间槽和设置restInterval值

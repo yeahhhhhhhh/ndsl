@@ -22,6 +22,9 @@ TcpAcceptor::TcpAcceptor(EventLoop *pLoop)
     , pLoop_(pLoop)
 {
     info.inUse_ = false;
+
+    // 将测试用回调函数置为空
+    cb_ = NULL;
 }
 
 TcpAcceptor::~TcpAcceptor() { delete pTcpChannel_; }
@@ -54,15 +57,12 @@ int TcpAcceptor::setInfo(
     return S_OK;
 }
 
-TcpChannel *TcpAcceptor::getTcpChannel() { return pTcpChannel_; }
-
 int TcpAcceptor::start()
 {
     createAndListen();
     pTcpChannel_ = new TcpChannel(listenfd_, pLoop_);
     pTcpChannel_->setCallBack(handleRead, NULL, this);
     pTcpChannel_->enroll(false);
-    pTcpChannel_->enableReading();
 
     return S_OK;
 }
@@ -93,8 +93,9 @@ int TcpAcceptor::createAndListen()
 
 int TcpAcceptor::handleRead(void *pthis)
 {
+    printf("handleRead\n");
+
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
-    // printf("TcpAcceptor.cc handleRead()\n");
 
     int connfd;
     struct sockaddr_in cliaddr;
@@ -118,7 +119,9 @@ int TcpAcceptor::handleRead(void *pthis)
         pThis->info.addr_ = (struct sockaddr *) &cliaddr;
         pThis->info.addrlen_ = (socklen_t *) &clilen;
         if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
-        pThis->pTcpChannel_->disableReading();
+
+        // proactor模式，需要循环注册
+        pThis->info.inUse_ = false;
     }
 
     // 测试专用

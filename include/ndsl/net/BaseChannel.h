@@ -18,13 +18,9 @@ class EventLoop;
 class BaseChannel : public Channel
 {
   private:
-    // sockfd
-    int fd_;
-    // epoll事件管理-epoll_ctl()
-    int modify();
+    int fd_; // sockfd
 
-    // 存储上层的this Connecion Accept
-    void *pThis_;
+    void *pThis_; // 存储上层的this Connecion Accept
 
     // 定义handleRead handleWrite函数指针原型
     using ChannelCallBack = int (*)(void *);
@@ -42,10 +38,9 @@ class BaseChannel : public Channel
     // epoll 事件管理
     int erase();
     int enroll(bool isET);
-    int enableReading();
-    int enableWriting();
-    int disableReading();
-    int disableWriting();
+
+    // 内部使用 ps.留给EVentLoop
+    int enrollIn(bool isET);
 
     // 设置回调函数和上层指针
     int setCallBack(

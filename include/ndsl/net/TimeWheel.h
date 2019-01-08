@@ -1,45 +1,41 @@
 /**
  * @file TimeWheel.h
  * @brief
- * TimeWheel为事件管理提供时间依据
- * TimerfdChannel便于TimeWheel使用EventLoop
+ * TimeWheel方便事件管理
+ * TimerfdChannel用于与EventLoop通信
  *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
-
 #ifndef __NDSL_NET_TIMEWHEEL_H__
 #define __NDSL_NET_TIMEWHEEL_H__
 
-#include <sys/timerfd.h>
 #include <list>
 #include "ndsl/net/BaseChannel.h"
 #include "ndsl/net/EventLoop.h"
-#include "ndsl/utils/temp_define.h"
 
 namespace ndsl {
 namespace net {
 
-class TimerfdChannel : public BaseChannel
+class TimeWheel
 {
   public:
     TimerfdChannel(int fd, EventLoop *loop);
     ~TimerfdChannel();
 };
 
-class TimeWheel
-{
   public:
     struct Task
     {
         using Taskfunc = void (*)(void *);
         int setInterval = -1;  // 设置的时间间隔
+        int times = 1;         // -1:无限制响应   1:响应次数
+        Taskfunc doit;         // 函数指针
+        void *param;           // 函数参数
         int restInterval = -1; // 剩余时间间隔(不由用户设置)
         int setTick = -1; // 记录放在哪个slot位置上(不由用户设置)
-        int times = 1;    // -1:无限制响应   1:响应次数
-        Taskfunc doit;    // 函数指针
-        void *para;       // 函数参数
     };
+
     // 转一圈需要1min,一共有60个槽,两个槽之间间隙为1s
     static const int SLOTNUM = 60; // 一共有60个时间槽
     static const int INTERVAL = 1; // 每两个槽之间的间隔为1s
