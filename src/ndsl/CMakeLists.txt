@@ -29,6 +29,8 @@ set(LIB_NDSL_SRC
  utils/Guid.cc
  #net/WorkQueue.cc
  #net/InterruptChannel.cc
+ net/SignalChannel.cc
+ net/SignalHandler.cc
  )
 #set (LIB_SRC utils/Plugin.cc)
 

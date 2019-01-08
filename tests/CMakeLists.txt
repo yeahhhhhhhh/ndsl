@@ -26,6 +26,7 @@ utils/GuidTest.cc
 
 #net/EventLoopTest.cc
 #net/EpollTest.cc
+net/SignalfdTest.cc
 
 )
 
