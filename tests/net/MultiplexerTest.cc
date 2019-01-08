@@ -41,15 +41,6 @@ bool flag = false;
 
 void fun1(void *a) { flag = true; }
 
-// bool flagsend = false;
-// static void sendTest(void *a) { flagsend = true; }
-
-// bool flagerror = false;
-// static void iserror(int a, int b) { flagerror = true; }
-
-// bool flagrecv = false;
-// static void recvTest(void *a) { flagrecv = true; }
-
 TEST_CASE("Mutiplexer/cbmaptest")
 {
     // 启动服务
@@ -72,37 +63,9 @@ TEST_CASE("Mutiplexer/cbmaptest")
     TcpClient *pCli = new TcpClient();
     REQUIRE(pCli->onConnect() == S_OK);
 
-    // 测试是否接收到了客户的连接
-    // REQUIRE(flag == true);
-
     // 添加中断
     loop.quit();
     REQUIRE(loop.loop() == S_OK);
-
-    // // 测试onSend
-    // Conn->onError(iserror);
-    // char *sendbuf = (char *) malloc(sizeof(char) * 12);
-    // // sendbuf = 'hello world';
-    // strcpy(sendbuf, "hello world\0");
-    // Conn->onSend(sendbuf, sizeof("hello world"), 0, sendTest, NULL);
-
-    // char recvBuf[15];
-    // memset(recvBuf, 0, sizeof(recvBuf));
-    // read(pCli->sockfd_, recvBuf, MAXLINE);
-
-    // REQUIRE(strcmp("hello world", recvBuf) == 0);
-    // REQUIRE(flagsend == true);
-
-    // // 测试onRecv
-    // memset(recvBuf, 0, sizeof(recvBuf));
-    // size_t len;
-    // write(pCli->sockfd_, "hello world", sizeof("hello world"));
-
-    // REQUIRE(Conn->onRecv(recvBuf, &len, 0, recvTest, NULL) == S_OK);
-    // REQUIRE(flagrecv == true);
-
-    // // 第二次不需要添加中断
-    // REQUIRE(loop.loop() == S_OK);
 
     Multiplexer *mymulti = new Multiplexer(Conn);
 
@@ -174,43 +137,41 @@ TEST_CASE("Mutiplexer/cbmaptest")
         /*********************************
          * dispatch 测试：一个长消息
          ********************************/
-        // char data2[] =
-        //     "helloworldhelloworldhelloworldhelloworldhelloworldhelloworld";
-        // int len2 = 60;
-        // char *buffer2 = (char *) malloc(sizeof(int) * 2 + sizeof(char) *
-        // len2); Message *message2 = reinterpret_cast<struct Message
-        // *>(buffer2); message2->id = htobe32(id); message2->len =
-        // htobe32(len2); memcpy(buffer2 + sizeof(struct Message), data2, len2);
+        char data2[] =
+            "helloworldhelloworldhelloworldhelloworldhelloworldhelloworld";
+        int len2 = 60;
+        char *buffer2 = (char *) malloc(sizeof(int) * 2 + sizeof(char) * len2);
+        Message *message2 = reinterpret_cast<struct Message *>(buffer2);
+        message2->id = htobe32(id);
+        message2->len = htobe32(len2);
+        memcpy(buffer2 + sizeof(struct Message), data2, len2);
 
-        // write(pCli->sockfd_, buffer2, 68);
-        // printf("writed!\n");
-        // REQUIRE(loop.loop() == S_OK);
+        write(pCli->sockfd_, buffer2, 68);
 
-        // write(pCli->sockfd_, buffer2 + 50, 18);
+        REQUIRE(loop.loop() == S_OK);
 
-        // REQUIRE(loop.loop() == S_OK);
+        write(pCli->sockfd_, buffer2 + 50, 18);
+
+        REQUIRE(loop.loop() == S_OK);
 
         /*********************************
          * sendMessage测试
          ********************************/
-        char data[] = "helloworld\0";
-        int len = 11;
-        mymulti->sendMessage(id, len, data);
-        char recvBuf[20];
-        printf("befor read,sockfd:%d\n", pCli->sockfd_);
-        // fcntl(pCli->sockfd_, F_SETFL, O_NONBLOCK);
-        loop.quit();
-        REQUIRE(loop.loop() == S_OK);
-        // REQUIRE(loop.loop() == S_OK);
-        // REQUIRE(loop.loop() == S_OK);
-        // REQUIRE(loop.loop() == S_OK);
-        printf("hhhhhhh");
-        read(pCli->sockfd_, recvBuf, MAXLINE);
+        // char data[] = "helloworld\0";
+        // int len = 11;
+        // mymulti->sendMessage(id, len, data);
 
-        for (int i = 0; i < 10; i++) {
-            printf("%c", *(recvBuf + 8));
-        }
-        printf("\n");
-        REQUIRE(loop.loop() == S_OK);
+        // char recvBuf[20];
+        // loop.quit();
+        // REQUIRE(loop.loop() == S_OK);
+
+        // read(pCli->sockfd_, recvBuf, MAXLINE);
+        // char *p = recvBuf;
+        // for (int i = 0; i < 10; i++) {
+        //     printf("%c", *(p + 8));
+        //     p++;
+        // }
+        // printf("\n");
+        // REQUIRE(loop.loop() == S_OK);
     }
 }
