@@ -9,24 +9,22 @@
 #ifndef __NDSL_UTILS_PLUGIN_H__
 #define __NDSL_UTILS_PLUGIN_H__
 
-#include "ndsl/utils/Guid.h"
 
-namespace ndsl {
-namespace utils {
-
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 struct Plugin
 {
     using functype = int (*)(int);
-    int doit(functype func,int para);
+    int doit(functype func, int para);
     int tag;
 };
 
-ndsl::utils::Plugin CreatPlugin();
+Plugin *CreatPlugin(int tag);
 
-
-
-} // namespace utils
-} // namespace ndsl
+#if defined(__cplusplus)
+}
+#endif
 
 #endif // __NDSL_UTILS_PLUGIN_H__

@@ -53,4 +53,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "src/ndsl/CMakeFiles/ndsl.dir/DependInfo.cmake"
   "tests/CMakeFiles/utest.dir/DependInfo.cmake"
+  "tests/CMakeFiles/server.dir/DependInfo.cmake"
+  "tests/CMakeFiles/client.dir/DependInfo.cmake"
   )

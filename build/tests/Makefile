@@ -125,6 +125,225 @@ utest/fast:
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
 .PHONY : utest/fast
 
+# Convenience name for target.
+tests/CMakeFiles/server.dir/rule:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/server.dir/rule
+.PHONY : tests/CMakeFiles/server.dir/rule
+
+# Convenience name for target.
+server: tests/CMakeFiles/server.dir/rule
+
+.PHONY : server
+
+# fast build rule for target.
+server/fast:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/build
+.PHONY : server/fast
+
+# Convenience name for target.
+tests/CMakeFiles/client.dir/rule:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/client.dir/rule
+.PHONY : tests/CMakeFiles/client.dir/rule
+
+# Convenience name for target.
+client: tests/CMakeFiles/client.dir/rule
+
+.PHONY : client
+
+# fast build rule for target.
+client/fast:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/build
+.PHONY : client/fast
+
+net/EpollTest.o: net/EpollTest.cc.o
+
+.PHONY : net/EpollTest.o
+
+# target to build an object file
+net/EpollTest.cc.o:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EpollTest.cc.o
+.PHONY : net/EpollTest.cc.o
+
+net/EpollTest.i: net/EpollTest.cc.i
+
+.PHONY : net/EpollTest.i
+
+# target to preprocess a source file
+net/EpollTest.cc.i:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EpollTest.cc.i
+.PHONY : net/EpollTest.cc.i
+
+net/EpollTest.s: net/EpollTest.cc.s
+
+.PHONY : net/EpollTest.s
+
+# target to generate assembly for a file
+net/EpollTest.cc.s:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EpollTest.cc.s
+.PHONY : net/EpollTest.cc.s
+
+net/EventLoopTest.o: net/EventLoopTest.cc.o
+
+.PHONY : net/EventLoopTest.o
+
+# target to build an object file
+net/EventLoopTest.cc.o:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o
+.PHONY : net/EventLoopTest.cc.o
+
+net/EventLoopTest.i: net/EventLoopTest.cc.i
+
+.PHONY : net/EventLoopTest.i
+
+# target to preprocess a source file
+net/EventLoopTest.cc.i:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.i
+.PHONY : net/EventLoopTest.cc.i
+
+net/EventLoopTest.s: net/EventLoopTest.cc.s
+
+.PHONY : net/EventLoopTest.s
+
+# target to generate assembly for a file
+net/EventLoopTest.cc.s:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.s
+.PHONY : net/EventLoopTest.cc.s
+
+net/SignalfdTest.o: net/SignalfdTest.cc.o
+
+.PHONY : net/SignalfdTest.o
+
+# target to build an object file
+net/SignalfdTest.cc.o:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o
+.PHONY : net/SignalfdTest.cc.o
+
+net/SignalfdTest.i: net/SignalfdTest.cc.i
+
+.PHONY : net/SignalfdTest.i
+
+# target to preprocess a source file
+net/SignalfdTest.cc.i:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.i
+.PHONY : net/SignalfdTest.cc.i
+
+net/SignalfdTest.s: net/SignalfdTest.cc.s
+
+.PHONY : net/SignalfdTest.s
+
+# target to generate assembly for a file
+net/SignalfdTest.cc.s:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.s
+.PHONY : net/SignalfdTest.cc.s
+
+net/TcpAcceptorTest.o: net/TcpAcceptorTest.cc.o
+
+.PHONY : net/TcpAcceptorTest.o
+
+# target to build an object file
+net/TcpAcceptorTest.cc.o:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o
+.PHONY : net/TcpAcceptorTest.cc.o
+
+net/TcpAcceptorTest.i: net/TcpAcceptorTest.cc.i
+
+.PHONY : net/TcpAcceptorTest.i
+
+# target to preprocess a source file
+net/TcpAcceptorTest.cc.i:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.i
+.PHONY : net/TcpAcceptorTest.cc.i
+
+net/TcpAcceptorTest.s: net/TcpAcceptorTest.cc.s
+
+.PHONY : net/TcpAcceptorTest.s
+
+# target to generate assembly for a file
+net/TcpAcceptorTest.cc.s:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.s
+.PHONY : net/TcpAcceptorTest.cc.s
+
+net/TcpConnectionTest.o: net/TcpConnectionTest.cc.o
+
+.PHONY : net/TcpConnectionTest.o
+
+# target to build an object file
+net/TcpConnectionTest.cc.o:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o
+.PHONY : net/TcpConnectionTest.cc.o
+
+net/TcpConnectionTest.i: net/TcpConnectionTest.cc.i
+
+.PHONY : net/TcpConnectionTest.i
+
+# target to preprocess a source file
+net/TcpConnectionTest.cc.i:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.i
+.PHONY : net/TcpConnectionTest.cc.i
+
+net/TcpConnectionTest.s: net/TcpConnectionTest.cc.s
+
+.PHONY : net/TcpConnectionTest.s
+
+# target to generate assembly for a file
+net/TcpConnectionTest.cc.s:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.s
+.PHONY : net/TcpConnectionTest.cc.s
+
+ping-pong/client.o: ping-pong/client.cc.o
+
+.PHONY : ping-pong/client.o
+
+# target to build an object file
+ping-pong/client.cc.o:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/ping-pong/client.cc.o
+.PHONY : ping-pong/client.cc.o
+
+ping-pong/client.i: ping-pong/client.cc.i
+
+.PHONY : ping-pong/client.i
+
+# target to preprocess a source file
+ping-pong/client.cc.i:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/ping-pong/client.cc.i
+.PHONY : ping-pong/client.cc.i
+
+ping-pong/client.s: ping-pong/client.cc.s
+
+.PHONY : ping-pong/client.s
+
+# target to generate assembly for a file
+ping-pong/client.cc.s:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/ping-pong/client.cc.s
+.PHONY : ping-pong/client.cc.s
+
+ping-pong/server.o: ping-pong/server.cc.o
+
+.PHONY : ping-pong/server.o
+
+# target to build an object file
+ping-pong/server.cc.o:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/ping-pong/server.cc.o
+.PHONY : ping-pong/server.cc.o
+
+ping-pong/server.i: ping-pong/server.cc.i
+
+.PHONY : ping-pong/server.i
+
+# target to preprocess a source file
+ping-pong/server.cc.i:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/ping-pong/server.cc.i
+.PHONY : ping-pong/server.cc.i
+
+ping-pong/server.s: ping-pong/server.cc.s
+
+.PHONY : ping-pong/server.s
+
+# target to generate assembly for a file
+ping-pong/server.cc.s:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/ping-pong/server.cc.s
+.PHONY : ping-pong/server.cc.s
+
 testMain.o: testMain.cc.o
 
 .PHONY : testMain.o
@@ -267,8 +486,31 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... rebuild_cache"
 	@echo "... utest"
+	@echo "... server"
+	@echo "... client"
+	@echo "... rebuild_cache"
+	@echo "... net/EpollTest.o"
+	@echo "... net/EpollTest.i"
+	@echo "... net/EpollTest.s"
+	@echo "... net/EventLoopTest.o"
+	@echo "... net/EventLoopTest.i"
+	@echo "... net/EventLoopTest.s"
+	@echo "... net/SignalfdTest.o"
+	@echo "... net/SignalfdTest.i"
+	@echo "... net/SignalfdTest.s"
+	@echo "... net/TcpAcceptorTest.o"
+	@echo "... net/TcpAcceptorTest.i"
+	@echo "... net/TcpAcceptorTest.s"
+	@echo "... net/TcpConnectionTest.o"
+	@echo "... net/TcpConnectionTest.i"
+	@echo "... net/TcpConnectionTest.s"
+	@echo "... ping-pong/client.o"
+	@echo "... ping-pong/client.i"
+	@echo "... ping-pong/client.s"
+	@echo "... ping-pong/server.o"
+	@echo "... ping-pong/server.i"
+	@echo "... ping-pong/server.s"
 	@echo "... testMain.o"
 	@echo "... testMain.i"
 	@echo "... testMain.s"

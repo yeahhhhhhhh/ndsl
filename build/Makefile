@@ -136,6 +136,32 @@ utest/fast:
 	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
 .PHONY : utest/fast
 
+#=============================================================================
+# Target rules for targets named server
+
+# Build rule for target.
+server: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 server
+.PHONY : server
+
+# fast build rule for target.
+server/fast:
+	$(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/build
+.PHONY : server/fast
+
+#=============================================================================
+# Target rules for targets named client
+
+# Build rule for target.
+client: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 client
+.PHONY : client
+
+# fast build rule for target.
+client/fast:
+	$(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/build
+.PHONY : client/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -146,6 +172,8 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... ndsl"
 	@echo "... utest"
+	@echo "... server"
+	@echo "... client"
 .PHONY : help
 
 

@@ -10,5 +10,7 @@
 /home/user/Desktop/ndsl/build/src/ndsl/utils/CMakeFiles/edit_cache.dir
 /home/user/Desktop/ndsl/build/src/ndsl/utils/CMakeFiles/rebuild_cache.dir
 /home/user/Desktop/ndsl/build/tests/CMakeFiles/edit_cache.dir
-/home/user/Desktop/ndsl/build/tests/CMakeFiles/rebuild_cache.dir
 /home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir
+/home/user/Desktop/ndsl/build/tests/CMakeFiles/server.dir
+/home/user/Desktop/ndsl/build/tests/CMakeFiles/client.dir
+/home/user/Desktop/ndsl/build/tests/CMakeFiles/rebuild_cache.dir

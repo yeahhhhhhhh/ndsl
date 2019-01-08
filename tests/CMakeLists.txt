@@ -20,35 +20,33 @@ utils/LogTest.cc
 utils/TimeStampTest.cc
 utils/PluginTest.cc
 utils/GuidTest.cc
-#net/TcpConnectionTest.cc
-#pass
-#net/TcpAcceptorTest.cc
-
-#net/EventLoopTest.cc
-#net/EpollTest.cc
+net/TcpConnectionTest.cc
+net/TcpAcceptorTest.cc
+net/EventLoopTest.cc
+net/EpollTest.cc
 net/SignalfdTest.cc
 
 )
 
 # 设置ping-pong单元测试的文件
-#set(pingserver ping-pong/server.cc)
+set(pingserver ping-pong/server.cc)
 
-#set(pingclient ping-pong/client.cc)
+set(pingclient ping-pong/client.cc)
 
-#include_directories(${CMAKE_SOURCE_DIR}/tests)
+include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl pthread) # boost_system)
 target_link_libraries(utest uuid)
 
-#add_executable(server ${pingserver})
-#add_dependencies(server ndsl)
-#target_link_libraries(server ndsl)
+add_executable(server ${pingserver})
+add_dependencies(server ndsl)
+target_link_libraries(server ndsl)
 
-#add_executable(client ${pingclient})
-#add_dependencies(client ndsl)
-#target_link_libraries(client ndsl)
+add_executable(client ${pingclient})
+add_dependencies(client ndsl)
+target_link_libraries(client ndsl)
 
 
 
