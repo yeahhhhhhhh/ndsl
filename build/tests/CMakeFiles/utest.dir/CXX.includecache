@@ -11,8 +11,6 @@
 ../include/ndsl/utils/Log.h
 
 ../include/ndsl/utils/Plugin.h
-stdio.h
--
 ndsl/utils/Guid.h
 ../include/ndsl/utils/ndsl/utils/Guid.h
 

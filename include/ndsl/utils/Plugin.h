@@ -9,7 +9,6 @@
 #ifndef __NDSL_UTILS_PLUGIN_H__
 #define __NDSL_UTILS_PLUGIN_H__
 
-#include <stdio.h>
 #include "ndsl/utils/Guid.h"
 
 namespace ndsl {
@@ -24,7 +23,6 @@ struct Plugin
 };
 
 ndsl::utils::Plugin CreatPlugin();
-
 
 
 

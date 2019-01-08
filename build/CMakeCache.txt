@@ -172,6 +172,9 @@ NDSL_BINARY_DIR:STATIC=/home/user/Desktop/ndsl/build
 NDSL_SOURCE_DIR:STATIC=/home/user/Desktop/ndsl
 
 //Dependencies for target
+libplugin_LIB_DEPENDS:STATIC=
+
+//Dependencies for target
 ndsl_LIB_DEPENDS:STATIC=
 
 
