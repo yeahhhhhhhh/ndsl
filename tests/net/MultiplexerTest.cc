@@ -211,5 +211,6 @@ TEST_CASE("Mutiplexer/cbmaptest")
             printf("%c", *(recvBuf + 8));
         }
         printf("\n");
+        REQUIRE(loop.loop() == S_OK);
     }
 }
