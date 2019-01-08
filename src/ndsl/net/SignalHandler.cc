@@ -26,7 +26,7 @@ int SignalHandler::registSignalfd(int signum, Callback handleFunc, void *p){
     sigemptyset(&mask);  
     sigaddset(&mask, signum);
     
-    // 阻塞信号，目的是不以默认的方式处理该信号
+    // 不以默认的方式处理该信号
     sigprocmask(SIG_BLOCK, &mask, NULL);
     
     sfd = signalfd(-1, &mask, 0);
@@ -58,6 +58,11 @@ int SignalHandler::handleRead(void *pthis){
 
 int SignalHandler::handleWrite(void *pthis){
 	return 0;
+}
+
+int SignalHandler::remove(){
+	pSignalChannel_ -> erase();
+	return S_OK;
 }
 
 } // namespace net
