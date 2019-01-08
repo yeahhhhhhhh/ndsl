@@ -63,17 +63,15 @@ class Filelog
 //
 static Filelog file_log;
 
-void set_ndsl_log_sinks(int sinks,int file_or_ter)   //file = 1, ter = 0
+void set_ndsl_log_sinks(int sinks, int file_or_ter) // file = 1, ter = 0
 {
     if (sinks > 64 || sinks < 0) return;
-    if(file_or_ter)
-    {
+    if (file_or_ter) {
         tag = 1;
         file_log.init();
-    }else{
+    } else {
         tag = 0;
     }
-       
 }
 
 void ndsl_log_into_sink(int level, int source, const char *format, ...)
@@ -101,12 +99,9 @@ void ndsl_log_into_sink(int level, int source, const char *format, ...)
     int ret3 =
         vsnprintf(buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
     if (ret3 < 0) return;
-  
-    if(tag == 0)
-    {
-        std::cout << buffer << std::endl;
-    }
-    while((i <= source) && (tag == 1)){
+
+    if (tag == 0) { std::cout << buffer << std::endl; }
+    while ((i <= source) && (tag == 1)) {
         if (source & i) { file_log.log(buffer, ret1 + ret2 + ret3 + 1); }
         i = i * 2;
     }
