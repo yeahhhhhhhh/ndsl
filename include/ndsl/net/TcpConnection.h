@@ -9,6 +9,7 @@
 #define __TCPCONNECTION_H__
 #include <queue>
 #include <sys/socket.h>
+#include "ndsl/utils/temp_define.h"
 #include "ndsl/utils/Log.h"
 
 namespace ndsl {

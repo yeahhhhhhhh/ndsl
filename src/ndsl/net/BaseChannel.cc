@@ -6,6 +6,7 @@
  * @email mni_gyz@163.com
  */
 #include "ndsl/net/BaseChannel.h"
+#include "ndsl/utils/temp_define.h"
 #include "ndsl/utils/Log.h"
 #include "ndsl/net/EventLoop.h"
 #include <sys/epoll.h>
