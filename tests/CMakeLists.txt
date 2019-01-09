@@ -13,9 +13,11 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # 设置单元测试的文件
 set(TEST testMain.cc  
-    net/TimeWheelTest.cc 
-    net/EventLoopTest.cc 
-    net/EpollTest.cc
+    # net/TimeWheelTest.cc 
+    # net/EventLoopTest.cc 
+    # net/EpollTest.cc
+
+    utils/ThreadTest.cc
 )
 # set(TEST test.cc
 #    utils/TimeStampTest.cc utils/LogTest.cc utils/ThreadTest.cc
@@ -31,6 +33,6 @@ add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl pthread boost_system)
 
-add_executable(tmpMain tmpMain.cc)
-add_dependencies(tmpMain ndsl)
-target_link_libraries(tmpMain ndsl pthread)
+# add_executable(tmpMain tmpMain.cc)
+# add_dependencies(tmpMain ndsl)
+# target_link_libraries(tmpMain ndsl pthread)
