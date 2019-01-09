@@ -112,45 +112,54 @@ TEST_CASE("Mutiplexer/cbmaptest")
         /*********************************
          * dispatch 测试：多个短消息
          ********************************/
-        // char data[] = "helloworld";
-        // int len = 10;
-        // char *buffer = (char *) malloc(sizeof(int) * 2 + sizeof(char) * len);
-        // Message *message = reinterpret_cast<struct Message *>(buffer);
-        // message->id = htobe32(id);
-        // message->len = htobe32(len);
-        // memcpy(buffer + sizeof(struct Message), data, len);
+        char data[] = "helloworld";
+        int len = 10;
+        char *buffer =
+            (char *) malloc((sizeof(int) * 2 + sizeof(char) * len) * 5);
 
-        // char *p = buffer;
-        // for (int i = 1; i <= 5; i++) //发了5个消息过去
-        // {
-        //     memcpy(buffer + 18 * i, p, 18);
-        // }
+        Message *message = reinterpret_cast<struct Message *>(buffer);
+        message->id = htobe32(id);
+        message->len = htobe32(len);
+        memcpy(buffer + sizeof(struct Message), data, len);
 
-        // write(pCli->sockfd_, buffer, 50);
-        // printf("writed!\n");
-        // REQUIRE(loop.loop() == S_OK);
+        char *p = buffer;
+        for (int i = 1; i <= 5; i++) //发了5个消息过去
+        {
+            memcpy(buffer + 18 * i, p, 18);
+        }
 
-        // write(pCli->sockfd_, buffer + 50, 40);
+        write(pCli->sockfd_, buffer, 10);
+        printf("writed!\n");
+        REQUIRE(loop.loop() == S_OK);
 
-        // REQUIRE(loop.loop() == S_OK);
+        write(pCli->sockfd_, buffer + 10, 40);
+
+        REQUIRE(loop.loop() == S_OK);
+
+        write(pCli->sockfd_, buffer + 50, 40);
+
+        REQUIRE(loop.loop() == S_OK);
 
         /*********************************
          * dispatch 测试：一个长消息
          ********************************/
+        int id2 = 99;
+        mymulti->addInsertWork(id2, entitycallbak);
+        int len2 = 60;
         char data2[] =
             "helloworldhelloworldhelloworldhelloworldhelloworldhelloworld";
-        int len2 = 60;
+
         char *buffer2 = (char *) malloc(sizeof(int) * 2 + sizeof(char) * len2);
         Message *message2 = reinterpret_cast<struct Message *>(buffer2);
-        message2->id = htobe32(id);
+        message2->id = htobe32(id2);
         message2->len = htobe32(len2);
         memcpy(buffer2 + sizeof(struct Message), data2, len2);
 
-        write(pCli->sockfd_, buffer2, 68);
+        write(pCli->sockfd_, buffer2, 40);
 
         REQUIRE(loop.loop() == S_OK);
 
-        write(pCli->sockfd_, buffer2 + 50, 18);
+        write(pCli->sockfd_, buffer2 + 40, 28);
 
         REQUIRE(loop.loop() == S_OK);
 
