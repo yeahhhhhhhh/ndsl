@@ -16,8 +16,8 @@ extern "C" {
 
 struct Plugin
 {
-    using functype = int (*)(int);
-    int doit(functype func, int para);
+    using functype = void (*)(void* );
+    int doit(functype func, void *para);
     int tag;
 };
 

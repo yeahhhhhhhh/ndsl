@@ -18,17 +18,39 @@ extern "C" {
 struct Plugin1 : Plugin
 {
     
-    int doit(functype func, int para)
+    int doit(functype func, void*  para)
     {
-        if (func) { return (*func)(para); }
+        if (func) { 
+            (*func)(para);
+            return S_OK;
+        }
+        return S_FALSE;
+    }
+};
+
+struct Plugin2 : Plugin
+{
+    
+    int doit(functype func, void*  para)
+    {
+        if (func){ 
+            (*func)(para); 
+            return S_OK;
+        }
         return S_FALSE;
     }
 };
 
 Plugin *CreatPlugin(int tag)
 {
+    //client
     if (tag == 1) {
         return new Plugin1;
+    } else
+        return NULL;
+    //server
+     if (tag == 2) {
+        return new Plugin2;
     } else
         return NULL;
 }
