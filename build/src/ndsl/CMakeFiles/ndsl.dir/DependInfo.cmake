@@ -4,10 +4,16 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/user/Desktop/ndsl/src/ndsl/utils/Guid.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/Guid.cc.o"
-  "/home/user/Desktop/ndsl/src/ndsl/utils/Log.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o"
-  "/home/user/Desktop/ndsl/src/ndsl/utils/Plugin.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o"
-  "/home/user/Desktop/ndsl/src/ndsl/utils/TimeStamp.cc" "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/BaseChannel.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/BaseChannel.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/Epoll.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/Epoll.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/EventLoop.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/EventLoop.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SocketAddress.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddress.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SocketAddressUn.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpAcceptor.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/TcpAcceptor.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpChannel.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/TcpChannel.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpConnection.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/TcpConnection.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/Log.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/TimeStamp.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

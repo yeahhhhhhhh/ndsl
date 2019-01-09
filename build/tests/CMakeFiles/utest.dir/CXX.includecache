@@ -6,27 +6,7 @@
 
 #IncludeRegexTransform: 
 
-../include/ndsl/utils/Guid.h
-
-../include/ndsl/utils/Log.h
-
-../include/ndsl/utils/Plugin.h
-ndsl/utils/Guid.h
-../include/ndsl/utils/ndsl/utils/Guid.h
-
-../include/ndsl/utils/TimeStamp.h
-stdio.h
--
-strings.h
--
-ctime
--
-string
--
-chrono
--
-
-/home/user/Desktop/ndsl/tests/catch.hpp
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/tests/catch.hpp
 TargetConditionals.h
 -
 iosfwd
@@ -264,7 +244,7 @@ string
 memory
 -
 Foundation/Foundation.h
-/home/user/Desktop/ndsl/tests/Foundation/Foundation.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/tests/Foundation/Foundation.h
 crtdbg.h
 -
 set
@@ -438,37 +418,7 @@ algorithm
 cassert
 -
 
-/home/user/Desktop/ndsl/tests/testMain.cc
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/tests/testMain.cc
 catch.hpp
-/home/user/Desktop/ndsl/tests/catch.hpp
-
-/home/user/Desktop/ndsl/tests/utils/GuidTest.cc
-../catch.hpp
-/home/user/Desktop/ndsl/tests/catch.hpp
-ndsl/utils/Guid.h
-/home/user/Desktop/ndsl/tests/utils/ndsl/utils/Guid.h
-iostream
--
-
-/home/user/Desktop/ndsl/tests/utils/LogTest.cc
-../catch.hpp
-/home/user/Desktop/ndsl/tests/catch.hpp
-string.h
--
-ndsl/utils/Log.h
--
-
-/home/user/Desktop/ndsl/tests/utils/PluginTest.cc
-../catch.hpp
-/home/user/Desktop/ndsl/tests/catch.hpp
-ndsl/utils/Plugin.h
-/home/user/Desktop/ndsl/tests/utils/ndsl/utils/Plugin.h
-
-/home/user/Desktop/ndsl/tests/utils/TimeStampTest.cc
-../catch.hpp
-/home/user/Desktop/ndsl/tests/catch.hpp
-string.h
--
-ndsl/utils/TimeStamp.h
-/home/user/Desktop/ndsl/tests/utils/ndsl/utils/TimeStamp.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/tests/catch.hpp
 

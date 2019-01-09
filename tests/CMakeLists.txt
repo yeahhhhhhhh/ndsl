@@ -16,10 +16,10 @@ set(TEST
 testMain.cc
 
 
-utils/LogTest.cc
-utils/TimeStampTest.cc
-utils/PluginTest.cc
-utils/GuidTest.cc
+#utils/LogTest.cc
+#utils/TimeStampTest.cc
+#utils/PluginTest.cc
+#utils/GuidTest.cc
 #net/TcpConnectionTest.cc
 #pass
 #net/TcpAcceptorTest.cc
@@ -39,7 +39,7 @@ utils/GuidTest.cc
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl pthread) # boost_system)
-target_link_libraries(utest uuid)
+#target_link_libraries(utest uuid)
 
 #add_executable(server ${pingserver})
 #add_dependencies(server ndsl)

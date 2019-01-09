@@ -4,11 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/user/Desktop/ndsl/tests/testMain.cc" "/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir/testMain.cc.o"
-  "/home/user/Desktop/ndsl/tests/utils/GuidTest.cc" "/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o"
-  "/home/user/Desktop/ndsl/tests/utils/LogTest.cc" "/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir/utils/LogTest.cc.o"
-  "/home/user/Desktop/ndsl/tests/utils/PluginTest.cc" "/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o"
-  "/home/user/Desktop/ndsl/tests/utils/TimeStampTest.cc" "/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/tests/testMain.cc" "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/tests/CMakeFiles/utest.dir/testMain.cc.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -19,7 +15,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/DependInfo.cmake"
+  "/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

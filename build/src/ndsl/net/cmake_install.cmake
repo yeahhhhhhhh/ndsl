@@ -1,4 +1,4 @@
-# Install script for directory: /home/user/Desktop/ndsl/src/ndsl/net
+# Install script for directory: /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

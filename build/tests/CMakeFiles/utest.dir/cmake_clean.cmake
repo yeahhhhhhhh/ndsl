@@ -1,9 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/utest.dir/testMain.cc.o"
-  "CMakeFiles/utest.dir/utils/LogTest.cc.o"
-  "CMakeFiles/utest.dir/utils/TimeStampTest.cc.o"
-  "CMakeFiles/utest.dir/utils/PluginTest.cc.o"
-  "CMakeFiles/utest.dir/utils/GuidTest.cc.o"
   "../bin/utest.pdb"
   "../bin/utest"
 )
