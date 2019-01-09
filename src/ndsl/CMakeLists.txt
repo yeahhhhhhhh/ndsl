@@ -23,11 +23,12 @@ set(LIB_NDSL_SRC
  net/TcpClient.cc
  net/SocketAddress.cc
  net/SocketAddressUn.cc
+
  utils/Log.cc
  utils/TimeStamp.cc
  utils/Guid.cc
- #net/WorkQueue.cc
- #net/InterruptChannel.cc
+ utils/Thread.cc
+
  net/SignalChannel.cc
  net/SignalHandler.cc
  )

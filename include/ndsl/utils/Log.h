@@ -34,7 +34,7 @@ enum
 enum
 {
     LOG_SOURCE_EPOLL = 1,
-    LOG_SOURCE_THREADPOLL = 1 << 1,
+    LOG_SOURCE_THREADPOOL = 1 << 1,
     LOG_SOURCE_EVENTLOOP = 1 << 2,
     LOG_SOURCE_THREAD = 1 << 3,
     LOG_SOURCE_V8ENGINE = 1 << 4,
@@ -76,7 +76,7 @@ enum
     LOG_OUTPUT_TER = 0,
     LOG_OUTPUT_FILE = 1
 };
-void set_ndsl_log_sinks(int sinks,int file_or_ter);
+void set_ndsl_log_sinks(int sinks, int file_or_ter);
 void ndsl_log_into_sink(int level, int source, const char *format, ...);
 
 #if defined(__cplusplus)
