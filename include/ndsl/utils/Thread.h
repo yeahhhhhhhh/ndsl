@@ -20,11 +20,12 @@
 namespace ndsl {
 namespace utils {
 
-class Thread : public noncopyable
-{
-  public:
-    using ThreadFunc = void *(*) (void *); // 线程函数
+using ThreadFunc = void *(*) (void *); // 线程函数
 
+class Thread
+    : public noncopyable
+    , public nonmoveable
+{
   private:
     ThreadFunc func_; // 线程函数
     void *param_;     // 函数参数
@@ -35,36 +36,43 @@ class Thread : public noncopyable
     Thread(ThreadFunc threadfunc, void *param);
     ~Thread();
 
+    // 开启线程
     int run();
-    int join(void **retval);
+    // 等待线程结束
+    int join(void **retval = NULL);
+    // CPU核心数
+    static int getNumberOfProcessors();
 
   private:
     static void *runInThread(void *);
 };
 
 class Threadpool
+    : public noncopyable
+    , public nonmoveable
 {
   private:
-    std::mutex queueMutex_;             // 任务队列的互斥量
-    std::condition_variable condEmpty_; // 任务队列的非空的条件变量
-    // std::condition_variable condFull_;  // 任务队列满的条件变量
+    std::vector<Thread *> pool_; // 线程池中的线程
 
-    std::list<Thread::ThreadFunc> taskQueue_; // 任务队列
-    std::vector<Thread *> threads_;           // 线程池中的线程
-
-    size_t threadNum_;
+    // 线程池容量与CPU物理核心的倍数
+    static const int Redundancy = 2;
 
   public:
-    Threadpool(size_t threadNum);
+    Threadpool();
     ~Threadpool();
+
+    // 创建一个线程
+    int create(ThreadFunc threadfunc, void *param);
+    // 等待所有线程结束
+    int join();
+
+    int capacity(); // 线程池容量
+    int size();     // 当前线程池使用的大小
+
+  private:
+    // 清除线程池中的所有线程
+    int clean();
 };
-
-Threadpool::Threadpool(size_t threadNum)
-    : threadNum_(threadNum)
-{}
-
-Threadpool::~Threadpool() {}
-
 } // namespace utils
 } // namespace ndsl
 
