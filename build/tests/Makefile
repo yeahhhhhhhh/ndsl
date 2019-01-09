@@ -155,6 +155,48 @@ client/fast:
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/build
 .PHONY : client/fast
 
+# Convenience name for target.
+tests/CMakeFiles/plugin.dir/rule:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/plugin.dir/rule
+.PHONY : tests/CMakeFiles/plugin.dir/rule
+
+# Convenience name for target.
+plugin: tests/CMakeFiles/plugin.dir/rule
+
+.PHONY : plugin
+
+# fast build rule for target.
+plugin/fast:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/plugin.dir/build.make tests/CMakeFiles/plugin.dir/build
+.PHONY : plugin/fast
+
+Plugintest/plugintest.o: Plugintest/plugintest.cc.o
+
+.PHONY : Plugintest/plugintest.o
+
+# target to build an object file
+Plugintest/plugintest.cc.o:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/plugin.dir/build.make tests/CMakeFiles/plugin.dir/Plugintest/plugintest.cc.o
+.PHONY : Plugintest/plugintest.cc.o
+
+Plugintest/plugintest.i: Plugintest/plugintest.cc.i
+
+.PHONY : Plugintest/plugintest.i
+
+# target to preprocess a source file
+Plugintest/plugintest.cc.i:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/plugin.dir/build.make tests/CMakeFiles/plugin.dir/Plugintest/plugintest.cc.i
+.PHONY : Plugintest/plugintest.cc.i
+
+Plugintest/plugintest.s: Plugintest/plugintest.cc.s
+
+.PHONY : Plugintest/plugintest.s
+
+# target to generate assembly for a file
+Plugintest/plugintest.cc.s:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/plugin.dir/build.make tests/CMakeFiles/plugin.dir/Plugintest/plugintest.cc.s
+.PHONY : Plugintest/plugintest.cc.s
+
 net/EpollTest.o: net/EpollTest.cc.o
 
 .PHONY : net/EpollTest.o
@@ -425,33 +467,6 @@ utils/LogTest.cc.s:
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/LogTest.cc.s
 .PHONY : utils/LogTest.cc.s
 
-utils/PluginTest.o: utils/PluginTest.cc.o
-
-.PHONY : utils/PluginTest.o
-
-# target to build an object file
-utils/PluginTest.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o
-.PHONY : utils/PluginTest.cc.o
-
-utils/PluginTest.i: utils/PluginTest.cc.i
-
-.PHONY : utils/PluginTest.i
-
-# target to preprocess a source file
-utils/PluginTest.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/PluginTest.cc.i
-.PHONY : utils/PluginTest.cc.i
-
-utils/PluginTest.s: utils/PluginTest.cc.s
-
-.PHONY : utils/PluginTest.s
-
-# target to generate assembly for a file
-utils/PluginTest.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/PluginTest.cc.s
-.PHONY : utils/PluginTest.cc.s
-
 utils/TimeStampTest.o: utils/TimeStampTest.cc.o
 
 .PHONY : utils/TimeStampTest.o
@@ -486,10 +501,14 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... rebuild_cache"
 	@echo "... utest"
 	@echo "... server"
 	@echo "... client"
-	@echo "... rebuild_cache"
+	@echo "... plugin"
+	@echo "... Plugintest/plugintest.o"
+	@echo "... Plugintest/plugintest.i"
+	@echo "... Plugintest/plugintest.s"
 	@echo "... net/EpollTest.o"
 	@echo "... net/EpollTest.i"
 	@echo "... net/EpollTest.s"
@@ -520,9 +539,6 @@ help:
 	@echo "... utils/LogTest.o"
 	@echo "... utils/LogTest.i"
 	@echo "... utils/LogTest.s"
-	@echo "... utils/PluginTest.o"
-	@echo "... utils/PluginTest.i"
-	@echo "... utils/PluginTest.s"
 	@echo "... utils/TimeStampTest.o"
 	@echo "... utils/TimeStampTest.i"
 	@echo "... utils/TimeStampTest.s"

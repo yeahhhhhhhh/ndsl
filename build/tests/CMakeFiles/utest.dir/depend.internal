@@ -67,10 +67,6 @@ tests/CMakeFiles/utest.dir/utils/LogTest.cc.o
  ../include/ndsl/utils/Log.h
  /home/user/Desktop/ndsl/tests/catch.hpp
  /home/user/Desktop/ndsl/tests/utils/LogTest.cc
-tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o
- ../include/ndsl/utils/Plugin.h
- /home/user/Desktop/ndsl/tests/catch.hpp
- /home/user/Desktop/ndsl/tests/utils/PluginTest.cc
 tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o
  ../include/ndsl/utils/TimeStamp.h
  /home/user/Desktop/ndsl/tests/catch.hpp

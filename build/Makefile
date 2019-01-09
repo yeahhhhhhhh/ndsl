@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named libplugin
+
+# Build rule for target.
+libplugin: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 libplugin
+.PHONY : libplugin
+
+# fast build rule for target.
+libplugin/fast:
+	$(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/build
+.PHONY : libplugin/fast
+
+#=============================================================================
 # Target rules for targets named ndsl
 
 # Build rule for target.
@@ -162,6 +175,19 @@ client/fast:
 	$(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/build
 .PHONY : client/fast
 
+#=============================================================================
+# Target rules for targets named plugin
+
+# Build rule for target.
+plugin: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 plugin
+.PHONY : plugin
+
+# fast build rule for target.
+plugin/fast:
+	$(MAKE) -f tests/CMakeFiles/plugin.dir/build.make tests/CMakeFiles/plugin.dir/build
+.PHONY : plugin/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -170,10 +196,12 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... libplugin"
 	@echo "... ndsl"
 	@echo "... utest"
 	@echo "... server"
 	@echo "... client"
+	@echo "... plugin"
 .PHONY : help
 
 

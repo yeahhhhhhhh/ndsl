@@ -6,8 +6,6 @@
 
 #IncludeRegexTransform: 
 
-../include/ndsl/config.h
-
 ../include/ndsl/net/BaseChannel.h
 Channel.h
 ../include/ndsl/net/Channel.h
@@ -109,8 +107,6 @@ string
 ../include/ndsl/utils/Guid.h
 
 ../include/ndsl/utils/Log.h
-
-../include/ndsl/utils/Plugin.h
 
 ../include/ndsl/utils/TimeStamp.h
 stdio.h
@@ -307,14 +303,6 @@ ndsl/utils/Log.h
 -
 ndsl/utils/TimeStamp.h
 -
-
-/home/user/Desktop/ndsl/src/ndsl/utils/Plugin.cc
-stdio.h
--
-ndsl/config.h
-/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/config.h
-ndsl/utils/Plugin.h
-/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Plugin.h
 
 /home/user/Desktop/ndsl/src/ndsl/utils/TimeStamp.cc
 stdio.h

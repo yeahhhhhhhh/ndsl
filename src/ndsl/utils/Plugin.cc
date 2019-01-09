@@ -15,31 +15,6 @@
 extern "C" {
 #endif
 
-struct Plugin1 : Plugin
-{
-    
-    int doit(functype func, void*  para)
-    {
-        if (func) { 
-            (*func)(para);
-            return S_OK;
-        }
-        return S_FALSE;
-    }
-};
-
-struct Plugin2 : Plugin
-{
-    
-    int doit(functype func, void*  para)
-    {
-        if (func){ 
-            (*func)(para); 
-            return S_OK;
-        }
-        return S_FALSE;
-    }
-};
 
 Plugin *CreatPlugin(int tag)
 {

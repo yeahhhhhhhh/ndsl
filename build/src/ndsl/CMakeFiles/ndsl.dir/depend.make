@@ -100,10 +100,6 @@ src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o: ../include/ndsl/utils/Log.h
 src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o: ../include/ndsl/utils/TimeStamp.h
 src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o: ../src/ndsl/utils/Log.cc
 
-src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o: ../include/ndsl/config.h
-src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o: ../include/ndsl/utils/Plugin.h
-src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o: ../src/ndsl/utils/Plugin.cc
-
 src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o: ../include/ndsl/utils/TimeStamp.h
 src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o: ../src/ndsl/utils/TimeStamp.cc
 

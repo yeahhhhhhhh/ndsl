@@ -92,8 +92,6 @@ string
 
 ../include/ndsl/utils/Log.h
 
-../include/ndsl/utils/Plugin.h
-
 ../include/ndsl/utils/TimeStamp.h
 stdio.h
 -
@@ -619,12 +617,6 @@ string.h
 -
 ndsl/utils/Log.h
 -
-
-/home/user/Desktop/ndsl/tests/utils/PluginTest.cc
-../catch.hpp
-/home/user/Desktop/ndsl/tests/catch.hpp
-ndsl/utils/Plugin.h
-/home/user/Desktop/ndsl/tests/utils/ndsl/utils/Plugin.h
 
 /home/user/Desktop/ndsl/tests/utils/TimeStampTest.cc
 ../catch.hpp

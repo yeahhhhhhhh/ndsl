@@ -10,7 +10,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/ndsl.dir/net/TcpClient.cc.o"
   "CMakeFiles/ndsl.dir/utils/Log.cc.o"
   "CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o"
-  "CMakeFiles/ndsl.dir/utils/Plugin.cc.o"
   "CMakeFiles/ndsl.dir/utils/Guid.cc.o"
   "CMakeFiles/ndsl.dir/net/SignalChannel.cc.o"
   "CMakeFiles/ndsl.dir/net/SignalHandler.cc.o"
