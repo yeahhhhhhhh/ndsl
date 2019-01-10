@@ -1,15 +1,24 @@
 ////
 // @file GuidTest.cc
 // @brief
+<<<<<<< HEAD
 // Guid测试类
+=======
+// Guid测试
+>>>>>>> dev_lgr
 //
 // @author why
 // @email 136046355@qq.com
 //
+<<<<<<< HEAD
 //#define CATCH_CONFIG_MAIN
 #include "../catch.hpp"
 #include "ndsl/utils/Guid.h"
 #include <iostream>
+=======
+#include "../catch.hpp"
+#include "ndsl/utils/Guid.h"
+>>>>>>> dev_lgr
 
 TEST_CASE("Guid"){
 	
@@ -22,7 +31,11 @@ TEST_CASE("Guid"){
 		char str[32];
 		g1.generate();
 		g1.toString(str);
+<<<<<<< HEAD
 		std::cout << str << std::endl;
+=======
+//		std::cout << str << std::endl;
+>>>>>>> dev_lgr
 		REQUIRE(g1.toString(str) == 0);
 	}
 	SECTION("toGuid_t"){

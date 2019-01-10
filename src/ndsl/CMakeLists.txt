@@ -21,22 +21,24 @@ set(LIB_NDSL_SRC
  net/SocketAddress.cc
  net/SocketAddressUn.cc
  net/TcpClient.cc
+ net/SocketAddress.cc
+ net/SocketAddressUn.cc
 
- #net/SocketAddress.cc
- #net/SocketAddressUn.cc
  utils/Log.cc
  utils/TimeStamp.cc
- #utils/Plugin.cc
  #utils/Guid.cc
- #net/WorkQueue.cc
- #net/InterruptChannel.cc
+ utils/Thread.cc
+
+ net/SignalChannel.cc
+ net/SignalHandler.cc
  )
 #set (LIB_SRC utils/Plugin.cc)
 
 add_library(ndsl ${LIB_NDSL_SRC})
-#add_library(libplugin SHARED ${LIB_SRC})
-#target_link_libraries(ndsl uuid)
-#target_link_libraries(ndsl libplugin)
 
-#set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")
+#生成libplugin.so
+set(LIB_SRC utils/Plugin.cc)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
 
+add_library(libplugin SHARED ${LIB_SRC})
+set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")

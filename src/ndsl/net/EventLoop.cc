@@ -60,10 +60,6 @@ int EventLoop::init()
         pQueCh_->setCallBack(pQueCh_->onQueue, NULL, pQueCh_);
         ret = pQueCh_->enrollIn(false);
         if (ret != S_OK) return ret; // 若不成功直接返回
-        // ret = pQueCh_->enableReading();
-        // if (ret != S_OK) return ret; // 若不成功直接返回
-
-        // printf("pQueCh_ = %d\n", pQueCh_->getFd());
     }
 
     // 若pIntrCh_为空,则分配eventfd

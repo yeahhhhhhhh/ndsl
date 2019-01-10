@@ -19,10 +19,22 @@ namespace net {
 
 class TimeWheel
 {
-  public:
-    TimerfdChannel(int fd, EventLoop *loop);
-    ~TimerfdChannel();
-};
+  private:
+    // TimefdChanel与EventLoop之间通信
+    class TimerfdChannel : public BaseChannel
+    {
+      public:
+        TimerfdChannel(int fd, EventLoop *loop)
+            : BaseChannel(fd, loop)
+        {}
+        ~TimerfdChannel()
+        {
+            if (getFd() > 0) {
+                erase(); // 从EventLoop中取消注册
+                ::close(getFd());
+            }
+        }
+    };
 
   public:
     struct Task

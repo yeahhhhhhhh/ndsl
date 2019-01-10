@@ -6,7 +6,6 @@
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
-// #define CATCH_CONFIG_MAIN
 #include <sys/eventfd.h>
 #include "../catch.hpp"
 #include "ndsl/net/EventLoop.h"

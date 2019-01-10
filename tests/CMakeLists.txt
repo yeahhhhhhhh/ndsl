@@ -24,21 +24,33 @@ testMain.cc
 #pass
 #net/TcpAcceptorTest.cc
 
+# net/TcpConnectionTest.cc
+# net/TcpAcceptorTest.cc
 #net/EventLoopTest.cc
 #net/EpollTest.cc
+#net/SignalfdTest.cc
 
 )
 
 # 设置ping-pong单元测试的文件
+<<<<<<< HEAD
 #set(pingserver ping-pong/server.cc)
 
 #set(pingclient ping-pong/client.cc)
 
 #include_directories(${CMAKE_SOURCE_DIR}/tests)
+=======
+set(pingserver ping-pong/server.cc)
+
+set(pingclient ping-pong/client.cc)
+
+include_directories(${CMAKE_SOURCE_DIR}/tests)
+>>>>>>> dev_lgr
 
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl pthread) # boost_system)
+<<<<<<< HEAD
 #target_link_libraries(utest uuid)
 
 #add_executable(server ${pingserver})
@@ -49,5 +61,25 @@ target_link_libraries(utest ndsl pthread) # boost_system)
 #add_dependencies(client ndsl)
 #target_link_libraries(client ndsl)
 
+=======
+target_link_libraries(utest uuid)
 
+add_executable(server ${pingserver})
+add_dependencies(server ndsl)
+target_link_libraries(server ndsl)
 
+add_executable(client ${pingclient})
+add_dependencies(client ndsl)
+target_link_libraries(client ndsl)
+
+#设置插件单元测试
+set(SRC_list Plugintest/plugintest.cc) #宏定义
+>>>>>>> dev_lgr
+
+add_executable(plugin ${SRC_list})  #生成可执行文件
+
+<<<<<<< HEAD
+=======
+target_link_libraries(plugin dl)
+target_link_libraries(plugin libplugin)
+>>>>>>> dev_lgr

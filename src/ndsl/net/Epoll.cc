@@ -47,8 +47,6 @@ int Epoll::enroll(Channel *pCh)
 
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_ADD, pCh->getFd(), &ev);
 
-    // printf("ev.events = 0x%x\n", pCh->getEvents());
-
     if (ret < 0) {
         LOG(LOG_DEBUG_LEVEL, LOG_SOURCE_EPOLL, "Epoll::enroll epoll_ctl\n");
         return errno;

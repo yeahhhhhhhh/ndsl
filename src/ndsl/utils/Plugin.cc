@@ -7,35 +7,28 @@
 // @email 1575033031@qq.com
 //
 
+#include <stdio.h>
+#include "ndsl/config.h"
+#include "ndsl/utils/Plugin.h"
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include "ndsl/config.h"
-#include "ndsl/utils/Plugin.h"
-
-ndsl::utils::Plugin CreatPlugin()
+Plugin *CreatPlugin(int tag)
 {
-    ndsl::utils::Plugin plugin;
-    ndsl::utils::Guid guid;
-    plugin.tag = guid.generate();
-    return plugin;
+    // client
+    if (tag == 1) {
+        return new Plugin1;
+    } else
+        return NULL;
+    // server
+    if (tag == 2) {
+        return new Plugin2;
+    } else
+        return NULL;
 }
-
-int ndsl::utils::Plugin::doit(functype func,int  para)
-{
-    if(func)
-    {
-        return (*func)(para);
-    }
-    return S_FALSE;
-}
-
 
 #if defined(__cplusplus)
 }
 #endif
-
-
