@@ -6,7 +6,6 @@
  * @email mni_gyz@163.com
  */
 #include "ndsl/net/TcpConnection.h"
-#include "ndsl/utils/temp_define.h"
 #include "ndsl/utils/Log.h"
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpAcceptor.h"

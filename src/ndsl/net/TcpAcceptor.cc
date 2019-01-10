@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <string.h>
 
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/config.h"
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/TcpConnection.h"
@@ -35,8 +35,8 @@ TcpAcceptor::~TcpAcceptor() { delete pTcpChannel_; }
 TcpAcceptor::TcpAcceptor(Callback cb, EventLoop *pLoop)
     : listenfd_(-1)
     , pLoop_(pLoop)
-    , cb_(cb)
     , pTcpChannel_(NULL)
+    , cb_(cb)
 {
     info.inUse_ = false;
 }

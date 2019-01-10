@@ -15,8 +15,8 @@ Channel.h
 ../include/ndsl/net/Channel.h
 stdint.h
 -
-ndsl/utils/temp_define.h
-../include/ndsl/net/ndsl/utils/temp_define.h
+ndsl/config.h
+../include/ndsl/net/ndsl/config.h
 ndsl/utils/Log.h
 ../include/ndsl/net/ndsl/utils/Log.h
 
@@ -91,8 +91,8 @@ queue
 -
 sys/socket.h
 -
-ndsl/utils/temp_define.h
-../include/ndsl/net/ndsl/utils/temp_define.h
+ndsl/config.h
+../include/ndsl/net/ndsl/config.h
 ndsl/utils/Log.h
 ../include/ndsl/net/ndsl/utils/Log.h
 
@@ -142,13 +142,11 @@ string
 chrono
 -
 
-../include/ndsl/utils/temp_define.h
-
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/BaseChannel.cc
 ndsl/net/BaseChannel.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/BaseChannel.h
-ndsl/utils/temp_define.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/temp_define.h
+ndsl/config.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/config.h
 ndsl/utils/Log.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
 ndsl/net/EventLoop.h
@@ -203,8 +201,8 @@ signal.h
 -
 ndsl/net/SignalHandler.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SignalHandler.h
-ndsl/utils/temp_define.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/temp_define.h
+ndsl/config.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/config.h
 iostream
 -
 
@@ -245,8 +243,8 @@ fcntl.h
 -
 string.h
 -
-ndsl/utils/temp_define.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/temp_define.h
+ndsl/config.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/config.h
 ndsl/net/TcpAcceptor.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpAcceptor.h
 ndsl/net/SocketAddress.h
@@ -271,8 +269,8 @@ ndsl/net/TcpClient.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpClient.h
 ndsl/net/TcpChannel.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
-ndsl/utils/temp_define.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/temp_define.h
+ndsl/config.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/config.h
 ndsl/utils/Error.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Error.h
 ndsl/utils/Log.h
@@ -281,8 +279,6 @@ ndsl/utils/Log.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpConnection.cc
 ndsl/net/TcpConnection.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
-ndsl/utils/temp_define.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/temp_define.h
 ndsl/utils/Log.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
 ndsl/net/TcpChannel.h

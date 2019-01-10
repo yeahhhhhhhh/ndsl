@@ -10,7 +10,7 @@
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/TcpClient.h"
 #include "ndsl/net/TcpChannel.h"
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/config.h"
 #include "ndsl/utils/Error.h"
 #include "ndsl/utils/Log.h"
 
