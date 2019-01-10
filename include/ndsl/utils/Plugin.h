@@ -9,7 +9,7 @@
 #ifndef __NDSL_UTILS_PLUGIN_H__
 #define __NDSL_UTILS_PLUGIN_H__
 
-#include "ndsl/utils/Error.h"
+#include "ndsl/config.h"
 #if defined(__cplusplus)
 extern "C" {
 #endif

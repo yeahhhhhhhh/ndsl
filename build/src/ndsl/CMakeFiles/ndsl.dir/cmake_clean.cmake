@@ -10,7 +10,11 @@ file(REMOVE_RECURSE
   "CMakeFiles/ndsl.dir/net/TcpClient.cc.o"
   "CMakeFiles/ndsl.dir/utils/Log.cc.o"
   "CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o"
+<<<<<<< HEAD
   "CMakeFiles/ndsl.dir/utils/Thread.cc.o"
+=======
+  "CMakeFiles/ndsl.dir/utils/Guid.cc.o"
+>>>>>>> dev_zsq
   "CMakeFiles/ndsl.dir/net/SignalChannel.cc.o"
   "CMakeFiles/ndsl.dir/net/SignalHandler.cc.o"
   "../../bin/libndsl.pdb"

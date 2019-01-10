@@ -12,6 +12,7 @@
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/config.h"
 #include "ndsl/utils/temp_define.h"
+#include "ndsl/utils/Error.h"
 
 namespace ndsl {
 namespace net {

@@ -12,7 +12,6 @@
 #include <list>
 #include <mutex>
 #include <unistd.h>
-#include "ndsl/config.h"
 #include "ndsl/utils/Log.h"
 #include "ndsl/utils/Error.h"
 #include "ndsl/net/Epoll.h"

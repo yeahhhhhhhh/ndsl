@@ -6,5 +6,9 @@ CXX_FLAGS = -Wall -Werror -Wno-attributes -ftemplate-backtrace-limit=0  -std="c+
 
 CXX_DEFINES = 
 
+<<<<<<< HEAD
 CXX_INCLUDES = -I/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/include 
+=======
+CXX_INCLUDES = -I/home/user/Desktop/ndsl/include -I/home/user/Desktop/ndsl/tests 
+>>>>>>> dev_zsq
 
