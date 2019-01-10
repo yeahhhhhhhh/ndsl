@@ -28,6 +28,7 @@ set(LIB_NDSL_SRC
  utils/TimeStamp.cc
  utils/Guid.cc
  utils/Thread.cc
+ utils/EventLoopThreadpool.cc
 
  net/SignalChannel.cc
  net/SignalHandler.cc

@@ -194,7 +194,7 @@ class EventLoop
     int init();
 
     // 开始循环
-    int loop();
+    static void *loop(void *pThis);
 
     // 添加任务
     void addWork(WorkItem *work);

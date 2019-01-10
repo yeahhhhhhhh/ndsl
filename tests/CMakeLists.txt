@@ -25,7 +25,9 @@ utils/ThreadTest.cc
 # net/TcpAcceptorTest.cc
 net/EventLoopTest.cc
 net/EpollTest.cc
-net/SignalfdTest.cc
+# net/SignalfdTest.cc
+
+utils/EventLoopThreadpoolTest.cc
 
 )
 
@@ -41,13 +43,13 @@ add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl pthread) # boost_system)
 target_link_libraries(utest uuid)
 
-add_executable(server ${pingserver})
-add_dependencies(server ndsl)
-target_link_libraries(server ndsl)
+# add_executable(server ${pingserver})
+# add_dependencies(server ndsl)
+# target_link_libraries(server ndsl)
 
-add_executable(client ${pingclient})
-add_dependencies(client ndsl)
-target_link_libraries(client ndsl)
+# add_executable(client ${pingclient})
+# add_dependencies(client ndsl)
+# target_link_libraries(client ndsl)
 
 #设置插件单元测试
 set(SRC_list Plugintest/plugintest.cc) #宏定义
