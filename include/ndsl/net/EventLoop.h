@@ -171,7 +171,7 @@ class EventLoop
             int ret = ::write(getFd(), &data, sizeof(data));
 
             if (ret == -1) {
-                LOG(LOG_ERROR_LEVEL,
+                LOG(LOG_INFO_LEVEL,
                     LOG_SOURCE_EVENTLOOP,
                     "InterruptChannel::onWrite\n");
                 return errno;

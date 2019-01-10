@@ -18,6 +18,7 @@
 #include "ndsl/net/TcpClient.h"
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TimeWheel.h"
+#include "ndsl/utils/Log.h"
 
 using namespace std;
 using namespace ndsl;
@@ -84,23 +85,23 @@ class Client
         , timeout_(timeout)
     {
         // TODO: 初始化定时器 线程池未完成 暂时挂起
-        TimeWheel *time = new TimeWheel(threadPool_.getNextLoop());
-        time->init();
+        // TimeWheel *time = new TimeWheel(threadPool_.getNextLoop());
+        // time->init();
 
-        // 初始化定时器任务
-        struct Task t;
-        t->setInterval = 60;
-        t->times = 1;
-        t->doit = handleTimeout;
-        t->param = this;
+        // // 初始化定时器任务
+        // struct Task t;
+        // t->setInterval = 60;
+        // t->times = 1;
+        // t->doit = handleTimeout;
+        // t->param = this;
 
-        // 添加任务
-        time->addTask(t);
+        // // 添加任务
+        // time->addTask(t);
 
-        // 开始时间轮
-        time->start();
+        // // 开始时间轮
+        // time->start();
 
-        // 设置线程 如果是多线程的话 在这里new一个线程池出来
+        // TODO: 设置线程 如果是多线程的话 在这里new一个线程池出来 暂时挂起
         // if (threadCount > 1) { threadPool_.setThreadNum(threadCount); }
         // threadPool_.start();
 
@@ -114,7 +115,7 @@ class Client
 
         // 准备发送数据
         for (int i = 0; i < sessionCount; ++i) {
-            // TODO: 得看线程池是怎么实现的
+            // TODO: 得看线程池是怎么实现的 挂起
             // Session *session = new Session(threadPool_.getNextLoop(), this);
             // 发送数据
             // session->start();
@@ -128,8 +129,8 @@ class Client
     {
         // 等所有链接都建立之后 设置定时器 发送数据
         if ((++numConnected_) == sessionCount_) {
-            // 提示所有链接已建立 TODO: 换成自己的log
-            // LOG_WARN << "all connected";
+            // 提示所有链接已建立 TODO: 等待LOG确认写法
+            // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TESTCLIENT, "all connected\n");
 
             for (boost::ptr_vector<Session>::iterator it = sessions_.begin();
                  it != sessions_.end();
@@ -143,7 +144,7 @@ class Client
     {
         if ((--numConnected_) == 0) {
             // TODO:
-            // LOG_WARN << "all disconnected";
+            // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TESTCLIENT, "all disconnected\n");
 
             int64_t totalBytesRead = 0;
             int64_t totalMessagesRead = 0;
@@ -161,8 +162,6 @@ class Client
             // LOG_WARN << static_cast<double>(totalBytesRead) /
             //                 (timeout_ * 1024 * 1024)
             //          << " MiB/s throughput";
-            // TODO:
-            loop_->quit();
         }
     }
 
@@ -170,7 +169,11 @@ class Client
     static void handleTimeout(void *pthis)
     {
         // TODO:
-        // LOG_WARN << "stop";
+        // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TESTCLIENT, "stop\n");
+
+        // TODO: 计时器时间到 挂起
+        // time->让所有loop全停下
+
         Client *pThis = static_cast<Client *>(pthis);
         std::for_each(
             pThis->sessions_.begin(),
@@ -210,9 +213,6 @@ int main(int argc, char *argv[])
         fprintf(
             stderr, "Usage: client <threads> <blocksize> <sessions> <time>\n");
     } else {
-        // LOG_INFO << "pid = " << getpid() << ", tid = " <<
-        // CurrentThread::tid(); Logger::setLogLevel(Logger::WARN);
-
         int threadCount = atoi(argv[1]);
         int blockSize = atoi(argv[2]);
         int sessionCount = atoi(argv[3]);

@@ -112,11 +112,7 @@ depend:
 
 # Convenience name for target.
 src/ndsl/CMakeFiles/libplugin.dir/rule:
-<<<<<<< HEAD
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 src/ndsl/CMakeFiles/libplugin.dir/rule
-=======
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 src/ndsl/CMakeFiles/libplugin.dir/rule
->>>>>>> dev_zsq
 .PHONY : src/ndsl/CMakeFiles/libplugin.dir/rule
 
 # Convenience name for target.
@@ -126,11 +122,7 @@ libplugin: src/ndsl/CMakeFiles/libplugin.dir/rule
 
 # fast build rule for target.
 libplugin/fast:
-<<<<<<< HEAD
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/build
-=======
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/build
->>>>>>> dev_zsq
 .PHONY : libplugin/fast
 
 # Convenience name for target.
@@ -154,11 +146,7 @@ net/BaseChannel.o: net/BaseChannel.cc.o
 
 # target to build an object file
 net/BaseChannel.cc.o:
-<<<<<<< HEAD
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/BaseChannel.cc.o
-=======
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/BaseChannel.cc.o
->>>>>>> dev_zsq
 .PHONY : net/BaseChannel.cc.o
 
 net/BaseChannel.i: net/BaseChannel.cc.i
@@ -167,11 +155,7 @@ net/BaseChannel.i: net/BaseChannel.cc.i
 
 # target to preprocess a source file
 net/BaseChannel.cc.i:
-<<<<<<< HEAD
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/BaseChannel.cc.i
-=======
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/BaseChannel.cc.i
->>>>>>> dev_zsq
 .PHONY : net/BaseChannel.cc.i
 
 net/BaseChannel.s: net/BaseChannel.cc.s
@@ -180,287 +164,10 @@ net/BaseChannel.s: net/BaseChannel.cc.s
 
 # target to generate assembly for a file
 net/BaseChannel.cc.s:
-<<<<<<< HEAD
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/BaseChannel.cc.s
 .PHONY : net/BaseChannel.cc.s
 
 net/Epoll.o: net/Epoll.cc.o
-=======
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/BaseChannel.cc.s
-.PHONY : net/BaseChannel.cc.s
-
-net/Epoll.o: net/Epoll.cc.o
-
-.PHONY : net/Epoll.o
-
-# target to build an object file
-net/Epoll.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/Epoll.cc.o
-.PHONY : net/Epoll.cc.o
-
-net/Epoll.i: net/Epoll.cc.i
-
-.PHONY : net/Epoll.i
-
-# target to preprocess a source file
-net/Epoll.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/Epoll.cc.i
-.PHONY : net/Epoll.cc.i
-
-net/Epoll.s: net/Epoll.cc.s
-
-.PHONY : net/Epoll.s
-
-# target to generate assembly for a file
-net/Epoll.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/Epoll.cc.s
-.PHONY : net/Epoll.cc.s
-
-net/EventLoop.o: net/EventLoop.cc.o
-
-.PHONY : net/EventLoop.o
-
-# target to build an object file
-net/EventLoop.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/EventLoop.cc.o
-.PHONY : net/EventLoop.cc.o
-
-net/EventLoop.i: net/EventLoop.cc.i
-
-.PHONY : net/EventLoop.i
-
-# target to preprocess a source file
-net/EventLoop.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/EventLoop.cc.i
-.PHONY : net/EventLoop.cc.i
-
-net/EventLoop.s: net/EventLoop.cc.s
-
-.PHONY : net/EventLoop.s
-
-# target to generate assembly for a file
-net/EventLoop.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/EventLoop.cc.s
-.PHONY : net/EventLoop.cc.s
-
-net/SignalChannel.o: net/SignalChannel.cc.o
-
-.PHONY : net/SignalChannel.o
-
-# target to build an object file
-net/SignalChannel.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o
-.PHONY : net/SignalChannel.cc.o
-
-net/SignalChannel.i: net/SignalChannel.cc.i
-
-.PHONY : net/SignalChannel.i
-
-# target to preprocess a source file
-net/SignalChannel.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.i
-.PHONY : net/SignalChannel.cc.i
-
-net/SignalChannel.s: net/SignalChannel.cc.s
-
-.PHONY : net/SignalChannel.s
-
-# target to generate assembly for a file
-net/SignalChannel.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.s
-.PHONY : net/SignalChannel.cc.s
-
-net/SignalHandler.o: net/SignalHandler.cc.o
-
-.PHONY : net/SignalHandler.o
-
-# target to build an object file
-net/SignalHandler.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o
-.PHONY : net/SignalHandler.cc.o
-
-net/SignalHandler.i: net/SignalHandler.cc.i
-
-.PHONY : net/SignalHandler.i
-
-# target to preprocess a source file
-net/SignalHandler.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.i
-.PHONY : net/SignalHandler.cc.i
-
-net/SignalHandler.s: net/SignalHandler.cc.s
-
-.PHONY : net/SignalHandler.s
-
-# target to generate assembly for a file
-net/SignalHandler.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.s
-.PHONY : net/SignalHandler.cc.s
-
-net/SocketAddress.o: net/SocketAddress.cc.o
-
-.PHONY : net/SocketAddress.o
-
-# target to build an object file
-net/SocketAddress.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddress.cc.o
-.PHONY : net/SocketAddress.cc.o
-
-net/SocketAddress.i: net/SocketAddress.cc.i
-
-.PHONY : net/SocketAddress.i
-
-# target to preprocess a source file
-net/SocketAddress.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddress.cc.i
-.PHONY : net/SocketAddress.cc.i
-
-net/SocketAddress.s: net/SocketAddress.cc.s
-
-.PHONY : net/SocketAddress.s
-
-# target to generate assembly for a file
-net/SocketAddress.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddress.cc.s
-.PHONY : net/SocketAddress.cc.s
-
-net/SocketAddressUn.o: net/SocketAddressUn.cc.o
-
-.PHONY : net/SocketAddressUn.o
-
-# target to build an object file
-net/SocketAddressUn.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o
-.PHONY : net/SocketAddressUn.cc.o
-
-net/SocketAddressUn.i: net/SocketAddressUn.cc.i
-
-.PHONY : net/SocketAddressUn.i
-
-# target to preprocess a source file
-net/SocketAddressUn.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.i
-.PHONY : net/SocketAddressUn.cc.i
-
-net/SocketAddressUn.s: net/SocketAddressUn.cc.s
-
-.PHONY : net/SocketAddressUn.s
-
-# target to generate assembly for a file
-net/SocketAddressUn.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.s
-.PHONY : net/SocketAddressUn.cc.s
-
-net/TcpAcceptor.o: net/TcpAcceptor.cc.o
-
-.PHONY : net/TcpAcceptor.o
-
-# target to build an object file
-net/TcpAcceptor.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpAcceptor.cc.o
-.PHONY : net/TcpAcceptor.cc.o
-
-net/TcpAcceptor.i: net/TcpAcceptor.cc.i
-
-.PHONY : net/TcpAcceptor.i
-
-# target to preprocess a source file
-net/TcpAcceptor.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpAcceptor.cc.i
-.PHONY : net/TcpAcceptor.cc.i
-
-net/TcpAcceptor.s: net/TcpAcceptor.cc.s
-
-.PHONY : net/TcpAcceptor.s
-
-# target to generate assembly for a file
-net/TcpAcceptor.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpAcceptor.cc.s
-.PHONY : net/TcpAcceptor.cc.s
-
-net/TcpChannel.o: net/TcpChannel.cc.o
-
-.PHONY : net/TcpChannel.o
-
-# target to build an object file
-net/TcpChannel.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpChannel.cc.o
-.PHONY : net/TcpChannel.cc.o
-
-net/TcpChannel.i: net/TcpChannel.cc.i
-
-.PHONY : net/TcpChannel.i
-
-# target to preprocess a source file
-net/TcpChannel.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpChannel.cc.i
-.PHONY : net/TcpChannel.cc.i
-
-net/TcpChannel.s: net/TcpChannel.cc.s
-
-.PHONY : net/TcpChannel.s
-
-# target to generate assembly for a file
-net/TcpChannel.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpChannel.cc.s
-.PHONY : net/TcpChannel.cc.s
-
-net/TcpClient.o: net/TcpClient.cc.o
-
-.PHONY : net/TcpClient.o
-
-# target to build an object file
-net/TcpClient.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o
-.PHONY : net/TcpClient.cc.o
-
-net/TcpClient.i: net/TcpClient.cc.i
-
-.PHONY : net/TcpClient.i
-
-# target to preprocess a source file
-net/TcpClient.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.i
-.PHONY : net/TcpClient.cc.i
-
-net/TcpClient.s: net/TcpClient.cc.s
-
-.PHONY : net/TcpClient.s
-
-# target to generate assembly for a file
-net/TcpClient.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.s
-.PHONY : net/TcpClient.cc.s
-
-net/TcpConnection.o: net/TcpConnection.cc.o
-
-.PHONY : net/TcpConnection.o
-
-# target to build an object file
-net/TcpConnection.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpConnection.cc.o
-.PHONY : net/TcpConnection.cc.o
-
-net/TcpConnection.i: net/TcpConnection.cc.i
-
-.PHONY : net/TcpConnection.i
-
-# target to preprocess a source file
-net/TcpConnection.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpConnection.cc.i
-.PHONY : net/TcpConnection.cc.i
-
-net/TcpConnection.s: net/TcpConnection.cc.s
-
-.PHONY : net/TcpConnection.s
-
-# target to generate assembly for a file
-net/TcpConnection.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpConnection.cc.s
-.PHONY : net/TcpConnection.cc.s
-
-utils/Guid.o: utils/Guid.cc.o
->>>>>>> dev_zsq
 
 .PHONY : net/Epoll.o
 
@@ -763,11 +470,7 @@ utils/Plugin.o: utils/Plugin.cc.o
 
 # target to build an object file
 utils/Plugin.cc.o:
-<<<<<<< HEAD
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.o
-=======
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.o
->>>>>>> dev_zsq
 .PHONY : utils/Plugin.cc.o
 
 utils/Plugin.i: utils/Plugin.cc.i
@@ -776,11 +479,7 @@ utils/Plugin.i: utils/Plugin.cc.i
 
 # target to preprocess a source file
 utils/Plugin.cc.i:
-<<<<<<< HEAD
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.i
-=======
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.i
->>>>>>> dev_zsq
 .PHONY : utils/Plugin.cc.i
 
 utils/Plugin.s: utils/Plugin.cc.s
@@ -789,11 +488,7 @@ utils/Plugin.s: utils/Plugin.cc.s
 
 # target to generate assembly for a file
 utils/Plugin.cc.s:
-<<<<<<< HEAD
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.s
-=======
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.s
->>>>>>> dev_zsq
 .PHONY : utils/Plugin.cc.s
 
 utils/Thread.o: utils/Thread.cc.o
@@ -857,10 +552,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-<<<<<<< HEAD
 	@echo "... edit_cache"
-=======
->>>>>>> dev_zsq
 	@echo "... libplugin"
 	@echo "... ndsl"
 	@echo "... net/BaseChannel.o"
@@ -896,12 +588,6 @@ help:
 	@echo "... net/TcpConnection.o"
 	@echo "... net/TcpConnection.i"
 	@echo "... net/TcpConnection.s"
-<<<<<<< HEAD
-=======
-	@echo "... utils/Guid.o"
-	@echo "... utils/Guid.i"
-	@echo "... utils/Guid.s"
->>>>>>> dev_zsq
 	@echo "... utils/Log.o"
 	@echo "... utils/Log.i"
 	@echo "... utils/Log.s"

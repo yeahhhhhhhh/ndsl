@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles/rebuild_cache.dir
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles/edit_cache.dir
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/CMakeFiles/rebuild_cache.dir
@@ -14,23 +13,3 @@
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/tests/CMakeFiles/rebuild_cache.dir
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/tests/CMakeFiles/edit_cache.dir
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/tests/CMakeFiles/client.dir
-=======
-/home/user/Desktop/ndsl/build/CMakeFiles/edit_cache.dir
-/home/user/Desktop/ndsl/build/CMakeFiles/rebuild_cache.dir
-/home/user/Desktop/ndsl/build/src/CMakeFiles/edit_cache.dir
-/home/user/Desktop/ndsl/build/src/CMakeFiles/rebuild_cache.dir
-/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/edit_cache.dir
-/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/rebuild_cache.dir
-/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/libplugin.dir
-/home/user/Desktop/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir
-/home/user/Desktop/ndsl/build/src/ndsl/net/CMakeFiles/edit_cache.dir
-/home/user/Desktop/ndsl/build/src/ndsl/net/CMakeFiles/rebuild_cache.dir
-/home/user/Desktop/ndsl/build/src/ndsl/utils/CMakeFiles/edit_cache.dir
-/home/user/Desktop/ndsl/build/src/ndsl/utils/CMakeFiles/rebuild_cache.dir
-/home/user/Desktop/ndsl/build/tests/CMakeFiles/edit_cache.dir
-/home/user/Desktop/ndsl/build/tests/CMakeFiles/rebuild_cache.dir
-/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir
-/home/user/Desktop/ndsl/build/tests/CMakeFiles/server.dir
-/home/user/Desktop/ndsl/build/tests/CMakeFiles/client.dir
-/home/user/Desktop/ndsl/build/tests/CMakeFiles/plugin.dir
->>>>>>> dev_zsq

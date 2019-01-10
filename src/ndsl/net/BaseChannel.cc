@@ -17,6 +17,7 @@ namespace net {
 BaseChannel::BaseChannel(int fd, EventLoop *loop)
     : Channel(loop)
     , fd_(fd)
+    , pThis_(NULL)
 {}
 
 int BaseChannel::getFd() { return fd_; }
@@ -34,6 +35,7 @@ int BaseChannel::handleEvent()
     // epoll_wait(2)  will always wait for this event; it is not
     // necessary to set it in events.
 
+    // TODO: 关闭掉fd之后要不要做相应的Channel和Connection的释放 ？
     if ((revents_ & EPOLLIN) && (revents_ & EPOLLHUP)) { close(fd_); }
     if ((revents_ & EPOLLIN) && (revents_ & EPOLLRDHUP)) { close(fd_); }
 

@@ -13,6 +13,7 @@
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/TcpConnection.h"
+#include "ndsl/utils/Log.h"
 
 namespace ndsl {
 namespace net {
@@ -20,6 +21,7 @@ namespace net {
 TcpAcceptor::TcpAcceptor(EventLoop *pLoop)
     : listenfd_(-1)
     , pLoop_(pLoop)
+    , pTcpChannel_(NULL)
 {
     info.inUse_ = false;
 
@@ -34,6 +36,7 @@ TcpAcceptor::TcpAcceptor(Callback cb, EventLoop *pLoop)
     : listenfd_(-1)
     , pLoop_(pLoop)
     , cb_(cb)
+    , pTcpChannel_(NULL)
 {
     info.inUse_ = false;
 }
@@ -59,10 +62,20 @@ int TcpAcceptor::setInfo(
 
 int TcpAcceptor::start()
 {
-    createAndListen();
+    int n = createAndListen();
+    if (n < 0) {
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "createAndListen fail\n");
+        return S_FALSE;
+    }
+
     pTcpChannel_ = new TcpChannel(listenfd_, pLoop_);
-    pTcpChannel_->setCallBack(handleRead, NULL, this);
-    pTcpChannel_->enroll(false);
+    if (pTcpChannel_ == NULL) {
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "new TcpChannel fail\n");
+        return S_FALSE;
+    } else {
+        pTcpChannel_->setCallBack(handleRead, NULL, this);
+        pTcpChannel_->enroll(false);
+    }
 
     return S_OK;
 }
@@ -70,6 +83,10 @@ int TcpAcceptor::start()
 int TcpAcceptor::createAndListen()
 {
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
+    if (listenfd_ < 0) {
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "socket fail\n");
+        return S_FALSE;
+    }
 
     struct SocketAddress4 servaddr;
 
@@ -81,11 +98,15 @@ int TcpAcceptor::createAndListen()
 
     if (-1 ==
         bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
-        printf("TcpAcceptor bind error\n");
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "TcpAcceptor bind error\n");
+        return S_FALSE;
     }
 
     if (-1 == listen(listenfd_, LISTENQ)) {
-        printf("TcpAcceptor listen error\n");
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_TCPACCETPOR,
+            "TcpAcceptor listen error\n");
+        return S_FALSE;
     }
 
     return S_OK;
@@ -93,8 +114,6 @@ int TcpAcceptor::createAndListen()
 
 int TcpAcceptor::handleRead(void *pthis)
 {
-    printf("handleRead\n");
-
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
 
     int connfd;
@@ -104,10 +123,11 @@ int TcpAcceptor::handleRead(void *pthis)
         pThis->listenfd_, (struct sockaddr *) &cliaddr, (socklen_t *) &clilen);
     if (connfd > 0) {
         // 连接成功
-        printf("connect succ\n");
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "connect succ\n");
     } else {
         // 连接失败
-        printf("connect fail\n");
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "connect fail\n");
+        return S_FALSE;
     }
 
     // 设置非阻塞io

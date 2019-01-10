@@ -32,7 +32,7 @@ class TcpConnection
         void *sendBuf_;  // 用户给的写地址
         void *readBuf_;  // 用户给的读地址
         ssize_t *len_;   // buf长度
-        int flags_;      // send()的参数
+        int flags_;      // send()的参数在
         Callback cb_;    // 存储用户传过来的回调函数
         void *param_;    // 回调函数的参数
         ssize_t offset_; // 一次没发送完的发送偏移

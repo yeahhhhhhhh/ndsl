@@ -33,16 +33,11 @@ set(LIB_NDSL_SRC
  net/SignalHandler.cc
  )
 
-
 add_library(ndsl ${LIB_NDSL_SRC})
 
 #生成libplugin.so
 set(LIB_SRC utils/Plugin.cc)
-<<<<<<< HEAD
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
-=======
- set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
->>>>>>> dev_zsq
 
 add_library(libplugin SHARED ${LIB_SRC})
 set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")

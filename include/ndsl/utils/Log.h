@@ -76,6 +76,7 @@ enum
     LOG_OUTPUT_TER = 0,
     LOG_OUTPUT_FILE = 1
 };
+
 void set_ndsl_log_sinks(int sinks, int file_or_ter);
 void ndsl_log_into_sink(int level, int source, const char *format, ...);
 
