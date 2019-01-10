@@ -41,6 +41,7 @@ struct Plugin2 : Plugin
         return S_FALSE;
     }
 };
+
 Plugin *CreatPlugin(int tag);
 
 #if defined(__cplusplus)

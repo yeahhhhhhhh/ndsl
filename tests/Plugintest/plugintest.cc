@@ -19,7 +19,10 @@ int main(int argc, char **argv)
         cout << "cannot open library: " << dlerror() << endl;
         return -1;
     }
+
+    // 返回creatplugin这个函数！！！
     Creat fun = (Creat) dlsym(p, "CreatPlugin");
+
     if (!fun) {
         cout << "cannot load sysbol:  " << dlerror() << endl;
         dlclose(p);
@@ -28,5 +31,6 @@ int main(int argc, char **argv)
     plugin = (Plugin1 *) fun(1);
     if (!plugin) { printf("plugin == NULL !\n"); }
     plugin->doit(func, para);
+    plugin->add(8);
     return 0;
 }
