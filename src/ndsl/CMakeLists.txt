@@ -20,7 +20,7 @@ set(LIB_NDSL_SRC
  net/TcpAcceptor.cc
  net/SocketAddress.cc
  net/SocketAddressUn.cc
- #net/TcpClient.cc
+ net/TcpClient.cc
 
  #net/SocketAddress.cc
  #net/SocketAddressUn.cc

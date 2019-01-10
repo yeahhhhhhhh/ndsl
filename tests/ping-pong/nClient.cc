@@ -82,7 +82,6 @@ class Client
   public:
     Client(
         EventLoop *loop,
-        const InetAddress &serverAddr,
         int blockSize,
         int sessionCount,
         int timeout,
@@ -92,10 +91,10 @@ class Client
         , sessionCount_(sessionCount)
         , timeout_(timeout)
     {
-        // 设置定时器
+        // 设置定时器 TODO: 全部链接完成后再设置 换成自己的timewheel
         loop->runAfter(timeout, boost::bind(&Client::handleTimeout, this));
 
-        // 设置线程
+        // 设置线程 如果是多线程的话 在这里new一个线程池出来
         // if (threadCount > 1) { threadPool_.setThreadNum(threadCount); }
         // threadPool_.start();
 
