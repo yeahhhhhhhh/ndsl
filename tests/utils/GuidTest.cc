@@ -1,35 +1,15 @@
 ////
 // @file GuidTest.cc
 // @brief
-<<<<<<< HEAD
-<<<<<<< HEAD
-// Guid测试类
-== == == =
-             // Guid测试
->>>>>>> dev_lgr
-    == == == =
 // Guid测试
->>>>>>> dev_zsq
 //
 // @author why
 // @email 136046355@qq.com
 //
-<<<<<<< HEAD
-<<<<<<< HEAD
-//#define CATCH_CONFIG_MAIN
-#        include "../catch.hpp"
-#        include "ndsl/utils/Guid.h"
-#        include <iostream>
-                 == == == =
-#        include "../catch.hpp"
-#        include "ndsl/utils/Guid.h"
->>>>>>> dev_lgr
-                              == == == =
-#    include "../catch.hpp"
-#    include "ndsl/utils/Guid.h"
->>>>>>> dev_zsq
+#include "../catch.hpp"
+#include "ndsl/utils/Guid.h"
 
-                                           TEST_CASE("Guid")
+TEST_CASE("Guid")
 {
     ndsl::utils::Guid g1, g2;
 
@@ -39,16 +19,8 @@
         char str[32];
         g1.generate();
         g1.toString(str);
-<<<<<<< HEAD
-<<<<<<< HEAD
-        std::cout << str << std::endl;
-        == == == =
-                     //		std::cout << str << std::endl;
->>>>>>> dev_lgr
-            == == == =
-                         //		std::cout << str << std::endl;
->>>>>>> dev_zsq
-            REQUIRE(g1.toString(str) == 0);
+        //		std::cout << str << std::endl;
+        REQUIRE(g1.toString(str) == 0);
     }
     SECTION("toGuid_t")
     {
