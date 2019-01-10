@@ -48,3 +48,10 @@ add_executable(client ${pingclient})
 add_dependencies(client ndsl)
 target_link_libraries(client ndsl)
 
+#设置插件单元测试
+set(SRC_list Plugintest/plugintest.cc) #宏定义
+
+add_executable(plugin ${SRC_list})  #生成可执行文件
+
+target_link_libraries(plugin dl)
+target_link_libraries(plugin libplugin)
