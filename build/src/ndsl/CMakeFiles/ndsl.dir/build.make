@@ -249,9 +249,33 @@ src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o.provides: src/ndsl/CMakeFi
 src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o.provides.build: src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o
 
 
+src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o: src/ndsl/CMakeFiles/ndsl.dir/flags.make
+src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o: ../src/ndsl/net/TcpClient.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ndsl.dir/net/TcpClient.cc.o -c /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpClient.cc
+
+src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ndsl.dir/net/TcpClient.cc.i"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpClient.cc > CMakeFiles/ndsl.dir/net/TcpClient.cc.i
+
+src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ndsl.dir/net/TcpClient.cc.s"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpClient.cc -o CMakeFiles/ndsl.dir/net/TcpClient.cc.s
+
+src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o.requires:
+
+.PHONY : src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o.requires
+
+src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o.provides: src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o.requires
+	$(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o.provides.build
+.PHONY : src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o.provides
+
+src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o.provides.build: src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o
+
+
 src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o: src/ndsl/CMakeFiles/ndsl.dir/flags.make
 src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o: ../src/ndsl/utils/Log.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o"
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ndsl.dir/utils/Log.cc.o -c /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/Log.cc
 
 src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.i: cmake_force
@@ -275,7 +299,7 @@ src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o.provides.build: src/ndsl/CMakeFiles/
 
 src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o: src/ndsl/CMakeFiles/ndsl.dir/flags.make
 src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o: ../src/ndsl/utils/TimeStamp.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o"
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o -c /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/TimeStamp.cc
 
 src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.i: cmake_force
@@ -297,6 +321,78 @@ src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o.provides: src/ndsl/CMakeFiles/
 src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o.provides.build: src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o
 
 
+src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o: src/ndsl/CMakeFiles/ndsl.dir/flags.make
+src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o: ../src/ndsl/utils/Thread.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ndsl.dir/utils/Thread.cc.o -c /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/Thread.cc
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ndsl.dir/utils/Thread.cc.i"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/Thread.cc > CMakeFiles/ndsl.dir/utils/Thread.cc.i
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ndsl.dir/utils/Thread.cc.s"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/Thread.cc -o CMakeFiles/ndsl.dir/utils/Thread.cc.s
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o.requires:
+
+.PHONY : src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o.requires
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o.provides: src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o.requires
+	$(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o.provides.build
+.PHONY : src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o.provides
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o.provides.build: src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o
+
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o: src/ndsl/CMakeFiles/ndsl.dir/flags.make
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o: ../src/ndsl/net/SignalChannel.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ndsl.dir/net/SignalChannel.cc.o -c /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SignalChannel.cc
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ndsl.dir/net/SignalChannel.cc.i"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SignalChannel.cc > CMakeFiles/ndsl.dir/net/SignalChannel.cc.i
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ndsl.dir/net/SignalChannel.cc.s"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SignalChannel.cc -o CMakeFiles/ndsl.dir/net/SignalChannel.cc.s
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o.requires:
+
+.PHONY : src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o.requires
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o.provides: src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o.requires
+	$(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o.provides.build
+.PHONY : src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o.provides
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o.provides.build: src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o
+
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o: src/ndsl/CMakeFiles/ndsl.dir/flags.make
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o: ../src/ndsl/net/SignalHandler.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ndsl.dir/net/SignalHandler.cc.o -c /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SignalHandler.cc
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ndsl.dir/net/SignalHandler.cc.i"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SignalHandler.cc > CMakeFiles/ndsl.dir/net/SignalHandler.cc.i
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ndsl.dir/net/SignalHandler.cc.s"
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SignalHandler.cc -o CMakeFiles/ndsl.dir/net/SignalHandler.cc.s
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o.requires:
+
+.PHONY : src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o.requires
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o.provides: src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o.requires
+	$(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o.provides.build
+.PHONY : src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o.provides
+
+src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o.provides.build: src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o
+
+
 # Object files for target ndsl
 ndsl_OBJECTS = \
 "CMakeFiles/ndsl.dir/net/Epoll.cc.o" \
@@ -307,8 +403,12 @@ ndsl_OBJECTS = \
 "CMakeFiles/ndsl.dir/net/TcpAcceptor.cc.o" \
 "CMakeFiles/ndsl.dir/net/SocketAddress.cc.o" \
 "CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o" \
+"CMakeFiles/ndsl.dir/net/TcpClient.cc.o" \
 "CMakeFiles/ndsl.dir/utils/Log.cc.o" \
-"CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o"
+"CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o" \
+"CMakeFiles/ndsl.dir/utils/Thread.cc.o" \
+"CMakeFiles/ndsl.dir/net/SignalChannel.cc.o" \
+"CMakeFiles/ndsl.dir/net/SignalHandler.cc.o"
 
 # External object files for target ndsl
 ndsl_EXTERNAL_OBJECTS =
@@ -321,11 +421,15 @@ bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/TcpConnection.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/TcpAcceptor.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddress.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o
+bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o
+bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o
+bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o
+bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/build.make
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX static library ../../bin/libndsl.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX static library ../../bin/libndsl.a"
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && $(CMAKE_COMMAND) -P CMakeFiles/ndsl.dir/cmake_clean_target.cmake
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ndsl.dir/link.txt --verbose=$(VERBOSE)
 
@@ -342,8 +446,12 @@ src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/TcpConne
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/TcpAcceptor.cc.o.requires
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddress.cc.o.requires
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o.requires
+src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o.requires
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o.requires
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o.requires
+src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o.requires
+src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o.requires
+src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o.requires
 
 .PHONY : src/ndsl/CMakeFiles/ndsl.dir/requires
 

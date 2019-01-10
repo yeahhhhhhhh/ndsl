@@ -51,6 +51,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "src/ndsl/CMakeFiles/libplugin.dir/DependInfo.cmake"
   "src/ndsl/CMakeFiles/ndsl.dir/DependInfo.cmake"
-  "tests/CMakeFiles/utest.dir/DependInfo.cmake"
+  "tests/CMakeFiles/client.dir/DependInfo.cmake"
   )

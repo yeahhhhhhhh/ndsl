@@ -42,6 +42,20 @@ ndsl/net/Epoll.h
 ndsl/net/BaseChannel.h
 ../include/ndsl/net/ndsl/net/BaseChannel.h
 
+../include/ndsl/net/SignalChannel.h
+BaseChannel.h
+../include/ndsl/net/BaseChannel.h
+EventLoop.h
+../include/ndsl/net/EventLoop.h
+SignalHandler.h
+../include/ndsl/net/SignalHandler.h
+
+../include/ndsl/net/SignalHandler.h
+SignalChannel.h
+../include/ndsl/net/SignalChannel.h
+EventLoop.h
+../include/ndsl/net/EventLoop.h
+
 ../include/ndsl/net/SocketAddress.h
 string
 -
@@ -68,6 +82,12 @@ EventLoop.h
 BaseChannel.h
 ../include/ndsl/net/BaseChannel.h
 
+../include/ndsl/net/TcpClient.h
+EventLoop.h
+../include/ndsl/net/EventLoop.h
+ndsl/net/TcpConnection.h
+../include/ndsl/net/ndsl/net/TcpConnection.h
+
 ../include/ndsl/net/TcpConnection.h
 queue
 -
@@ -79,8 +99,38 @@ ndsl/utils/Log.h
 ../include/ndsl/net/ndsl/utils/Log.h
 
 ../include/ndsl/utils/Error.h
+netinet/in.h
+-
+arpa/inet.h
+-
+sys/un.h
+-
+errno.h
+-
+unistd.h
+-
+string
+-
 
 ../include/ndsl/utils/Log.h
+
+../include/ndsl/utils/Noncopyable.h
+
+../include/ndsl/utils/Thread.h
+../config.h
+../include/ndsl/config.h
+vector
+-
+list
+-
+mutex
+-
+pthread.h
+-
+condition_variable
+-
+ndsl/utils/Noncopyable.h
+../include/ndsl/utils/ndsl/utils/Noncopyable.h
 
 ../include/ndsl/utils/TimeStamp.h
 stdio.h
@@ -142,6 +192,24 @@ ndsl/net/EventLoop.h
 ndsl/utils/Log.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
 
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SignalChannel.cc
+ndsl/net/SignalChannel.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SignalChannel.h
+
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SignalHandler.cc
+string.h
+-
+sys/signalfd.h
+-
+signal.h
+-
+ndsl/net/SignalHandler.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SignalHandler.h
+ndsl/utils/temp_define.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/temp_define.h
+iostream
+-
+
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SocketAddress.cc
 string.h
 -
@@ -194,6 +262,20 @@ ndsl/net/TcpChannel.h
 ndsl/net/TcpConnection.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
 
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpClient.cc
+sys/socket.h
+-
+ndsl/net/SocketAddress.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
+ndsl/net/TcpClient.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpClient.h
+ndsl/net/TcpChannel.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
+ndsl/config.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/config.h
+ndsl/utils/temp_define.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/temp_define.h
+
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpConnection.cc
 ndsl/net/TcpConnection.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
@@ -237,6 +319,16 @@ ndsl/utils/Log.h
 -
 ndsl/utils/TimeStamp.h
 -
+
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/Thread.cc
+unistd.h
+-
+ndsl/utils/Thread.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/Thread.h
+ndsl/utils/Error.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/Error.h
+ndsl/utils/Log.h
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/Log.h
 
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/TimeStamp.cc
 stdio.h

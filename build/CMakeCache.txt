@@ -172,6 +172,9 @@ NDSL_BINARY_DIR:STATIC=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build
 NDSL_SOURCE_DIR:STATIC=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl
 
 //Dependencies for target
+libplugin_LIB_DEPENDS:STATIC=
+
+//Dependencies for target
 ndsl_LIB_DEPENDS:STATIC=
 
 

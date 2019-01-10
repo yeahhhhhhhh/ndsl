@@ -111,46 +111,46 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-tests/CMakeFiles/utest.dir/rule:
-	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/utest.dir/rule
-.PHONY : tests/CMakeFiles/utest.dir/rule
+tests/CMakeFiles/client.dir/rule:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/client.dir/rule
+.PHONY : tests/CMakeFiles/client.dir/rule
 
 # Convenience name for target.
-utest: tests/CMakeFiles/utest.dir/rule
+client: tests/CMakeFiles/client.dir/rule
 
-.PHONY : utest
+.PHONY : client
 
 # fast build rule for target.
-utest/fast:
-	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
-.PHONY : utest/fast
+client/fast:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/build
+.PHONY : client/fast
 
-testMain.o: testMain.cc.o
+ping-pong/nClient.o: ping-pong/nClient.cc.o
 
-.PHONY : testMain.o
+.PHONY : ping-pong/nClient.o
 
 # target to build an object file
-testMain.cc.o:
-	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/testMain.cc.o
-.PHONY : testMain.cc.o
+ping-pong/nClient.cc.o:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/ping-pong/nClient.cc.o
+.PHONY : ping-pong/nClient.cc.o
 
-testMain.i: testMain.cc.i
+ping-pong/nClient.i: ping-pong/nClient.cc.i
 
-.PHONY : testMain.i
+.PHONY : ping-pong/nClient.i
 
 # target to preprocess a source file
-testMain.cc.i:
-	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/testMain.cc.i
-.PHONY : testMain.cc.i
+ping-pong/nClient.cc.i:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/ping-pong/nClient.cc.i
+.PHONY : ping-pong/nClient.cc.i
 
-testMain.s: testMain.cc.s
+ping-pong/nClient.s: ping-pong/nClient.cc.s
 
-.PHONY : testMain.s
+.PHONY : ping-pong/nClient.s
 
 # target to generate assembly for a file
-testMain.cc.s:
-	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/testMain.cc.s
-.PHONY : testMain.cc.s
+ping-pong/nClient.cc.s:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/ping-pong/nClient.cc.s
+.PHONY : ping-pong/nClient.cc.s
 
 # Help Target
 help:
@@ -160,10 +160,10 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... utest"
-	@echo "... testMain.o"
-	@echo "... testMain.i"
-	@echo "... testMain.s"
+	@echo "... client"
+	@echo "... ping-pong/nClient.o"
+	@echo "... ping-pong/nClient.i"
+	@echo "... ping-pong/nClient.s"
 .PHONY : help
 
 
