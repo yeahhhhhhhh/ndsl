@@ -49,6 +49,6 @@ TEST_CASE("net/EventLoop(WorkQueue)")
 
         loop.quit();
 
-        REQUIRE(loop.loop() == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
     }
 }

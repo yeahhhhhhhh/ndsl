@@ -29,7 +29,15 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 #net/EpollTest.cc
 #net/SignalfdTest.cc
 
-#)
+# net/TcpConnectionTest.cc
+# net/TcpAcceptorTest.cc
+#net/EventLoopTest.cc
+#net/EpollTest.cc
+# net/SignalfdTest.cc
+
+utils/EventLoopThreadpoolTest.cc
+
+)
 
 # 设置ping-pong单元测试的文件
 #set(pingserver ping-pong/server.cc)

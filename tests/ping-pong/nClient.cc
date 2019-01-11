@@ -19,6 +19,7 @@
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TimeWheel.h"
 #include "ndsl/utils/Log.h"
+#include "ndsl/utils/EventLoopThreadpool.h"
 
 using namespace std;
 using namespace ndsl;
@@ -85,25 +86,26 @@ class Client
         , timeout_(timeout)
     {
         // TODO: 初始化定时器 线程池未完成 暂时挂起
-        // TimeWheel *time = new TimeWheel(threadPool_.getNextLoop());
-        // time->init();
+        TimeWheel *time = new TimeWheel(threadPool_.getNextEventLoop());
+        time->init();
 
-        // // 初始化定时器任务
-        // struct Task t;
-        // t->setInterval = 60;
-        // t->times = 1;
-        // t->doit = handleTimeout;
-        // t->param = this;
+        // 初始化定时器任务
+        struct Task t;
+        t->setInterval = 60;
+        t->times = 1;
+        t->doit = handleTimeout;
+        t->param = this;
 
-        // // 添加任务
-        // time->addTask(t);
+        // 添加任务
+        time->addTask(t);
 
-        // // 开始时间轮
-        // time->start();
+        // 开始时间轮
+        time->start();
 
-        // TODO: 设置线程 如果是多线程的话 在这里new一个线程池出来 暂时挂起
-        // if (threadCount > 1) { threadPool_.setThreadNum(threadCount); }
-        // threadPool_.start();
+        // TODO: 设置线程 在这里new一个线程池出来 暂时挂起
+        threadPool_ = new EventLoopThreadpool();
+        threadPool_->setMaxThreads(threadCount);
+        threadPool_.start();
 
         // new出数据需要的空间
         message_ = (char *) malloc(sizeof(char) * blockSize);
@@ -116,10 +118,11 @@ class Client
         // 准备发送数据
         for (int i = 0; i < sessionCount; ++i) {
             // TODO: 得看线程池是怎么实现的 挂起
-            // Session *session = new Session(threadPool_.getNextLoop(), this);
+            Session *session =
+                new Session(threadPool_.getNextEventLoop(), this);
             // 发送数据
-            // session->start();
-            // sessions_.push_back(session);
+            session->start();
+            sessions_.push_back(session);
         }
     }
 
@@ -175,6 +178,7 @@ class Client
         // time->让所有loop全停下
 
         Client *pThis = static_cast<Client *>(pthis);
+        pThis->threadPool_->quit();
         std::for_each(
             pThis->sessions_.begin(),
             pThis->sessions_.end(),
@@ -184,6 +188,7 @@ class Client
     EventLoop *loop_;
     int blockSize_;
     // EventLoopThreadPool threadPool_;
+    EventLoopThreadpool *threadPool_ = NULL;
     int sessionCount_;
     int timeout_;
     boost::ptr_vector<Session> sessions_;
@@ -194,6 +199,7 @@ class Client
 
 void Session::start()
 {
+    // TODO: 逻辑上可能有点问题，什么时候加入到loop里面
     // 阻塞建立连接 建立好的之后调用client的onConnect
     conn_ = client_.onConnect();
     // 将自身的recv函数注册进去

@@ -29,6 +29,7 @@ set(LIB_NDSL_SRC
  utils/Thread.cc
  #net/WorkQueue.cc
  #net/InterruptChannel.cc
+ utils/EventLoopThreadpool.cc
  net/SignalChannel.cc
  net/SignalHandler.cc
  )
