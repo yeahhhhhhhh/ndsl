@@ -9,6 +9,7 @@
 #ifndef __NDSL_UTILS_PLUGIN_H__
 #define __NDSL_UTILS_PLUGIN_H__
 
+// #include "ndsl/config.h"
 #include "ndsl/utils/Error.h"
 #if defined(__cplusplus)
 extern "C" {
@@ -37,7 +38,10 @@ struct Plugin2 : Plugin
 {
     int doit(functype func, void *para)
     {
-        if (func) { (*func)(para); }
+        if (func) {
+            (*func)(para);
+            return S_OK;
+        }
         return S_FALSE;
     }
 };

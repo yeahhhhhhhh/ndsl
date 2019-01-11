@@ -12,6 +12,12 @@ project(NDSL)
 
 message(STATUS "### Begin to configure project NDSL ###")
 
+# 加入一个配置头文件，用于处理 CMake 对源码的设置
+configure_file (
+"${PROJECT_SOURCE_DIR}/config.h.in"
+"${PROJECT_SOURCE_DIR}/include/ndsl/config.h"
+)
+
 # 检测cmake运行操作系统/CPU/编译器
 message(STATUS "Generator: ${CMAKE_GENERATOR}")
 message(STATUS "Building OS: ${CMAKE_SYSTEM_NAME}")

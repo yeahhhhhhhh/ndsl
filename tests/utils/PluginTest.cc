@@ -9,8 +9,6 @@
 #include "../catch.hpp"
 #include "ndsl/utils/Plugin.h"
 
-
-
 int func(int para)
 {
     para++;
@@ -18,10 +16,10 @@ int func(int para)
 }
 TEST_CASE("Plugin")
 {
-    //ndsl::utils::Plugin plugin;
+    // ndsl::utils::Plugin plugin;
     SECTION("doit")
-    {    
-        //plugin = CreatPlugin();
-        //REQUIRE(plugin.doit(func,5) == 6);
+    {
+        // plugin = CreatPlugin();
+        // REQUIRE(plugin.doit(func,5) == 6);
     }
 }

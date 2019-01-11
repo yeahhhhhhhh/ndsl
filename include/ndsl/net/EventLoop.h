@@ -171,7 +171,7 @@ class EventLoop
             int ret = ::write(getFd(), &data, sizeof(data));
 
             if (ret == -1) {
-                LOG(LOG_ERROR_LEVEL,
+                LOG(LOG_INFO_LEVEL,
                     LOG_SOURCE_EVENTLOOP,
                     "InterruptChannel::onWrite\n");
                 return errno;
@@ -194,7 +194,7 @@ class EventLoop
     int init();
 
     // 开始循环
-    int loop();
+    static void *loop(void *pThis);
 
     // 添加任务
     void addWork(WorkItem *work);

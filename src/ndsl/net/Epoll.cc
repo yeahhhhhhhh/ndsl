@@ -13,6 +13,7 @@
 #include "ndsl/net/Channel.h"
 #include "ndsl/utils/Log.h"
 #include "ndsl/utils/Error.h"
+#include "ndsl/config.h"
 
 namespace ndsl {
 namespace net {
