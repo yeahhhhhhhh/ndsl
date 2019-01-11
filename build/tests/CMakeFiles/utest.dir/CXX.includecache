@@ -91,6 +91,8 @@ string
 ../include/ndsl/utils/Guid.h
 
 ../include/ndsl/utils/Log.h
+stdint.h
+-
 
 ../include/ndsl/utils/TimeStamp.h
 stdio.h
