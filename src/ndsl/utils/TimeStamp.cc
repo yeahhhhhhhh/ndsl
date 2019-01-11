@@ -32,7 +32,8 @@ bool ndsl::utils::TimeStamp::to_string(char *buffer, size_t size) const
         tm.tm_hour,
         tm.tm_min,
         tm.tm_sec,
-        ms);
+        ms
+        );
     return ret > 0;
 }
 void ndsl::utils::TimeStamp::from_string(const char *time)

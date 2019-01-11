@@ -45,6 +45,7 @@ class Filelog
         ts.now();
         ts.to_string(path, 256);
         int len = ::strlen(path);
+        len = len - 7;
         sprintf(path + len, ".log");
 
         m_file = ::open(
@@ -62,6 +63,7 @@ class Filelog
 // 全局logger
 //
 static Filelog file_log;
+static uint64_t log_source_tag = 32;
 
 void set_ndsl_log_sinks(int sinks, int file_or_ter) // file = 1, ter = 0
 {
@@ -74,6 +76,13 @@ void set_ndsl_log_sinks(int sinks, int file_or_ter) // file = 1, ter = 0
     }
 }
 
+uint64_t log_add_source()
+{
+    uint64_t module = 1 << log_source_tag ;
+    log_source_tag ++;
+    return module;
+}
+
 void ndsl_log_into_sink(int level, int source, const char *format, ...)
 {
     int i = 1;
@@ -84,15 +93,20 @@ void ndsl_log_into_sink(int level, int source, const char *format, ...)
     buffer[0] = '[';
     ts.to_string(buffer + 1, 4096);
     int ret1 = ::strlen(buffer);
+    
+
     buffer[ret1] = ']';
 
     int ret2 = sprintf(
         buffer + ret1 + 1,
-        " lv=%d pid=%d tid=%lx ",
+        " lv=%d pid=%d tid=%lx file_name = %s func_name = %s ",
         level,
         ::getpid(),
-        (long) ::pthread_self()); // 毫秒
+        (long) ::pthread_self(),
+        __FILE__,
+        __FUNCTION__); // 毫秒
 
+    
     // 复制数据
     va_list ap;
     va_start(ap, format);

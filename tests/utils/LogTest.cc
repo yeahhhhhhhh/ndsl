@@ -18,5 +18,11 @@ TEST_CASE("utils/Log")
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EVENTLOOP, "hello, world\n");
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "debug\n");
     }
+    SECTION("LOG1")
+    {
+        uint64_t LOG_SOURCE_MODULE = log_add_source();
+        set_ndsl_log_sinks(LOG_SOURCE_MODULE,LOG_OUTPUT_FILE);
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_MODULE, "hello, world\n");
+    }
 
 }
