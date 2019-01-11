@@ -100,6 +100,28 @@ src/ndsl/CMakeFiles/ndsl.dir/net/TcpConnection.cc.o: ../include/ndsl/utils/Error
 src/ndsl/CMakeFiles/ndsl.dir/net/TcpConnection.cc.o: ../include/ndsl/utils/Log.h
 src/ndsl/CMakeFiles/ndsl.dir/net/TcpConnection.cc.o: ../src/ndsl/net/TcpConnection.cc
 
+src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/config.h
+src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/net/BaseChannel.h
+src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/net/Channel.h
+src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/net/Epoll.h
+src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/net/EventLoop.h
+src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/net/TimeWheel.h
+src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/utils/Error.h
+src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/utils/Log.h
+src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../src/ndsl/net/TimeWheel.cc
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/config.h
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/net/BaseChannel.h
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/net/Channel.h
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/net/Epoll.h
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/net/EventLoop.h
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/utils/Error.h
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/utils/EventLoopThreadpool.h
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/utils/Log.h
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/utils/Noncopyable.h
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/utils/Thread.h
+src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../src/ndsl/utils/EventLoopThreadpool.cc
+
 src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o: ../include/ndsl/utils/Log.h
 src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o: ../include/ndsl/utils/TimeStamp.h
 src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o: ../src/ndsl/utils/Log.cc

@@ -35,9 +35,9 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 #net/EpollTest.cc
 # net/SignalfdTest.cc
 
-utils/EventLoopThreadpoolTest.cc
+#utils/EventLoopThreadpoolTest.cc
 
-)
+#)
 
 # 设置ping-pong单元测试的文件
 #set(pingserver ping-pong/server.cc)
@@ -45,6 +45,7 @@ set(pingclient ping-pong/nClient.cc)
 
 include_directories(${CMAKE_SOURCE_DIR}/tests)
 
+# net和utils下的测试文件
 #add_executable(utest ${TEST})
 #add_dependencies(utest ndsl)
 #target_link_libraries(utest ndsl pthread) #boost_system)
@@ -58,7 +59,7 @@ include_directories(${CMAKE_SOURCE_DIR}/tests)
 # 生成pingpong测试客户端
 add_executable(client ${pingclient})
 add_dependencies(client ndsl)
-target_link_libraries(client ndsl boost_system)
+target_link_libraries(client ndsl boost_system pthread)
 
 #设置插件单元测试
 #set(SRC_list Plugintest/plugintest.cc) #宏定义

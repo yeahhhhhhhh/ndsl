@@ -32,6 +32,7 @@ set(LIB_NDSL_SRC
  utils/EventLoopThreadpool.cc
  net/SignalChannel.cc
  net/SignalHandler.cc
+ net/TimeWheel.cc
  )
 
 add_library(ndsl ${LIB_NDSL_SRC})

@@ -11,8 +11,10 @@ file(REMOVE_RECURSE
   "CMakeFiles/ndsl.dir/utils/Log.cc.o"
   "CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o"
   "CMakeFiles/ndsl.dir/utils/Thread.cc.o"
+  "CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o"
   "CMakeFiles/ndsl.dir/net/SignalChannel.cc.o"
   "CMakeFiles/ndsl.dir/net/SignalHandler.cc.o"
+  "CMakeFiles/ndsl.dir/net/TimeWheel.cc.o"
   "../../bin/libndsl.pdb"
   "../../bin/libndsl.a"
 )

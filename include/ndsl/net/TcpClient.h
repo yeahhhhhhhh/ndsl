@@ -17,13 +17,13 @@ class TcpClient
 {
   public:
     TcpClient();
-    TcpClient(EventLoop *loop); // pingpong测试用
+    ~TcpClient();
 
-    int sockfd_;      // 保存sockfd
-    EventLoop *loop_; // 保存EventLoop
+    int sockfd_; // 保存sockfd
+    // EventLoop *loop_; // 保存EventLoop
 
     // 与服务器建立连接
-    TcpConnection *onConnect();
+    TcpConnection *onConnect(EventLoop *loop);
 
     // 与服务器断开链接
     int disConnect();
