@@ -6,6 +6,7 @@
 * @author why
 * @email 136046355@qq.com
 */
+#define CATCH_CONFIG_MAIN
 #include "../catch.hpp"
 #include <iostream>
 
