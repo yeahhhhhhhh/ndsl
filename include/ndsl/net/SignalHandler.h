@@ -49,7 +49,7 @@ class SignalHandler {
       static int handleWrite(void *pthis);
       
       // 忽略一次解除阻塞之前注册过的信号
-//      static void handleSignalEnd(int p);
+      static void handleSignalEnd(int p);
 	  
 };
 	

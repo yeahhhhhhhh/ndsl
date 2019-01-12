@@ -6,7 +6,7 @@
 * @author why
 * @email 136046355@qq.com
 */
-#include "test.h"
+#include "../catch.hpp"
 #include <iostream>
 
 #include <signal.h>

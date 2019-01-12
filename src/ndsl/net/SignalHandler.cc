@@ -3,7 +3,7 @@
 #include <signal.h>
 
 #include "ndsl/net/SignalHandler.h"
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/config.h"
 
 #include <iostream>
 
@@ -77,6 +77,7 @@ int SignalHandler::unBlockAllSignals(){
 	for(int i = 1; i <= 64; i++){
 		if(sigismember(&set, i)){
 			blockSignals_[i-1] = i;
+			signal(i, handleSignalEnd);
 		}
 	}
 	
@@ -84,6 +85,10 @@ int SignalHandler::unBlockAllSignals(){
 	sigprocmask(SIG_SETMASK, &set, NULL);
 	
 	return S_OK;
+}
+
+void SignalHandler::handleSignalEnd(int p){
+	signal(p, SIG_DFL);
 }
 
 int SignalHandler::handleWrite(void *pthis){
