@@ -45,7 +45,7 @@ TEST_CASE("signalfd"){
 		// 添加中断
         loop.quit();     
         // 开始loop
-        loop.loop(); 
+        loop.loop(&loop); 
 	}
 	
 	SECTION("remove"){
@@ -63,7 +63,7 @@ TEST_CASE("signalfd"){
 		// 添加中断
         loop.quit();        
         // 开始loop
-        loop.loop();
+        loop.loop(&loop);
 	}
 	
 	SECTION("blockAllSignals && unBlockAllSignals"){

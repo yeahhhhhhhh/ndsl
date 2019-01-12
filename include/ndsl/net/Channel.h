@@ -8,9 +8,8 @@
  */
 #ifndef __NDSL_NET_CHANNEL_H__
 #define __NDSL_NET_CHANNEL_H__
-// #include "EventLoop.h"
 #include <stdint.h>
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/config.h"
 #include "ndsl/utils/Log.h"
 
 namespace ndsl {

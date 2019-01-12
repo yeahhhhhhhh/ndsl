@@ -1,7 +1,9 @@
 build/*
-.vscode/sftp.json
+.vscode/
 !.gitkeep
 bin/
+tests/tmpMain.cc
+include/ndsl/utils/temp_define.h
 
 *.log
 *.fls

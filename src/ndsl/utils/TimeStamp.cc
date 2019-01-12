@@ -25,7 +25,7 @@ bool ndsl::utils::TimeStamp::to_string(char *buffer, size_t size) const
     int ret = snprintf(
         buffer,
         size,
-        "%4d-%02d-%02d %02d:%02d:%02d.%06d",
+        "%4d_%02d_%02d_%02d_%02d_%02d_%06d",
         tm.tm_year + 1900,
         tm.tm_mon + 1, // 0 - 11
         tm.tm_mday,

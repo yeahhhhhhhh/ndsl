@@ -6,6 +6,7 @@
 // @author zhangsiqi
 // @email 1575033031@qq.com
 //
+#include <iostream>
 #include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -62,10 +63,15 @@ class Filelog
 //
 static Filelog file_log;
 
-void set_ndsl_log_sinks(int sinks)
+void set_ndsl_log_sinks(int sinks, int file_or_ter) // file = 1, ter = 0
 {
     if (sinks > 64 || sinks < 0) return;
-    file_log.init();
+    if (file_or_ter) {
+        tag = 1;
+        file_log.init();
+    } else {
+        tag = 0;
+    }
 }
 
 void ndsl_log_into_sink(int level, int source, const char *format, ...)
@@ -94,7 +100,8 @@ void ndsl_log_into_sink(int level, int source, const char *format, ...)
         vsnprintf(buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
     if (ret3 < 0) return;
 
-    while (i <= source) {
+    if (tag == 0) { std::cout << buffer << std::endl; }
+    while ((i <= source) && (tag == 1)) {
         if (source & i) { file_log.log(buffer, ret1 + ret2 + ret3 + 1); }
         i = i * 2;
     }

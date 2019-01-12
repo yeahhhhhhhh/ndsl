@@ -1,7 +1,7 @@
 ////
 // @file GuidTest.cc
 // @brief
-// Guid测试类
+// Guid测试
 //
 // @author why
 // @email 136046355@qq.com
