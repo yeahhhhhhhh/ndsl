@@ -5,12 +5,9 @@ tests/CMakeFiles/utest.dir/testMain.cc.o: ../tests/catch.hpp
 tests/CMakeFiles/utest.dir/testMain.cc.o: ../tests/testMain.cc
 
 tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o: ../include/ndsl/utils/Guid.h
+tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o: ../include/ndsl/utils/Log.h
 tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o: ../tests/catch.hpp
 tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o: ../tests/utils/GuidTest.cc
-
-tests/CMakeFiles/utest.dir/utils/LogTest.cc.o: ../include/ndsl/utils/Log.h
-tests/CMakeFiles/utest.dir/utils/LogTest.cc.o: ../tests/catch.hpp
-tests/CMakeFiles/utest.dir/utils/LogTest.cc.o: ../tests/utils/LogTest.cc
 
 tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o: ../include/ndsl/config.h
 tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o: ../include/ndsl/utils/Error.h

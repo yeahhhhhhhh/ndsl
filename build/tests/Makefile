@@ -221,33 +221,6 @@ utils/GuidTest.cc.s:
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/GuidTest.cc.s
 .PHONY : utils/GuidTest.cc.s
 
-utils/LogTest.o: utils/LogTest.cc.o
-
-.PHONY : utils/LogTest.o
-
-# target to build an object file
-utils/LogTest.cc.o:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/LogTest.cc.o
-.PHONY : utils/LogTest.cc.o
-
-utils/LogTest.i: utils/LogTest.cc.i
-
-.PHONY : utils/LogTest.i
-
-# target to preprocess a source file
-utils/LogTest.cc.i:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/LogTest.cc.i
-.PHONY : utils/LogTest.cc.i
-
-utils/LogTest.s: utils/LogTest.cc.s
-
-.PHONY : utils/LogTest.s
-
-# target to generate assembly for a file
-utils/LogTest.cc.s:
-	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/LogTest.cc.s
-.PHONY : utils/LogTest.cc.s
-
 utils/PluginTest.o: utils/PluginTest.cc.o
 
 .PHONY : utils/PluginTest.o
@@ -321,9 +294,6 @@ help:
 	@echo "... utils/GuidTest.o"
 	@echo "... utils/GuidTest.i"
 	@echo "... utils/GuidTest.s"
-	@echo "... utils/LogTest.o"
-	@echo "... utils/LogTest.i"
-	@echo "... utils/LogTest.s"
 	@echo "... utils/PluginTest.o"
 	@echo "... utils/PluginTest.i"
 	@echo "... utils/PluginTest.s"
