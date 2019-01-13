@@ -18,12 +18,9 @@ namespace ndsl {
 namespace net {
 
 TcpClient::TcpClient() {}
+TcpClient::~TcpClient() {}
 
-TcpClient::TcpClient(EventLoop *loop)
-    : loop_(loop)
-{}
-
-TcpConnection *TcpClient::onConnect()
+TcpConnection *TcpClient::onConnect(EventLoop *loop)
 {
     sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -47,7 +44,7 @@ TcpConnection *TcpClient::onConnect()
         return NULL;
     }
 
-    conn->pTcpChannel_ = new TcpChannel(sockfd_, loop_);
+    conn->pTcpChannel_ = new TcpChannel(sockfd_, loop);
     if (NULL == conn->pTcpChannel_) {
         // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "new TcpChannel fail\n");
         return NULL;

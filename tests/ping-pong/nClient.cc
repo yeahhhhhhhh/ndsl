@@ -24,6 +24,7 @@
 using namespace std;
 using namespace ndsl;
 using namespace net;
+using namespace utils;
 
 class Client;
 char *buf; // 接收数据的地址
@@ -33,7 +34,7 @@ class Session
   public:
     // Session *session = new Session(threadPool_.getNextLoop(), this);
     Session(EventLoop *loop, Client *owner)
-        : client_(loop)
+        : client_() // 在这初始化的TcpClient
         , loop_(loop)
         , owner_(owner)
         , bytesRead_(0)
@@ -73,24 +74,23 @@ class Session
 class Client
 {
   public:
+    // Client client(threadPool, blockSize, sessionCount, timeout);
     Client(
-        EventLoop *loop,
+        EventLoopThreadpool *threadPool,
         int blockSize,
         int sessionCount,
-        int timeout,
-        int threadCount)
-        : loop_(loop)
-        , blockSize_(blockSize)
-        // , threadPool_(loop)
+        int timeout)
+        : blockSize_(blockSize)
+        , threadPool_(threadPool)
         , sessionCount_(sessionCount)
         , timeout_(timeout)
     {
-        // TODO: 初始化定时器 线程池未完成 暂时挂起
-        TimeWheel *time = new TimeWheel(threadPool_.getNextEventLoop());
+        // 初始化定时器
+        TimeWheel *time = new TimeWheel(threadPool_->getNextEventLoop());
         time->init();
 
         // 初始化定时器任务
-        struct Task t;
+        TimeWheel::Task *t = new TimeWheel::Task;
         t->setInterval = 60;
         t->times = 1;
         t->doit = handleTimeout;
@@ -102,11 +102,6 @@ class Client
         // 开始时间轮
         time->start();
 
-        // TODO: 设置线程 在这里new一个线程池出来 暂时挂起
-        threadPool_ = new EventLoopThreadpool();
-        threadPool_->setMaxThreads(threadCount);
-        threadPool_.start();
-
         // new出数据需要的空间
         message_ = (char *) malloc(sizeof(char) * blockSize);
 
@@ -117,9 +112,8 @@ class Client
 
         // 准备发送数据
         for (int i = 0; i < sessionCount; ++i) {
-            // TODO: 得看线程池是怎么实现的 挂起
             Session *session =
-                new Session(threadPool_.getNextEventLoop(), this);
+                new Session(threadPool_->getNextEventLoop(), this);
             // 发送数据
             session->start();
             sessions_.push_back(session);
@@ -174,10 +168,8 @@ class Client
         // TODO:
         // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TESTCLIENT, "stop\n");
 
-        // TODO: 计时器时间到 挂起
-        // time->让所有loop全停下
-
         Client *pThis = static_cast<Client *>(pthis);
+        // 计时器时间到
         pThis->threadPool_->quit();
         std::for_each(
             pThis->sessions_.begin(),
@@ -185,10 +177,10 @@ class Client
             boost::mem_fn(&Session::stop));
     }
 
-    EventLoop *loop_;
+    // EventLoop *loop_;
     int blockSize_;
     // EventLoopThreadPool threadPool_;
-    EventLoopThreadpool *threadPool_ = NULL;
+    EventLoopThreadpool *threadPool_;
     int sessionCount_;
     int timeout_;
     boost::ptr_vector<Session> sessions_;
@@ -199,11 +191,13 @@ class Client
 
 void Session::start()
 {
-    // TODO: 逻辑上可能有点问题，什么时候加入到loop里面
     // 阻塞建立连接 建立好的之后调用client的onConnect
-    conn_ = client_.onConnect();
+    conn_ = client_.onConnect(loop_);
     // 将自身的recv函数注册进去
     conn_->onRecv(buf, &len, 0, onMessage, this);
+    // loop跑起来
+    loop_->loop(loop_);
+
     if (conn_ != NULL) owner_->onConnect();
 }
 
@@ -224,16 +218,17 @@ int main(int argc, char *argv[])
         int sessionCount = atoi(argv[3]);
         int timeout = atoi(argv[4]);
 
-        // 初始化EPOLL
-        EventLoop loop;
-        loop.init();
+        // 初始化线程池 设置线程
+        EventLoopThreadpool *threadPool = new EventLoopThreadpool();
+        threadPool->setMaxThreads(threadCount);
+
+        // 只是让线程跑起来，里面的EventLoop并没开始循环
+        threadPool->start();
 
         // 将buf的空间new出来 Memory leak
         buf = (char *) malloc(sizeof(char) * blockSize);
 
-        Client client(&loop, blockSize, sessionCount, timeout, threadCount);
-
-        loop.loop();
+        Client client(threadPool, blockSize, sessionCount, timeout);
     }
 
     return 0;

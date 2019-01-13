@@ -13,6 +13,7 @@
 #define SERV_PORT 9877
 #define SA struct sockaddr
 #define LISTENQ 1024
+#define S_OK 0
 
 #endif /* __NDSL_CONFIG_H__ */
 
