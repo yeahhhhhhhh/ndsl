@@ -37,7 +37,10 @@ struct Plugin2 : Plugin
 {
     int doit(functype func, void *para)
     {
-        if (func) { (*func)(para); }
+        if (func) {
+            (*func)(para);
+            return S_OK;
+        }
         return S_FALSE;
     }
 };

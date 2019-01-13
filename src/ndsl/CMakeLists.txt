@@ -43,3 +43,9 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 add_library(libplugin SHARED ${LIB_SRC})
 set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")
+
+set(CLIENT_SRC utils/CLientplugin.cc)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
+
+add_library(clientplugin SHARED ${CLIENT_SRC})
+set_target_properties(clientplugin PROPERTIES OUTPUT_NAME "clientplugin")

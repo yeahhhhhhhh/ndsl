@@ -72,6 +72,7 @@ class Multiplexer
         conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
     }
 
+    Multiplexer() { printf("in gouzao hanshu \n"); }
     CallbackMap cbMap_; // 回调函数映射容器
 
     // 在loop工作队列中加入insert任务
@@ -91,6 +92,7 @@ class Multiplexer
 
     // 分发消息给通信实体
     static void dispatch(void *p);
+    void hellom() { printf("in the multiplexer\n"); }
 };
 
 // 自定义addwork传入的参数结构体

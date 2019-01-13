@@ -10,9 +10,8 @@
 
 #include "ndsl/utils/Plugin.h"
 
-struct Server : Plugin
+struct Server : Plugin2
 {
-    int doit(functype func, void *para) {}
     void add(int i) { printf("server result = %d \n", i + 1); }
 };
 
