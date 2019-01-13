@@ -13,23 +13,20 @@
 
 namespace ndsl {
 namespace utils {
+
 Error::Error() {}
-Error::Error(int error)
+
+int Error::Handler(int err,char *s)
 {
-   if(error == S_FALSE){
-       errCode = error;
+    int error = err;
+    if(error == S_FALSE){
        strerror_r(error,errmsg,sizeof(errmsg));
        printf("%s\n",errmsg);
    }else{
        errCode = S_OK;
    }
+   return 0;
 }
-
-Error::Error(int error,char *s)
-{
-    errmsg[63] ='\0';
-}
-Error::~Error() {}
 void Error::perr_exit(const char*s)
 {
     perror(s);

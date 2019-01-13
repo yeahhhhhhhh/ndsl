@@ -34,14 +34,17 @@ public:
      uint32_t nToH32(uint32_t net32);
    
      uint16_t nToH16(uint16_t net16);
-  
-    // 返回套接字地址ip和port点分十进制
-   void toIpPort(char* buf, size_t size,const struct sockaddr* addr);
-   void toIp(char* buf, size_t size,const struct sockaddr* addr);
-    // 从ip和port转换到sockaddr_in类型
-   void fromIpPort(const char* ip, uint16_t port,struct sockaddr_in* addr);
-   const struct sockaddr_in* sockaddr_in_cast(const struct sockaddr* addr);
-   const struct sockaddr_in6* sockaddr_in6_cast(const struct sockaddr* addr);
+private:
+     uint64_t host64;
+     uint32_t host32;
+     uint16_t host16;
+  //   // 返回套接字地址ip和port点分十进制
+  //  void toIpPort(char* buf, size_t size,const struct sockaddr* addr);
+  //  void toIp(char* buf, size_t size,const struct sockaddr* addr);
+  //   // 从ip和port转换到sockaddr_in类型
+  //  void fromIpPort(const char* ip, uint16_t port,struct sockaddr_in* addr);
+  //  const struct sockaddr_in* sockaddr_in_cast(const struct sockaddr* addr);
+  //  const struct sockaddr_in6* sockaddr_in6_cast(const struct sockaddr* addr);
 };
 } // namespace utils
 } // namespace ndsl
