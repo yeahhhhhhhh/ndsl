@@ -81,9 +81,33 @@ tests/CMakeFiles/utest.dir/testMain.cc.o.provides: tests/CMakeFiles/utest.dir/te
 tests/CMakeFiles/utest.dir/testMain.cc.o.provides.build: tests/CMakeFiles/utest.dir/testMain.cc.o
 
 
+tests/CMakeFiles/utest.dir/utils/LogTest.cc.o: tests/CMakeFiles/utest.dir/flags.make
+tests/CMakeFiles/utest.dir/utils/LogTest.cc.o: ../tests/utils/LogTest.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object tests/CMakeFiles/utest.dir/utils/LogTest.cc.o"
+	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/utest.dir/utils/LogTest.cc.o -c /home/user/Desktop/ndsl/tests/utils/LogTest.cc
+
+tests/CMakeFiles/utest.dir/utils/LogTest.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/utest.dir/utils/LogTest.cc.i"
+	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Desktop/ndsl/tests/utils/LogTest.cc > CMakeFiles/utest.dir/utils/LogTest.cc.i
+
+tests/CMakeFiles/utest.dir/utils/LogTest.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/utest.dir/utils/LogTest.cc.s"
+	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Desktop/ndsl/tests/utils/LogTest.cc -o CMakeFiles/utest.dir/utils/LogTest.cc.s
+
+tests/CMakeFiles/utest.dir/utils/LogTest.cc.o.requires:
+
+.PHONY : tests/CMakeFiles/utest.dir/utils/LogTest.cc.o.requires
+
+tests/CMakeFiles/utest.dir/utils/LogTest.cc.o.provides: tests/CMakeFiles/utest.dir/utils/LogTest.cc.o.requires
+	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/LogTest.cc.o.provides.build
+.PHONY : tests/CMakeFiles/utest.dir/utils/LogTest.cc.o.provides
+
+tests/CMakeFiles/utest.dir/utils/LogTest.cc.o.provides.build: tests/CMakeFiles/utest.dir/utils/LogTest.cc.o
+
+
 tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o: tests/CMakeFiles/utest.dir/flags.make
 tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o: ../tests/utils/TimeStampTest.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o"
 	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/utest.dir/utils/TimeStampTest.cc.o -c /home/user/Desktop/ndsl/tests/utils/TimeStampTest.cc
 
 tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.i: cmake_force
@@ -107,7 +131,7 @@ tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o.provides.build: tests/CMakeF
 
 tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o: tests/CMakeFiles/utest.dir/flags.make
 tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o: ../tests/utils/PluginTest.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o"
 	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/utest.dir/utils/PluginTest.cc.o -c /home/user/Desktop/ndsl/tests/utils/PluginTest.cc
 
 tests/CMakeFiles/utest.dir/utils/PluginTest.cc.i: cmake_force
@@ -131,7 +155,7 @@ tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o.provides.build: tests/CMakeFile
 
 tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o: tests/CMakeFiles/utest.dir/flags.make
 tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o: ../tests/utils/GuidTest.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o"
 	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/utest.dir/utils/GuidTest.cc.o -c /home/user/Desktop/ndsl/tests/utils/GuidTest.cc
 
 tests/CMakeFiles/utest.dir/utils/GuidTest.cc.i: cmake_force
@@ -156,6 +180,7 @@ tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o.provides.build: tests/CMakeFiles/
 # Object files for target utest
 utest_OBJECTS = \
 "CMakeFiles/utest.dir/testMain.cc.o" \
+"CMakeFiles/utest.dir/utils/LogTest.cc.o" \
 "CMakeFiles/utest.dir/utils/TimeStampTest.cc.o" \
 "CMakeFiles/utest.dir/utils/PluginTest.cc.o" \
 "CMakeFiles/utest.dir/utils/GuidTest.cc.o"
@@ -164,13 +189,14 @@ utest_OBJECTS = \
 utest_EXTERNAL_OBJECTS =
 
 bin/utest: tests/CMakeFiles/utest.dir/testMain.cc.o
+bin/utest: tests/CMakeFiles/utest.dir/utils/LogTest.cc.o
 bin/utest: tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o
 bin/utest: tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o
 bin/utest: tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o
 bin/utest: tests/CMakeFiles/utest.dir/build.make
 bin/utest: bin/libndsl.a
 bin/utest: tests/CMakeFiles/utest.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable ../bin/utest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable ../bin/utest"
 	cd /home/user/Desktop/ndsl/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/utest.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -179,6 +205,7 @@ tests/CMakeFiles/utest.dir/build: bin/utest
 .PHONY : tests/CMakeFiles/utest.dir/build
 
 tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/testMain.cc.o.requires
+tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/utils/LogTest.cc.o.requires
 tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o.requires
 tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o.requires
 tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o.requires

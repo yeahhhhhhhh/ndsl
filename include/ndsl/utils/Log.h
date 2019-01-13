@@ -87,14 +87,9 @@ enum
     LOG_OUTPUT_TER = 0,
     LOG_OUTPUT_FILE = 1
 };
-<<<<<<< HEAD
 
 void set_ndsl_log_sinks(uint64_t sinks, int file_or_ter);
 void ndsl_log_into_sink(int level, uint64_t source, const char* file_name,const char * func_name,const char *format, ...);
-=======
-void set_ndsl_log_sinks(int sinks, int file_or_ter);
-void ndsl_log_into_sink(int level, int source, const char *format, ...);
->>>>>>> master_1
 
 #if defined(__cplusplus)
 }

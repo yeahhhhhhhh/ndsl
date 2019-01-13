@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/user/Desktop/ndsl/tests/testMain.cc" "/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir/testMain.cc.o"
   "/home/user/Desktop/ndsl/tests/utils/GuidTest.cc" "/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o"
+  "/home/user/Desktop/ndsl/tests/utils/LogTest.cc" "/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir/utils/LogTest.cc.o"
   "/home/user/Desktop/ndsl/tests/utils/PluginTest.cc" "/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o"
   "/home/user/Desktop/ndsl/tests/utils/TimeStampTest.cc" "/home/user/Desktop/ndsl/build/tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o"
   )
