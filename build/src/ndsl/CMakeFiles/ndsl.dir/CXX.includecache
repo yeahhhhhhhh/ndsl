@@ -128,15 +128,19 @@ ndsl/utils/Noncopyable.h
 ndsl/utils/Thread.h
 ../include/ndsl/utils/ndsl/utils/Thread.h
 
+../include/ndsl/utils/Guid.h
+
 ../include/ndsl/utils/Log.h
 stdint.h
 -
 
+../include/ndsl/utils/Noncopyable.h
+
 ../include/ndsl/utils/Plugin.h
 ndsl/config.h
 ../include/ndsl/utils/ndsl/config.h
-
-../include/ndsl/utils/Noncopyable.h
+ndsl/utils/Error.h
+../include/ndsl/utils/ndsl/utils/Error.h
 
 ../include/ndsl/utils/Thread.h
 ../config.h
@@ -166,19 +170,19 @@ string
 chrono
 -
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/BaseChannel.cc
+/home/user/Desktop/ndsl/src/ndsl/net/BaseChannel.cc
 ndsl/net/BaseChannel.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/BaseChannel.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/BaseChannel.h
 ndsl/config.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/config.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/config.h
 ndsl/utils/Log.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
 ndsl/net/EventLoop.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/EventLoop.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/EventLoop.h
 sys/epoll.h
 -
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/Epoll.cc
+/home/user/Desktop/ndsl/src/ndsl/net/Epoll.cc
 unistd.h
 -
 errno.h
@@ -186,17 +190,17 @@ errno.h
 sys/epoll.h
 -
 ndsl/net/Epoll.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/Epoll.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/Epoll.h
 ndsl/net/Channel.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/Channel.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/Channel.h
 ndsl/utils/Log.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
 ndsl/utils/Error.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Error.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Error.h
 ndsl/config.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/config.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/config.h
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/EventLoop.cc
+/home/user/Desktop/ndsl/src/ndsl/net/EventLoop.cc
 errno.h
 -
 unistd.h
@@ -204,19 +208,19 @@ unistd.h
 sys/eventfd.h
 -
 ndsl/net/Epoll.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/Epoll.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/Epoll.h
 ndsl/net/Channel.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/Channel.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/Channel.h
 ndsl/net/EventLoop.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/EventLoop.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/EventLoop.h
 ndsl/utils/Log.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SignalChannel.cc
+/home/user/Desktop/ndsl/src/ndsl/net/SignalChannel.cc
 ndsl/net/SignalChannel.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SignalChannel.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SignalChannel.h
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SignalHandler.cc
+/home/user/Desktop/ndsl/src/ndsl/net/SignalHandler.cc
 string.h
 -
 sys/signalfd.h
@@ -224,13 +228,13 @@ sys/signalfd.h
 signal.h
 -
 ndsl/net/SignalHandler.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SignalHandler.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SignalHandler.h
 ndsl/config.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/config.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/config.h
 iostream
 -
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SocketAddress.cc
+/home/user/Desktop/ndsl/src/ndsl/net/SocketAddress.cc
 string.h
 -
 stdio.h
@@ -244,9 +248,9 @@ arpa/inet.h
 fcntl.h
 -
 ndsl/net/SocketAddress.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/SocketAddressUn.cc
+/home/user/Desktop/ndsl/src/ndsl/net/SocketAddressUn.cc
 string.h
 -
 cstring
@@ -258,9 +262,9 @@ sys/types.h
 sys/socket.h
 -
 ndsl/net/SocketAddressUn.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SocketAddressUn.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SocketAddressUn.h
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpAcceptor.cc
+/home/user/Desktop/ndsl/src/ndsl/net/TcpAcceptor.cc
 sys/socket.h
 -
 fcntl.h
@@ -268,49 +272,49 @@ fcntl.h
 string.h
 -
 ndsl/config.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/config.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/config.h
 ndsl/net/TcpAcceptor.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpAcceptor.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpAcceptor.h
 ndsl/net/SocketAddress.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
 ndsl/net/TcpConnection.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
 ndsl/utils/Log.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpChannel.cc
+/home/user/Desktop/ndsl/src/ndsl/net/TcpChannel.cc
 ndsl/net/TcpChannel.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
 ndsl/net/TcpConnection.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpClient.cc
+/home/user/Desktop/ndsl/src/ndsl/net/TcpClient.cc
 sys/socket.h
 -
 ndsl/net/SocketAddress.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
 ndsl/net/TcpClient.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpClient.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpClient.h
 ndsl/net/TcpChannel.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
 ndsl/config.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/config.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/config.h
 ndsl/utils/Error.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Error.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Error.h
 ndsl/utils/Log.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpConnection.cc
+/home/user/Desktop/ndsl/src/ndsl/net/TcpConnection.cc
 ndsl/net/TcpConnection.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
 ndsl/utils/Log.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
 ndsl/net/TcpChannel.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
 ndsl/net/TcpAcceptor.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TcpAcceptor.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpAcceptor.h
 ndsl/utils/Log.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
 errno.h
 -
 unistd.h
@@ -324,31 +328,43 @@ arpa/inet.h
 cstdio
 -
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TimeWheel.cc
+/home/user/Desktop/ndsl/src/ndsl/net/TimeWheel.cc
 algorithm
 -
 sys/timerfd.h
 -
 ndsl/utils/Log.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
 ndsl/utils/Error.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Error.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Error.h
 ndsl/net/TimeWheel.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/TimeWheel.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TimeWheel.h
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/EventLoopThreadpool.cc
+/home/user/Desktop/ndsl/src/ndsl/utils/EventLoopThreadpool.cc
 ndsl/utils/EventLoopThreadpool.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/EventLoopThreadpool.h
+/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/EventLoopThreadpool.h
 ndsl/net/EventLoop.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/net/EventLoop.h
+/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/net/EventLoop.h
 ndsl/utils/Error.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/Error.h
+/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Error.h
 ndsl/utils/Thread.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/Thread.h
+/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Thread.h
 ndsl/utils/Log.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/Log.h
+/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Log.h
 
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/Log.cc
+/home/user/Desktop/ndsl/src/ndsl/utils/Guid.cc
+stdio.h
+-
+string.h
+-
+uuid/uuid.h
+-
+ndsl/utils/Guid.h
+/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Guid.h
+iostream
+-
+
+/home/user/Desktop/ndsl/src/ndsl/utils/Log.cc
 iostream
 -
 unistd.h
@@ -368,7 +384,6 @@ ndsl/utils/Log.h
 ndsl/utils/TimeStamp.h
 -
 
-<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/utils/Plugin.cc
 stdio.h
 -
@@ -378,19 +393,6 @@ ndsl/utils/Plugin.h
 /home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Plugin.h
 
 /home/user/Desktop/ndsl/src/ndsl/utils/TimeStamp.cc
-=======
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/Thread.cc
-unistd.h
--
-ndsl/utils/Thread.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/Thread.h
-ndsl/utils/Error.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/Error.h
-ndsl/utils/Log.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/Log.h
-
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/TimeStamp.cc
->>>>>>> master
 stdio.h
 -
 strings.h
@@ -402,5 +404,5 @@ string
 chrono
 -
 ndsl/utils/TimeStamp.h
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/utils/ndsl/utils/TimeStamp.h
+/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/TimeStamp.h
 

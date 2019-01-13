@@ -114,11 +114,6 @@ int TcpAcceptor::createAndListen()
 
 int TcpAcceptor::handleRead(void *pthis)
 {
-<<<<<<< HEAD
-    printf("TcpAcceptor handleRead\n");
-
-=======
->>>>>>> master
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
 
     int connfd;

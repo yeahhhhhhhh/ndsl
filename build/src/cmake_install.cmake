@@ -1,4 +1,4 @@
-# Install script for directory: /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src
+# Install script for directory: /home/user/Desktop/ndsl/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/cmake_install.cmake")
+  include("/home/user/Desktop/ndsl/build/src/ndsl/cmake_install.cmake")
 
 endif()
 

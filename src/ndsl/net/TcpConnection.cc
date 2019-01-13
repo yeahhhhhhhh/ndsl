@@ -46,31 +46,10 @@ int TcpConnection::onSend(
     Callback cb,
     void *param)
 {
-<<<<<<< HEAD
-    int sockfd = pTcpChannel_->getFd();
-
-    // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
-    size_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
-    printf("onSend n = %lu,len = %lu\n",n,len);
-    if (n == len) {
-        // 写完 通知用户
-        printf("n == len!\n");
-        if (cb != NULL) cb(param);
-        // 释放掉buf占用的空间 TODO: 暂时注释
-        // if (buf != NULL) free(buf);
-        return S_OK;
-    } else if (n < 0) {
-        // 出错 通知用户
-        printf("send error\n");
-        errorHandle_(errno, pTcpChannel_->getFd());
-        // 释放掉buf占用的空间 TODO: 暂时注释
-        // if (buf != NULL) free(buf);
-=======
     // 当创建顺序不对的时候 这里容易报段错误 故 加一条输出
     if (NULL == pTcpChannel_) {
         // TODO:
         LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "pTcpChannel == NULL\n");
->>>>>>> master
         return S_FALSE;
     } else {
         int sockfd = pTcpChannel_->getFd();
@@ -101,14 +80,6 @@ int TcpConnection::onSend(
         tsi->len_ = new ssize_t;
         (*tsi->len_) = len;
 
-<<<<<<< HEAD
-    tsi->flags_ = flags | MSG_NOSIGNAL;
-    tsi->cb_ = cb;
-    tsi->param_ = param;
-    printf("*tsi->len = %lu\n",*tsi->len_);
-    qSendInfo_.push(tsi);
-    return S_OK;
-=======
         tsi->flags_ = flags | MSG_NOSIGNAL;
         tsi->cb_ = cb;
         tsi->param_ = param;
@@ -117,27 +88,15 @@ int TcpConnection::onSend(
 
         return S_OK;
     }
->>>>>>> master
 }
 
 int TcpConnection::handleWrite(void *pthis)
 {
-<<<<<<< HEAD
-    printf("TcpConnection handle write\n");
-
-=======
->>>>>>> master
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
 
     if (sockfd < 0) { return -1; }
-<<<<<<< HEAD
-    size_t n;
-
-    printf("qSendInfo_.size() = %lu\n", pThis->qSendInfo_.size());
-=======
     ssize_t n;
->>>>>>> master
 
     // 有数据待写
     if (pThis->qSendInfo_.size() > 0) {
@@ -220,15 +179,6 @@ int TcpConnection::onRecv(
     }
     (*len) = n;
 
-<<<<<<< HEAD
-    printf("************\n");
-    printf("buf = %s\n", buf);
-    printf("n = %d\n", n);
-    printf("len = %lu\n", *len);
-    printf("************\n");
-
-=======
->>>>>>> master
     // 一次性读完之后通知用户
     if (cb != NULL) cb(param);
     return S_OK;
@@ -256,13 +206,6 @@ int TcpConnection::handleRead(void *pthis)
 
     (*pThis->RecvInfo_.len_) = n;
 
-<<<<<<< HEAD
-     printf("************\n");
-     printf("handleRead len = %lu\n", (*pThis->RecvInfo_.len_));
-     printf("************\n");
-
-=======
->>>>>>> master
     // 完成数据读取之后通知mul
     if (pThis->RecvInfo_.cb_ != NULL)
         pThis->RecvInfo_.cb_(pThis->RecvInfo_.param_);

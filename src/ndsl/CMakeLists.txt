@@ -40,6 +40,5 @@ add_library(ndsl ${LIB_NDSL_SRC})
 #生成libplugin.so
 set(LIB_SRC utils/Plugin.cc)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
-
 add_library(libplugin SHARED ${LIB_SRC})
 set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")
