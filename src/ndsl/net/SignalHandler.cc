@@ -36,7 +36,7 @@ int SignalHandler::registSignalfd(unsigned int signums[], int num, Callback hand
 
     pSignalChannel_ = new SignalChannel(sfd, pLoop_);
     pSignalChannel_->setCallBack(handleRead, handleWrite, this);
-    pSignalChannel_->enroll(true);
+    pSignalChannel_->enrollIn(true);
     return S_OK;
 }
 

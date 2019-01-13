@@ -18,12 +18,15 @@
 
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/SignalHandler.h"
+#include "ndsl/utils/Log.h"
+
 
 void aaa(void *p){
-	std::cout << "this is SIGCHLD handler!" << std::endl;
+	LOG(LOG_INFO_LEVEL, LOG_SOURCE_SIGNALFDCHANNEL, "This is SIGCHLD handler!");
 }
 
 TEST_CASE("signalfd"){
+	set_ndsl_log_sinks(LOG_SOURCE_SIGNALFDCHANNEL, LOG_OUTPUT_FILE);
 	// 启动服务
     // 初始化EPOLL
     ndsl::net::EventLoop loop;
@@ -79,7 +82,7 @@ TEST_CASE("signalfd"){
 		REQUIRE(sh.unBlockAllSignals() == 0);
 		for(int i = 0; i < 64; i++){
 			if(sh.blockSignals_[i] != 0){
-				std::cout << "blockSignals_[i] = " << sh.blockSignals_[i] << std::endl;
+				LOG(LOG_INFO_LEVEL, LOG_SOURCE_SIGNALFDCHANNEL, "this is blockAllSignalsTest! blockSignals_[i] = %d", sh.blockSignals_[i]);
 			}
 		}
 	}
