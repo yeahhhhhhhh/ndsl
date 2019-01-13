@@ -4,6 +4,7 @@
 
 #include "ndsl/net/SignalHandler.h"
 #include "ndsl/config.h"
+#include "ndsl/utils/Log.h"
 
 #include <iostream>
 
@@ -50,7 +51,7 @@ int SignalHandler::handleRead(void *pthis)
     int s = read(sfd, &fdsi, sizeof(struct signalfd_siginfo));
 
     if (s != sizeof(struct signalfd_siginfo)) {
-        std::cout << "error!" << std::endl;
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_SIGNALFDCHANNEL, "SignalHandler::handleRead: s != sizeof(struct signalfd_siginfo)!");
         return S_FALSE;
     }
 

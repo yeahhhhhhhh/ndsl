@@ -9,12 +9,14 @@
 #ifndef __NDSL_UTILS_LOG_H__
 #define __NDSL_UTILS_LOG_H__
 
+#include <stdint.h>
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 #define LOG(level, source, format, ...)                                        \
-    ndsl_log_into_sink(level, source, format, ##__VA_ARGS__)
+    ndsl_log_into_sink(level, source, __FILE__,__FUNCTION__,format, ##__VA_ARGS__)
 
 ////
 // @brief
@@ -31,43 +33,50 @@ enum
 // @brief
 // 日志源
 //
-enum
-{
-    LOG_SOURCE_EPOLL = 1,
-    LOG_SOURCE_THREADPOOL = 1 << 1,
-    LOG_SOURCE_EVENTLOOP = 1 << 2,
-    LOG_SOURCE_THREAD = 1 << 3,
-    LOG_SOURCE_V8ENGINE = 1 << 4,
-    LOG_SOURCE_CHANNEL = 1 << 5,
-    LOG_SOURCE_UDPCHANEEL = 1 << 6,
-    LOG_SOURCE_TCPCHANNEL = 1 << 7,
-    LOG_SOURCE_UNIXCHANNEL = 1 << 8,
-    LOG_RDMA_CHANNEL = 1 << 9,
-    LOG_SOURCE_TIMEFDCHANNEL = 1 << 10,
-    LOG_SOURCE_SIGNALFDCHANNEL = 1 << 11,
-    LOG_SOURCE_DNSCHANNEL = 1 << 12,
-    LOG_SOURCE_FILECHANNEL = 1 << 13,
-    LOG_SOURCE_TCPACCETPOR = 1 << 14,
-    LOG_SOURCE_TCPCONNECTION = 1 << 15,
-    LOG_SOURCE_UNIXCONNECTION = 1 << 16,
-    LOG_SOURCE_TIMEWHEEL = 1 << 17,
-    LOG_SOURCE_SEMAPHORE = 1 << 18,
-    LOG_SOURCE_NAMESERVICE = 1 << 19,
-    LOG_SOURCE_CONNECTION = 1 << 20,
-    LOG_SOURCE_MULTIPLEXER = 1 << 21,
-    LOG_SOURCE_ENTITY = 1 << 22,
-    LOG_SOURCE_SOCKETOP = 1 << 23,
-    LOG_SOURCE_SPLITE3 = 1 << 24,
-    LOG_SOURCE_XML = 1 << 25,
-    LOG_SOURCE_ENDIAN = 1 << 26,
-    LOG_SOURCE_TIMESTAMP = 1 << 27,
-    LOG_SOURCE_ERROR = 1 << 28,
-    LOG_SOURCE_PLUGIN = 1 << 29,
-    LOG_SOURCE_ADDRESS4 = 1 << 30,
-    LOG_SOURCE_GUID = 1 << 31,
-    LOG_SOURCE_EVENTLOOPTHREAD = 1 << 1,
-    LOG_SOURCE_EVENTLOOPTHREADPOOL = 1 << 3
-};
+
+    const uint64_t LOG_SOURCE_EPOLL = 1;
+    const uint64_t LOG_SOURCE_THREADPOLL = 1UL << 1;
+    const uint64_t LOG_SOURCE_EVENTLOOP = 1UL << 2;
+    const uint64_t LOG_SOURCE_THREAD = 1UL<< 3;
+    const uint64_t LOG_SOURCE_V8ENGINE = 1UL << 4;
+    const uint64_t LOG_SOURCE_CHANNEL = 1UL << 5;
+    const uint64_t LOG_SOURCE_UDPCHANEEL = 1UL << 6;
+    const uint64_t LOG_SOURCE_TCPCHANNEL = 1UL << 7;
+    const uint64_t LOG_SOURCE_UNIXCHANNEL = 1UL << 8;
+    const uint64_t LOG_RDMA_CHANNEL = 1UL << 9;
+    const uint64_t LOG_SOURCE_TIMEFDCHANNEL = 1UL << 10;
+    const uint64_t LOG_SOURCE_SIGNALFDCHANNEL = 1UL << 11;
+    const uint64_t LOG_SOURCE_DNSCHANNEL = 1UL << 12;
+    const uint64_t LOG_SOURCE_FILECHANNEL = 1UL << 13;
+    const uint64_t LOG_SOURCE_TCPACCETPOR = 1UL << 14;
+    const uint64_t LOG_SOURCE_TCPCONNECTION = 1UL << 15;
+    const uint64_t LOG_SOURCE_UNIXCONNECTION = 1UL << 16;
+    const uint64_t LOG_SOURCE_TIMEWHEEL = 1UL << 17;
+    const uint64_t LOG_SOURCE_SEMAPHORE = 1UL << 18;
+    const uint64_t LOG_SOURCE_NAMESERVICE = 1UL << 19;
+    const uint64_t LOG_SOURCE_CONNECTION = 1UL << 20;
+    const uint64_t LOG_SOURCE_MULTIPLEXER = 1UL << 21;
+    const uint64_t LOG_SOURCE_ENTITY = 1UL << 22;
+    const uint64_t LOG_SOURCE_SOCKETOP = 1UL << 23;
+    const uint64_t LOG_SOURCE_SPLITE3 = 1UL << 24;
+    const uint64_t LOG_SOURCE_XML = 1UL << 25;
+    const uint64_t LOG_SOURCE_ENDIAN = 1UL << 26;
+    const uint64_t LOG_SOURCE_TIMESTAMP = 1UL << 27;
+    const uint64_t LOG_SOURCE_ERROR = 1UL << 28;
+    const uint64_t LOG_SOURCE_PLUGIN = 1UL << 29;
+    const uint64_t LOG_SOURCE_ADDRESS4 = 1UL << 30;
+    const uint64_t LOG_SOURCE_GUID = 1UL << 31;
+    const uint64_t LOG_SOURCE_EVENTLOOPTHREADPOOL = 1UL << 32;
+    const uint64_t LOG_SOURCE_TCPCLIENT = 1UL << 33;
+    const uint64_t LOG_SOURCE_ALL = 0X00000001FFFFFFFF;
+
+////
+// @brief
+// 添加日志源
+//
+
+uint64_t add_source();
+
 
 ////
 // @brief
@@ -78,8 +87,9 @@ enum
     LOG_OUTPUT_TER = 0,
     LOG_OUTPUT_FILE = 1
 };
-void set_ndsl_log_sinks(int sinks, int file_or_ter);
-void ndsl_log_into_sink(int level, int source, const char *format, ...);
+
+void set_ndsl_log_sinks(uint64_t sinks, int file_or_ter);
+void ndsl_log_into_sink(int level, uint64_t source, const char* file_name,const char * func_name,const char *format, ...);
 
 #if defined(__cplusplus)
 }

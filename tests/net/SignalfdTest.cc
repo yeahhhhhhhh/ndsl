@@ -26,7 +26,6 @@ void aaa(void *p){
 }
 
 TEST_CASE("signalfd"){
-	set_ndsl_log_sinks(LOG_SOURCE_SIGNALFDCHANNEL, LOG_OUTPUT_FILE);
 	// 启动服务
     // 初始化EPOLL
     ndsl::net::EventLoop loop;
@@ -37,6 +36,7 @@ TEST_CASE("signalfd"){
       
     unsigned int arr[1] = {SIGCHLD};
 	SECTION("regist"){
+		set_ndsl_log_sinks(LOG_SOURCE_SIGNALFDCHANNEL, LOG_OUTPUT_FILE);
 		// 注册SIGCHLD信号
   		REQUIRE(sh.registSignalfd(arr, 1, aaa, NULL) == 0);
   		
