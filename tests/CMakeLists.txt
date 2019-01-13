@@ -14,8 +14,9 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 # 设置单元测试的文件
 set(TEST 
 testMain.cc
-net/MultiplexerTest.cc
+#net/MultiplexerTest.cc
 
+net/EntityTest.cc
 #utils/LogTest.cc
 #utils/TimeStampTest.cc
 
@@ -48,7 +49,7 @@ include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
-target_link_libraries(utest ndsl pthread) # boost_system)
+target_link_libraries(utest ndsl pthread protobuf) # boost_system)
 
 
 #add_executable(server ${pingserver})

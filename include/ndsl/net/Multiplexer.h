@@ -72,7 +72,7 @@ class Multiplexer
         conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
     }
 
-    Multiplexer() { printf("in gouzao hanshu \n"); }
+    Multiplexer() { printf("in wucan gouzao hanshu \n"); }
     CallbackMap cbMap_; // 回调函数映射容器
 
     // 在loop工作队列中加入insert任务

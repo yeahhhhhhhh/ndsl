@@ -6,6 +6,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/ndsl.dir/net/TcpConnection.cc.o"
   "CMakeFiles/ndsl.dir/net/TcpAcceptor.cc.o"
   "CMakeFiles/ndsl.dir/net/Multiplexer.cc.o"
+  "CMakeFiles/ndsl.dir/net/Protbload.pb.cc.o"
   "CMakeFiles/ndsl.dir/net/SocketAddress.cc.o"
   "CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o"
   "CMakeFiles/ndsl.dir/net/TcpClient.cc.o"

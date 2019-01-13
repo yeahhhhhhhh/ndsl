@@ -187,6 +187,30 @@ NDSL_BINARY_DIR:STATIC=/home/zzt/winuxshare/ndsl/build
 //Value Computed by CMake
 NDSL_SOURCE_DIR:STATIC=/home/zzt/winuxshare/ndsl
 
+//Path to a file.
+Protobuf_INCLUDE_DIR:PATH=/usr/local/include
+
+//Path to a library.
+Protobuf_LIBRARY_DEBUG:FILEPATH=/usr/local/lib/libprotobuf.so
+
+//Path to a library.
+Protobuf_LIBRARY_RELEASE:FILEPATH=/usr/local/lib/libprotobuf.so
+
+//Path to a library.
+Protobuf_LITE_LIBRARY_DEBUG:FILEPATH=/usr/local/lib/libprotobuf-lite.so
+
+//Path to a library.
+Protobuf_LITE_LIBRARY_RELEASE:FILEPATH=/usr/local/lib/libprotobuf-lite.so
+
+//The Google Protocol Buffers Compiler
+Protobuf_PROTOC_EXECUTABLE:FILEPATH=/usr/local/bin/protoc
+
+//Path to a library.
+Protobuf_PROTOC_LIBRARY_DEBUG:FILEPATH=/usr/local/lib/libprotoc.so
+
+//Path to a library.
+Protobuf_PROTOC_LIBRARY_RELEASE:FILEPATH=/usr/local/lib/libprotoc.so
+
 //Dependencies for target
 clientplugin_LIB_DEPENDS:STATIC=
 
@@ -273,6 +297,14 @@ CMAKE_GENERATOR:INTERNAL=Unix Makefiles
 CMAKE_GENERATOR_PLATFORM:INTERNAL=
 //Name of generator toolset.
 CMAKE_GENERATOR_TOOLSET:INTERNAL=
+//Have symbol pthread_create
+CMAKE_HAVE_LIBC_CREATE:INTERNAL=
+//Have library pthreads
+CMAKE_HAVE_PTHREADS_CREATE:INTERNAL=
+//Have library pthread
+CMAKE_HAVE_PTHREAD_CREATE:INTERNAL=1
+//Have include pthread.h
+CMAKE_HAVE_PTHREAD_H:INTERNAL=1
 //Source directory with the top level CMakeLists.txt file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=/home/zzt/winuxshare/ndsl
@@ -336,4 +368,24 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding Protobuf
+FIND_PACKAGE_MESSAGE_DETAILS_Protobuf:INTERNAL=[/usr/local/lib/libprotobuf.so;-lpthread][/usr/local/include][v3.6.0()]
+//Details about finding Threads
+FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
+//ADVANCED property for variable: Protobuf_INCLUDE_DIR
+Protobuf_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: Protobuf_LIBRARY_DEBUG
+Protobuf_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: Protobuf_LIBRARY_RELEASE
+Protobuf_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: Protobuf_LITE_LIBRARY_DEBUG
+Protobuf_LITE_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: Protobuf_LITE_LIBRARY_RELEASE
+Protobuf_LITE_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: Protobuf_PROTOC_EXECUTABLE
+Protobuf_PROTOC_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: Protobuf_PROTOC_LIBRARY_DEBUG
+Protobuf_PROTOC_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: Protobuf_PROTOC_LIBRARY_RELEASE
+Protobuf_PROTOC_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 

@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/zzt/winuxshare/ndsl/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -77,6 +66,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -124,36 +124,6 @@ ndsl: src/ndsl/CMakeFiles/ndsl.dir/rule
 ndsl/fast:
 	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/build
 .PHONY : ndsl/fast
-
-# Convenience name for target.
-src/ndsl/CMakeFiles/clientplugin.dir/rule:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 src/ndsl/CMakeFiles/clientplugin.dir/rule
-.PHONY : src/ndsl/CMakeFiles/clientplugin.dir/rule
-
-# Convenience name for target.
-clientplugin: src/ndsl/CMakeFiles/clientplugin.dir/rule
-
-.PHONY : clientplugin
-
-# fast build rule for target.
-clientplugin/fast:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/clientplugin.dir/build.make src/ndsl/CMakeFiles/clientplugin.dir/build
-.PHONY : clientplugin/fast
-
-# Convenience name for target.
-src/ndsl/CMakeFiles/libplugin.dir/rule:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 src/ndsl/CMakeFiles/libplugin.dir/rule
-.PHONY : src/ndsl/CMakeFiles/libplugin.dir/rule
-
-# Convenience name for target.
-libplugin: src/ndsl/CMakeFiles/libplugin.dir/rule
-
-.PHONY : libplugin
-
-# fast build rule for target.
-libplugin/fast:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/build
-.PHONY : libplugin/fast
 
 net/BaseChannel.o: net/BaseChannel.cc.o
 
@@ -262,6 +232,33 @@ net/Multiplexer.s: net/Multiplexer.cc.s
 net/Multiplexer.cc.s:
 	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/Multiplexer.cc.s
 .PHONY : net/Multiplexer.cc.s
+
+net/Protbload.pb.o: net/Protbload.pb.cc.o
+
+.PHONY : net/Protbload.pb.o
+
+# target to build an object file
+net/Protbload.pb.cc.o:
+	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/Protbload.pb.cc.o
+.PHONY : net/Protbload.pb.cc.o
+
+net/Protbload.pb.i: net/Protbload.pb.cc.i
+
+.PHONY : net/Protbload.pb.i
+
+# target to preprocess a source file
+net/Protbload.pb.cc.i:
+	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/Protbload.pb.cc.i
+.PHONY : net/Protbload.pb.cc.i
+
+net/Protbload.pb.s: net/Protbload.pb.cc.s
+
+.PHONY : net/Protbload.pb.s
+
+# target to generate assembly for a file
+net/Protbload.pb.cc.s:
+	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/Protbload.pb.cc.s
+.PHONY : net/Protbload.pb.cc.s
 
 net/SignalChannel.o: net/SignalChannel.cc.o
 
@@ -506,33 +503,6 @@ net/TimeWheel.cc.s:
 	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.s
 .PHONY : net/TimeWheel.cc.s
 
-utils/CLientplugin.o: utils/CLientplugin.cc.o
-
-.PHONY : utils/CLientplugin.o
-
-# target to build an object file
-utils/CLientplugin.cc.o:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/clientplugin.dir/build.make src/ndsl/CMakeFiles/clientplugin.dir/utils/CLientplugin.cc.o
-.PHONY : utils/CLientplugin.cc.o
-
-utils/CLientplugin.i: utils/CLientplugin.cc.i
-
-.PHONY : utils/CLientplugin.i
-
-# target to preprocess a source file
-utils/CLientplugin.cc.i:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/clientplugin.dir/build.make src/ndsl/CMakeFiles/clientplugin.dir/utils/CLientplugin.cc.i
-.PHONY : utils/CLientplugin.cc.i
-
-utils/CLientplugin.s: utils/CLientplugin.cc.s
-
-.PHONY : utils/CLientplugin.s
-
-# target to generate assembly for a file
-utils/CLientplugin.cc.s:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/clientplugin.dir/build.make src/ndsl/CMakeFiles/clientplugin.dir/utils/CLientplugin.cc.s
-.PHONY : utils/CLientplugin.cc.s
-
 utils/EventLoopThreadpool.o: utils/EventLoopThreadpool.cc.o
 
 .PHONY : utils/EventLoopThreadpool.o
@@ -586,33 +556,6 @@ utils/Log.s: utils/Log.cc.s
 utils/Log.cc.s:
 	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.s
 .PHONY : utils/Log.cc.s
-
-utils/Plugin.o: utils/Plugin.cc.o
-
-.PHONY : utils/Plugin.o
-
-# target to build an object file
-utils/Plugin.cc.o:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.o
-.PHONY : utils/Plugin.cc.o
-
-utils/Plugin.i: utils/Plugin.cc.i
-
-.PHONY : utils/Plugin.i
-
-# target to preprocess a source file
-utils/Plugin.cc.i:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.i
-.PHONY : utils/Plugin.cc.i
-
-utils/Plugin.s: utils/Plugin.cc.s
-
-.PHONY : utils/Plugin.s
-
-# target to generate assembly for a file
-utils/Plugin.cc.s:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/utils/Plugin.cc.s
-.PHONY : utils/Plugin.cc.s
 
 utils/Thread.o: utils/Thread.cc.o
 
@@ -674,11 +617,9 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... ndsl"
-	@echo "... clientplugin"
-	@echo "... libplugin"
+	@echo "... edit_cache"
 	@echo "... net/BaseChannel.o"
 	@echo "... net/BaseChannel.i"
 	@echo "... net/BaseChannel.s"
@@ -691,6 +632,9 @@ help:
 	@echo "... net/Multiplexer.o"
 	@echo "... net/Multiplexer.i"
 	@echo "... net/Multiplexer.s"
+	@echo "... net/Protbload.pb.o"
+	@echo "... net/Protbload.pb.i"
+	@echo "... net/Protbload.pb.s"
 	@echo "... net/SignalChannel.o"
 	@echo "... net/SignalChannel.i"
 	@echo "... net/SignalChannel.s"
@@ -718,18 +662,12 @@ help:
 	@echo "... net/TimeWheel.o"
 	@echo "... net/TimeWheel.i"
 	@echo "... net/TimeWheel.s"
-	@echo "... utils/CLientplugin.o"
-	@echo "... utils/CLientplugin.i"
-	@echo "... utils/CLientplugin.s"
 	@echo "... utils/EventLoopThreadpool.o"
 	@echo "... utils/EventLoopThreadpool.i"
 	@echo "... utils/EventLoopThreadpool.s"
 	@echo "... utils/Log.o"
 	@echo "... utils/Log.i"
 	@echo "... utils/Log.s"
-	@echo "... utils/Plugin.o"
-	@echo "... utils/Plugin.i"
-	@echo "... utils/Plugin.s"
 	@echo "... utils/Thread.o"
 	@echo "... utils/Thread.i"
 	@echo "... utils/Thread.s"

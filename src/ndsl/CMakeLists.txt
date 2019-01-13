@@ -20,6 +20,7 @@ set(LIB_NDSL_SRC
  net/TcpAcceptor.cc
 
  net/Multiplexer.cc
+ net/Protbload.pb.cc
  net/SocketAddress.cc
  net/SocketAddressUn.cc
  net/TcpClient.cc
@@ -41,14 +42,14 @@ set(LIB_NDSL_SRC
 add_library(ndsl ${LIB_NDSL_SRC})
 
 #生成libplugin.so
-set(LIB_SRC utils/Plugin.cc)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
+#set(LIB_SRC utils/Plugin.cc)
+#set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
 
-add_library(libplugin SHARED ${LIB_SRC})
-set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")
+#add_library(libplugin SHARED ${LIB_SRC})
+#set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")
 
-set(CLIENT_SRC utils/CLientplugin.cc)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
+#set(CLIENT_SRC utils/CLientplugin.cc)
+#set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
 
-add_library(clientplugin SHARED ${CLIENT_SRC})
-set_target_properties(clientplugin PROPERTIES OUTPUT_NAME "clientplugin")
+#add_library(clientplugin SHARED ${CLIENT_SRC})
+#set_target_properties(clientplugin PROPERTIES OUTPUT_NAME "clientplugin")

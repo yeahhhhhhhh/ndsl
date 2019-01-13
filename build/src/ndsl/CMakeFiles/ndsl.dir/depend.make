@@ -38,6 +38,9 @@ src/ndsl/CMakeFiles/ndsl.dir/net/Multiplexer.cc.o: ../include/ndsl/utils/Error.h
 src/ndsl/CMakeFiles/ndsl.dir/net/Multiplexer.cc.o: ../include/ndsl/utils/Log.h
 src/ndsl/CMakeFiles/ndsl.dir/net/Multiplexer.cc.o: ../src/ndsl/net/Multiplexer.cc
 
+src/ndsl/CMakeFiles/ndsl.dir/net/Protbload.pb.cc.o: ../include/ndsl/net/Protbload.pb.h
+src/ndsl/CMakeFiles/ndsl.dir/net/Protbload.pb.cc.o: ../src/ndsl/net/Protbload.pb.cc
+
 src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o: ../include/ndsl/config.h
 src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o: ../include/ndsl/net/BaseChannel.h
 src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o: ../include/ndsl/net/Channel.h

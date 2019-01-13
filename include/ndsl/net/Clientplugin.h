@@ -10,6 +10,7 @@
 #define __NDSL_NET_CLIENTPLUGIN_H__
 #include "ndsl/utils/Plugin.h"
 #include "ndsl/net/Multiplexer.h"
+#include "ndsl/net/Protbload.pb.h"
 
 struct Client : Plugin1
 {

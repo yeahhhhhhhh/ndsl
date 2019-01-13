@@ -52,6 +52,7 @@ void Multiplexer::addInsertWork(int id, Callback cb)
     w1->doit = insert;
     w1->param = static_cast<void *>(p);
     conn_->pTcpChannel_->pLoop_->addWork(w1);
+    printf("success insert !\n");
 }
 
 // 在map中删除<id,callback>对
@@ -110,7 +111,7 @@ void Multiplexer::sendMessage(int id, int length, char *data)
  ********************/
 void Multiplexer::dispatch(void *p)
 {
-    // printf("in the dispatch \n");
+    printf("in the dispatch \n");
     Multiplexer *pthis = static_cast<Multiplexer *>(p);
 
     // 有不完整头部出现时，将其复制到msghead开始处，然后调用onrecv从残缺头部开始放

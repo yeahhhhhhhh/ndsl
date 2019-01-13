@@ -124,32 +124,6 @@ ndsl/fast:
 .PHONY : ndsl/fast
 
 #=============================================================================
-# Target rules for targets named clientplugin
-
-# Build rule for target.
-clientplugin: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 clientplugin
-.PHONY : clientplugin
-
-# fast build rule for target.
-clientplugin/fast:
-	$(MAKE) -f src/ndsl/CMakeFiles/clientplugin.dir/build.make src/ndsl/CMakeFiles/clientplugin.dir/build
-.PHONY : clientplugin/fast
-
-#=============================================================================
-# Target rules for targets named libplugin
-
-# Build rule for target.
-libplugin: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 libplugin
-.PHONY : libplugin
-
-# fast build rule for target.
-libplugin/fast:
-	$(MAKE) -f src/ndsl/CMakeFiles/libplugin.dir/build.make src/ndsl/CMakeFiles/libplugin.dir/build
-.PHONY : libplugin/fast
-
-#=============================================================================
 # Target rules for targets named utest
 
 # Build rule for target.
@@ -171,8 +145,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... ndsl"
-	@echo "... clientplugin"
-	@echo "... libplugin"
 	@echo "... utest"
 .PHONY : help
 

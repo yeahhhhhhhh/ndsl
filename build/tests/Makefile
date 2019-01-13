@@ -125,32 +125,32 @@ utest/fast:
 	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
 .PHONY : utest/fast
 
-net/MultiplexerTest.o: net/MultiplexerTest.cc.o
+net/EntityTest.o: net/EntityTest.cc.o
 
-.PHONY : net/MultiplexerTest.o
+.PHONY : net/EntityTest.o
 
 # target to build an object file
-net/MultiplexerTest.cc.o:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/MultiplexerTest.cc.o
-.PHONY : net/MultiplexerTest.cc.o
+net/EntityTest.cc.o:
+	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EntityTest.cc.o
+.PHONY : net/EntityTest.cc.o
 
-net/MultiplexerTest.i: net/MultiplexerTest.cc.i
+net/EntityTest.i: net/EntityTest.cc.i
 
-.PHONY : net/MultiplexerTest.i
+.PHONY : net/EntityTest.i
 
 # target to preprocess a source file
-net/MultiplexerTest.cc.i:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/MultiplexerTest.cc.i
-.PHONY : net/MultiplexerTest.cc.i
+net/EntityTest.cc.i:
+	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EntityTest.cc.i
+.PHONY : net/EntityTest.cc.i
 
-net/MultiplexerTest.s: net/MultiplexerTest.cc.s
+net/EntityTest.s: net/EntityTest.cc.s
 
-.PHONY : net/MultiplexerTest.s
+.PHONY : net/EntityTest.s
 
 # target to generate assembly for a file
-net/MultiplexerTest.cc.s:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/MultiplexerTest.cc.s
-.PHONY : net/MultiplexerTest.cc.s
+net/EntityTest.cc.s:
+	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EntityTest.cc.s
+.PHONY : net/EntityTest.cc.s
 
 testMain.o: testMain.cc.o
 
@@ -188,9 +188,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... utest"
 	@echo "... edit_cache"
-	@echo "... net/MultiplexerTest.o"
-	@echo "... net/MultiplexerTest.i"
-	@echo "... net/MultiplexerTest.s"
+	@echo "... net/EntityTest.o"
+	@echo "... net/EntityTest.i"
+	@echo "... net/EntityTest.s"
 	@echo "... testMain.o"
 	@echo "... testMain.i"
 	@echo "... testMain.s"

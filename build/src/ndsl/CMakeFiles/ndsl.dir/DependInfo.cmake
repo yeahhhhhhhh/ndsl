@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/zzt/winuxshare/ndsl/src/ndsl/net/Epoll.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/Epoll.cc.o"
   "/home/zzt/winuxshare/ndsl/src/ndsl/net/EventLoop.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/EventLoop.cc.o"
   "/home/zzt/winuxshare/ndsl/src/ndsl/net/Multiplexer.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/Multiplexer.cc.o"
+  "/home/zzt/winuxshare/ndsl/src/ndsl/net/Protbload.pb.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/Protbload.pb.cc.o"
   "/home/zzt/winuxshare/ndsl/src/ndsl/net/SignalChannel.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o"
   "/home/zzt/winuxshare/ndsl/src/ndsl/net/SignalHandler.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o"
   "/home/zzt/winuxshare/ndsl/src/ndsl/net/SocketAddress.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddress.cc.o"
