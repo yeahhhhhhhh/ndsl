@@ -10,6 +10,7 @@
 #define __NDSL_UTILS_PLUGIN_H__
 
 #include "ndsl/config.h"
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
