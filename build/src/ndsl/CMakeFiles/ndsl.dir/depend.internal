@@ -121,11 +121,7 @@ src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o
  ../include/ndsl/net/TimeWheel.h
  ../include/ndsl/utils/Error.h
  ../include/ndsl/utils/Log.h
- ../include/ndsl/utils/temp_define.h
  /home/zzt/winuxshare/ndsl/src/ndsl/net/TimeWheel.cc
-src/ndsl/CMakeFiles/ndsl.dir/utils/Endian.cc.o
- ../include/ndsl/utils/Endian.h
- /home/zzt/winuxshare/ndsl/src/ndsl/utils/Endian.cc
 src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o
  ../include/ndsl/config.h
  ../include/ndsl/net/BaseChannel.h

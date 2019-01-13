@@ -120,11 +120,7 @@ src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/net/EventLoop.h
 src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/net/TimeWheel.h
 src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/utils/Error.h
 src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/utils/Log.h
-src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../include/ndsl/utils/temp_define.h
 src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o: ../src/ndsl/net/TimeWheel.cc
-
-src/ndsl/CMakeFiles/ndsl.dir/utils/Endian.cc.o: ../include/ndsl/utils/Endian.h
-src/ndsl/CMakeFiles/ndsl.dir/utils/Endian.cc.o: ../src/ndsl/utils/Endian.cc
 
 src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/config.h
 src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o: ../include/ndsl/net/BaseChannel.h

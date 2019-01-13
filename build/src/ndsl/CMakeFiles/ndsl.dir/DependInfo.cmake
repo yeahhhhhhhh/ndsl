@@ -17,7 +17,6 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/zzt/winuxshare/ndsl/src/ndsl/net/TcpClient.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o"
   "/home/zzt/winuxshare/ndsl/src/ndsl/net/TcpConnection.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/TcpConnection.cc.o"
   "/home/zzt/winuxshare/ndsl/src/ndsl/net/TimeWheel.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/net/TimeWheel.cc.o"
-  "/home/zzt/winuxshare/ndsl/src/ndsl/utils/Endian.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/Endian.cc.o"
   "/home/zzt/winuxshare/ndsl/src/ndsl/utils/EventLoopThreadpool.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/EventLoopThreadpool.cc.o"
   "/home/zzt/winuxshare/ndsl/src/ndsl/utils/Log.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o"
   "/home/zzt/winuxshare/ndsl/src/ndsl/utils/Thread.cc" "/home/zzt/winuxshare/ndsl/build/src/ndsl/CMakeFiles/ndsl.dir/utils/Thread.cc.o"

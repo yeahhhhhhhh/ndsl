@@ -27,7 +27,7 @@ set(LIB_NDSL_SRC
  net/SocketAddressUn.cc
  utils/Log.cc
  utils/TimeStamp.cc
- utils/Endian.cc
+
  #utils/Guid.cc
  utils/Thread.cc
  #net/WorkQueue.cc

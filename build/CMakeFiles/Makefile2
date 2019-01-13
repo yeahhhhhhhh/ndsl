@@ -111,7 +111,7 @@ src/ndsl/preinstall: src/ndsl/utils/preinstall
 src/ndsl/CMakeFiles/ndsl.dir/all:
 	$(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/depend
 	$(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/zzt/winuxshare/ndsl/build/CMakeFiles --progress-num=5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 "Built target ndsl"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/zzt/winuxshare/ndsl/build/CMakeFiles --progress-num=5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22 "Built target ndsl"
 .PHONY : src/ndsl/CMakeFiles/ndsl.dir/all
 
 # Include target in all.
@@ -121,7 +121,7 @@ all: src/ndsl/CMakeFiles/ndsl.dir/all
 
 # Build rule for subdir invocation for target.
 src/ndsl/CMakeFiles/ndsl.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zzt/winuxshare/ndsl/build/CMakeFiles 19
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zzt/winuxshare/ndsl/build/CMakeFiles 18
 	$(MAKE) -f CMakeFiles/Makefile2 src/ndsl/CMakeFiles/ndsl.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/zzt/winuxshare/ndsl/build/CMakeFiles 0
 .PHONY : src/ndsl/CMakeFiles/ndsl.dir/rule
@@ -276,7 +276,7 @@ tests/preinstall:
 tests/CMakeFiles/utest.dir/all: src/ndsl/CMakeFiles/ndsl.dir/all
 	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/depend
 	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/zzt/winuxshare/ndsl/build/CMakeFiles --progress-num=24,25,26 "Built target utest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/zzt/winuxshare/ndsl/build/CMakeFiles --progress-num=23,24,25 "Built target utest"
 .PHONY : tests/CMakeFiles/utest.dir/all
 
 # Include target in all.
@@ -286,7 +286,7 @@ all: tests/CMakeFiles/utest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/utest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zzt/winuxshare/ndsl/build/CMakeFiles 22
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zzt/winuxshare/ndsl/build/CMakeFiles 21
 	$(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/utest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/zzt/winuxshare/ndsl/build/CMakeFiles 0
 .PHONY : tests/CMakeFiles/utest.dir/rule

@@ -59,7 +59,7 @@ class Multiplexer
     int id_;
     int len_; // 负载长度
     int left_ = 0;
-    size_t rlen_;
+    ssize_t rlen_;
 
     char msg_[sizeof(char) * MAXLINE];
     char *location_ = msg_;

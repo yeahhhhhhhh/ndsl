@@ -533,33 +533,6 @@ utils/CLientplugin.cc.s:
 	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/clientplugin.dir/build.make src/ndsl/CMakeFiles/clientplugin.dir/utils/CLientplugin.cc.s
 .PHONY : utils/CLientplugin.cc.s
 
-utils/Endian.o: utils/Endian.cc.o
-
-.PHONY : utils/Endian.o
-
-# target to build an object file
-utils/Endian.cc.o:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/utils/Endian.cc.o
-.PHONY : utils/Endian.cc.o
-
-utils/Endian.i: utils/Endian.cc.i
-
-.PHONY : utils/Endian.i
-
-# target to preprocess a source file
-utils/Endian.cc.i:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/utils/Endian.cc.i
-.PHONY : utils/Endian.cc.i
-
-utils/Endian.s: utils/Endian.cc.s
-
-.PHONY : utils/Endian.s
-
-# target to generate assembly for a file
-utils/Endian.cc.s:
-	cd /home/zzt/winuxshare/ndsl/build && $(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/utils/Endian.cc.s
-.PHONY : utils/Endian.cc.s
-
 utils/EventLoopThreadpool.o: utils/EventLoopThreadpool.cc.o
 
 .PHONY : utils/EventLoopThreadpool.o
@@ -748,9 +721,6 @@ help:
 	@echo "... utils/CLientplugin.o"
 	@echo "... utils/CLientplugin.i"
 	@echo "... utils/CLientplugin.s"
-	@echo "... utils/Endian.o"
-	@echo "... utils/Endian.i"
-	@echo "... utils/Endian.s"
 	@echo "... utils/EventLoopThreadpool.o"
 	@echo "... utils/EventLoopThreadpool.i"
 	@echo "... utils/EventLoopThreadpool.s"

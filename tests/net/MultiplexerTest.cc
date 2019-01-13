@@ -16,7 +16,7 @@
 #include "ndsl/net/TcpClient.h"
 #include "ndsl/net/Epoll.h"
 #include <sys/socket.h>
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/config.h"
 #include <cstring>
 #include <arpa/inet.h>
 #include <fcntl.h>
@@ -61,11 +61,12 @@ TEST_CASE("Mutiplexer/cbmaptest")
 
     // 启动一个客户端
     TcpClient *pCli = new TcpClient();
-    REQUIRE(pCli->onConnect() == S_OK);
+    if (pCli->onConnect(&loop) == NULL) printf("kong\n");
+    // REQUIRE(pCli->onConnect(&loop) == S_OK);
 
     // 添加中断
     loop.quit();
-    REQUIRE(loop.loop() == S_OK);
+    REQUIRE(loop.loop(&loop) == S_OK);
 
     Multiplexer *mymulti = new Multiplexer(Conn);
 
@@ -130,15 +131,15 @@ TEST_CASE("Mutiplexer/cbmaptest")
 
         write(pCli->sockfd_, buffer, 10);
         printf("writed!\n");
-        REQUIRE(loop.loop() == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer + 10, 40);
 
-        REQUIRE(loop.loop() == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer + 50, 40);
 
-        REQUIRE(loop.loop() == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************
          * dispatch 测试：一个长消息
@@ -157,11 +158,11 @@ TEST_CASE("Mutiplexer/cbmaptest")
 
         write(pCli->sockfd_, buffer2, 40);
 
-        REQUIRE(loop.loop() == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer2 + 40, 28);
 
-        REQUIRE(loop.loop() == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************
          * sendMessage测试

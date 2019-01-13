@@ -105,30 +105,12 @@ ndsl/utils/Log.h
 ../include/ndsl/net/ndsl/utils/Log.h
 
 ../include/ndsl/net/TimeWheel.h
-sys/timerfd.h
--
 list
 -
 ndsl/net/BaseChannel.h
 ../include/ndsl/net/ndsl/net/BaseChannel.h
 ndsl/net/EventLoop.h
 ../include/ndsl/net/ndsl/net/EventLoop.h
-ndsl/utils/temp_define.h
-../include/ndsl/net/ndsl/utils/temp_define.h
-list
--
-ndsl/net/BaseChannel.h
-../include/ndsl/net/ndsl/net/BaseChannel.h
-ndsl/net/EventLoop.h
-../include/ndsl/net/ndsl/net/EventLoop.h
-
-../include/ndsl/utils/Endian.h
-stdint.h
--
-endian.h
--
-arpa/inet.h
--
 
 ../include/ndsl/utils/Error.h
 netinet/in.h
@@ -185,8 +167,6 @@ string
 -
 chrono
 -
-
-../include/ndsl/utils/temp_define.h
 
 /home/zzt/winuxshare/ndsl/src/ndsl/net/BaseChannel.cc
 ndsl/net/BaseChannel.h
@@ -369,32 +349,6 @@ ndsl/utils/Error.h
 /home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/utils/Error.h
 ndsl/net/TimeWheel.h
 /home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TimeWheel.h
-
-/home/zzt/winuxshare/ndsl/src/ndsl/utils/Endian.cc
-stdio.h
--
-unistd.h
--
-assert.h
--
-arpa/inet.h
--
-sys/socket.h
--
-ndsl/utils/Endian.h
--
-stdio.h
--
-unistd.h
--
-assert.h
--
-arpa/inet.h
--
-sys/socket.h
--
-ndsl/utils/Endian.h
--
 
 /home/zzt/winuxshare/ndsl/src/ndsl/utils/EventLoopThreadpool.cc
 ndsl/utils/EventLoopThreadpool.h
