@@ -14,7 +14,7 @@
 
 void func(void* para)
 {
-    //printf("func!\n");
+    //cdprintf("func!\n");
 }
 
 TEST_CASE("Plugin")

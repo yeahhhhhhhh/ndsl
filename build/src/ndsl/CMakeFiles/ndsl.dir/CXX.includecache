@@ -215,6 +215,8 @@ ndsl/net/SignalHandler.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SignalHandler.h
 ndsl/config.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/config.h
+ndsl/utils/Log.h
+/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
 iostream
 -
 
