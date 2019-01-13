@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -39,6 +39,14 @@ ndsl/net/Epoll.h
 ../include/ndsl/net/ndsl/net/Epoll.h
 ndsl/net/BaseChannel.h
 ../include/ndsl/net/ndsl/net/BaseChannel.h
+
+../include/ndsl/net/Multiplexer.h
+map
+-
+iostream
+-
+ndsl/net/TcpConnection.h
+../include/ndsl/net/ndsl/net/TcpConnection.h
 
 ../include/ndsl/net/SignalChannel.h
 BaseChannel.h
@@ -96,14 +104,6 @@ ndsl/config.h
 ndsl/utils/Log.h
 ../include/ndsl/net/ndsl/utils/Log.h
 
-../include/ndsl/net/TimeWheel.h
-list
--
-ndsl/net/BaseChannel.h
-../include/ndsl/net/ndsl/net/BaseChannel.h
-ndsl/net/EventLoop.h
-../include/ndsl/net/ndsl/net/EventLoop.h
-
 ../include/ndsl/utils/Error.h
 netinet/in.h
 -
@@ -118,6 +118,7 @@ unistd.h
 string
 -
 
+<<<<<<< HEAD
 ../include/ndsl/utils/EventLoopThreadpool.h
 pthread.h
 -
@@ -130,6 +131,8 @@ ndsl/utils/Thread.h
 
 ../include/ndsl/utils/Guid.h
 
+=======
+>>>>>>> master_1
 ../include/ndsl/utils/Log.h
 stdint.h
 -
@@ -170,6 +173,7 @@ string
 chrono
 -
 
+<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/net/BaseChannel.cc
 ndsl/net/BaseChannel.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/BaseChannel.h
@@ -183,6 +187,21 @@ sys/epoll.h
 -
 
 /home/user/Desktop/ndsl/src/ndsl/net/Epoll.cc
+=======
+/home/zzt/winuxshare/ndsl/src/ndsl/net/BaseChannel.cc
+ndsl/net/BaseChannel.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/BaseChannel.h
+ndsl/config.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/config.h
+ndsl/utils/Log.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/utils/Log.h
+ndsl/net/EventLoop.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/EventLoop.h
+sys/epoll.h
+-
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/Epoll.cc
+>>>>>>> master_1
 unistd.h
 -
 errno.h
@@ -190,6 +209,7 @@ errno.h
 sys/epoll.h
 -
 ndsl/net/Epoll.h
+<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/Epoll.h
 ndsl/net/Channel.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/Channel.h
@@ -201,6 +221,19 @@ ndsl/config.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/config.h
 
 /home/user/Desktop/ndsl/src/ndsl/net/EventLoop.cc
+=======
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/Epoll.h
+ndsl/net/Channel.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/Channel.h
+ndsl/utils/Log.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/utils/Log.h
+ndsl/utils/Error.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/utils/Error.h
+ndsl/config.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/config.h
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/EventLoop.cc
+>>>>>>> master_1
 errno.h
 -
 unistd.h
@@ -208,6 +241,7 @@ unistd.h
 sys/eventfd.h
 -
 ndsl/net/Epoll.h
+<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/Epoll.h
 ndsl/net/Channel.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/Channel.h
@@ -221,6 +255,33 @@ ndsl/net/SignalChannel.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SignalChannel.h
 
 /home/user/Desktop/ndsl/src/ndsl/net/SignalHandler.cc
+=======
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/Epoll.h
+ndsl/net/Channel.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/Channel.h
+ndsl/net/EventLoop.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/EventLoop.h
+ndsl/utils/Log.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/utils/Log.h
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/Multiplexer.cc
+string.h
+-
+ndsl/net/Multiplexer.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/Multiplexer.h
+ndsl/net/EventLoop.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/EventLoop.h
+ndsl/net/TcpChannel.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
+endian.h
+-
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/SignalChannel.cc
+ndsl/net/SignalChannel.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/SignalChannel.h
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/SignalHandler.cc
+>>>>>>> master_1
 string.h
 -
 sys/signalfd.h
@@ -228,6 +289,7 @@ sys/signalfd.h
 signal.h
 -
 ndsl/net/SignalHandler.h
+<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SignalHandler.h
 ndsl/config.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/config.h
@@ -235,6 +297,15 @@ iostream
 -
 
 /home/user/Desktop/ndsl/src/ndsl/net/SocketAddress.cc
+=======
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/SignalHandler.h
+ndsl/config.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/config.h
+iostream
+-
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/SocketAddress.cc
+>>>>>>> master_1
 string.h
 -
 stdio.h
@@ -248,9 +319,15 @@ arpa/inet.h
 fcntl.h
 -
 ndsl/net/SocketAddress.h
+<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
 
 /home/user/Desktop/ndsl/src/ndsl/net/SocketAddressUn.cc
+=======
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/SocketAddressUn.cc
+>>>>>>> master_1
 string.h
 -
 cstring
@@ -262,9 +339,15 @@ sys/types.h
 sys/socket.h
 -
 ndsl/net/SocketAddressUn.h
+<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SocketAddressUn.h
 
 /home/user/Desktop/ndsl/src/ndsl/net/TcpAcceptor.cc
+=======
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/SocketAddressUn.h
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/TcpAcceptor.cc
+>>>>>>> master_1
 sys/socket.h
 -
 fcntl.h
@@ -272,6 +355,7 @@ fcntl.h
 string.h
 -
 ndsl/config.h
+<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/config.h
 ndsl/net/TcpAcceptor.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpAcceptor.h
@@ -315,6 +399,51 @@ ndsl/net/TcpAcceptor.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpAcceptor.h
 ndsl/utils/Log.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
+=======
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/config.h
+ndsl/net/TcpAcceptor.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TcpAcceptor.h
+ndsl/net/SocketAddress.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
+ndsl/net/TcpConnection.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
+ndsl/utils/Log.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/utils/Log.h
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/TcpChannel.cc
+ndsl/net/TcpChannel.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
+ndsl/net/TcpConnection.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/TcpClient.cc
+sys/socket.h
+-
+ndsl/net/SocketAddress.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
+ndsl/net/TcpClient.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TcpClient.h
+ndsl/net/TcpChannel.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
+ndsl/config.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/config.h
+ndsl/utils/Error.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/utils/Error.h
+ndsl/utils/Log.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/utils/Log.h
+
+/home/zzt/winuxshare/ndsl/src/ndsl/net/TcpConnection.cc
+ndsl/net/TcpConnection.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TcpConnection.h
+ndsl/utils/Log.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/utils/Log.h
+ndsl/net/TcpChannel.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
+ndsl/net/TcpAcceptor.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/net/TcpAcceptor.h
+ndsl/utils/Log.h
+/home/zzt/winuxshare/ndsl/src/ndsl/net/ndsl/utils/Log.h
+>>>>>>> master_1
 errno.h
 -
 unistd.h
@@ -328,6 +457,7 @@ arpa/inet.h
 cstdio
 -
 
+<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/net/TimeWheel.cc
 algorithm
 -
@@ -365,6 +495,9 @@ iostream
 -
 
 /home/user/Desktop/ndsl/src/ndsl/utils/Log.cc
+=======
+/home/zzt/winuxshare/ndsl/src/ndsl/utils/Log.cc
+>>>>>>> master_1
 iostream
 -
 unistd.h
@@ -384,6 +517,7 @@ ndsl/utils/Log.h
 ndsl/utils/TimeStamp.h
 -
 
+<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/utils/Plugin.cc
 stdio.h
 -
@@ -393,6 +527,19 @@ ndsl/utils/Plugin.h
 /home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Plugin.h
 
 /home/user/Desktop/ndsl/src/ndsl/utils/TimeStamp.cc
+=======
+/home/zzt/winuxshare/ndsl/src/ndsl/utils/Thread.cc
+unistd.h
+-
+ndsl/utils/Thread.h
+/home/zzt/winuxshare/ndsl/src/ndsl/utils/ndsl/utils/Thread.h
+ndsl/utils/Error.h
+/home/zzt/winuxshare/ndsl/src/ndsl/utils/ndsl/utils/Error.h
+ndsl/utils/Log.h
+/home/zzt/winuxshare/ndsl/src/ndsl/utils/ndsl/utils/Log.h
+
+/home/zzt/winuxshare/ndsl/src/ndsl/utils/TimeStamp.cc
+>>>>>>> master_1
 stdio.h
 -
 strings.h
@@ -404,5 +551,9 @@ string
 chrono
 -
 ndsl/utils/TimeStamp.h
+<<<<<<< HEAD
 /home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/TimeStamp.h
+=======
+/home/zzt/winuxshare/ndsl/src/ndsl/utils/ndsl/utils/TimeStamp.h
+>>>>>>> master_1
 

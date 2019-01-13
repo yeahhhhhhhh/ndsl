@@ -6,6 +6,7 @@
 * @author why
 * @email 136046355@qq.com
 */
+#define CATCH_CONFIG_MAIN
 #include "../catch.hpp"
 #include <iostream>
 
@@ -31,10 +32,10 @@ TEST_CASE("signalfd"){
     // 初始化signalHandler
     ndsl::net::SignalHandler sh(&loop);
       
+    unsigned int arr[1] = {SIGCHLD};
 	SECTION("regist"){
-		
 		// 注册SIGCHLD信号
-  		REQUIRE(sh.registSignalfd(SIGCHLD, aaa, NULL) == 0);
+  		REQUIRE(sh.registSignalfd(arr, 1, aaa, NULL) == 0);
   		
         if(fork() == 0){
 			exit(0);
@@ -45,11 +46,12 @@ TEST_CASE("signalfd"){
 		// 添加中断
         loop.quit();     
         // 开始loop
-        loop.loop(); 
+        loop.loop(&loop); 
 	}
+	
 	SECTION("remove"){
 	
-		REQUIRE(sh.registSignalfd(SIGCHLD, aaa, NULL) == 0);
+		REQUIRE(sh.registSignalfd(arr, 1, aaa, NULL) == 0);
 		
 		if(fork() == 0){
 			exit(0);
@@ -62,6 +64,23 @@ TEST_CASE("signalfd"){
 		// 添加中断
         loop.quit();        
         // 开始loop
-        loop.loop();
+        loop.loop(&loop);
+	}
+	
+	SECTION("blockAllSignals && unBlockAllSignals"){
+		REQUIRE(sh.blockAllSignals() == 0);
+		
+		if(fork() == 0){
+			exit(0);
+		}
+		
+		sleep(1);
+		
+		REQUIRE(sh.unBlockAllSignals() == 0);
+		for(int i = 0; i < 64; i++){
+			if(sh.blockSignals_[i] != 0){
+				std::cout << "blockSignals_[i] = " << sh.blockSignals_[i] << std::endl;
+			}
+		}
 	}
 }

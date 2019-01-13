@@ -13,19 +13,24 @@ namespace net {
 SignalHandler::SignalHandler(EventLoop *pLoop) { pLoop_ = pLoop; }
 SignalHandler::~SignalHandler() {}
 
-int SignalHandler::registSignalfd(int signum, Callback handleFunc, void *p)
-{
-    signum_ = signum;
-    handleFunc_ = handleFunc;
-    p_ = p;
+int SignalHandler::blockSignals_[64] = {0};
 
-    sigset_t mask;
-    int sfd;
-    sigemptyset(&mask);
-    sigaddset(&mask, signum);
-
-    // 不以默认的方式处理该信号
+int SignalHandler::registSignalfd(unsigned int signums[], int num, Callback handleFunc, void *p){
+	
+	handleFunc_ = handleFunc;
+	p_ = p;
+	
+	sigset_t mask;  
+    sigemptyset(&mask);  
+    for(int i = 0; i < num; i++){
+		signums_[i] = signums[i];
+		sigaddset(&mask, signums[i]);
+	}
+    
+    // 阻塞信号，不以默认的方式处理该信号
     sigprocmask(SIG_BLOCK, &mask, NULL);
+    
+    int sfd; 
 
     sfd = signalfd(-1, &mask, 0);
 
@@ -53,12 +58,43 @@ int SignalHandler::handleRead(void *pthis)
     return S_OK;
 }
 
-int SignalHandler::handleWrite(void *pthis) { return 0; }
+int SignalHandler::blockAllSignals(){
+	sigset_t set;
+	sigfillset(&set);
+	sigdelset(&set, SIGINT);
+	sigdelset(&set, SIGKILL);
+	sigprocmask(SIG_BLOCK, &set, NULL);
+	return S_OK;
+}
+	  
+int SignalHandler::unBlockAllSignals(){
 
-int SignalHandler::remove()
-{
-    pSignalChannel_->erase();
-    return S_OK;
+	sigset_t set;	
+	sigpending(&set);
+	for(int i = 1; i <= 64; i++){
+		if(sigismember(&set, i)){
+			blockSignals_[i-1] = i;
+			signal(i, handleSignalEnd);
+		}
+	}
+	
+	sigemptyset(&set);
+	sigprocmask(SIG_SETMASK, &set, NULL);
+	
+	return S_OK;
+}
+
+void SignalHandler::handleSignalEnd(int p){
+	signal(p, SIG_DFL);
+}
+
+int SignalHandler::handleWrite(void *pthis){
+	return 0;
+}
+
+int SignalHandler::remove(){
+	pSignalChannel_ -> erase();
+	return S_OK;
 }
 
 } // namespace net

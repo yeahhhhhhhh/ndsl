@@ -54,10 +54,15 @@ class Multiplexer
     ndsl::net::TcpConnection *conn_; // 绑定的connection
 
     int error_ = 0;
+    int msghead = 0;
+    int changeheadflag = 0;
     int id_;
     int len_; // 负载长度
     int left_ = 0;
+    ssize_t rlen_;
 
+    char msg_[sizeof(char) * MAXLINE];
+    char *location_ = msg_;
     char *databuf_ = NULL;
 
   public:
@@ -67,11 +72,8 @@ class Multiplexer
         conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
     }
 
+    Multiplexer() { printf("in gouzao hanshu \n"); }
     CallbackMap cbMap_; // 回调函数映射容器
-
-    char msg_[sizeof(char) * MAXLINE];
-    char *location_ = msg_;
-    size_t rlen_;
 
     // 在loop工作队列中加入insert任务
     void addInsertWork(int id, Callback cb);
@@ -90,10 +92,7 @@ class Multiplexer
 
     // 分发消息给通信实体
     static void dispatch(void *p);
-
-  private:
-    // 回调，释放已使用的内存
-    void freecb(void *p);
+    void hellom() { printf("in the multiplexer\n"); }
 };
 
 // 自定义addwork传入的参数结构体
