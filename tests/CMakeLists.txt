@@ -12,11 +12,9 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # 设置单元测试的文件
-#set(TEST 
-#testMain.cc
-#net/MultiplexerTest.cc
-
-
+set(TEST 
+testMain.cc
+net/MultiplexerTest.cc
 
 #utils/LogTest.cc
 #utils/TimeStampTest.cc
@@ -39,7 +37,7 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 #net/EpollTest.cc
 # net/SignalfdTest.cc
 
-#)
+)
 
 # 设置ping-pong单元测试的文件
 #set(pingserver ping-pong/server.cc)
@@ -48,9 +46,9 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 include_directories(${CMAKE_SOURCE_DIR}/tests)
 
-#add_executable(utest ${TEST})
-#add_dependencies(utest ndsl)
-#target_link_libraries(utest ndsl pthread) # boost_system)
+add_executable(utest ${TEST})
+add_dependencies(utest ndsl)
+target_link_libraries(utest ndsl pthread) # boost_system)
 
 
 #add_executable(server ${pingserver})
@@ -62,9 +60,9 @@ include_directories(${CMAKE_SOURCE_DIR}/tests)
 #target_link_libraries(client ndsl)
 
 #设置插件单元测试
-set(SRC_list Plugintest/plugintest.cc) #宏定义
+#set(SRC_list Plugintest/plugintest.cc) #宏定义
 
-add_executable(plugin ${SRC_list})  #生成可执行文件
+#add_executable(plugin ${SRC_list})  #生成可执行文件
 
-target_link_libraries(plugin dl)
-target_link_libraries(plugin libplugin)
+#target_link_libraries(plugin dl)
+#target_link_libraries(plugin libplugin)
