@@ -9,8 +9,9 @@
 #ifndef __NDSL_CONFIG_H__
 #define __NDSL_CONFIG_H__
 
-#define S_OK 0
-#define S_FALSE 1
+#define MAXLINE 16384
+#define SERV_PORT 9877
+#define SA struct sockaddr
+#define LISTENQ 1024
 
 #endif /* __NDSL_CONFIG_H__ */
-

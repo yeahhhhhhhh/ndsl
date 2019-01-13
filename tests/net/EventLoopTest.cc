@@ -6,7 +6,6 @@
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
-// #define CATCH_CONFIG_MAIN
 #include <sys/eventfd.h>
 #include "../catch.hpp"
 #include "ndsl/net/EventLoop.h"
@@ -50,6 +49,6 @@ TEST_CASE("net/EventLoop(WorkQueue)")
 
         loop.quit();
 
-        REQUIRE(loop.loop() == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
     }
 }

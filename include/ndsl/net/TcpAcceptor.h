@@ -5,8 +5,8 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
-#ifndef __TCPACCEPTOR_H__
-#define __TCPACCEPTOR_H__
+#ifndef __NDSL_NET_TCPACCEPTOR_H__
+#define __NDSL_NET_TCPACCEPTOR_H__
 
 #include "TcpChannel.h"
 #include "EventLoop.h"
@@ -67,4 +67,4 @@ class TcpAcceptor
 } // namespace net
 } // namespace ndsl
 
-#endif // __TCPACCEPTOR_H__
+#endif // __NDSL_NET_TCPACCEPTOR_H__

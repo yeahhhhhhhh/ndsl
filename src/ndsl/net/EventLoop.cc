@@ -60,10 +60,6 @@ int EventLoop::init()
         pQueCh_->setCallBack(pQueCh_->onQueue, NULL, pQueCh_);
         ret = pQueCh_->enrollIn(false);
         if (ret != S_OK) return ret; // 若不成功直接返回
-        // ret = pQueCh_->enableReading();
-        // if (ret != S_OK) return ret; // 若不成功直接返回
-
-        // printf("pQueCh_ = %d\n", pQueCh_->getFd());
     }
 
     // 若pIntrCh_为空,则分配eventfd
@@ -84,14 +80,15 @@ int EventLoop::init()
     return S_OK;
 }
 
-int EventLoop::loop()
+void *EventLoop::loop(void *pThis)
 {
+    EventLoop *el = reinterpret_cast<EventLoop *>(pThis);
     int nEvents = 0;
     // 进入事件循环
     while (true) {
         Channel *channels[Epoll::MAX_EVENTS];
         // LOG(LOG_DEBUG_LEVEL, "onWait\n");
-        if (S_OK != epoll_.wait(channels, nEvents, -1)) {
+        if (S_OK != el->epoll_.wait(channels, nEvents, -1)) {
             // LOG(LOG_DEBUG_LEVEL, "EventLoop::loop epoll->wait\n");
             break;
         }
@@ -101,16 +98,16 @@ int EventLoop::loop()
 
         // 处理事件
         for (int i = 0; i < nEvents; i++) {
-            if (pIntrCh_ == channels[i]) // 退出Channel响应,退出标记
+            if (el->pIntrCh_ == channels[i]) // 退出Channel响应,退出标记
                 quit = true;
-            else if (pQueCh_ == channels[i]) // 任务队列非空,中断标记
+            else if (el->pQueCh_ == channels[i]) // 任务队列非空,中断标记
                 haswork = true;
             else
                 channels[i]->handleEvent();
         }
 
         // 处理任务队列
-        if (haswork) { pQueCh_->handleEvent(); }
+        if (haswork) { el->pQueCh_->handleEvent(); }
         // 退出
         if (quit) break;
     }

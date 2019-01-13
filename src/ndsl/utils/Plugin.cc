@@ -8,9 +8,8 @@
 //
 
 #include <stdio.h>
-//#include "ndsl/config.h"
+#include "ndsl/config.h"
 #include "ndsl/utils/Plugin.h"
-#include "ndsl/utils/Error.h"
 
 #if defined(__cplusplus)
 extern "C" {

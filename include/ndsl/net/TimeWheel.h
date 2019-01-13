@@ -126,7 +126,6 @@ namespace net {
 
 class TimeWheel
 {
-<<<<<<< HEAD
   private:
     // TimefdChanel与EventLoop之间通信
     class TimerfdChannel : public BaseChannel
@@ -143,12 +142,6 @@ class TimeWheel
             }
         }
     };
-=======
-  public:
-    TimerfdChannel(int fd, EventLoop *loop);
-    ~TimerfdChannel();
-};
->>>>>>> dev_zsq
 
   public:
     struct Task

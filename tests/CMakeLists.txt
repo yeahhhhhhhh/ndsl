@@ -20,12 +20,24 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 #utils/LogTest.cc
 #utils/TimeStampTest.cc
+
+#utils/PluginTest.cc
+#utils/GuidTest.cc
 #net/TcpConnectionTest.cc
 #pass
 #net/TcpAcceptorTest.cc
 
+#net/TcpConnectionTest.cc
+#net/TcpAcceptorTest.cc
 #net/EventLoopTest.cc
 #net/EpollTest.cc
+#net/SignalfdTest.cc
+
+# net/TcpConnectionTest.cc
+# net/TcpAcceptorTest.cc
+#net/EventLoopTest.cc
+#net/EpollTest.cc
+# net/SignalfdTest.cc
 
 #)
 
@@ -34,7 +46,7 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 #set(pingclient ping-pong/client.cc)
 
-#include_directories(${CMAKE_SOURCE_DIR}/tests)
+include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 #add_executable(utest ${TEST})
 #add_dependencies(utest ndsl)

@@ -20,20 +20,23 @@ set(LIB_NDSL_SRC
  net/TcpAcceptor.cc
 
  net/Multiplexer.cc
- net/TcpClient.cc
-
  net/SocketAddress.cc
  net/SocketAddressUn.cc
-
- #net/SocketAddress.cc
- #net/SocketAddressUn.cc
+ net/TcpClient.cc
+ net/SocketAddress.cc
+ net/SocketAddressUn.cc
  utils/Log.cc
  utils/TimeStamp.cc
  utils/Endian.cc
+ #utils/Guid.cc
+ utils/Thread.cc
  #net/WorkQueue.cc
  #net/InterruptChannel.cc
+ utils/EventLoopThreadpool.cc
+ net/SignalChannel.cc
+ net/SignalHandler.cc
+ net/TimeWheel.cc
  )
-
 
 add_library(ndsl ${LIB_NDSL_SRC})
 

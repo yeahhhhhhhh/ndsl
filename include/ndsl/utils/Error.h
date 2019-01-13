@@ -23,6 +23,7 @@ namespace utils {
 class Error
 {
   public:
+    Error();
     Error(int error);
     Error(int error, char *s);
     ~Error();

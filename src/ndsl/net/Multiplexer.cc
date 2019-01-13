@@ -141,7 +141,10 @@ void Multiplexer::dispatch(void *p)
         pthis->id_ = be32toh(message->id);
         pthis->len_ = be32toh(message->len);
 
+<<<<<<< HEAD
         // printf("id:%d, len:%d \n", pthis->id_, pthis->len_);
+        == == == = printf("id:%d, len:%d \n", pthis->id_, pthis->len_);
+>>>>>>> master
 
         pthis->left_ = pthis->len_;
         pthis->rlen_ -= sizeof(int) * 2;     // 对rlen_做更新
@@ -163,6 +166,7 @@ void Multiplexer::dispatch(void *p)
                 pthis->left_ = 0;                //对left_做更新
                 pthis->location_ += pthis->len_; // location_指针后移
                 dispatch((void *) pthis); // 递归 继续分发缓冲区剩下的消息
+<<<<<<< HEAD
                 return;
             } else {
                 pthis->location_ = pthis->msg_;
@@ -175,6 +179,12 @@ void Multiplexer::dispatch(void *p)
                         dispatch,
                         (void *) pthis);
                 }
+                == == == =
+            }
+            else
+            {
+                pthis->location_ = pthis->msg_;
+>>>>>>> master
             }
         } else if (
             pthis->left_ > 0) //没有读完该实体消息，申请一块len_大小的缓冲区
@@ -188,6 +198,7 @@ void Multiplexer::dispatch(void *p)
 
             pthis->location_ = pthis->databuf_;
             pthis->location_ += pthis->rlen_; // location指针向后滑动
+<<<<<<< HEAD
 
             if (pthis->changeheadflag == 1) {
                 pthis->changeheadflag = 0;
@@ -197,31 +208,48 @@ void Multiplexer::dispatch(void *p)
         }
     } else if (pthis->left_ > 0) // 有实体消息未读完
     {
-        if (pthis->left_ <=
-            (int) pthis->rlen_) //刚好读完消息 或读完消息后还有别的实体消息
+        == == == =
+    }
+}
+else if (pthis->left_ > 0) // 有实体消息未读完
+{
+    // printf("left=%d, rlen=%d\n", pthis->left_, (int) pthis->rlen_);
+>>>>>>> master
+    if (pthis->left_ <=
+        (int) pthis->rlen_) //刚好读完消息 或读完消息后还有别的实体消息
+    {
+        memcpy(pthis->location_, pthis->msg_, pthis->left_);
+        Multiplexer::CallbackMap::iterator iter =
+            pthis->cbMap_.find(pthis->id_);
+        if (iter != pthis->cbMap_.end())
+            iter->second(pthis->databuf_, pthis->len_, pthis->error_);
+
+        if (pthis->databuf_ != NULL) // 释放新生成的大块databuffer
         {
-            memcpy(pthis->location_, pthis->msg_, pthis->left_);
-            Multiplexer::CallbackMap::iterator iter =
-                pthis->cbMap_.find(pthis->id_);
-            if (iter != pthis->cbMap_.end())
-                iter->second(pthis->databuf_, pthis->len_, pthis->error_);
+            free(pthis->databuf_);
+            pthis->databuf_ = NULL;
+<<<<<<< HEAD
+            // printf("free buffer\n");
+            == == == =
+>>>>>>> master
+        }
 
-            if (pthis->databuf_ != NULL) // 释放新生成的大块databuffer
+        pthis->location_ = pthis->msg_;
+        //重新将location指针指向msg_，读取别的实体消息
+
+<<<<<<< HEAD
+        if (pthis->left_ < (int) pthis->rlen_) {
+            == == == = if ((pthis->left_ - pthis->rlen_) <= 0)
             {
-                free(pthis->databuf_);
-                pthis->databuf_ = NULL;
-                // printf("free buffer\n");
-            }
-
-            pthis->location_ = pthis->msg_;
-            //重新将location指针指向msg_，读取别的实体消息
-
-            if (pthis->left_ < (int) pthis->rlen_) {
+>>>>>>> master
                 pthis->rlen_ -= pthis->left_;     //对rlen更新
                 pthis->location_ += pthis->left_; // location_指针后移
                 pthis->left_ = 0;                 //对left_做更新
                 dispatch((void *) pthis); // 递归 继续分发缓冲区剩下的消息
+<<<<<<< HEAD
                 return;
+                == == == =
+>>>>>>> master
             }
         } else //太太太长了，还没读完
         {

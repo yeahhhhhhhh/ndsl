@@ -13,7 +13,7 @@
 
 namespace ndsl {
 namespace utils {
-
+Error::Error() {}
 Error::Error(int error)
 {
     if (error == S_FALSE) {
@@ -26,7 +26,7 @@ Error::Error(int error)
 }
 
 Error::Error(int error, char *s) { errmsg[63] = '\0'; }
-
+Error::~Error() {}
 void Error::perr_exit(const char *s)
 {
     perror(s);
@@ -123,7 +123,7 @@ const char *Error::getError(int error)
         return "Transport endpoint is already connected";
     }
     }
-    return NULL;
+    return 0;
 }
 
 } // namespace utils
