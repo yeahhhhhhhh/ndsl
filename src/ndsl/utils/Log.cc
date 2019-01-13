@@ -16,7 +16,7 @@
 #include <ndsl/utils/Log.h>
 #include <ndsl/utils/TimeStamp.h>
 
-int tag = 0;
+static int tag = 0;
 
 ////
 // @biref
@@ -63,12 +63,11 @@ class Filelog
 // 全局logger
 //
 static Filelog file_log;
-static uint64_t log_source_tag = 32;
+static int log_source_tag = 35;
 
-void set_ndsl_log_sinks(int sinks, int file_or_ter) // file = 1, ter = 0
+void set_ndsl_log_sinks(uint64_t sinks, int file_or_ter) // file = 1, ter = 0
 {
-    if (sinks > 64 || sinks < 0) return;
-    if (file_or_ter) {
+    if (file_or_ter == 1) {
         tag = 1;
         file_log.init();
     } else {
@@ -83,9 +82,10 @@ uint64_t add_source()
     return module;
 }
 
-void ndsl_log_into_sink(int level, int source, const char *format, ...)
+void ndsl_log_into_sink(int level, uint64_t source,const char* file_name,const char * func_name, const char *format, ...)
 {
-    int i = 1;
+    uint64_t i = 1;
+    int k = 0;
     ndsl::utils::TimeStamp ts;
     char buffer[4096] = {0};
 
@@ -103,8 +103,9 @@ void ndsl_log_into_sink(int level, int source, const char *format, ...)
         level,
         ::getpid(),
         (long) ::pthread_self(),
-        __FILE__,
-        __FUNCTION__); // 毫秒
+        file_name,
+        func_name
+        ); // 毫秒
 
     
     // 复制数据
@@ -113,10 +114,10 @@ void ndsl_log_into_sink(int level, int source, const char *format, ...)
     int ret3 =
         vsnprintf(buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
     if (ret3 < 0) return;
-
     if (tag == 0) { std::cout << buffer << std::endl; }
-    while ((i <= source) && (tag == 1)) {
+    while ((k <= log_source_tag) && (tag == 1)) {
         if (source & i) { file_log.log(buffer, ret1 + ret2 + ret3 + 1); }
         i = i * 2;
+        k++;
     }
 }

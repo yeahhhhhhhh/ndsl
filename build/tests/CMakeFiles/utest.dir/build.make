@@ -177,138 +177,13 @@ tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o.provides: tests/CMakeFiles/utest.
 tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o.provides.build: tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o
 
 
-tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o: tests/CMakeFiles/utest.dir/flags.make
-tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o: ../tests/net/TcpConnectionTest.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o -c /home/user/Desktop/ndsl/tests/net/TcpConnectionTest.cc
-
-tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/utest.dir/net/TcpConnectionTest.cc.i"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Desktop/ndsl/tests/net/TcpConnectionTest.cc > CMakeFiles/utest.dir/net/TcpConnectionTest.cc.i
-
-tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/utest.dir/net/TcpConnectionTest.cc.s"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Desktop/ndsl/tests/net/TcpConnectionTest.cc -o CMakeFiles/utest.dir/net/TcpConnectionTest.cc.s
-
-tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o.requires:
-
-.PHONY : tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o.requires
-
-tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o.provides: tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o.requires
-	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o.provides.build
-.PHONY : tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o.provides
-
-tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o.provides.build: tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o
-
-
-tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o: tests/CMakeFiles/utest.dir/flags.make
-tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o: ../tests/net/TcpAcceptorTest.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o -c /home/user/Desktop/ndsl/tests/net/TcpAcceptorTest.cc
-
-tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.i"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Desktop/ndsl/tests/net/TcpAcceptorTest.cc > CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.i
-
-tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.s"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Desktop/ndsl/tests/net/TcpAcceptorTest.cc -o CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.s
-
-tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o.requires:
-
-.PHONY : tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o.requires
-
-tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o.provides: tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o.requires
-	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o.provides.build
-.PHONY : tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o.provides
-
-tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o.provides.build: tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o
-
-
-tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o: tests/CMakeFiles/utest.dir/flags.make
-tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o: ../tests/net/EventLoopTest.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/utest.dir/net/EventLoopTest.cc.o -c /home/user/Desktop/ndsl/tests/net/EventLoopTest.cc
-
-tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/utest.dir/net/EventLoopTest.cc.i"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Desktop/ndsl/tests/net/EventLoopTest.cc > CMakeFiles/utest.dir/net/EventLoopTest.cc.i
-
-tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/utest.dir/net/EventLoopTest.cc.s"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Desktop/ndsl/tests/net/EventLoopTest.cc -o CMakeFiles/utest.dir/net/EventLoopTest.cc.s
-
-tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o.requires:
-
-.PHONY : tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o.requires
-
-tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o.provides: tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o.requires
-	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o.provides.build
-.PHONY : tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o.provides
-
-tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o.provides.build: tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o
-
-
-tests/CMakeFiles/utest.dir/net/EpollTest.cc.o: tests/CMakeFiles/utest.dir/flags.make
-tests/CMakeFiles/utest.dir/net/EpollTest.cc.o: ../tests/net/EpollTest.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object tests/CMakeFiles/utest.dir/net/EpollTest.cc.o"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/utest.dir/net/EpollTest.cc.o -c /home/user/Desktop/ndsl/tests/net/EpollTest.cc
-
-tests/CMakeFiles/utest.dir/net/EpollTest.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/utest.dir/net/EpollTest.cc.i"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Desktop/ndsl/tests/net/EpollTest.cc > CMakeFiles/utest.dir/net/EpollTest.cc.i
-
-tests/CMakeFiles/utest.dir/net/EpollTest.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/utest.dir/net/EpollTest.cc.s"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Desktop/ndsl/tests/net/EpollTest.cc -o CMakeFiles/utest.dir/net/EpollTest.cc.s
-
-tests/CMakeFiles/utest.dir/net/EpollTest.cc.o.requires:
-
-.PHONY : tests/CMakeFiles/utest.dir/net/EpollTest.cc.o.requires
-
-tests/CMakeFiles/utest.dir/net/EpollTest.cc.o.provides: tests/CMakeFiles/utest.dir/net/EpollTest.cc.o.requires
-	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/EpollTest.cc.o.provides.build
-.PHONY : tests/CMakeFiles/utest.dir/net/EpollTest.cc.o.provides
-
-tests/CMakeFiles/utest.dir/net/EpollTest.cc.o.provides.build: tests/CMakeFiles/utest.dir/net/EpollTest.cc.o
-
-
-tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o: tests/CMakeFiles/utest.dir/flags.make
-tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o: ../tests/net/SignalfdTest.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/utest.dir/net/SignalfdTest.cc.o -c /home/user/Desktop/ndsl/tests/net/SignalfdTest.cc
-
-tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/utest.dir/net/SignalfdTest.cc.i"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Desktop/ndsl/tests/net/SignalfdTest.cc > CMakeFiles/utest.dir/net/SignalfdTest.cc.i
-
-tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/utest.dir/net/SignalfdTest.cc.s"
-	cd /home/user/Desktop/ndsl/build/tests && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Desktop/ndsl/tests/net/SignalfdTest.cc -o CMakeFiles/utest.dir/net/SignalfdTest.cc.s
-
-tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o.requires:
-
-.PHONY : tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o.requires
-
-tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o.provides: tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o.requires
-	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o.provides.build
-.PHONY : tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o.provides
-
-tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o.provides.build: tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o
-
-
 # Object files for target utest
 utest_OBJECTS = \
 "CMakeFiles/utest.dir/testMain.cc.o" \
 "CMakeFiles/utest.dir/utils/LogTest.cc.o" \
 "CMakeFiles/utest.dir/utils/TimeStampTest.cc.o" \
 "CMakeFiles/utest.dir/utils/PluginTest.cc.o" \
-"CMakeFiles/utest.dir/utils/GuidTest.cc.o" \
-"CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o" \
-"CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o" \
-"CMakeFiles/utest.dir/net/EventLoopTest.cc.o" \
-"CMakeFiles/utest.dir/net/EpollTest.cc.o" \
-"CMakeFiles/utest.dir/net/SignalfdTest.cc.o"
+"CMakeFiles/utest.dir/utils/GuidTest.cc.o"
 
 # External object files for target utest
 utest_EXTERNAL_OBJECTS =
@@ -318,15 +193,10 @@ bin/utest: tests/CMakeFiles/utest.dir/utils/LogTest.cc.o
 bin/utest: tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o
 bin/utest: tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o
 bin/utest: tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o
-bin/utest: tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o
-bin/utest: tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o
-bin/utest: tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o
-bin/utest: tests/CMakeFiles/utest.dir/net/EpollTest.cc.o
-bin/utest: tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o
 bin/utest: tests/CMakeFiles/utest.dir/build.make
 bin/utest: bin/libndsl.a
 bin/utest: tests/CMakeFiles/utest.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable ../bin/utest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable ../bin/utest"
 	cd /home/user/Desktop/ndsl/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/utest.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -339,11 +209,6 @@ tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/utils/LogTest.cc
 tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/utils/TimeStampTest.cc.o.requires
 tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o.requires
 tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/utils/GuidTest.cc.o.requires
-tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o.requires
-tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o.requires
-tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/net/EventLoopTest.cc.o.requires
-tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/net/EpollTest.cc.o.requires
-tests/CMakeFiles/utest.dir/requires: tests/CMakeFiles/utest.dir/net/SignalfdTest.cc.o.requires
 
 .PHONY : tests/CMakeFiles/utest.dir/requires
 

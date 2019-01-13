@@ -51,5 +51,6 @@ TEST_CASE("Guid")
         char str2[33] = "A000277BA39B4384AFC4A05CE8CFA6DD";
         g2.toGuid_t(str2);
         REQUIRE((g2 > g1) == true);
+
     }
 }

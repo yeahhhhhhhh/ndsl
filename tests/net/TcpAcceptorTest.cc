@@ -7,7 +7,7 @@
  */
 #include "../catch.hpp"
 #include "ndsl/net/EventLoop.h"
-#include "ndsl/utils/temp_define.h"
+//#include "ndsl/utils/temp_define.h"
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/TcpClient.h"
 

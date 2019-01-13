@@ -4,11 +4,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/utest.dir/utils/TimeStampTest.cc.o"
   "CMakeFiles/utest.dir/utils/PluginTest.cc.o"
   "CMakeFiles/utest.dir/utils/GuidTest.cc.o"
-  "CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o"
-  "CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o"
-  "CMakeFiles/utest.dir/net/EventLoopTest.cc.o"
-  "CMakeFiles/utest.dir/net/EpollTest.cc.o"
-  "CMakeFiles/utest.dir/net/SignalfdTest.cc.o"
   "../bin/utest.pdb"
   "../bin/utest"
 )

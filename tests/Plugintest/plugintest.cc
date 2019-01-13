@@ -2,7 +2,10 @@
 #include <dlfcn.h>
 #include <stdio.h>
 #include "ndsl/utils/Plugin.h"
+#include "ndsl/utils/Log.h"
+
 using namespace std;
+
 
 typedef Plugin *(*Creat)(int );
 void  func(void * para)
@@ -34,5 +37,6 @@ int main(int argc,char **argv)
         printf("plugin == NULL !\n");
     }
     plugin->doit(func,para);
-    return 0;
 }
+
+
