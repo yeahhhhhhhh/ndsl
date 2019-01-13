@@ -137,6 +137,32 @@ ndsl/fast:
 .PHONY : ndsl/fast
 
 #=============================================================================
+# Target rules for targets named utest
+
+# Build rule for target.
+utest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 utest
+.PHONY : utest
+
+# fast build rule for target.
+utest/fast:
+	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
+.PHONY : utest/fast
+
+#=============================================================================
+# Target rules for targets named server
+
+# Build rule for target.
+server: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 server
+.PHONY : server
+
+# fast build rule for target.
+server/fast:
+	$(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/build
+.PHONY : server/fast
+
+#=============================================================================
 # Target rules for targets named client
 
 # Build rule for target.
@@ -159,6 +185,8 @@ help:
 	@echo "... edit_cache"
 	@echo "... libplugin"
 	@echo "... ndsl"
+	@echo "... utest"
+	@echo "... server"
 	@echo "... client"
 .PHONY : help
 

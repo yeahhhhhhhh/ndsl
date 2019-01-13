@@ -10,7 +10,7 @@
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TcpAcceptor.h"
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/config.h"
 #include <cstring>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -23,7 +23,7 @@ using namespace net;
 
 TcpConnection *Conn;
 char sbuf[BUFSIZE];
-size_t len;
+ssize_t len;
 
 static void mError(int a, int b) { printf("there is a error\n"); }
 
@@ -31,11 +31,15 @@ static void onSendMessage(void *a) {} // printf("send a message\n"); }
 
 static void onMessage(void *a)
 {
+    printf("server::Message\n");
+    printf("server::Message len = %ld\n", len);
     if (len > 0) Conn->onSend(sbuf, len, 0, onSendMessage, NULL);
 }
 
 static void onConnection(void *a)
 {
+    printf("server::onConnection\n");
+
     // 初始化
     memset(sbuf, 0, sizeof(sbuf));
     len = 0;
@@ -68,5 +72,6 @@ int main()
         Conn, (struct sockaddr *) &rservaddr, &addrlen, onConnection, NULL);
 
     // 运行
-    loop.loop();
+    // loop.loop();
+    EventLoop::loop(&loop);
 }

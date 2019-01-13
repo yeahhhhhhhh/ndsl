@@ -111,6 +111,36 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+tests/CMakeFiles/utest.dir/rule:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/utest.dir/rule
+.PHONY : tests/CMakeFiles/utest.dir/rule
+
+# Convenience name for target.
+utest: tests/CMakeFiles/utest.dir/rule
+
+.PHONY : utest
+
+# fast build rule for target.
+utest/fast:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
+.PHONY : utest/fast
+
+# Convenience name for target.
+tests/CMakeFiles/server.dir/rule:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/server.dir/rule
+.PHONY : tests/CMakeFiles/server.dir/rule
+
+# Convenience name for target.
+server: tests/CMakeFiles/server.dir/rule
+
+.PHONY : server
+
+# fast build rule for target.
+server/fast:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/build
+.PHONY : server/fast
+
+# Convenience name for target.
 tests/CMakeFiles/client.dir/rule:
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/client.dir/rule
 .PHONY : tests/CMakeFiles/client.dir/rule
@@ -124,6 +154,33 @@ client: tests/CMakeFiles/client.dir/rule
 client/fast:
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/build
 .PHONY : client/fast
+
+net/TcpConnectionTest.o: net/TcpConnectionTest.cc.o
+
+.PHONY : net/TcpConnectionTest.o
+
+# target to build an object file
+net/TcpConnectionTest.cc.o:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.o
+.PHONY : net/TcpConnectionTest.cc.o
+
+net/TcpConnectionTest.i: net/TcpConnectionTest.cc.i
+
+.PHONY : net/TcpConnectionTest.i
+
+# target to preprocess a source file
+net/TcpConnectionTest.cc.i:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.i
+.PHONY : net/TcpConnectionTest.cc.i
+
+net/TcpConnectionTest.s: net/TcpConnectionTest.cc.s
+
+.PHONY : net/TcpConnectionTest.s
+
+# target to generate assembly for a file
+net/TcpConnectionTest.cc.s:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpConnectionTest.cc.s
+.PHONY : net/TcpConnectionTest.cc.s
 
 ping-pong/nClient.o: ping-pong/nClient.cc.o
 
@@ -152,6 +209,60 @@ ping-pong/nClient.cc.s:
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/ping-pong/nClient.cc.s
 .PHONY : ping-pong/nClient.cc.s
 
+ping-pong/server.o: ping-pong/server.cc.o
+
+.PHONY : ping-pong/server.o
+
+# target to build an object file
+ping-pong/server.cc.o:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/ping-pong/server.cc.o
+.PHONY : ping-pong/server.cc.o
+
+ping-pong/server.i: ping-pong/server.cc.i
+
+.PHONY : ping-pong/server.i
+
+# target to preprocess a source file
+ping-pong/server.cc.i:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/ping-pong/server.cc.i
+.PHONY : ping-pong/server.cc.i
+
+ping-pong/server.s: ping-pong/server.cc.s
+
+.PHONY : ping-pong/server.s
+
+# target to generate assembly for a file
+ping-pong/server.cc.s:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/ping-pong/server.cc.s
+.PHONY : ping-pong/server.cc.s
+
+testMain.o: testMain.cc.o
+
+.PHONY : testMain.o
+
+# target to build an object file
+testMain.cc.o:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/testMain.cc.o
+.PHONY : testMain.cc.o
+
+testMain.i: testMain.cc.i
+
+.PHONY : testMain.i
+
+# target to preprocess a source file
+testMain.cc.i:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/testMain.cc.i
+.PHONY : testMain.cc.i
+
+testMain.s: testMain.cc.s
+
+.PHONY : testMain.s
+
+# target to generate assembly for a file
+testMain.cc.s:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/testMain.cc.s
+.PHONY : testMain.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -159,11 +270,22 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... edit_cache"
+	@echo "... utest"
+	@echo "... server"
 	@echo "... client"
+	@echo "... edit_cache"
+	@echo "... net/TcpConnectionTest.o"
+	@echo "... net/TcpConnectionTest.i"
+	@echo "... net/TcpConnectionTest.s"
 	@echo "... ping-pong/nClient.o"
 	@echo "... ping-pong/nClient.i"
 	@echo "... ping-pong/nClient.s"
+	@echo "... ping-pong/server.o"
+	@echo "... ping-pong/server.i"
+	@echo "... ping-pong/server.s"
+	@echo "... testMain.o"
+	@echo "... testMain.i"
+	@echo "... testMain.s"
 .PHONY : help
 
 

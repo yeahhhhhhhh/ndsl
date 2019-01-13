@@ -11,5 +11,7 @@
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/utils/CMakeFiles/rebuild_cache.dir
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/src/ndsl/utils/CMakeFiles/edit_cache.dir
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/tests/CMakeFiles/rebuild_cache.dir
-/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/tests/CMakeFiles/edit_cache.dir
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/tests/CMakeFiles/utest.dir
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/tests/CMakeFiles/server.dir
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/tests/CMakeFiles/client.dir
+/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/tests/CMakeFiles/edit_cache.dir

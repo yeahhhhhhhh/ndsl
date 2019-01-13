@@ -281,6 +281,8 @@ ndsl/net/TcpConnection.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpClient.cc
 sys/socket.h
 -
+fcntl.h
+-
 ndsl/net/SocketAddress.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/net/SocketAddress.h
 ndsl/net/TcpClient.h
@@ -293,6 +295,8 @@ ndsl/utils/Error.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Error.h
 ndsl/utils/Log.h
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/ndsl/utils/Log.h
+cstdio
+-
 
 /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/src/ndsl/net/TcpConnection.cc
 ndsl/net/TcpConnection.h

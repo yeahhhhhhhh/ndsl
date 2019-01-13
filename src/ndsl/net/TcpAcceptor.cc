@@ -115,15 +115,17 @@ int TcpAcceptor::createAndListen()
 int TcpAcceptor::handleRead(void *pthis)
 {
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
-
     int connfd;
     struct sockaddr_in cliaddr;
     socklen_t clilen = sizeof(struct sockaddr_in);
     connfd = accept(
         pThis->listenfd_, (struct sockaddr *) &cliaddr, (socklen_t *) &clilen);
+
     if (connfd > 0) {
         // 连接成功
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "connect succ\n");
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_TCPACCETPOR,
+            "TcpAcceptor::connect succ\n");
     } else {
         // 连接失败
         LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "connect fail\n");

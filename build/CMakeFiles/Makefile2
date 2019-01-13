@@ -216,11 +216,15 @@ src/ndsl/utils/preinstall:
 # Directory level rules for directory tests
 
 # Convenience name for "all" pass in the directory.
+tests/all: tests/CMakeFiles/utest.dir/all
+tests/all: tests/CMakeFiles/server.dir/all
 tests/all: tests/CMakeFiles/client.dir/all
 
 .PHONY : tests/all
 
 # Convenience name for "clean" pass in the directory.
+tests/clean: tests/CMakeFiles/utest.dir/clean
+tests/clean: tests/CMakeFiles/server.dir/clean
 tests/clean: tests/CMakeFiles/client.dir/clean
 
 .PHONY : tests/clean
@@ -229,6 +233,80 @@ tests/clean: tests/CMakeFiles/client.dir/clean
 tests/preinstall:
 
 .PHONY : tests/preinstall
+
+#=============================================================================
+# Target rules for target tests/CMakeFiles/utest.dir
+
+# All Build rule for target.
+tests/CMakeFiles/utest.dir/all: src/ndsl/CMakeFiles/ndsl.dir/all
+	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/depend
+	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=24,25,26 "Built target utest"
+.PHONY : tests/CMakeFiles/utest.dir/all
+
+# Include target in all.
+all: tests/CMakeFiles/utest.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+tests/CMakeFiles/utest.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles 20
+	$(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/utest.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles 0
+.PHONY : tests/CMakeFiles/utest.dir/rule
+
+# Convenience name for target.
+utest: tests/CMakeFiles/utest.dir/rule
+
+.PHONY : utest
+
+# clean rule for target.
+tests/CMakeFiles/utest.dir/clean:
+	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/clean
+.PHONY : tests/CMakeFiles/utest.dir/clean
+
+# clean rule for target.
+clean: tests/CMakeFiles/utest.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target tests/CMakeFiles/server.dir
+
+# All Build rule for target.
+tests/CMakeFiles/server.dir/all: src/ndsl/CMakeFiles/ndsl.dir/all
+	$(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/depend
+	$(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=22,23 "Built target server"
+.PHONY : tests/CMakeFiles/server.dir/all
+
+# Include target in all.
+all: tests/CMakeFiles/server.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+tests/CMakeFiles/server.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles 19
+	$(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/server.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles 0
+.PHONY : tests/CMakeFiles/server.dir/rule
+
+# Convenience name for target.
+server: tests/CMakeFiles/server.dir/rule
+
+.PHONY : server
+
+# clean rule for target.
+tests/CMakeFiles/server.dir/clean:
+	$(MAKE) -f tests/CMakeFiles/server.dir/build.make tests/CMakeFiles/server.dir/clean
+.PHONY : tests/CMakeFiles/server.dir/clean
+
+# clean rule for target.
+clean: tests/CMakeFiles/server.dir/clean
+
+.PHONY : clean
 
 #=============================================================================
 # Target rules for target tests/CMakeFiles/client.dir
