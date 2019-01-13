@@ -22,18 +22,16 @@ namespace utils {
 
 class Error
 {
-  public:
+public:
     Error();
-    Error(int error);
-    Error(int error, char *s);
-    ~Error();
-    void perr_exit(const char *s);
-    const char *getError(int error);
-
-  private:
+	int Handler(int error,char *s);
+	void perr_exit(const char *s);
+	const char *getError(int error);
+private:
     int errCode;
-    char errmsg[64];
+	char errmsg[64];
 };
+
 
 } // namespace  utils
 } // namespace ndsl

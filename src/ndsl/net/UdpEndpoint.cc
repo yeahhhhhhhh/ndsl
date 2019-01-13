@@ -7,31 +7,57 @@
 // @email luckylanry@163.com
 //
 
+#include <sys/socket.h>
+#include <fcntl.h>
+#include <cstring>
+#include <string>
+#include <cstdio>
 #include <errno.h>
 #include <unistd.h>
 #include <sys/un.h>
 #include "ndsl/net/UdpEndpoint.h"
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/net/SocketAddress.h"
+#include "ndsl/utils/Error.h"
 #include "ndsl/net/UdpChannel.h"
 
 namespace ndsl {
 namespace net {
 
-UdpEndpoint::UdpEndpoint() {}
+UdpEndpoint::UdpEndpoint(EventLoop *pLoop) 
+{
+    pLoop = pLoop_;
+}
+
 UdpEndpoint::~UdpEndpoint() {}
 
-int UdpEndpoint::createChannel(int sockfd, EventLoop *pLoop)
+int UdpEndpoint::create()
 {
-    pUdpChannel_ = new UdpChannel(sockfd, pLoop);
-    pUdpChannel_->setCallBack(handleRead, handleWrite, this);
-    pUdpChannel_->enroll(true);
+    sockfd_ = socket(AF_LOCAL, SOCK_STREAM, 0);
+    struct SocketAddress4 servaddr;
+
+    // 设置非阻塞
+    fcntl(sockfd_, F_SETFL, O_NONBLOCK);
+    servaddr.setPort(SERV_PORT);
+
+    if (-1 ==bind(sockfd_, (struct sockaddr *) &servaddr, 
+				sizeof(servaddr))) 
+	{    printf("Udp bind error\n"); }
 
     return S_OK;
 }
 
-UdpChannel *UdpEndpoint::getUdpChannel()
+int UdpEndpoint::createChannel(int sockfd,Callback cb,void *param)
 {
-    return pUdpChannel_;
+    pInfo user = new Info;
+    user->cb_ =cb;
+    user->param_ = param;
+
+
+    pUdpChannel_ = new UdpChannel(sockfd, pLoop_);
+    pUdpChannel_->setCallBack(handleRead, handleWrite, this);
+    pUdpChannel_->enroll(true); 
+    
+    return S_OK;
 }
 
 int UdpEndpoint::send(
@@ -44,14 +70,15 @@ int UdpEndpoint::send(
     void *param)
 {
     int sockfd = pUdpChannel_->getFd();
-    size_t n = sendto(sockfd, buf, len, flags,dest_addr,addrlen);
+    size_t n = sendto(sockfd, buf, len, flags,(struct sockaddr*)&dest_addr,addrlen);
     if (n == len) {
-        if (cb != NULL) cb(param); // 写完发送的数据，通知
+        // 写完，通知用户
+        if (cb != NULL) cb(param); 
         return S_OK;
-    } else if (n < 0) {      // 出错，返回-1
+    } else if (n < 0) {      
 		// error occurs, tell user
-		errorHandle_(errno, pUdpChannel_->getFd());
-        return S_FAIL;
+		printf("send error");
+        return S_FALSE;
     }
 
     pInfo tsi = new Info;
@@ -66,8 +93,6 @@ int UdpEndpoint::send(
     tsi->param_ = param;
 
     qSendInfo_.push(tsi);
-
-    pUdpChannel_->enableWriting();
 
     return S_OK;
 }
@@ -99,16 +124,13 @@ int UdpEndpoint::handleWrite(void *pthis)
                 return S_OK;
             }
         } else if (n < 0) {
-            // 写过程中出错 出错之后处理不了 注销事件 并交给用户处理
-			pThis->errorHandle_(errno, pThis->pUdpChannel_->getFd());
+            printf("send error other\n");
+    
+            // 将事件从队列中移除
             pThis->qSendInfo_.pop(); 
             delete tsi;
 
-            // 无写事件 注销写事件
-            if (pThis->qSendInfo_.size() == 0) 
-				pThis->pUdpChannel_->disableWriting();
-
-            return S_FAIL;
+            return S_FALSE;
         }
     }
     return S_OK;
@@ -127,7 +149,6 @@ int UdpEndpoint::recv(
     int sockfd = pUdpChannel_->getFd();
     if ((len = recvfrom(sockfd, buf, MAXLINE, flags,src_addr,&addrlen)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            pUdpChannel_->enableReading();
 
             pInfo tsi = new Info;
             tsi->recvBuf_ = buf;
@@ -143,8 +164,7 @@ int UdpEndpoint::recv(
             return S_OK;
         } else {
 			// error occurs,callback user
-			errorHandle_(errno, pUdpChannel_->getFd());
-            return S_FAIL;
+            return S_FALSE;
         }
     }
 	// tell user after reading successfully in one time
@@ -159,15 +179,14 @@ int UdpEndpoint::handleRead(void *pthis)
     int sockfd = pThis->pUdpChannel_->getFd();
     if (sockfd < 0) 
 	{ 
-		return S_FAIL; 
+		return S_FALSE; 
 	}
     pInfo tsi = pThis->qRecvInfo_.front();
 
     if (pThis->qRecvInfo_.size() > 0) {
         if ((tsi->len_ = recvfrom(sockfd, tsi->recvBuf_, MAXLINE, tsi->flags_,tsi->src_addr_,&tsi->addrlen_)) <0) {   // 出错就设置错误码
 			// error occurs
-			pThis->errorHandle_(errno, pThis->pUdpChannel_->getFd());
-			return S_FAIL;
+			return S_FALSE;
         }
     }
 
@@ -176,17 +195,13 @@ int UdpEndpoint::handleRead(void *pthis)
     pThis->qRecvInfo_.pop();
     delete tsi;
 
-    if (pThis->qRecvInfo_.size() == 0) {  // 将读事件移除
-        pThis->pUdpChannel_->disableReading();
-    }
-
     return S_OK;
 }
 
-int UdpEndpoint::onError(ErrorHandle cb)
+int UdpEndpoint::remove()
 {
-	errorHandle_ = cb;
-	return S_OK;
+    pUdpChannel_->erase();
+    return S_OK;
 }
 } // namespace net
 } // namespace ndsl
