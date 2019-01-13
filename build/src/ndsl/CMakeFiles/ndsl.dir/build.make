@@ -321,9 +321,33 @@ src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o.provides: src/ndsl/CMakeFiles/
 src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o.provides.build: src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o
 
 
+src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o: src/ndsl/CMakeFiles/ndsl.dir/flags.make
+src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o: ../src/ndsl/utils/Plugin.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o"
+	cd /home/user/Desktop/ndsl/build/src/ndsl && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ndsl.dir/utils/Plugin.cc.o -c /home/user/Desktop/ndsl/src/ndsl/utils/Plugin.cc
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ndsl.dir/utils/Plugin.cc.i"
+	cd /home/user/Desktop/ndsl/build/src/ndsl && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Desktop/ndsl/src/ndsl/utils/Plugin.cc > CMakeFiles/ndsl.dir/utils/Plugin.cc.i
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ndsl.dir/utils/Plugin.cc.s"
+	cd /home/user/Desktop/ndsl/build/src/ndsl && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Desktop/ndsl/src/ndsl/utils/Plugin.cc -o CMakeFiles/ndsl.dir/utils/Plugin.cc.s
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o.requires:
+
+.PHONY : src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o.requires
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o.provides: src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o.requires
+	$(MAKE) -f src/ndsl/CMakeFiles/ndsl.dir/build.make src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o.provides.build
+.PHONY : src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o.provides
+
+src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o.provides.build: src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o
+
+
 src/ndsl/CMakeFiles/ndsl.dir/utils/Guid.cc.o: src/ndsl/CMakeFiles/ndsl.dir/flags.make
 src/ndsl/CMakeFiles/ndsl.dir/utils/Guid.cc.o: ../src/ndsl/utils/Guid.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/utils/Guid.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/utils/Guid.cc.o"
 	cd /home/user/Desktop/ndsl/build/src/ndsl && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ndsl.dir/utils/Guid.cc.o -c /home/user/Desktop/ndsl/src/ndsl/utils/Guid.cc
 
 src/ndsl/CMakeFiles/ndsl.dir/utils/Guid.cc.i: cmake_force
@@ -347,7 +371,7 @@ src/ndsl/CMakeFiles/ndsl.dir/utils/Guid.cc.o.provides.build: src/ndsl/CMakeFiles
 
 src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o: src/ndsl/CMakeFiles/ndsl.dir/flags.make
 src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o: ../src/ndsl/net/SignalChannel.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o"
 	cd /home/user/Desktop/ndsl/build/src/ndsl && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ndsl.dir/net/SignalChannel.cc.o -c /home/user/Desktop/ndsl/src/ndsl/net/SignalChannel.cc
 
 src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.i: cmake_force
@@ -371,7 +395,7 @@ src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o.provides.build: src/ndsl/CMa
 
 src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o: src/ndsl/CMakeFiles/ndsl.dir/flags.make
 src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o: ../src/ndsl/net/SignalHandler.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o"
 	cd /home/user/Desktop/ndsl/build/src/ndsl && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ndsl.dir/net/SignalHandler.cc.o -c /home/user/Desktop/ndsl/src/ndsl/net/SignalHandler.cc
 
 src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.i: cmake_force
@@ -406,6 +430,7 @@ ndsl_OBJECTS = \
 "CMakeFiles/ndsl.dir/net/TcpClient.cc.o" \
 "CMakeFiles/ndsl.dir/utils/Log.cc.o" \
 "CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o" \
+"CMakeFiles/ndsl.dir/utils/Plugin.cc.o" \
 "CMakeFiles/ndsl.dir/utils/Guid.cc.o" \
 "CMakeFiles/ndsl.dir/net/SignalChannel.cc.o" \
 "CMakeFiles/ndsl.dir/net/SignalHandler.cc.o"
@@ -424,12 +449,13 @@ bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/SocketAddressUn.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o
+bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/utils/Guid.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/build.make
 bin/libndsl.a: src/ndsl/CMakeFiles/ndsl.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX static library ../../bin/libndsl.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/Desktop/ndsl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking CXX static library ../../bin/libndsl.a"
 	cd /home/user/Desktop/ndsl/build/src/ndsl && $(CMAKE_COMMAND) -P CMakeFiles/ndsl.dir/cmake_clean_target.cmake
 	cd /home/user/Desktop/ndsl/build/src/ndsl && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ndsl.dir/link.txt --verbose=$(VERBOSE)
 
@@ -449,6 +475,7 @@ src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/SocketAd
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/TcpClient.cc.o.requires
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/utils/Log.cc.o.requires
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/utils/TimeStamp.cc.o.requires
+src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/utils/Plugin.cc.o.requires
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/utils/Guid.cc.o.requires
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/SignalChannel.cc.o.requires
 src/ndsl/CMakeFiles/ndsl.dir/requires: src/ndsl/CMakeFiles/ndsl.dir/net/SignalHandler.cc.o.requires

@@ -467,6 +467,33 @@ utils/LogTest.cc.s:
 	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/LogTest.cc.s
 .PHONY : utils/LogTest.cc.s
 
+utils/PluginTest.o: utils/PluginTest.cc.o
+
+.PHONY : utils/PluginTest.o
+
+# target to build an object file
+utils/PluginTest.cc.o:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/PluginTest.cc.o
+.PHONY : utils/PluginTest.cc.o
+
+utils/PluginTest.i: utils/PluginTest.cc.i
+
+.PHONY : utils/PluginTest.i
+
+# target to preprocess a source file
+utils/PluginTest.cc.i:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/PluginTest.cc.i
+.PHONY : utils/PluginTest.cc.i
+
+utils/PluginTest.s: utils/PluginTest.cc.s
+
+.PHONY : utils/PluginTest.s
+
+# target to generate assembly for a file
+utils/PluginTest.cc.s:
+	cd /home/user/Desktop/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/utils/PluginTest.cc.s
+.PHONY : utils/PluginTest.cc.s
+
 utils/TimeStampTest.o: utils/TimeStampTest.cc.o
 
 .PHONY : utils/TimeStampTest.o
@@ -539,6 +566,9 @@ help:
 	@echo "... utils/LogTest.o"
 	@echo "... utils/LogTest.i"
 	@echo "... utils/LogTest.s"
+	@echo "... utils/PluginTest.o"
+	@echo "... utils/PluginTest.i"
+	@echo "... utils/PluginTest.s"
 	@echo "... utils/TimeStampTest.o"
 	@echo "... utils/TimeStampTest.i"
 	@echo "... utils/TimeStampTest.s"
