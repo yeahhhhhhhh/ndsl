@@ -9,25 +9,29 @@
 #ifndef __NDSL_UTILS_PLUGIN_H__
 #define __NDSL_UTILS_PLUGIN_H__
 
+<<<<<<< HEAD
 #include "ndsl/config.h"
 
+=======
+// #include "ndsl/config.h"
+#include "ndsl/utils/Error.h"
+>>>>>>> master
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 struct Plugin
 {
-    using functype = void (*)(void* );
+    using functype = void (*)(void *);
     int doit(functype func, void *para);
     int tag;
 };
 
 struct Plugin1 : Plugin
 {
-    
-    int doit(functype func, void*  para)
+    int doit(functype func, void *para)
     {
-        if (func) { 
+        if (func) {
             (*func)(para);
             return S_OK;
         }
@@ -37,11 +41,10 @@ struct Plugin1 : Plugin
 
 struct Plugin2 : Plugin
 {
-    
-    int doit(functype func, void*  para)
+    int doit(functype func, void *para)
     {
-        if (func){ 
-            (*func)(para); 
+        if (func) {
+            (*func)(para);
             return S_OK;
         }
         return S_FALSE;

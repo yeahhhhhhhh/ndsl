@@ -15,12 +15,25 @@ namespace utils {
 class noncopyable
 {
   protected:
-    noncopyable();
-    ~noncopyable();
+    noncopyable() = default;
+    ~noncopyable() = default;
 
   private:
-    noncopyable(const noncopyable &);
-    noncopyable &operator=(const noncopyable &);
+    // 删除复制构造函数
+    noncopyable(const noncopyable &) = delete;
+    noncopyable &operator=(const noncopyable &) = delete;
+};
+
+class nonmoveable
+{
+  public:
+    nonmoveable() = default;
+    ~nonmoveable() = default;
+
+  private:
+    // 删除移动构造函数
+    nonmoveable(nonmoveable &&) = delete;
+    nonmoveable &operator=(nonmoveable &&) = delete;
 };
 
 } // namespace utils

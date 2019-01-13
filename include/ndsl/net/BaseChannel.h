@@ -5,8 +5,8 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
-#ifndef __BASECHANNEL_H__
-#define __BASECHANNEL_H__
+#ifndef __NDSL_NET_BASECHANNEL_H__
+#define __NDSL_NET_BASECHANNEL_H__
 
 #include "Channel.h"
 
@@ -52,4 +52,4 @@ class BaseChannel : public Channel
 } // namespace net
 } // namespace ndsl
 
-#endif // __BASECHANNEL_H__
+#endif // __NDSL_NET_BASECHANNEL_H__

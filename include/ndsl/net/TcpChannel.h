@@ -5,8 +5,8 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
-#ifndef __TCPCHANNEL_H__
-#define __TCPCHANNEL_H__
+#ifndef __NDSL_NET_TCPCHANNEL_H__
+#define __NDSL_NET_TCPCHANNEL_H__
 #include "BaseChannel.h"
 
 namespace ndsl {
@@ -25,4 +25,4 @@ class TcpChannel : public BaseChannel
 } // namespace net
 } // namespace ndsl
 
-#endif // __TCPCHANNEL_H__
+#endif // __NDSL_NET_TCPCHANNEL_H__

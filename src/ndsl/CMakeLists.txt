@@ -25,14 +25,20 @@ set(LIB_NDSL_SRC
  net/SocketAddressUn.cc
  utils/Log.cc
  utils/TimeStamp.cc
+<<<<<<< HEAD
  utils/Plugin.cc
  utils/Guid.cc
+=======
+ #utils/Guid.cc
+ utils/Thread.cc
+>>>>>>> master
  #net/WorkQueue.cc
  #net/InterruptChannel.cc
+ utils/EventLoopThreadpool.cc
  net/SignalChannel.cc
  net/SignalHandler.cc
+ net/TimeWheel.cc
  )
-
 
 add_library(ndsl ${LIB_NDSL_SRC})
 
