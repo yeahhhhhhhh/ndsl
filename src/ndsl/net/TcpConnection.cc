@@ -46,8 +46,10 @@ int TcpConnection::onSend(
 
     // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
     size_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
+    printf("onSend n = %lu,len = %lu\n",n,len);
     if (n == len) {
         // 写完 通知用户
+        printf("n == len!\n");
         if (cb != NULL) cb(param);
         // 释放掉buf占用的空间 TODO: 暂时注释
         // if (buf != NULL) free(buf);
@@ -73,14 +75,14 @@ int TcpConnection::onSend(
     tsi->flags_ = flags | MSG_NOSIGNAL;
     tsi->cb_ = cb;
     tsi->param_ = param;
-
+    printf("*tsi->len = %lu\n",*tsi->len_);
     qSendInfo_.push(tsi);
     return S_OK;
 }
 
 int TcpConnection::handleWrite(void *pthis)
 {
-    // printf("handle write\n");
+    printf("TcpConnection handle write\n");
 
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
@@ -88,7 +90,7 @@ int TcpConnection::handleWrite(void *pthis)
     if (sockfd < 0) { return -1; }
     size_t n;
 
-    // printf("qSendInfo_.size() = %lu\n", pThis->qSendInfo_.size());
+    printf("qSendInfo_.size() = %lu\n", pThis->qSendInfo_.size());
 
     // 有数据待写
     if (pThis->qSendInfo_.size() > 0) {
@@ -170,10 +172,11 @@ int TcpConnection::onRecv(
     }
     (*len) = n;
 
-    // printf("************\n");
-    // printf("buf = \"%s\"\n", buf);
-    // printf("len = %lu\n", *len);
-    // printf("************\n");
+    printf("************\n");
+    printf("buf = %s\n", buf);
+    printf("n = %d\n", n);
+    printf("len = %lu\n", *len);
+    printf("************\n");
 
     // 一次性读完之后通知用户
     if (cb != NULL) cb(param);
@@ -182,6 +185,8 @@ int TcpConnection::onRecv(
 
 int TcpConnection::handleRead(void *pthis)
 {
+    printf("TcpConnection handle write\n");
+
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FALSE; }
@@ -200,9 +205,9 @@ int TcpConnection::handleRead(void *pthis)
 
     (*pThis->RecvInfo_.len_) = n;
 
-    // printf("************\n");
-    // printf("handleRead len = %lu\n", (*pThis->RecvInfo_.len_));
-    // printf("************\n");
+     printf("************\n");
+     printf("handleRead len = %lu\n", (*pThis->RecvInfo_.len_));
+     printf("************\n");
 
     // 完成数据读取之后通知mul
     if (pThis->RecvInfo_.cb_ != NULL)

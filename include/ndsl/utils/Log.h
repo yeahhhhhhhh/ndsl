@@ -66,6 +66,8 @@ enum
     const uint64_t LOG_SOURCE_PLUGIN = 1 << 29;
     const uint64_t LOG_SOURCE_ADDRESS4 = 1 << 30;
     const uint64_t LOG_SOURCE_GUID = 1 << 31;
+    const uint64_t LOG_SOURCE_ALL = 0XFFFFFFFF;
+
 ////
 // @brief
 // 添加日志源

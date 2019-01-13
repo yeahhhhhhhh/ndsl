@@ -34,7 +34,8 @@ void onDisconnect()
 void makeMessage()
 {
     for (int i = 0; i < BUFSIZE; ++i) {
-        cbuf[i] = static_cast<char>(1);
+        //cbuf[i] = static_cast<char>(1);
+        cbuf[i] = '1';
     }
 }
 
