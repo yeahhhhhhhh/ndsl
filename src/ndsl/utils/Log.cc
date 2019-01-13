@@ -76,7 +76,7 @@ void set_ndsl_log_sinks(int sinks, int file_or_ter) // file = 1, ter = 0
     }
 }
 
-uint64_t log_add_source()
+uint64_t add_source()
 {
     uint64_t module = 1 << log_source_tag ;
     log_source_tag ++;

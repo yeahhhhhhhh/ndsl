@@ -23,7 +23,6 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 #pass
 #net/TcpAcceptorTest.cc
 
-<<<<<<< HEAD
 utils/LogTest.cc
 utils/TimeStampTest.cc
 utils/PluginTest.cc
@@ -33,13 +32,6 @@ net/TcpAcceptorTest.cc
 net/EventLoopTest.cc
 net/EpollTest.cc
 net/SignalfdTest.cc
-=======
-#net/TcpConnectionTest.cc
-#net/TcpAcceptorTest.cc
-#net/EventLoopTest.cc
-#net/EpollTest.cc
-#net/SignalfdTest.cc
->>>>>>> master
 
 # net/TcpConnectionTest.cc
 # net/TcpAcceptorTest.cc
@@ -74,9 +66,9 @@ add_dependencies(client ndsl)
 target_link_libraries(client ndsl boost_system pthread)
 
 #设置插件单元测试
-#set(SRC_list Plugintest/plugintest.cc) #宏定义
+set(SRC_list Plugintest/plugintest.cc) #宏定义
 
-#add_executable(plugin ${SRC_list})  #生成可执行文件
+add_executable(plugin ${SRC_list})  #生成可执行文件
 
-#target_link_libraries(plugin dl)
-#target_link_libraries(plugin libplugin)
+target_link_libraries(plugin dl)
+target_link_libraries(plugin libplugin)
