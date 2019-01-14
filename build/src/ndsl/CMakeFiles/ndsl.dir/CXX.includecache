@@ -48,20 +48,6 @@ iostream
 ndsl/net/TcpConnection.h
 ../include/ndsl/net/ndsl/net/TcpConnection.h
 
-../include/ndsl/net/SignalChannel.h
-BaseChannel.h
-../include/ndsl/net/BaseChannel.h
-EventLoop.h
-../include/ndsl/net/EventLoop.h
-SignalHandler.h
-../include/ndsl/net/SignalHandler.h
-
-../include/ndsl/net/SignalHandler.h
-SignalChannel.h
-../include/ndsl/net/SignalChannel.h
-EventLoop.h
-../include/ndsl/net/EventLoop.h
-
 ../include/ndsl/net/SocketAddress.h
 string
 -
@@ -125,16 +111,6 @@ unistd.h
 -
 string
 -
-
-../include/ndsl/utils/EventLoopThreadpool.h
-pthread.h
--
-vector
--
-ndsl/utils/Noncopyable.h
-../include/ndsl/utils/ndsl/utils/Noncopyable.h
-ndsl/utils/Thread.h
-../include/ndsl/utils/ndsl/utils/Thread.h
 
 ../include/ndsl/utils/Guid.h
 
@@ -234,26 +210,6 @@ ndsl/net/EventLoop.h
 ndsl/net/TcpChannel.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TcpChannel.h
 endian.h
--
-
-/home/user/Desktop/ndsl/src/ndsl/net/SignalChannel.cc
-ndsl/net/SignalChannel.h
-/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SignalChannel.h
-
-/home/user/Desktop/ndsl/src/ndsl/net/SignalHandler.cc
-string.h
--
-sys/signalfd.h
--
-signal.h
--
-ndsl/net/SignalHandler.h
-/home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/SignalHandler.h
-ndsl/config.h
-/home/user/Desktop/ndsl/src/ndsl/net/ndsl/config.h
-ndsl/utils/Log.h
-/home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Log.h
-iostream
 -
 
 /home/user/Desktop/ndsl/src/ndsl/net/SocketAddress.cc
@@ -365,18 +321,6 @@ ndsl/utils/Error.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/utils/Error.h
 ndsl/net/TimeWheel.h
 /home/user/Desktop/ndsl/src/ndsl/net/ndsl/net/TimeWheel.h
-
-/home/user/Desktop/ndsl/src/ndsl/utils/EventLoopThreadpool.cc
-ndsl/utils/EventLoopThreadpool.h
-/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/EventLoopThreadpool.h
-ndsl/net/EventLoop.h
-/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/net/EventLoop.h
-ndsl/utils/Error.h
-/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Error.h
-ndsl/utils/Thread.h
-/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Thread.h
-ndsl/utils/Log.h
-/home/user/Desktop/ndsl/src/ndsl/utils/ndsl/utils/Log.h
 
 /home/user/Desktop/ndsl/src/ndsl/utils/Guid.cc
 stdio.h
