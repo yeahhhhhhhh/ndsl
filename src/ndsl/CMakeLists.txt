@@ -38,7 +38,6 @@ set(LIB_NDSL_SRC
 # net/UnixAcceptor.cc
 
 #  third/pugixml.cpp
-third/Protbload.pb.cc
 
 #  utils/Clientplugin.cc
  utils/Endian.cc
