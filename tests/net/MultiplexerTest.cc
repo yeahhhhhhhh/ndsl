@@ -15,6 +15,7 @@
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/TcpClient.h"
 #include "ndsl/net/Epoll.h"
+#include "ndsl/net/SocketAddress.h"
 #include <sys/socket.h>
 #include "ndsl/config.h"
 #include <cstring>
@@ -26,7 +27,8 @@ using namespace ndsl;
 using namespace net;
 
 int id = 11;
-static void entitycallbak(char *data, int len, int ero)
+static void
+entitycallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
     printf("********entity callback********\n");
     char *p = data;
@@ -48,8 +50,10 @@ TEST_CASE("Mutiplexer/cbmaptest")
     EventLoop loop;
     REQUIRE(loop.init() == S_OK);
 
+    struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
+
     TcpAcceptor *tAc = new TcpAcceptor(&loop);
-    tAc->start();
+    tAc->start(servaddr);
 
     // 准备接收的数据结构
     struct sockaddr_in rservaddr;
@@ -61,7 +65,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
 
     // 启动一个客户端
     TcpClient *pCli = new TcpClient();
-    if (pCli->onConnect(&loop) == NULL) printf("kong\n");
+    if (pCli->onConnect(&loop, true) == NULL) printf("kong\n");
     // REQUIRE(pCli->onConnect(&loop) == S_OK);
 
     // 添加中断
