@@ -23,7 +23,7 @@ net/EntityTest.cc
 
 #utils/PluginTest.cc
 #utils/GuidTest.cc
-net/TcpConnectionTest.cc
+#net/TcpConnectionTest.cc
 #pass
 #net/TcpAcceptorTest.cc
 

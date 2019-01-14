@@ -70,14 +70,11 @@ class Multiplexer
     Multiplexer(ndsl::net::TcpConnection *conn)
         : conn_(conn)
     {
-        if (conn_ == NULL)
-            printf("conn = NULL\n");
-        else
-            printf("conn is not NULL\n");
+        if (conn_ == NULL) printf("conn = NULL\n");
         conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
     }
 
-    Multiplexer() { printf("in wucan gouzao hanshu \n"); }
+    Multiplexer() {}
     CallbackMap cbMap_; // 回调函数映射容器
 
     // 在loop工作队列中加入insert任务

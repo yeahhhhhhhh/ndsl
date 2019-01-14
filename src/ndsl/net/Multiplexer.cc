@@ -98,7 +98,6 @@ void Multiplexer::sendMessage(int id, int length, const char *data)
 
     memcpy(buffer + sizeof(struct Message), data, length);
     conn_->onSend(buffer, length + sizeof(Message), 0, NULL, NULL);
-    printf("use conn_->onSend \n");
 }
 
 /********************
