@@ -5,8 +5,8 @@
 // @author ranxaingjun
 // @email ranxianshen@gmail.com
 //
-#include "UnixChannel.h"
-#include "UnixConnection.h"
+#include "ndsl/net/UnixChannel.h"
+#include "ndsl/net/UnixConnection.h"
 
 namespace ndsl {
 namespace net {

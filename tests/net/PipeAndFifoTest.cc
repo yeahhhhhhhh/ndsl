@@ -1,11 +1,10 @@
-#define CATCH_CONFIG_MAIN
-#include "../catch.hpp"
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
 #include <errno.h>
 #include <iostream>
-#include "PipeAndFifo.h"
+#include "../catch.hpp"
+#include "ndsl/net/PipeAndFifo.h"
 #define namepth1 "/mnt/unixsocket/pipe1"
 #define namepth2 "/mnt/unixsocket/pipe2"
 
@@ -33,7 +32,7 @@ TEST_CASE("PipeIpc")
 		
 		int fd[2];
 		PipeAndFifo *pipe = new PipeAndFifo(&loop);
-		REQUIRE(pipe->createPipe(fd, fun, NULL) == S_OK);
+		REQUIRE(pipe->createPipe(fd) == S_OK);
 		
 		pipe->onError(isError);
 		char *sendbuf = (char *)malloc(sizeof(char) * 10);
@@ -54,7 +53,7 @@ TEST_CASE("PipeIpc")
 			sleep(3);
 			char buf[20];
 			memset(buf, 0, sizeof(buf));
-			if (onRecv(buf,20, 0, recvTest, NULL) != S_OK)
+			if (pipe->onRecv(buf,20, 0, recvTest, NULL) != S_OK)
 			{
 				cout<<"recv error"<<strerror(errno)<<endl;
 			}else

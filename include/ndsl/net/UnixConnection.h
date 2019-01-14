@@ -10,7 +10,7 @@
 #define __NDSL_NETUNIXCONNECTION_H__
 #include <queue>
 #include <sys/socket.h>
-#include "config.h"
+#include "ndsl/config.h"
 
 namespace ndsl {
 namespace net {

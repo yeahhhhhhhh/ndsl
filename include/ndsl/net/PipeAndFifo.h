@@ -13,8 +13,8 @@
 
 #include <sys/stat.h>
 #include <queue>
-#include "PipeChannel.h"
-#include "EventLoop.h"
+#include "ndsl/net/PipeChannel.h"
+#include "ndsl/net/EventLoop.h"
 
 namespace ndsl{
 namespace net{

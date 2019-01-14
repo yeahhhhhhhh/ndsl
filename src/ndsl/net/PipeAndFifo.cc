@@ -11,10 +11,10 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
-#include "config.h"
-#include "error.h"
-#include "Log.h"
-#include "PipeAndFifo.h"
+#include "ndsl/config.h"
+#include "ndsl/utils/Error.h"
+#include "ndsl/utils/Log.h"
+#include "ndsl/net/PipeAndFifo.h"
 using namespace std;
 
 namespace ndsl{
