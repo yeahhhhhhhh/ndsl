@@ -39,9 +39,9 @@ entitycallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
     printf("\n");
 }
 
-bool flag = false;
+bool flag3 = false;
 
-void fun1(void *a) { flag = true; }
+void fun3(void *a) { flag3 = true; }
 
 TEST_CASE("Mutiplexer/cbmaptest")
 {
@@ -61,7 +61,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
     socklen_t addrlen;
 
     TcpConnection *Conn = new TcpConnection(tAc);
-    Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
+    Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun3, NULL);
 
     // 启动一个客户端
     TcpClient *pCli = new TcpClient();
@@ -148,24 +148,25 @@ TEST_CASE("Mutiplexer/cbmaptest")
         /*********************************
          * dispatch 测试：一个长消息
         //  ********************************/
-        // int id2 = 99;
-        // mymulti->addInsertWork(id2, entitycallbak);
-        // int len2 = 60;
-        // char data2[] =
-        //     "helloworldhelloworldhelloworldhelloworldhelloworldhelloworld";
+        int id2 = 99;
+        mymulti->addInsertWork(id2, entitycallbak);
+        int len2 = 60;
+        char data2[] =
+            "helloworldhelloworldhelloworldhelloworldhelloworldhelloworld";
 
-        // char *buffer2 = (char *) malloc(sizeof(int) * 2 + sizeof(char) *
-        // len2); Message *message2 = reinterpret_cast<struct Message
-        // *>(buffer2); message2->id = htobe32(id2); message2->len =
-        // htobe32(len2); memcpy(buffer2 + sizeof(struct Message), data2, len2);
+        char *buffer2 = (char *) malloc(sizeof(int) * 2 + sizeof(char) * len2);
+        Message *message2 = reinterpret_cast<struct Message *>(buffer2);
+        message2->id = htobe32(id2);
+        message2->len = htobe32(len2);
+        memcpy(buffer2 + sizeof(struct Message), data2, len2);
 
-        // write(pCli->sockfd_, buffer2, 40);
+        write(pCli->sockfd_, buffer2, 40);
 
-        // REQUIRE(loop.loop(&loop) == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
 
-        // write(pCli->sockfd_, buffer2 + 40, 28);
+        write(pCli->sockfd_, buffer2 + 40, 28);
 
-        // REQUIRE(loop.loop(&loop) == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************
          * sendMessage测试

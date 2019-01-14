@@ -58,6 +58,7 @@ list(APPEND LIB_NDSL_SRC ${LIB_NDSL_SRC1})
 add_library(ndsl ${LIB_NDSL_SRC})
 target_link_libraries(ndsl uuid)
 
+
 #生成libplugin.so
  #set(LIB_SRC utils/Plugin.cc)
  #set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
