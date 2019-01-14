@@ -106,7 +106,7 @@ int main()
      * 客户端服务器实体测试：
      ********************************/
     int a, b;
-    printf("input the agv1 and agv2 of ADD: \n");
+    printf("input the agv1 and agv2 of ADD equation: \n");
     scanf("%d %d", &a, &b);
     std::string pstr;
     Protbload::ADD *addmessage = new Protbload::ADD;
