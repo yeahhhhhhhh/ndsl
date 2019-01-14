@@ -35,13 +35,13 @@ int UnixConnection::createChannel(int sockfd, EventLoop *pLoop)
 
 int UnixConnection::onSend(
     const void *buf,
-    size_t len,
+    ssize_t len,
     int flags,
     Callback cb,
     void *param)
 {
     int sockfd = pUnixChannel_->getFd();
-    size_t n = send(sockfd, buf, len, flags);
+    ssize_t n = send(sockfd, buf, len, flags);
     if (n == len) {
         // 写完 通知用户
         if (cb != NULL) cb(param);
@@ -56,7 +56,8 @@ int UnixConnection::onSend(
     tsi->offset_ = n;
     tsi->sendBuf_ = buf;
     tsi->readBuf_ = NULL;
-    tsi->len_ = len;
+	tsi->len_ = new ssize_t;
+    (*tsi->len_) = len;
     tsi->flags_ = flags;
     tsi->cb_ = cb;
     tsi->param_ = param;
@@ -80,12 +81,12 @@ int UnixConnection::handleWrite(void *pthis)
 
         if ((n = send(
                  sockfd,
-                 (char *) tsi->sendBuf_ + tsi->offset_,
-                 tsi->len_ - tsi->offset_,
+                 (char *)tsi->sendBuf_ + tsi->offset_,
+                 (*tsi->len_) - tsi->offset_,
                  tsi->flags_)) > 0) {
             tsi->offset_ += n;
 
-            if (tsi->offset_ == tsi->len_) {
+            if (tsi->offset_ == (*tsi->len_)) {
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();    // 无写事件 注销写事件
                 // if (pThis->qSendInfo_.size() == 0) 
@@ -113,13 +114,14 @@ int UnixConnection::handleWrite(void *pthis)
 // 如果执行成功，返回值就为 S_OK；如果出现错误，返回值就为 S_FALSE，并设置 errno 的值。
 int UnixConnection::onRecv(
     char *buf,
-    size_t &len,
+    ssize_t *len,
     int flags,
     Callback cb,
     void *param)
 {
+	ssize_t n;
     int sockfd = pUnixChannel_->getFd();
-    if ((len = recv(sockfd, buf, MAXLINE, flags)) < 0) {
+    if ((n = recv(sockfd, buf, MAXLINE, flags)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             // pUnixChannel_->enableReading();
 
@@ -163,7 +165,7 @@ int UnixConnection::handleRead(void *pthis)
 			// return S_FALSE;
         // }
     // }
-	if ((n = recv(sockfd, pThis->RecvInfo_.readBuf_, MAXLINE, pThis->RecvInfo_.->flags_)) <0) 
+	if ((n = recv(sockfd, pThis->RecvInfo_.readBuf_, MAXLINE, pThis->RecvInfo_.flags_)) <0) 
 	{   // 出错就设置错误码
 		// error occurs
 		pThis->errorHandle_(errno, pThis->pUnixChannel_->getFd());
