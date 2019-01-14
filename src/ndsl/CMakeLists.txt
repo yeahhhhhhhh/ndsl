@@ -14,6 +14,35 @@ add_subdirectory(net)
 add_subdirectory(utils)
 
 set(LIB_NDSL_SRC
+<<<<<<< HEAD
+=======
+ net/Epoll.cc
+net/EventLoop.cc
+ net/BaseChannel.cc
+ net/TcpChannel.cc
+ net/TcpConnection.cc
+ net/TcpAcceptor.cc
+net/UdpEndpoint.cc
+utils/Endian.cc
+utils/Error.cc
+ net/Multiplexer.cc
+net/SocketAddress.cc
+ net/SocketAddressUn.cc
+ net/TcpClient.cc
+ net/SocketAddress.cc
+ net/SocketAddressUn.cc
+ utils/Log.cc
+ net/UdpChannel.cc
+ utils/TimeStamp.cc
+
+ #utils/Guid.cc
+ utils/Thread.cc
+#  net/WorkQueue.cc
+#  net/InterruptChannel.cc
+ utils/EventLoopThreadpool.cc
+ net/SignalChannel.cc
+net/SignalHandler.cc
+>>>>>>> dev_ly
 
   #all files
  net/BaseChannel.cc
@@ -53,10 +82,15 @@ set(LIB_NDSL_SRC
 #  utils/xmlconfig.cpp
  )
 
+<<<<<<< HEAD
 list(APPEND LIB_NDSL_SRC ${LIB_NDSL_SRC1})
 add_library(ndsl ${LIB_NDSL_SRC})
 target_link_libraries(ndsl uuid)
 
+=======
+add_library(ndsl ${LIB_NDSL_SRC})
+# #target_link_libraries(ndsl uuid)
+>>>>>>> dev_ly
 
 #生成libplugin.so
  #set(LIB_SRC utils/Plugin.cc)

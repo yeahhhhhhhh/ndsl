@@ -15,8 +15,27 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 # 设置单元测试的文件
 set(TEST 
 testMain.cc
+<<<<<<< HEAD
 net/MultiplexerTest.cc
 # All files
+=======
+#net/MultiplexerTest.cc
+net/UdpEndpointTest.cc
+utils/EndianTest.cc
+utils/ErrorTest.cc
+#utils/LogTest.cc
+#utils/TimeStampTest.cc
+
+#utils/PluginTest.cc
+#utils/GuidTest.cc
+#net/TcpConnectionTest.cc
+#pass
+#net/TcpAcceptorTest.cc
+
+#net/TcpConnectionTest.cc
+#net/TcpAcceptorTest.cc
+#net/EventLoopTest.cc
+>>>>>>> dev_ly
 #net/EpollTest.cc
 #net/EventLoopTest.cc
 # net/FifoIpcTest.cc
