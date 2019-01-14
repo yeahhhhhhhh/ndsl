@@ -68,7 +68,7 @@ enum
     const uint64_t LOG_SOURCE_GUID = 1UL << 31;
     const uint64_t LOG_SOURCE_EVENTLOOPTHREADPOOL = 1UL << 32;
     const uint64_t LOG_SOURCE_TCPCLIENT = 1UL << 33;
-    const uint64_t LOG_SOURCE_ALL = 0X00000001FFFFFFFF;
+    const uint64_t LOG_SOURCE_ALL = ~0;
 
 ////
 // @brief
