@@ -6,10 +6,14 @@
 # @author niexw
 # @email xiaowen.nie.cn@gmail.com
 #
+
+include_directories(${CMAKE_SOURCE_DIR}/thirdlib)
+include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include/ndsl)
+include_directories(${CMAKE_SOURCE_DIR}/include/ndsl/utils)
+include_directories(${CMAKE_SOURCE_DIR}/include/ndsl/net)
 add_subdirectory(net)
 add_subdirectory(utils)
-
-include_directories(${CMAKE_SOURCE_DIR}/include)
 
 set(LIB_NDSL_SRC
 
@@ -43,8 +47,11 @@ set(LIB_NDSL_SRC
 
  )
 
- add_library(ndsl ${LIB_NDSL_SRC})
- target_link_libraries(ndsl uuid)
+aux_source_directory(./net/ LIB_NDSL_SRC)
+aux_source_directory(./utils LIB_NDSL_SRC1)
+list(APPEND LIB_NDSL_SRC ${LIB_NDSL_SRC1})
+add_library(ndsl ${LIB_NDSL_SRC})
+target_link_libraries(ndsl uuid)
 
 #生成libplugin.so
  #set(LIB_SRC utils/Plugin.cc)
