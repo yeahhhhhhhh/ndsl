@@ -11,10 +11,12 @@
 namespace ndsl {
 namespace net {
 
-SignalHandler::SignalHandler(EventLoop *pLoop) { pLoop_ = pLoop; }
-SignalHandler::~SignalHandler() {}
+SignalHandler::SignalHandler(EventLoop *pLoop) {
+	pLoop_ = pLoop; 
+	memset(blockSignals_, 0, sizeof(blockSignals_));
+}
 
-int SignalHandler::blockSignals_[64] = {0};
+SignalHandler::~SignalHandler() {}
 
 int SignalHandler::registSignalfd(unsigned int signums[], int num, Callback handleFunc, void *p){
 	

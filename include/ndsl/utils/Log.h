@@ -35,7 +35,7 @@ enum
 //
 
     const uint64_t LOG_SOURCE_EPOLL = 1;
-    const uint64_t LOG_SOURCE_THREADPOLL = 1UL << 1;
+    const uint64_t LOG_SOURCE_THREADPOOL = 1UL << 1;
     const uint64_t LOG_SOURCE_EVENTLOOP = 1UL << 2;
     const uint64_t LOG_SOURCE_THREAD = 1UL<< 3;
     const uint64_t LOG_SOURCE_V8ENGINE = 1UL << 4;
@@ -68,7 +68,7 @@ enum
     const uint64_t LOG_SOURCE_GUID = 1UL << 31;
     const uint64_t LOG_SOURCE_EVENTLOOPTHREADPOOL = 1UL << 32;
     const uint64_t LOG_SOURCE_TCPCLIENT = 1UL << 33;
-    const uint64_t LOG_SOURCE_ALL = 0X00000001FFFFFFFF;
+    const uint64_t LOG_SOURCE_ALL = ~0;
 
 ////
 // @brief

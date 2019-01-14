@@ -30,7 +30,7 @@ class SignalHandler {
 	  unsigned int signums_[64]; // 信号编号
 	  Callback handleFunc_; // 用于信号发生后的用户处理函数
 	  void *p_; // 信号发生后用户回调函数的参数
-	  static int blockSignals_[64]; // 阻塞过程中注册的信号
+	  int blockSignals_[64]; // 阻塞过程中注册的信号
 	   
 	public:
 	  // signums：需要注册的信号数组; num：信号个数; handleFunc：用户的回调函数; p：回调函数参数

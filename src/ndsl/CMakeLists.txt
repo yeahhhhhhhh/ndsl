@@ -21,13 +21,14 @@ add_library(ndsl ${LIB_NDSL_SRC})
 target_link_libraries(ndsl uuid)
 
 #生成libplugin.so
-set(LIB_SRC utils/Plugin.cc)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
-add_library(libplugin SHARED ${LIB_SRC})
-set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")
+ #set(LIB_SRC utils/Plugin.cc)
+ #set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
 
-set(CLIENT_SRC utils/Clientplugin.cc)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
+ #add_library(libplugin SHARED ${LIB_SRC})
+ #set_target_properties(libplugin PROPERTIES OUTPUT_NAME "plugin")
 
-add_library(clientplugin SHARED ${CLIENT_SRC})
-set_target_properties(clientplugin PROPERTIES OUTPUT_NAME "clientplugin")
+ #set(CLIENT_SRC utils/Clientplugin.cc)
+ #set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
+
+ #add_library(clientplugin SHARED ${CLIENT_SRC})
+ #set_target_properties(clientplugin PROPERTIES OUTPUT_NAME "clientplugin")
