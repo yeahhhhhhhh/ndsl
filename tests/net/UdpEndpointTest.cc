@@ -86,7 +86,7 @@ TEST_CASE("net/UdpEndpoint")
 
         // // 添加中断
         loop.quit();
-        REQUIRE(loop.loop() == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
 
         // 测试是否接收到了客户的连接
         REQUIRE(flag == true);
