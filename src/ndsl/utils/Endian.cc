@@ -69,26 +69,5 @@ namespace utils {
     //          ::inet_ntop(AF_INET6, &addr6->sin6_addr, buf, static_cast<socklen_t>(size));
     //       }
     //  }
-
-    // void Endian::toIpPort(char* buf, size_t size,const struct sockaddr* addr)
-    // {
-    //     char host[INET_ADDRSTRLEN] = "INVALID"; // INET_ADDRSTRLEN 网际地址的长度
-    //     toIp(host, sizeof host,addr);
-    //     const struct sockaddr_in* addr2 = sockaddr_in_cast(addr);
-    //     uint16_t port = Endian::networkToHost16(addr2->sin_port);
-    //     snprintf(buf, size, "%s:%u", host, port);
-    // }
-
-    // // 用ip和port构造一个addr
-    // void Endian::fromIpPort(const char* ip, uint16_t port,struct sockaddr_in* addr)
-    // {
-    //   addr->sin_family = AF_INET;
-    //   addr->sin_port =Endian::hostToNetwork16(port);
-    //   if (::inet_pton(AF_INET, ip, &addr->sin_addr) <= 0)
-    //   {
-    //      //LOG_SYSERR << "utils::fromIpPort";
-    //   }
-    //  }
-
 } // namespace utils
 } // namespace ndsl
