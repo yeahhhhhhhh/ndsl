@@ -24,9 +24,9 @@
 using namespace ndsl;
 using namespace net;
 
-bool flag1 = false;
+bool flag = false;
 
-void func11(void *a) { flag1 = true; }
+void fun1(void *a) { flag = true; }
 
 bool flagsend = false;
 static void sendTest(void *a) { flagsend = true; }
@@ -48,8 +48,8 @@ TEST_CASE("net/TcpConnection(onRecv)")
         EventLoop loop;
         REQUIRE(loop.init() == S_OK);
 
-        // 准备客户端的接受参数 默认全ip接受 端口9877
-        struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
+        // 准备客户端的接受参数 默认全ip接受 端口6666
+        struct SocketAddress4 servaddr("0.0.0.0", 6666);
 
         TcpAcceptor *tAc = new TcpAcceptor(&loop);
         tAc->start(servaddr);
@@ -62,19 +62,22 @@ TEST_CASE("net/TcpConnection(onRecv)")
         // TODO: 逻辑需要再调整，其实Acceptor不需要Connection
         // 可以直接在Acceptor里面弄一个函数 setAcceptInfo() 把信息传进去
         TcpConnection *Conn = new TcpConnection(tAc);
-        Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, func11, NULL);
+        Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
 
         // 启动一个客户端
+        struct SocketAddress4 clientservaddr("127.0.0.1", 6666);
         TcpConnection *pClientConn;
         TcpClient *pCli = new TcpClient();
-        REQUIRE((pClientConn = pCli->onConnect(&loop, true)) != NULL);
+        REQUIRE(
+            (pClientConn = pCli->onConnect(&loop, true, clientservaddr)) !=
+            NULL);
 
         // 添加中断
         loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         // 测试是否接收到了客户的连接
-        REQUIRE(flag1 == true);
+        REQUIRE(flag == true);
 
         // 测试onSend
         Conn->onError(iserror);
