@@ -7,7 +7,6 @@
 // @email luckylanry@163.com 
 //
 
-#define CATCH_CONFIG_MAIN
 #include "../catch.hpp"
 
 #include "ndsl/utils/Endian.h"
@@ -15,34 +14,37 @@
 
 TEST_CASE("utils/Endian")
 {   
+    using namespace std;
     ndsl::utils::Endian e;
 
-    // SECTION("hToN64"){
-    //      uint64_t ret=e.hToN64(u64t);
-    //      std::cout << ret << std::endl;
-    // }
-    //  SECTION("hToN32"){
-    //    int32_t ret= e.hToN32(65);
-    //    std::cout << ret << std::endl;
-    // }
+    SECTION("hToN64"){
+        e.hToN64(78);
+         
+    }
+     SECTION("hToN32"){
+        int a=12;
+        e.hToN32(a);
+       
+    }
      SECTION("hToN16"){
         uint16_t u16t = 13;
         e.hToN16(u16t);
-    //    std::cout << ret << std::endl;
     }
 
-    // SECTION("nToH64"){
-    //    uint64_t ret= e.nToH64(67);
-    //    std::cout << ret << std::endl;
-    // }
-    //  SECTION("nToH32"){
-    //    uint32_t ret= e.nToH32(68);
-    //    std::cout << ret << std::endl;
-    // }
-    //  SECTION("nToH16"){
-    //    uint16_t ret= e.hToN16(69);
-    //    std::cout << ret << std::endl;
-    // }
+    SECTION("nToH64"){
+        int b=67;
+        e.nToH64(b);
+    }
+     SECTION("nToH32"){
+         int c = 68;
+         e.nToH32(c);
+         // cout << ret << endl;
+    }
+     SECTION("nToH16"){
+         int d= 69;
+         e.hToN16(d);
+         // cout << ret << endl;
+    }
     
 
 }  
