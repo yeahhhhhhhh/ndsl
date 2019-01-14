@@ -15,6 +15,7 @@
 #include <cstring>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+
 #include <cstdio>
 
 namespace ndsl {
@@ -58,19 +59,27 @@ int TcpConnection::onSend(
         ssize_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
         if (n == len) {
             // 写完 通知用户
+            LOG(LOG_INFO_LEVEL,
+                LOG_SOURCE_TCPCONNECTION,
+                "TcpConnection::onSend write complete\n");
             if (cb != NULL) cb(param);
             // 释放掉buf占用的空间 TODO: 暂时注释
             // if (buf != NULL) free(buf);
             return S_OK;
         } else if (n < 0) {
             // 出错 通知用户
-            LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "send error\n");
+            LOG(LOG_INFO_LEVEL,
+                LOG_SOURCE_TCPCONNECTION,
+                "TcpConnection::onSend send error\n");
             errorHandle_(errno, pTcpChannel_->getFd());
             // 释放掉buf占用的空间 TODO: 暂时注释
             // if (buf != NULL) free(buf);
             return S_FALSE;
         }
 
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_TCPCONNECTION,
+            "TcpConnection::onSend send for next time\n");
         pInfo tsi = new Info;
         tsi->offset_ = n;
         tsi->sendBuf_ = (void *) buf;
@@ -155,13 +164,14 @@ int TcpConnection::onRecv(
     // 作为下面recv接收的临时量，直接用(*len)接收会变成2^64-1 不知道为什么
     // 答案1：是flag参数的问题
     ssize_t n;
-    printf("in the onRecv\n");
+
     int sockfd = pTcpChannel_->getFd();
-    printf("onRecv sockfd :%d\n", sockfd);
     if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
-        printf(" 11111onRecv store user information \n");
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            printf(" 222222onRecv store user information 222222\n");
+            LOG(LOG_INFO_LEVEL,
+                LOG_SOURCE_TCPCONNECTION,
+                "TcpConnection::onRecv EAGAIN\n");
+
             // 保存用户信息
             RecvInfo_.readBuf_ = buf;
             RecvInfo_.sendBuf_ = NULL;
@@ -169,28 +179,32 @@ int TcpConnection::onRecv(
             RecvInfo_.len_ = len;
             RecvInfo_.cb_ = cb;
             RecvInfo_.param_ = param;
-            printf(" onRecv store user information \n");
+
             return S_OK;
         } else {
             // 出错 回调用户
             LOG(LOG_INFO_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
-                "recv error can not deal\n");
+                "TcpConnection::onRecv recv error can not deal\n");
             errorHandle_(errno, pTcpChannel_->getFd());
             return S_FALSE;
         }
     }
     (*len) = n;
-    printf(" onRecv return \n");
+
+    LOG(LOG_INFO_LEVEL,
+        LOG_SOURCE_TCPCONNECTION,
+        "TcpConnection::onRecv recv complete\n");
+
     // 一次性读完之后通知用户
     if (cb != NULL) cb(param);
-    printf(" onRecv return \n");
     return S_OK;
 }
 
 int TcpConnection::handleRead(void *pthis)
 {
-    printf("in the handleRecv\n");
+    printf("TcpConnection::handleRead\n");
+
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FALSE; }

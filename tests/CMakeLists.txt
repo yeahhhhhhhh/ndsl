@@ -17,12 +17,13 @@ testMain.cc
 #net/MultiplexerTest.cc
 
 net/EntityTest.cc
+
 #utils/LogTest.cc
 #utils/TimeStampTest.cc
 
 #utils/PluginTest.cc
 #utils/GuidTest.cc
-#net/TcpConnectionTest.cc
+net/TcpConnectionTest.cc
 #pass
 #net/TcpAcceptorTest.cc
 
@@ -37,6 +38,7 @@ net/EntityTest.cc
 #net/EventLoopTest.cc
 #net/EpollTest.cc
 # net/SignalfdTest.cc
+#utils/EventLoopThreadpoolTest.cc
 
 )
 

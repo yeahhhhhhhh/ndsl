@@ -23,7 +23,7 @@ class TcpClient
     // EventLoop *loop_; // 保存EventLoop
 
     // 与服务器建立连接
-    TcpConnection *onConnect(EventLoop *loop);
+    TcpConnection *onConnect(EventLoop *loop, bool isConnNoBlock);
 
     // 与服务器断开链接
     int disConnect();
