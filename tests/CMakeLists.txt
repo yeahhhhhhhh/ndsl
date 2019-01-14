@@ -13,7 +13,7 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # 设置单元测试的文件
 set(TEST 
-#testMain.cc
+testMain.cc
 #net/MultiplexerTest.cc
 #utils/ErrorTest.cc
 #utils/LogTest.cc
