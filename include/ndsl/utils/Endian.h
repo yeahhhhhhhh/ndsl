@@ -19,7 +19,6 @@ class Endian
 {
 public:
     Endian();
-    ~Endian();
 public:
    // uint64_t 的整形数字由机器字节序转化为网络字节序 
      uint64_t hToN64(uint64_t host64);

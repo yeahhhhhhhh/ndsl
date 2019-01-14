@@ -21,7 +21,8 @@ namespace utils {
     // {
     //   return f;
     // }
-  
+     Endian::Endian() {}
+     
      uint64_t Endian::hToN64(uint64_t host64)
    {
         return htobe64(host64);
