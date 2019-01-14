@@ -65,9 +65,12 @@ TEST_CASE("net/TcpConnection(onRecv)")
         Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
 
         // 启动一个客户端
+        struct SocketAddress4 clientservaddr("127.0.0.1", SERV_PORT);
         TcpConnection *pClientConn;
         TcpClient *pCli = new TcpClient();
-        REQUIRE((pClientConn = pCli->onConnect(&loop, true)) != NULL);
+        REQUIRE(
+            (pClientConn = pCli->onConnect(&loop, true, clientservaddr)) !=
+            NULL);
 
         // 添加中断
         loop.quit();

@@ -20,6 +20,7 @@
 #include "ndsl/net/TimeWheel.h"
 #include "ndsl/utils/Log.h"
 #include "ndsl/utils/EventLoopThreadpool.h"
+#include "ndsl/net/SocketAddress.h"
 
 #include <cstdio>
 
@@ -227,7 +228,9 @@ void Session::start()
     printf("nClient::Session start\n");
 
     // 阻塞建立连接 建立好的之后调用client的onConnect
-    conn_ = client_.onConnect(loop_, false);
+    // TODO: 确认下端口号是否正确
+    struct SocketAddress4 servaddr("127.0.0.1", SERV_PORT);
+    conn_ = client_.onConnect(loop_, false, servaddr);
     if (conn_ == NULL) { printf("nClient::Session::start onConnect fail\n"); }
     // 将自身的recv函数注册进去
     if (conn_ != NULL) conn_->onRecv(buf, &len, 0, onMessage, this);
