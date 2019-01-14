@@ -29,11 +29,14 @@ set(LIB_NDSL_SRC
  utils/TimeStamp.cc
  utils/Plugin.cc
  utils/Guid.cc
- #net/WorkQueue.cc
- #net/InterruptChannel.cc
- #utils/EventLoopThreadpool.cc
+
+
+ utils/EventLoopThreadpool.cc
  net/SignalChannel.cc
  net/SignalHandler.cc
+
+ net/TimeWheel.cc
+ utils/Thread.cc
 
  )
 

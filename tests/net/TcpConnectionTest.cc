@@ -11,9 +11,11 @@
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TcpAcceptor.h"
-//#include "ndsl/utils/temp_define.h"
 #include "ndsl/net/TcpClient.h"
 #include "ndsl/utils/Log.h"
+#include "ndsl/config.h"
+#include "ndsl/utils/Error.h"
+#include "ndsl/net/SocketAddress.h"
 #include <cstring>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -35,33 +37,41 @@ static void iserror(int a, int b) { flagerror = true; }
 bool flagrecv = false;
 static void recvTest(void *a) { flagrecv = true; }
 
+bool clientRecv = false;
+static void ClientRecvTest(void *a) { clientRecv = true; }
+
 TEST_CASE("net/TcpConnection(onRecv)")
 {
     SECTION("onAccept")
     {
-        // 启动服务
-        // 初始化EPOLL
+        // 初始化EPOLL 服务器 客户端共用一个EPOLL
         EventLoop loop;
         REQUIRE(loop.init() == S_OK);
 
+        // 准备客户端的接受参数 默认全ip接受 端口9877
+        struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
+
         TcpAcceptor *tAc = new TcpAcceptor(&loop);
-        tAc->start();
+        tAc->start(servaddr);
 
         // 准备接收的数据结构
         struct sockaddr_in rservaddr;
         bzero(&rservaddr, sizeof(rservaddr));
         socklen_t addrlen;
 
+        // TODO: 逻辑需要再调整，其实Acceptor不需要Connection
+        // 可以直接在Acceptor里面弄一个函数 setAcceptInfo() 把信息传进去
         TcpConnection *Conn = new TcpConnection(tAc);
         Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
 
         // 启动一个客户端
+        TcpConnection *pClientConn;
         TcpClient *pCli = new TcpClient();
-        REQUIRE(pCli->onConnect() == S_OK);
+        REQUIRE((pClientConn = pCli->onConnect(&loop, true)) != NULL);
 
-        // // 添加中断
+        // 添加中断
         loop.quit();
-        REQUIRE(loop.loop() == S_OK);
+        REQUIRE(loop.loop(&loop) == S_OK);
 
         // 测试是否接收到了客户的连接
         REQUIRE(flag == true);
@@ -69,20 +79,21 @@ TEST_CASE("net/TcpConnection(onRecv)")
         // 测试onSend
         Conn->onError(iserror);
         char *sendbuf = (char *) malloc(sizeof(char) * 12);
-        // sendbuf = 'hello world';
         strcpy(sendbuf, "hello world\0");
         Conn->onSend(sendbuf, strlen("hello world"), 0, sendTest, NULL);
 
         char recvBuf[15];
+        ssize_t recvLen;
         memset(recvBuf, 0, sizeof(recvBuf));
-        read(pCli->sockfd_, recvBuf, MAXLINE);
+        pClientConn->onRecv(recvBuf, &recvLen, 0, ClientRecvTest, NULL);
 
         REQUIRE(strcmp("hello world", recvBuf) == 0);
         REQUIRE(flagsend == true);
+        REQUIRE(clientRecv == true);
 
         // 测试onRecv
         memset(recvBuf, 0, sizeof(recvBuf));
-        size_t len;
+        ssize_t len;
         write(pCli->sockfd_, "hello world", strlen("hello world"));
 
         REQUIRE(Conn->onRecv(recvBuf, &len, 0, recvTest, NULL) == S_OK);
@@ -90,8 +101,8 @@ TEST_CASE("net/TcpConnection(onRecv)")
         REQUIRE(flagrecv == true);
 
         // 第二次不需要添加中断
-        loop.quit();
-        REQUIRE(loop.loop() == S_OK);
+        // loop.quit();
+        REQUIRE(loop.loop(&loop) == S_OK);
     }
 
     // TODO: handleRead handleWrite 好像没法测

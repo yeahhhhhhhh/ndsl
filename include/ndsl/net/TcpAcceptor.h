@@ -57,11 +57,11 @@ class TcpAcceptor
     static int handleRead(void *pthis);
 
     // 开始
-    int start();
+    int start(struct SocketAddress4 servaddr);
 
   private:
     // new Channel socket bind listen
-    int createAndListen();
+    int createAndListen(struct SocketAddress4 servaddr);
 };
 
 } // namespace net
