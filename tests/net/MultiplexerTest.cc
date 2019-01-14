@@ -50,7 +50,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
     EventLoop loop;
     REQUIRE(loop.init() == S_OK);
 
-    struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
+    struct SocketAddress4 servaddr("0.0.0.0", 7878);
 
     TcpAcceptor *tAc = new TcpAcceptor(&loop);
     tAc->start(servaddr);
@@ -64,7 +64,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
     Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun3, NULL);
 
     // 启动一个客户端
-    struct SocketAddress4 clientservaddr("127.0.0.1", 8456);
+    struct SocketAddress4 clientservaddr("127.0.0.1", 7878);
     TcpClient *pCli = new TcpClient();
     if (pCli->onConnect(&loop, true, clientservaddr) == NULL) printf("kong\n");
 

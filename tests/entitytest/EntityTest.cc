@@ -62,7 +62,7 @@ int main()
     loop.init();
 
     // unsigned short p = 8888;
-    struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
+    struct SocketAddress4 servaddr("0.0.0.0", 8456);
 
     TcpAcceptor *tAc = new TcpAcceptor(&loop);
     tAc->start(servaddr);
@@ -79,16 +79,15 @@ int main()
     struct SocketAddress4 clientservaddr("127.0.0.1", 8456);
     TcpConnection *serverconn;
     TcpClient *pCli = new TcpClient();
-    if (serverconn = pCli->onConnect(&loop, true, clientservaddr) != NULL)
-        printf("success \n");
+    serverconn = pCli->onConnect(&loop, true, clientservaddr);
+    printf("success \n");
     // 添加中断
     loop.quit();
     loop.loop(&loop);
-    printf("33333333333 \n");
+
     Multiplexer *clientmulti = new Multiplexer(Conn);
-    printf("44444444444 \n");
+
     Multiplexer *servermulti = new Multiplexer(serverconn);
-    printf("55555555555 \n");
 
     loop.loop(&loop);
 

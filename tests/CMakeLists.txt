@@ -27,8 +27,8 @@ net/MultiplexerTest.cc
 #net/TcpConnectionTest.cc
 #net/TimeWheelTest.cc
 #net/UdpEndpointTest.cc
- net/UnixAndTcpSocketAddressTest.cc
- net/UnixConnectionTest.cc
+# net/UnixAndTcpSocketAddressTest.cc
+# net/UnixConnectionTest.cc
 
  #utils/EndianTest.cc
  #utils/ErrorTest.cc
