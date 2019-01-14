@@ -2,6 +2,8 @@
     "files.associations": {
         "algorithm": "cpp",
         "string_view": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "thread": "cpp",
+        "array": "cpp"
     }
 }

@@ -18,12 +18,13 @@ class Multiplexer;
 class Entity
 {
   private:
-    using entitycallback = void (*)(char *buffer, int len, int error);
+    using entitycallback =
+        void (*)(Multiplexer *Multiplexer, char *buffer, int len, int error);
     int id_;
     entitycallback cb_;
-    Multiplexer *multiplexer_;
 
   public:
+    Multiplexer *multiplexer_;
     Entity(int id, entitycallback cb, Multiplexer *Multiplexer)
         : id_(id)
         , cb_(cb)

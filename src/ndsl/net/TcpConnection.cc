@@ -155,10 +155,13 @@ int TcpConnection::onRecv(
     // 作为下面recv接收的临时量，直接用(*len)接收会变成2^64-1 不知道为什么
     // 答案1：是flag参数的问题
     ssize_t n;
-
+    printf("in the onRecv\n");
     int sockfd = pTcpChannel_->getFd();
+    printf("onRecv sockfd :%d\n", sockfd);
     if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
+        printf(" 11111onRecv store user information \n");
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            printf(" 222222onRecv store user information 222222\n");
             // 保存用户信息
             RecvInfo_.readBuf_ = buf;
             RecvInfo_.sendBuf_ = NULL;
@@ -166,7 +169,7 @@ int TcpConnection::onRecv(
             RecvInfo_.len_ = len;
             RecvInfo_.cb_ = cb;
             RecvInfo_.param_ = param;
-
+            printf(" onRecv store user information \n");
             return S_OK;
         } else {
             // 出错 回调用户
@@ -178,14 +181,16 @@ int TcpConnection::onRecv(
         }
     }
     (*len) = n;
-
+    printf(" onRecv return \n");
     // 一次性读完之后通知用户
     if (cb != NULL) cb(param);
+    printf(" onRecv return \n");
     return S_OK;
 }
 
 int TcpConnection::handleRead(void *pthis)
 {
+    printf("in the handleRecv\n");
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FALSE; }

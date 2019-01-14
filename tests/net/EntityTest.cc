@@ -28,22 +28,38 @@ using namespace ndsl;
 using namespace net;
 using namespace Protbload;
 
-int id = 11;
-static void entitycallbak(char *data, int len, int ero)
+void servercallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
-    printf("********entity callback********\n");
+    printf("********server callback********\n");
     Protbload::ADD *addmessage = new Protbload::ADD;
     addmessage->ParseFromString(data);
-
     printf(
         "agv1:%d   agv2:%d \n", addmessage->agv1(), (int) addmessage->agv2());
+
+    std::string fstr;
+    Protbload::RESULT *resultmessage = new Protbload::RESULT;
+    resultmessage->set_answer(addmessage->agv1() + addmessage->agv2());
+    addmessage->SerializeToString(&fstr);
+    int flen = fstr.size();
+    printf("the size of pstr is %d\n", flen);
+
+    Multiplexer->sendMessage(10, flen, fstr.c_str());
+}
+
+void clientcallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
+{
+    printf("********client callback********\n");
+    Protbload::RESULT *resultmessage = new Protbload::RESULT;
+    resultmessage->ParseFromString(data);
+
+    printf("result==%d \n", resultmessage->answer());
 }
 
 bool flag = false;
 
 void fun1(void *a) { flag = true; }
 
-TEST_CASE("Mutiplexer/cbmaptest")
+TEST_CASE("Entitytest")
 {
     // 启动服务
     // 初始化EPOLL
@@ -63,37 +79,38 @@ TEST_CASE("Mutiplexer/cbmaptest")
 
     // 启动一个客户端
     TcpClient *pCli = new TcpClient();
-    if (pCli->onConnect(&loop) == NULL) printf("kong\n");
+    TcpConnection *serverconn = pCli->onConnect(&loop);
+    printf("return servercon \n");
     // REQUIRE(pCli->onConnect(&loop) == S_OK);
 
     // 添加中断
     loop.quit();
     REQUIRE(loop.loop(&loop) == S_OK);
-
-    Multiplexer *mymulti = new Multiplexer(Conn);
-
-    SECTION("insert and remove ")
+    printf("before build two multi \n");
+    if (Conn == serverconn)
+        printf("conn==servercon\n");
+    else
+        printf("no equal\n");
+    Multiplexer *clientmulti = new Multiplexer(Conn);
+    Multiplexer *servermulti = new Multiplexer(serverconn);
+    printf("hhhbuild two multi \n");
+    REQUIRE(loop.loop(&loop) == S_OK);
+    printf("build two multi \n");
+    SECTION("entity")
     {
         /******
          * addInsertwork()测试
          *****/
-        Entity *entity1 = new Entity(id, entitycallbak, mymulti);
-        entity1->pri();
+        int clientid = 10;
+        int serverid = 12;
+        Entity *client = new Entity(clientid, clientcallbak, clientmulti);
+        client->pri();
+        Entity *server = new Entity(serverid, servercallbak, servermulti);
+        server->pri();
         REQUIRE(loop.loop(&loop) == S_OK);
-        /********************************
-         * remove()测试
-         ********************************/
-        // struct para *p2 = new para;
-        // p2->id = id;
-        // p2->cb = entitycallbak;
-        // p2->pthis = mymulti;
-        // mymulti->remove((void *) p2);
-        // std::map<int, Multiplexer::Callback>::iterator iter2;
-        // iter2 = mymulti->cbMap_.find(id);
-        // REQUIRE(iter2 == mymulti->cbMap_.end());
 
         /*********************************
-         * 接收消息测试：
+         * 客户端服务器实体测试：
          ********************************/
         std::string pstr;
         Protbload::ADD *addmessage = new Protbload::ADD;
@@ -103,56 +120,12 @@ TEST_CASE("Mutiplexer/cbmaptest")
         int mlen = pstr.size();
         printf("the size of pstr is %d\n", mlen);
 
-        char *buffer = (char *) malloc(sizeof(int) * 2 + sizeof(char) * mlen);
-        Message *message = reinterpret_cast<struct Message *>(buffer);
-        message->id = htobe32(id);
-        message->len = htobe32(mlen);
-        memcpy(buffer + sizeof(struct Message), pstr.c_str(), mlen);
-
-        write(pCli->sockfd_, buffer, sizeof(int) * 2 + mlen);
-        printf("writed!\n");
+        client->multiplexer_->sendMessage(serverid, mlen, pstr.c_str());
+        printf("sendMessage!\n");
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
-
-        /*********************************
-         * dispatch 测试：一个长消息
-         ********************************/
-        // int id2 = 99;
-        // mymulti->addInsertWork(id2, entitycallbak);
-        // int len2 = 60;
-        // char data2[] =
-        //     "helloworldhelloworldhelloworldhelloworldhelloworldhelloworld";
-
-        // char *buffer2 = (char *) malloc(sizeof(int) * 2 + sizeof(char) *
-        // len2); Message *message2 = reinterpret_cast<struct Message
-        // *>(buffer2); message2->id = htobe32(id2); message2->len =
-        // htobe32(len2); memcpy(buffer2 + sizeof(struct Message), data2, len2);
-
-        // write(pCli->sockfd_, buffer2, 40);
-
-        // REQUIRE(loop.loop(&loop) == S_OK);
-
-        // write(pCli->sockfd_, buffer2 + 40, 28);
-
-        // REQUIRE(loop.loop(&loop) == S_OK);
-
-        /*********************************
-         * sendMessage测试
-         ********************************/
-        // char data[] = "helloworld\0";
-        // int len = 11;
-        // mymulti->sendMessage(id, len, data);
-
-        // char recvBuf[20];
-        // loop.quit();
-        // REQUIRE(loop.loop() == S_OK);
-
-        // read(pCli->sockfd_, recvBuf, MAXLINE);
-        // char *p = recvBuf;
-        // for (int i = 0; i < 10; i++) {
-        //     printf("%c", *(p + 8));
-        //     p++;
-        // }
-        // printf("\n");
-        // REQUIRE(loop.loop() == S_OK);
+        sleep(3);
+        loop.quit();
+        REQUIRE(loop.loop(&loop) == S_OK);
     }
 }

@@ -85,7 +85,7 @@ void Multiplexer::addRemoveWork(int id)
 }
 
 // 向上层提供发送消息接口
-void Multiplexer::sendMessage(int id, int length, char *data)
+void Multiplexer::sendMessage(int id, int length, const char *data)
 {
     char *buffer = (char *) malloc(
         sizeof(int) * 2 + sizeof(char) * length); // 在tcpconnection中释放
@@ -98,6 +98,7 @@ void Multiplexer::sendMessage(int id, int length, char *data)
 
     memcpy(buffer + sizeof(struct Message), data, length);
     conn_->onSend(buffer, length + sizeof(Message), 0, NULL, NULL);
+    printf("use conn_->onSend \n");
 }
 
 /********************
@@ -155,6 +156,7 @@ void Multiplexer::dispatch(void *p)
                 pthis->cbMap_.find(pthis->id_);
             if (iter != pthis->cbMap_.end())
                 iter->second(
+                    pthis,
                     pthis->location_,
                     pthis->len_,
                     pthis->error_); // 在这里调用了实体对应的回调函数
@@ -205,7 +207,8 @@ void Multiplexer::dispatch(void *p)
             Multiplexer::CallbackMap::iterator iter =
                 pthis->cbMap_.find(pthis->id_);
             if (iter != pthis->cbMap_.end())
-                iter->second(pthis->databuf_, pthis->len_, pthis->error_);
+                iter->second(
+                    pthis, pthis->databuf_, pthis->len_, pthis->error_);
 
             if (pthis->databuf_ != NULL) // 释放新生成的大块databuffer
             {
