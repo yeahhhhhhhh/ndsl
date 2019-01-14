@@ -241,7 +241,7 @@ tests/preinstall:
 tests/CMakeFiles/utest.dir/all: src/ndsl/CMakeFiles/ndsl.dir/all
 	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/depend
 	$(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=24,25,26 "Built target utest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles --progress-num=24,25,26,27 "Built target utest"
 .PHONY : tests/CMakeFiles/utest.dir/all
 
 # Include target in all.
@@ -251,7 +251,7 @@ all: tests/CMakeFiles/utest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/utest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles 20
+	$(CMAKE_COMMAND) -E cmake_progress_start /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles 21
 	$(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/utest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build/CMakeFiles 0
 .PHONY : tests/CMakeFiles/utest.dir/rule

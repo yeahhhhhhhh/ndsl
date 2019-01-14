@@ -155,6 +155,33 @@ client/fast:
 	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/client.dir/build.make tests/CMakeFiles/client.dir/build
 .PHONY : client/fast
 
+net/TcpAcceptorTest.o: net/TcpAcceptorTest.cc.o
+
+.PHONY : net/TcpAcceptorTest.o
+
+# target to build an object file
+net/TcpAcceptorTest.cc.o:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.o
+.PHONY : net/TcpAcceptorTest.cc.o
+
+net/TcpAcceptorTest.i: net/TcpAcceptorTest.cc.i
+
+.PHONY : net/TcpAcceptorTest.i
+
+# target to preprocess a source file
+net/TcpAcceptorTest.cc.i:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.i
+.PHONY : net/TcpAcceptorTest.cc.i
+
+net/TcpAcceptorTest.s: net/TcpAcceptorTest.cc.s
+
+.PHONY : net/TcpAcceptorTest.s
+
+# target to generate assembly for a file
+net/TcpAcceptorTest.cc.s:
+	cd /media/sf_shareVirtualBox/yunndsl/yunndsl/ndsl/build && $(MAKE) -f tests/CMakeFiles/utest.dir/build.make tests/CMakeFiles/utest.dir/net/TcpAcceptorTest.cc.s
+.PHONY : net/TcpAcceptorTest.cc.s
+
 net/TcpConnectionTest.o: net/TcpConnectionTest.cc.o
 
 .PHONY : net/TcpConnectionTest.o
@@ -274,6 +301,9 @@ help:
 	@echo "... server"
 	@echo "... client"
 	@echo "... edit_cache"
+	@echo "... net/TcpAcceptorTest.o"
+	@echo "... net/TcpAcceptorTest.i"
+	@echo "... net/TcpAcceptorTest.s"
 	@echo "... net/TcpConnectionTest.o"
 	@echo "... net/TcpConnectionTest.i"
 	@echo "... net/TcpConnectionTest.s"

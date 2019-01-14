@@ -48,8 +48,8 @@ TEST_CASE("net/TcpConnection(onRecv)")
         EventLoop loop;
         REQUIRE(loop.init() == S_OK);
 
-        // 准备客户端的接受参数 默认全ip接受 端口9877
-        struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
+        // 准备客户端的接受参数 默认全ip接受 端口6666
+        struct SocketAddress4 servaddr("0.0.0.0", 6666);
 
         TcpAcceptor *tAc = new TcpAcceptor(&loop);
         tAc->start(servaddr);
@@ -65,7 +65,7 @@ TEST_CASE("net/TcpConnection(onRecv)")
         Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
 
         // 启动一个客户端
-        struct SocketAddress4 clientservaddr("127.0.0.1", SERV_PORT);
+        struct SocketAddress4 clientservaddr("127.0.0.1", 6666);
         TcpConnection *pClientConn;
         TcpClient *pCli = new TcpClient();
         REQUIRE(

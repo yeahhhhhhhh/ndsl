@@ -21,10 +21,8 @@ testMain.cc
 #utils/GuidTest.cc
 net/TcpConnectionTest.cc
 #pass
-#net/TcpAcceptorTest.cc
+net/TcpAcceptorTest.cc
 
-#net/TcpConnectionTest.cc
-#net/TcpAcceptorTest.cc
 #net/EventLoopTest.cc
 #net/EpollTest.cc
 #net/SignalfdTest.cc
