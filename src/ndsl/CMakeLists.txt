@@ -52,6 +52,9 @@ set(LIB_NDSL_SRC
  utils/Log.cc
  # utils/Thread.cc
 #  utils/xmlconfig.cpp
+net/SocketOpt.cc
+net/EventfdChannel.cc
+net/EventfdConnection.cc
  )
 
 list(APPEND LIB_NDSL_SRC ${LIB_NDSL_SRC1})
