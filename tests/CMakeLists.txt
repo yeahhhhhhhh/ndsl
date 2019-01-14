@@ -7,7 +7,6 @@
 # @email xiaowen.nie.cn@gmail.com
 #
 include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/include/ndsl/net)
 
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -15,40 +14,36 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 # 设置单元测试的文件
 set(TEST 
 testMain.cc
-net/MultiplexerTest.cc
-utils/ErrorTest.cc
+
+# All files
 # net/EntityTest.cc
-
-utils/LogTest.cc
-utils/TimeStampTest.cc
-utils/PluginTest.cc
-utils/GuidTest.cc
-
 net/EpollTest.cc
 net/EventLoopTest.cc
-net/TcpConnectionTest.cc
-net/EventLoopTest.cc
+# net/FifoIpcTest.cc
+net/MultiplexerTest.cc
+# net/PipeAndFifoTest.cc
 net/SignalfdTest.cc
-#utils/LogTest.cc
-#utils/TimeStampTest.cc
-#utils/PluginTest.cc
-utils/GuidTest.cc
-net/PipeAndFifoTest.cc
-net/UnixAndTcpSocketAddressTest.cc
-net/UnixConnectionTest.cc
-#net/TcpConnectionTest.cc
-#net/TcpAcceptorTest.cc
-#net/EventLoopTest.cc
-#net/SignalfdTest.cc
+# net/TcpAcceptorTest.cc
+net/TcpConnectionTest.cc
+net/TimeWheelTest.cc
+net/UdpEndpointTest.cc
+# net/UnixAndTcpSocketAddressTest.cc
+# net/UnixConnectionTest.cc
 
+utils/EndianTest.cc
+utils/ErrorTest.cc
 utils/EventLoopThreadpoolTest.cc
-
+utils/GuidTest.cc
+utils/LogTest.cc
+utils/PluginTest.cc
+utils/ThreadTest.cc
+utils/TimeStampTest.cc
+# utils/XMLConfig_test.cc
 )
 
 # 设置ping-pong单元测试的文件
 #set(pingserver ping-pong/server.cc)
 #set(pingclient ping-pong/nClient.cc)
-
 #include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 # net和utils下的测试文件
