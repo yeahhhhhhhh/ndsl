@@ -1,4 +1,4 @@
-# Install script for directory: /home/user/Desktop/ndsl/tests
+# Install script for directory: /home/ranxiangjun/ndsl/tests
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

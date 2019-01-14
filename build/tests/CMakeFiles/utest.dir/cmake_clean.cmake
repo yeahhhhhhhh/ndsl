@@ -4,6 +4,9 @@ file(REMOVE_RECURSE
   "CMakeFiles/utest.dir/utils/TimeStampTest.cc.o"
   "CMakeFiles/utest.dir/utils/PluginTest.cc.o"
   "CMakeFiles/utest.dir/utils/GuidTest.cc.o"
+  "CMakeFiles/utest.dir/net/PipeAndFifoTest.cc.o"
+  "CMakeFiles/utest.dir/net/UnixAndTcpSocketAddressTest.cc.o"
+  "CMakeFiles/utest.dir/net/UnixConnectionTest.cc.o"
   "../bin/utest.pdb"
   "../bin/utest"
 )

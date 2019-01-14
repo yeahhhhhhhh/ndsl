@@ -12,10 +12,14 @@
 #include <cstring>
 #include <string>
 #include <cstdio>
-#include "../../../include/ndsl/utils/temp_define.h"
-#include "../../../include/ndsl/net/UnixAcceptor.h"
-#include "../../../include/ndsl/net/SocketAddressUn.h"
-#include "../../../include/ndsl/net/UnixConnection.h"
+#include <iostream>
+#include <errno.h>
+#include "config.h"
+#include "error.h"
+#include "Log.h"
+#include "UnixAcceptor.h"
+#include "SocketAddressUn.h"
+#include "UnixConnection.h"
 
 using namespace std;
 
@@ -81,11 +85,27 @@ int UnixAcceptor::createAndListen(const string& path)
 	unlink(path.c_str());
 
     // 设置非阻塞
-    fcntl(listenfd_, F_SETFL, O_NONBLOCK);
+	int flags = fcntl(listenfd_, F_GETFL, 0); //without it,other states may be cleaned
+	if (flags < 0)
+	{
+		// cout<<"fget failed: "<<strerror(errno)<<endl;
+		LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "fcntl get state error\n");
+		return S_FALSE;
+	}
+	flags |= O_NONBLOCK;
+	if( fcntl(listenfd_, F_SETFL, flags) < 0)
+	{
+		// cout<<"fset failed: "<<strerror(errno)<<endl;
+		LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "fcntl set state error\n");
+		return S_FALSE;	
+	}
 
     if (-1 ==bind(listenfd_, (struct sockaddr *) &servaddr, 
 				sizeof(servaddr))) 
-	{}
+	{
+		LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "bind error\n");
+		return S_FALSE;	
+	}
 
     if (-1 == listen(listenfd_, LISTENQ)) 
 	{}
@@ -110,7 +130,20 @@ int UnixAcceptor::handleRead(void *pthis)
     }
 
     // 设置非阻塞io
-    fcntl(connfd, F_SETFL, O_NONBLOCK);
+	int flags = fcntl(connfd, F_GETFL, 0); //without it,other states may be cleaned
+	if (flags < 0)
+	{
+		// cout<<"fget failed: "<<strerror(errno)<<endl;
+		LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "fcntl get state error\n");
+		return S_FALSE;
+	}
+	flags |= O_NONBLOCK;
+	if( fcntl(connfd, F_SETFL, flags) < 0)
+	{
+		// cout<<"fset failed: "<<strerror(errno)<<endl;
+		LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "fcntl set state error\n");
+		return S_FALSE;	
+	}
 
     if (pThis->info.inUse_) {
         ((pThis->info).pCon_)->createChannel(connfd, pThis->pUnixChannel_->pLoop_);

@@ -8,10 +8,11 @@
 #include <errno.h>
 #include <unistd.h>
 #include <sys/un.h>
-#include "../../../include/ndsl/net/UnixConnection.h"
-#include "../../../include/ndsl/utils/temp_define.h"
-#include "../../../include/ndsl/net/UnixChannel.h"
-#include "../../../include/ndsl/net/UnixAcceptor.h"
+#include "UnixConnection.h"
+#include "config.h"
+#include "error.h"
+#include "UnixChannel.h"
+#include "UnixAcceptor.h"
 
 namespace ndsl {
 namespace net {
@@ -45,7 +46,7 @@ int UnixConnection::onSend(
     } else if (n < 0) {      // 出错 通知用户
 		// error occurs, tell user
 		errorHandle_(errno, pUnixChannel_->getFd());
-        return S_FAIL;
+        return S_FALSE;
     }
 
     pInfo tsi = new Info;
@@ -100,13 +101,13 @@ int UnixConnection::handleWrite(void *pthis)
             if (pThis->qSendInfo_.size() == 0) 
 				pThis->pUnixChannel_->disableWriting();
 
-            return S_FAIL;
+            return S_FALSE;
         }
     }
     return S_OK;
 }
 
-// 如果执行成功，返回值就为 S_OK；如果出现错误，返回值就为 S_FAIL，并设置 errno 的值。
+// 如果执行成功，返回值就为 S_OK；如果出现错误，返回值就为 S_FALSE，并设置 errno 的值。
 int UnixConnection::onRecv(
     char *buf,
     size_t &len,
@@ -132,7 +133,7 @@ int UnixConnection::onRecv(
         } else {
 			// error occurs,callback user
 			errorHandle_(errno, pUnixChannel_->getFd());
-            return S_FAIL;
+            return S_FALSE;
         }
     }
 	// tell user after reading successfully in one time
@@ -147,7 +148,7 @@ int UnixConnection::handleRead(void *pthis)
     int sockfd = pThis->pUnixChannel_->getFd();
     if (sockfd < 0) 
 	{ 
-		return S_FAIL; 
+		return S_FALSE; 
 	}
     pInfo tsi = pThis->qRecvInfo_.front();
 
@@ -155,7 +156,7 @@ int UnixConnection::handleRead(void *pthis)
         if ((tsi->len_ = recv(sockfd, tsi->readBuf_, MAXLINE, tsi->flags_)) <0) {   // 出错就设置错误码
 			// error occurs
 			pThis->errorHandle_(errno, pThis->pUnixChannel_->getFd());
-			return S_FAIL;
+			return S_FALSE;
         }
     }
 

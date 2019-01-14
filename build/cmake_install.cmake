@@ -1,4 +1,4 @@
-# Install script for directory: /home/user/Desktop/ndsl
+# Install script for directory: /home/ranxiangjun/ndsl
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,8 +34,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/user/Desktop/ndsl/build/src/cmake_install.cmake")
-  include("/home/user/Desktop/ndsl/build/tests/cmake_install.cmake")
+  include("/home/ranxiangjun/ndsl/build/src/cmake_install.cmake")
+  include("/home/ranxiangjun/ndsl/build/tests/cmake_install.cmake")
 
 endif()
 
@@ -47,5 +47,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/user/Desktop/ndsl/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ranxiangjun/ndsl/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

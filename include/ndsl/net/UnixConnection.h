@@ -10,7 +10,7 @@
 #define __NDSL_NETUNIXCONNECTION_H__
 #include <queue>
 #include <sys/socket.h>
-#include "../utils/temp_define.h"
+#include "config.h"
 
 namespace ndsl {
 namespace net {
@@ -42,8 +42,10 @@ class UnixConnection
     std::queue<pInfo> qRecvInfo_; // 等待接收的队列
 
     UnixChannel *pUnixChannel_;
+	
 	// svae Acceptor UnixChannel
 	UnixAcceptor *pUnixAcceptor_;
+	
 	// calback function to deal with error
 	ErrorHandle errorHandle_;
 

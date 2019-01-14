@@ -7,6 +7,7 @@
 # @email xiaowen.nie.cn@gmail.com
 #
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include/ndsl/net)
 
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -19,6 +20,9 @@ utils/LogTest.cc
 utils/TimeStampTest.cc
 utils/PluginTest.cc
 utils/GuidTest.cc
+net/PipeAndFifoTest.cc
+net/UnixAndTcpSocketAddressTest.cc
+net/UnixConnectionTest.cc
 #net/TcpConnectionTest.cc
 #net/TcpAcceptorTest.cc
 #net/EventLoopTest.cc
