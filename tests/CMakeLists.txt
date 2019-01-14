@@ -15,20 +15,21 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 set(TEST 
 testMain.cc
 net/MultiplexerTest.cc
-#utils/ErrorTest.cc
+utils/ErrorTest.cc
+# net/EntityTest.cc
 
-#net/EntityTest.cc
+utils/LogTest.cc
+utils/TimeStampTest.cc
+utils/PluginTest.cc
+utils/GuidTest.cc
 
-#utils/LogTest.cc
-#utils/TimeStampTest.cc
-#utils/PluginTest.cc
-#utils/GuidTest.cc
-#net/TcpConnectionTest.cc
-#net/TcpAcceptorTest.cc
-#net/EventLoopTest.cc
-#net/SignalfdTest.cc
+net/EpollTest.cc
+net/EventLoopTest.cc
+net/TcpConnectionTest.cc
+net/EventLoopTest.cc
+net/SignalfdTest.cc
 
-#utils/EventLoopThreadpoolTest.cc
+utils/EventLoopThreadpoolTest.cc
 
 )
 
@@ -42,7 +43,7 @@ net/MultiplexerTest.cc
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl)
-#target_link_libraries(utest ndsl pthread) # boost_system)
+target_link_libraries(utest ndsl pthread) # boost_system)
 #target_link_libraries(utest ndsl pthread protobuf) # boost_system)
 
 

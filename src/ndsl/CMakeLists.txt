@@ -21,44 +21,25 @@ set(LIB_NDSL_SRC
  net/TcpAcceptor.cc
 
  net/Multiplexer.cc
- net/Protbload.pb.cc
+#  net/Protbload.pb.cc
  net/SocketAddress.cc
  net/SocketAddressUn.cc
  net/TcpClient.cc
  net/SocketAddress.cc
  net/SocketAddressUn.cc
+
  utils/Log.cc
+ utils/Error.cc
  utils/TimeStamp.cc
- #utils/Plugin.cc
+ utils/Plugin.cc
  utils/Guid.cc
+ utils/Thread.cc
+ utils/EventLoopThreadpool.cc
 
-#  net/Epoll.cc
-#  net/EventLoop.cc
-#  net/BaseChannel.cc
-#  net/TcpChannel.cc
-#  net/TcpConnection.cc
-#  net/TcpAcceptor.cc
-#  net/UdpEndpoint.cc
-#  utils/Error.cc
-#  net/Multiplexer.cc
-#  net/SocketAddress.cc
-#  net/SocketAddressUn.cc
-#  net/TcpClient.cc
-#  net/SocketAddress.cc
-#  net/SocketAddressUn.cc
-#  utils/Log.cc
-#  utils/TimeStamp.cc
-
- #utils/Guid.cc
- #utils/Thread.cc
- #net/WorkQueue.cc
- #net/InterruptChannel.cc
- #utils/EventLoopThreadpool.cc
   net/SignalChannel.cc
   net/SignalHandler.cc
 
- #net/TimeWheel.cc
- #utils/Thread.cc
+ net/TimeWheel.cc
 
  )
 

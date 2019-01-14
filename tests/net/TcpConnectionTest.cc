@@ -24,9 +24,9 @@
 using namespace ndsl;
 using namespace net;
 
-bool flag = false;
+bool flag1 = false;
 
-void fun1(void *a) { flag = true; }
+void func11(void *a) { flag1 = true; }
 
 bool flagsend = false;
 static void sendTest(void *a) { flagsend = true; }
@@ -62,7 +62,7 @@ TEST_CASE("net/TcpConnection(onRecv)")
         // TODO: 逻辑需要再调整，其实Acceptor不需要Connection
         // 可以直接在Acceptor里面弄一个函数 setAcceptInfo() 把信息传进去
         TcpConnection *Conn = new TcpConnection(tAc);
-        Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
+        Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, func11, NULL);
 
         // 启动一个客户端
         TcpConnection *pClientConn;
@@ -74,7 +74,7 @@ TEST_CASE("net/TcpConnection(onRecv)")
         REQUIRE(loop.loop(&loop) == S_OK);
 
         // 测试是否接收到了客户的连接
-        REQUIRE(flag == true);
+        REQUIRE(flag1 == true);
 
         // 测试onSend
         Conn->onError(iserror);
