@@ -44,12 +44,12 @@ TEST_CASE("net/TcpConnection(onRecv)")
         REQUIRE(loop.init() == S_OK);
 
         UnixAcceptor *tAc = new UnixAcceptor(&loop);
-        tAc->start("/mnt/unixsocket/test");
+        tAc->start("bin/test");
 
         // 准备接收的数据结构
         // struct sockaddr_un rservaddr;
         // bzero(&rservaddr, sizeof(rservaddr));
-		SocketAddressUn rservaddr;
+        SocketAddressUn rservaddr;
         socklen_t addrlen;
 
         UnixConnection *Conn = new UnixConnection(tAc);
@@ -62,7 +62,7 @@ TEST_CASE("net/TcpConnection(onRecv)")
         // servaddr.sin_family = AF_INET;
         // servaddr.sin_port = htons(SERV_PORT);
         // inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
-		SocketAddressUn servaddr("/mnt/unixsocket/test");
+        SocketAddressUn servaddr("bin/test");
         connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
 
         // 添加中断
