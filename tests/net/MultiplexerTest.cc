@@ -64,9 +64,9 @@ TEST_CASE("Mutiplexer/cbmaptest")
     Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun3, NULL);
 
     // 启动一个客户端
+    struct SocketAddress4 clientservaddr("127.0.0.1", 8456);
     TcpClient *pCli = new TcpClient();
-    if (pCli->onConnect(&loop, true) == NULL) printf("kong\n");
-    // REQUIRE(pCli->onConnect(&loop) == S_OK);
+    if (pCli->onConnect(&loop, true, clientservaddr) == NULL) printf("kong\n");
 
     // 添加中断
     loop.quit();

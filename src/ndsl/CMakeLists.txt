@@ -20,22 +20,21 @@ set(LIB_NDSL_SRC
  net/EventLoop.cc
  net/PipeChannel.cc
  # net/SignalHandler.cc
- # net/TcpAcceptor.cc
- # net/TcpConnection.cc
+  net/TcpAcceptor.cc
+  net/TcpConnection.cc
  # net/UdpClient.cc
  net/UnixChannel.cc
- # net/Multiplexer.cc
-#  net/Protbload.pb.cc
+  net/Multiplexer.cc
  net/SocketAddress.cc
- # net/TcpChannel.cc
+  net/TcpChannel.cc
  # net/TimeWheel.cc
  # net/UdpEndpoint.cc
  net/UnixConnection.cc
  net/Epoll.cc
- net/PipeAndFifo.cc
+ #net/PipeAndFifo.cc
  #  net/SignalChannel.cc
  net/SocketAddressUn.cc
- # net/TcpClient.cc
+  net/TcpClient.cc
  # net/UdpChannel.cc
  net/UnixAcceptor.cc
 

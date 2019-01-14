@@ -63,7 +63,7 @@ int main()
 
     // unsigned short p = 8888;
     struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
-    printf("success \n");
+
     TcpAcceptor *tAc = new TcpAcceptor(&loop);
     tAc->start(servaddr);
 
@@ -76,12 +76,11 @@ int main()
     Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun2, NULL);
 
     // 启动一个客户端
+    struct SocketAddress4 clientservaddr("127.0.0.1", 8456);
     TcpConnection *serverconn;
     TcpClient *pCli = new TcpClient();
-    serverconn = pCli->onConnect(&loop, false);
-    printf("222222222 \n");
-    // REQUIRE(pCli->onConnect(&loop) == S_OK);
-
+    if (serverconn = pCli->onConnect(&loop, true, clientservaddr) != NULL)
+        printf("success \n");
     // 添加中断
     loop.quit();
     loop.loop(&loop);
@@ -107,10 +106,13 @@ int main()
     /*********************************
      * 客户端服务器实体测试：
      ********************************/
+    int a, b;
+    printf("input the agv1 and agv2 of ADD: \n");
+    scanf("%d %d", &a, &b);
     std::string pstr;
     Protbload::ADD *addmessage = new Protbload::ADD;
-    addmessage->set_agv1(111);
-    addmessage->set_agv2(222);
+    addmessage->set_agv1(a);
+    addmessage->set_agv2(b);
     addmessage->SerializeToString(&pstr);
     int mlen = pstr.size();
     printf("the size of pstr is %d\n", mlen);
