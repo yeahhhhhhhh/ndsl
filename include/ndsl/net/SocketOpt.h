@@ -17,7 +17,7 @@ struct SocketOpt{
 
 public:
     //获得tcp信息
-    //成功返回0，失败返回-1
+    //成功返回0/S_OK，失败返回-1/S_FALSE
     int getTcpInfo(int sockfd,struct tcp_info*) const;
     int getTcpInfoString(int sockfd,char* buf,int len) const;
 
@@ -28,8 +28,8 @@ public:
 
 };
 
-}
-}
+} // namespace net
+} // namespace ndsl
 
 
 #endif

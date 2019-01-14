@@ -5,6 +5,7 @@
  * @description: Socket option
  */
 #include "ndsl/net/SocketOpt.h"
+#include "ndsl/utils/Log.h"
 
 #include <sys/socket.h> //getSockopt
 #include <sys/types.h> // getSockopt
@@ -71,14 +72,14 @@ namespace net{
     int optval = on ? 1 : 0;
     int ret = setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT,
                           &optval, static_cast<socklen_t>(sizeof optval));
-    // if (ret < 0 && on)
-    // {
-    // LOG_SYSERR << "SO_REUSEPORT failed.";
-    // }
+    if (ret < 0 && on)
+    {
+      LOG(LOG_ERROR_LEVEL, LOG_SOURCE_SOCKETOP, "SO_REUSEPORT failed.");
+    }
   #else
     if (on)
     {
-      // LOG_ERROR << "SO_REUSEPORT is not supported.";
+      LOG(LOG_ERROR_LEVEL, LOG_SOURCE_SOCKETOP, "SO_REUSEPORT is not supported.");
     }
   #endif
     return ret;
@@ -92,5 +93,5 @@ namespace net{
     
   }
 
-}
-}
+} // namespace net
+} // namespace ndsl

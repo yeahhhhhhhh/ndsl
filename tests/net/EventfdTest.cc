@@ -19,10 +19,10 @@ TEST_CASE("createChannel"){
     EventfdConnection *conn = new EventfdConnection();
     int efd;
     int ret = conn->createEventfd(efd);//创建eventfd
-    REQUIRE(ret == 1);
+    REQUIRE(ret == S_OK);
 
     ret = conn->createChannel(efd,&loop);//创建channel
-    REQUIRE(ret == 1);
+    REQUIRE(ret == S_OK);
 
     //写之前读，设置为非阻塞，会产生EAGAIN的错误
     uint64_t temp = 0;
@@ -35,7 +35,7 @@ TEST_CASE("createChannel"){
     uint64_t count = 2;
     ret = conn->onWrite(count,0,EventfdConnection::handleWrite,NULL);
     conn->onWrite(count,0,EventfdConnection::handleWrite,NULL);
-    REQUIRE(ret == 1);
+    REQUIRE(ret == S_OK);
     read(conn->pEventfdChannel_->getFd(),&temp,sizeof(temp));
     REQUIRE(temp == 4);
 
@@ -44,15 +44,15 @@ TEST_CASE("createChannel"){
     //再读，会产生EAGAIN的错误
     uint64_t count2 = 1;
     ret = read(conn->pEventfdChannel_->getFd(),&count2,sizeof(count2));
-    REQUIRE(ret == -1);
+    REQUIRE(ret == S_FALSE);
     REQUIRE(errno == EAGAIN);
     REQUIRE(count2 == 1);
 
     //写+读
     ret = conn->onWrite(count,0,EventfdConnection::handleWrite,NULL);
-    REQUIRE(ret == 1);
+    REQUIRE(ret == S_OK);
     ret = conn->onRead(count2,0,EventfdConnection::handleRead,NULL);
-    REQUIRE(ret == 1);
+    REQUIRE(ret == S_OK);
     REQUIRE(count2 == 2);
 
 

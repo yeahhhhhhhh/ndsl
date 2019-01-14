@@ -24,22 +24,22 @@ namespace net{
     int EventfdConnection::createEventfd(int &ev_fd){
         ev_fd = eventfd(0,EFD_NONBLOCK);//非阻塞
         if(ev_fd != -1)
-            return 1;//S_OK
+            return S_OK;
         else
-            return 0;//S_FALSE
+            return S_FALSE;
     }
 
     int EventfdConnection::createChannel(int fd,EventLoop *pLoop){
         // int fd_t = fd;
         //创建一个eventfd，创建一个channel，设置channel的loop/fd/回调函数
-        if(createEventfd(fd) == 1){
+        if(createEventfd(fd) == S_OK){
             pEventfdChannel_ = new EventfdChannel(fd,pLoop);
             pEventfdChannel_ -> setCallBack(handleRead,handleWrite,this);
             pEventfdChannel_ -> enroll(true);
 
-            return 1;//S_OK
+            return S_OK;
         }
-        return 0;//S_FALSE
+        return S_FALSE;
     }
 
     int EventfdConnection::onWrite(uint64_t &count,int flags,Callback cb,void *param){
@@ -47,11 +47,11 @@ namespace net{
 
         int ret = write(eventfd,&count,sizeof(count));
         if(ret == sizeof(count)){
-            return 1;                       
+            return S_OK;                       
         }else if(ret < 0){
             // printf("error occur...\n");
             errorHandle_(errno,pEventfdChannel_ -> getFd());
-            return 0;//S_FALSE
+            return S_FALSE;
         }else {
             pInfo tsi = new Info;
             // tsi->offset_ = 0;
@@ -62,9 +62,9 @@ namespace net{
             tsi->cb_ = cb;
             tsi->param_ = param;
             qSendInfo_.push(tsi);
-            return 1;//S_OK
+            return S_OK;
         }
-        return 0;//S_FALSE
+        return S_FALSE;
     }
 
     int EventfdConnection::handleWrite(void *pthis){
@@ -72,7 +72,7 @@ namespace net{
 
         int ev_fd = pThis->pEventfdChannel_->getFd();
 
-        if(ev_fd < 0)return -1;
+        if(ev_fd < 0)return S_FALSE;
 
         if(pThis->qSendInfo_.size() > 0){
             pInfo tsi = pThis -> qSendInfo_.front();
@@ -81,16 +81,16 @@ namespace net{
             if(ret == len){
                 pThis-> qSendInfo_.pop();
                 delete tsi;
-                return 1;
+                return S_OK;
             }else if(ret < 0){
                 // printf("error occur...\n");
                 pThis->errorHandle_(errno,pThis->pEventfdChannel_ -> getFd());
-                return 0;//S_FALSE
+                return S_FALSE;
             }else if(ret == 0){
-                return 1;//OK
+                return S_OK;
             }
         }
-        return 1;//OK
+        return S_OK;
     }
 
     int EventfdConnection::onRead(uint64_t &count,int flags,Callback cb,void *param){
@@ -99,7 +99,7 @@ namespace net{
         int ret = read(eventfd,&count,sizeof(count));
         if(ret == sizeof(count)){
             //close fd
-            return 1;
+            return S_OK;
         }else {
             if(errno == EAGAIN || errno == EWOULDBLOCK){
                 //加入回调，等待再读
@@ -107,9 +107,9 @@ namespace net{
                 RecvInfo_.cb_ = cb;
                 RecvInfo_.param_ = param;
 
-                return 1;//S_OK
+                return S_OK;
             }
-            return 0;//false
+            return S_FALSE;
         }  
     }
 
@@ -118,7 +118,7 @@ namespace net{
 
         int ev_fd = pThis->pEventfdChannel_->getFd();
 
-        if(ev_fd < 0)return -1;
+        if(ev_fd < 0)return S_FALSE;
 
 
         // pInfo tsi = pThis -> RecvInfo_;
@@ -127,16 +127,16 @@ namespace net{
         if(ret == len){
             
             // delete tsi;
-            return 1;
+            return S_OK;
         }else if(ret < 0){
             // printf("error occur...\n");
             pThis->errorHandle_(errno,pThis->pEventfdChannel_ -> getFd());
-            return 0;//S_FALSE
+            return S_FALSE;
         }else if(ret == 0){
-            return 1;//OK
+            return S_OK;
         }
 
-        return 1;//OK
+        return S_OK;
     }
-}
-}
+} // namespace net
+} // namespace ndsl

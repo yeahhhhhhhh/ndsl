@@ -54,5 +54,5 @@ class EventfdConnection{
         static int handleRead(void *pthis);
 };
 
-}
-}
+} // namespace net
+} // namespace ndsl
