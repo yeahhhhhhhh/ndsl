@@ -55,7 +55,6 @@ set(LIB_NDSL_SRC
  #utils/EventLoopThreadpool.cc
 #  net/SignalChannel.cc
 #  net/SignalHandler.cc
->>>>>>> master_1
 
  net/TimeWheel.cc
  utils/Thread.cc
