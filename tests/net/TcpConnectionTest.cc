@@ -11,11 +11,11 @@
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TcpAcceptor.h"
-// #include "ndsl/utils/temp_define.h"
 #include "ndsl/net/TcpClient.h"
 #include "ndsl/utils/Log.h"
 #include "ndsl/config.h"
 #include "ndsl/utils/Error.h"
+#include "ndsl/net/SocketAddress.h"
 #include <cstring>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -34,8 +34,8 @@ static void sendTest(void *a) { flagsend = true; }
 bool flagerror = false;
 static void iserror(int a, int b) { flagerror = true; }
 
-// bool flagrecv = false;
-// static void recvTest(void *a) { flagrecv = true; }
+bool flagrecv = false;
+static void recvTest(void *a) { flagrecv = true; }
 
 bool clientRecv = false;
 static void ClientRecvTest(void *a) { clientRecv = true; }
@@ -48,8 +48,11 @@ TEST_CASE("net/TcpConnection(onRecv)")
         EventLoop loop;
         REQUIRE(loop.init() == S_OK);
 
+        // 准备客户端的接受参数 默认全ip接受 端口9877
+        struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
+
         TcpAcceptor *tAc = new TcpAcceptor(&loop);
-        tAc->start();
+        tAc->start(servaddr);
 
         // 准备接收的数据结构
         struct sockaddr_in rservaddr;
@@ -76,7 +79,6 @@ TEST_CASE("net/TcpConnection(onRecv)")
         // 测试onSend
         Conn->onError(iserror);
         char *sendbuf = (char *) malloc(sizeof(char) * 12);
-        // sendbuf = 'hello world';
         strcpy(sendbuf, "hello world\0");
         Conn->onSend(sendbuf, strlen("hello world"), 0, sendTest, NULL);
 
@@ -89,14 +91,14 @@ TEST_CASE("net/TcpConnection(onRecv)")
         REQUIRE(flagsend == true);
         REQUIRE(clientRecv == true);
 
-        // // 测试onRecv
-        // memset(recvBuf, 0, sizeof(recvBuf));
-        // ssize_t len;
-        // write(pCli->sockfd_, "hello world", strlen("hello world"));
+        // 测试onRecv
+        memset(recvBuf, 0, sizeof(recvBuf));
+        ssize_t len;
+        write(pCli->sockfd_, "hello world", strlen("hello world"));
 
-        // REQUIRE(Conn->onRecv(recvBuf, &len, 0, recvTest, NULL) == S_OK);
-        // REQUIRE(len == strlen("hello world"));
-        // REQUIRE(flagrecv == true);
+        REQUIRE(Conn->onRecv(recvBuf, &len, 0, recvTest, NULL) == S_OK);
+        REQUIRE(len == strlen("hello world"));
+        REQUIRE(flagrecv == true);
 
         // 第二次不需要添加中断
         // loop.quit();

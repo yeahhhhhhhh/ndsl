@@ -6,7 +6,6 @@
  * @email mni_gyz@163.com
  */
 #include <boost/bind.hpp>
-// #include <boost/ptr_container/ptr_vector.hpp>
 #include <vector>
 #include <stdio.h>
 #include <cstring>

@@ -5,11 +5,11 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
-
 #include <cstdio>
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TcpAcceptor.h"
+#include "ndsl/net/SocketAddress.h"
 #include "ndsl/config.h"
 #include <cstring>
 #include <sys/socket.h>
@@ -47,31 +47,39 @@ static void onConnection(void *a)
     Conn->onRecv(sbuf, &len, 0, onMessage, NULL);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    // 启动服务
-    // 初始化EPOLL
-    int s;
+    if (argc < 4) {
+        fprintf(stderr, "Usage: server <address> <port> <threads>\n");
+    } else {
+        int s;
 
-    EventLoop loop;
-    s = loop.init();
-    if (s < 0) printf("loop init fail\n");
+        // 初始化EPOLL
+        EventLoop loop;
+        s = loop.init();
+        if (s < 0) printf("loop init fail\n");
 
-    TcpAcceptor *tAc = new TcpAcceptor(&loop);
-    s = tAc->start();
-    if (s < 0) printf("tAc->start fail\n");
+        struct SocketAddress4 servaddr(
+            argv[1], static_cast<unsigned short>(atoi(argv[2])));
 
-    // 准备接收的数据结构
-    struct sockaddr_in rservaddr;
-    bzero(&rservaddr, sizeof(rservaddr));
-    socklen_t addrlen;
+        // TODO: 线程还没加入 后面加
+        // int threadCount = atoi(argv[3]);
 
-    Conn = new TcpConnection(tAc);
-    Conn->onError(mError);
-    Conn->onAccept(
-        Conn, (struct sockaddr *) &rservaddr, &addrlen, onConnection, NULL);
+        TcpAcceptor *tAc = new TcpAcceptor(&loop);
+        s = tAc->start(servaddr);
+        if (s < 0) printf("tAc->start fail\n");
 
-    // 运行
-    // loop.loop();
-    EventLoop::loop(&loop);
+        // 准备接收的数据结构
+        struct sockaddr_in rservaddr;
+        bzero(&rservaddr, sizeof(rservaddr));
+        socklen_t addrlen;
+
+        Conn = new TcpConnection(tAc);
+        Conn->onError(mError);
+        Conn->onAccept(
+            Conn, (struct sockaddr *) &rservaddr, &addrlen, onConnection, NULL);
+
+        // 运行
+        EventLoop::loop(&loop);
+    }
 }

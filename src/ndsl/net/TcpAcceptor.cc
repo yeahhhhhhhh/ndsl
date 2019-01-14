@@ -60,9 +60,9 @@ int TcpAcceptor::setInfo(
     return S_OK;
 }
 
-int TcpAcceptor::start()
+int TcpAcceptor::start(struct SocketAddress4 servaddr)
 {
-    int n = createAndListen();
+    int n = createAndListen(servaddr);
     if (n < 0) {
         LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "createAndListen fail\n");
         return S_FALSE;
@@ -80,7 +80,7 @@ int TcpAcceptor::start()
     return S_OK;
 }
 
-int TcpAcceptor::createAndListen()
+int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
 {
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
     if (listenfd_ < 0) {
@@ -88,13 +88,14 @@ int TcpAcceptor::createAndListen()
         return S_FALSE;
     }
 
-    struct SocketAddress4 servaddr;
+    // 在这初始化 IP+PORT
+    // struct SocketAddress4 servaddr;
 
     // 设置非阻塞
     fcntl(listenfd_, F_SETFL, O_NONBLOCK);
     // setsockopt(listenfd_, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
 
-    servaddr.setPort(SERV_PORT);
+    // servaddr.setPort(SERV_PORT);
 
     if (-1 ==
         bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
@@ -140,6 +141,7 @@ int TcpAcceptor::handleRead(void *pthis)
             ->createChannel(connfd, pThis->pTcpChannel_->pLoop_);
         pThis->info.addr_ = (struct sockaddr *) &cliaddr;
         pThis->info.addrlen_ = (socklen_t *) &clilen;
+
         if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
 
         // proactor模式，需要循环注册

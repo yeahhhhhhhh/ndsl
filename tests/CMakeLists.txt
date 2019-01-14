@@ -29,12 +29,6 @@ net/TcpConnectionTest.cc
 #net/EpollTest.cc
 #net/SignalfdTest.cc
 
-# net/TcpConnectionTest.cc
-# net/TcpAcceptorTest.cc
-#net/EventLoopTest.cc
-#net/EpollTest.cc
-# net/SignalfdTest.cc
-
 #utils/EventLoopThreadpoolTest.cc
 
 )
