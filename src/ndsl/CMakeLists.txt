@@ -12,35 +12,36 @@ add_subdirectory(utils)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 set(LIB_NDSL_SRC
-#  net/Epoll.cc
-#  net/EventLoop.cc
-#  net/BaseChannel.cc
-#  net/TcpChannel.cc
-#  net/TcpConnection.cc
-#  net/TcpAcceptor.cc
+ net/Epoll.cc
+net/EventLoop.cc
+ net/BaseChannel.cc
+ net/TcpChannel.cc
+ net/TcpConnection.cc
+ net/TcpAcceptor.cc
 net/UdpEndpoint.cc
 utils/Endian.cc
 utils/Error.cc
-#  net/Multiplexer.cc
-#  net/SocketAddress.cc
-#  net/SocketAddressUn.cc
-#  net/TcpClient.cc
-#  net/SocketAddress.cc
-#  net/SocketAddressUn.cc
-#  utils/Log.cc
-#  utils/TimeStamp.cc
+ net/Multiplexer.cc
+net/SocketAddress.cc
+ net/SocketAddressUn.cc
+ net/TcpClient.cc
+ net/SocketAddress.cc
+ net/SocketAddressUn.cc
+ utils/Log.cc
+ net/UdpChannel.cc
+ utils/TimeStamp.cc
 
  #utils/Guid.cc
- #utils/Thread.cc
- #net/WorkQueue.cc
- #net/InterruptChannel.cc
- #utils/EventLoopThreadpool.cc
-#  net/SignalChannel.cc
-#  net/SignalHandler.cc
+ utils/Thread.cc
+#  net/WorkQueue.cc
+#  net/InterruptChannel.cc
+ utils/EventLoopThreadpool.cc
+ net/SignalChannel.cc
+net/SignalHandler.cc
 
  )
 
-# add_library(ndsl ${LIB_NDSL_SRC})
+add_library(ndsl ${LIB_NDSL_SRC})
 # #target_link_libraries(ndsl uuid)
 
 #生成libplugin.so

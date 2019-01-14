@@ -16,13 +16,19 @@ TEST_CASE("utils/Error")
     SECTION("geterror")
     {
         int ln =4;
-        char str[32]="Interrupted sysytem call";
+        char str[32]="Interrupted system call";
         err.getError(ln);
-        REQUIRE((err.getError(ln)) == str);
+        REQUIRE(strcmp((err.getError(ln)),str)==0);
         // char str[32] = "0D1A1E";
         // err.perr_exit(str);
         // err.lan();
     }
+    // SECTION("GET")
+    // {
+    //     int m=110;
+    //     char strl[32]="Connection timedout";
+    //     REQUIRE((err.getError(m)) == strl);
+    // }
     // SECTION("perr_exit"){
     //    err.perr_exit(errmsg);
     //    std::cout << errmsg << std::endl;
