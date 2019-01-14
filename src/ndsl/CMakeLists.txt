@@ -24,8 +24,7 @@ set(LIB_NDSL_SRC
  net/UdpClient.cc
 #  net/UnixChannel.cc
  net/Multiplexer.cc
-#  net/Protbload.pb.cc
-#  net/SocketAddress.cc
+ net/SocketAddress.cc
  net/TcpChannel.cc
  net/TimeWheel.cc
  net/UdpEndpoint.cc
@@ -33,12 +32,13 @@ set(LIB_NDSL_SRC
  net/Epoll.cc
 #  net/PipeAndFifo.cc
  net/SignalChannel.cc
-#  net/SocketAddressUn.cc
+# net/SocketAddressUn.cc
  net/TcpClient.cc
- net/UdpChannel.cc
-#  net/UnixAcceptor.cc
+# net/UdpChannel.cc
+# net/UnixAcceptor.cc
 
 #  third/pugixml.cpp
+third/Protbload.pb.cc
 
 #  utils/Clientplugin.cc
  utils/Endian.cc
@@ -56,6 +56,7 @@ set(LIB_NDSL_SRC
 list(APPEND LIB_NDSL_SRC ${LIB_NDSL_SRC1})
 add_library(ndsl ${LIB_NDSL_SRC})
 target_link_libraries(ndsl uuid)
+
 
 #生成libplugin.so
  #set(LIB_SRC utils/Plugin.cc)

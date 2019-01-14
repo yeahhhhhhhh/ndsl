@@ -23,7 +23,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string>
-#include "ndsl/net/Protbload.pb.h"
+#include "ndsl/third/Protbload.pb.h"
 
 using namespace ndsl;
 using namespace net;
@@ -52,9 +52,9 @@ void clientcallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
     printf("result==%d \n", resultmessage->answer());
 }
 
-bool flag = false;
+bool flag2 = false;
 
-void fun1(void *a) { flag = true; }
+void fun2(void *a) { flag2 = true; }
 
 TEST_CASE("Entitytest")
 {
@@ -62,8 +62,9 @@ TEST_CASE("Entitytest")
     // 初始化EPOLL
     EventLoop loop;
     REQUIRE(loop.init() == S_OK);
+    // unsigned short p = 8888;
     struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
-
+    printf("success \n");
     TcpAcceptor *tAc = new TcpAcceptor(&loop);
     tAc->start(servaddr);
 
@@ -73,20 +74,23 @@ TEST_CASE("Entitytest")
     socklen_t addrlen;
 
     TcpConnection *Conn = new TcpConnection(tAc);
-    Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
+    Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun2, NULL);
 
     // 启动一个客户端
     TcpConnection *serverconn;
     TcpClient *pCli = new TcpClient();
-    REQUIRE((serverconn = pCli->onConnect(&loop, true)) != NULL);
+    REQUIRE((serverconn = pCli->onConnect(&loop, false)) != NULL);
+    printf("222222222 \n");
     // REQUIRE(pCli->onConnect(&loop) == S_OK);
 
     // 添加中断
     loop.quit();
     REQUIRE(loop.loop(&loop) == S_OK);
+    printf("33333333333 \n");
     Multiplexer *clientmulti = new Multiplexer(Conn);
+    printf("44444444444 \n");
     Multiplexer *servermulti = new Multiplexer(serverconn);
-
+    printf("55555555555 \n");
     REQUIRE(loop.loop(&loop) == S_OK);
 
     SECTION("entity")
