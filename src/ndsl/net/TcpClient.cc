@@ -6,6 +6,7 @@
  * @email mni_gyz@163.com
  */
 #include <sys/socket.h>
+#include <fcntl.h>
 
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/TcpClient.h"
@@ -14,13 +15,15 @@
 #include "ndsl/utils/Error.h"
 #include "ndsl/utils/Log.h"
 
+#include <cstdio>
+
 namespace ndsl {
 namespace net {
 
 TcpClient::TcpClient() {}
 TcpClient::~TcpClient() {}
 
-TcpConnection *TcpClient::onConnect(EventLoop *loop)
+TcpConnection *TcpClient::onConnect(EventLoop *loop, bool isConnNoBlock)
 {
     sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -29,12 +32,21 @@ TcpConnection *TcpClient::onConnect(EventLoop *loop)
 
     inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 
+    // 设成非阻塞
+    if (isConnNoBlock) fcntl(sockfd_, F_SETFL, O_NONBLOCK);
+
     int n;
     if ((n = connect(sockfd_, (SA *) &servaddr, sizeof(servaddr))) < 0) {
-        // connect出错 返回
-        // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "connect fail\n");
-        return NULL;
+        if (errno != EINPROGRESS) {
+            // connect出错 返回
+            // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "connect fail\n");
+            printf("TcpClient::onConnection connect fail\n");
+            return NULL;
+        }
     }
+
+    // 设成非阻塞
+    if (!isConnNoBlock) fcntl(sockfd_, F_SETFL, O_NONBLOCK);
 
     // 创建一个TcpConnection
     TcpConnection *conn = new TcpConnection();
@@ -44,15 +56,8 @@ TcpConnection *TcpClient::onConnect(EventLoop *loop)
         return NULL;
     }
 
-    conn->pTcpChannel_ = new TcpChannel(sockfd_, loop);
-    if (NULL == conn->pTcpChannel_) {
-        // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "new TcpChannel fail\n");
-        return NULL;
-    }
-    conn->pTcpChannel_->setCallBack(TcpConnection::handleRead, NULL, conn);
-    n = conn->pTcpChannel_->enrollIn(true);
-    if (n < 0) {
-        // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "enrollIn fail\n");
+    if ((n = conn->createChannel(sockfd_, loop)) < 0) {
+        printf("TcpClient::onConnection createChannel fail\n");
         return NULL;
     }
 

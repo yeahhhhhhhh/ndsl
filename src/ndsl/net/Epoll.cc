@@ -94,6 +94,7 @@ int Epoll::wait(Channel *channels[], int &nEvents, int timeoutMs)
 
     if (ret < 0) {
         LOG(LOG_DEBUG_LEVEL, LOG_SOURCE_EPOLL, "Epoll::wait epoll_wait\n");
+        printf("Epoll::wait errno = %d,%s\r\n", errno, strerror(errno));
         return errno;
     }
 

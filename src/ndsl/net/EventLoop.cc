@@ -86,6 +86,8 @@ void *EventLoop::loop(void *pThis)
     int nEvents = 0;
     // 进入事件循环
     while (true) {
+        // printf("EventLoop::loop while(true)\n");
+
         Channel *channels[Epoll::MAX_EVENTS];
         // LOG(LOG_DEBUG_LEVEL, "onWait\n");
         if (S_OK != el->epoll_.wait(channels, nEvents, -1)) {
@@ -95,6 +97,8 @@ void *EventLoop::loop(void *pThis)
 
         bool quit = false;    // 退出标志
         bool haswork = false; // 中断标志
+
+        // printf("EventLoop::loop flag 1\n");
 
         // 处理事件
         for (int i = 0; i < nEvents; i++) {
@@ -106,11 +110,14 @@ void *EventLoop::loop(void *pThis)
                 channels[i]->handleEvent();
         }
 
+        // printf("EventLoop::loop flag 2\n");
+
         // 处理任务队列
         if (haswork) { el->pQueCh_->handleEvent(); }
         // 退出
         if (quit) break;
     }
+    // printf("EventLoop::loop quit\n");
     return S_OK;
 }
 
