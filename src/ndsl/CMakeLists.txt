@@ -30,7 +30,7 @@ set(LIB_NDSL_SRC
  utils/Log.cc
  utils/TimeStamp.cc
  #utils/Plugin.cc
- #utils/Guid.cc
+ utils/Guid.cc
 
 #  net/Epoll.cc
 #  net/EventLoop.cc
@@ -63,7 +63,7 @@ set(LIB_NDSL_SRC
  )
 
  add_library(ndsl ${LIB_NDSL_SRC})
- target_link_libraries(ndsl )
+ target_link_libraries(ndsl uuid)
 
 #生成libplugin.so
  #set(LIB_SRC utils/Plugin.cc)
