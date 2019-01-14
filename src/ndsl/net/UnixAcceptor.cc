@@ -27,15 +27,16 @@ namespace ndsl {
 namespace net {
 
 UnixAcceptor::UnixAcceptor(EventLoop *pLoop)
-    : listenfd_(-1), pLoop_(pLoop)
+    : listenfd_(-1), pLoop_(pLoop), pUnixChannel_(NULL)
 {
 	info.inUse_ = false;
+	cb_ = NULL;
 }
 
 UnixAcceptor::~UnixAcceptor() { delete pUnixChannel_; }
 
 UnixAcceptor::UnixAcceptor(Callback cb, EventLoop *pLoop) 
-	:listenfd_(-1), pLoop_(pLoop), cb_(cb)
+	:listenfd_(-1), pLoop_(pLoop), pUnixChannel_(NULL), cb_(cb)
 {
 	info.inUse_ = false;
 
@@ -71,7 +72,7 @@ int UnixAcceptor::start(const string& path)
     pUnixChannel_ = new UnixChannel(listenfd_, pLoop_);
     pUnixChannel_->setCallBack(handleRead, NULL, this);
     pUnixChannel_->enroll(false);
-	pUnixChannel_->enableReading();
+	// pUnixChannel_->enableReading();
 
     return S_OK;
 }
@@ -151,7 +152,8 @@ int UnixAcceptor::handleRead(void *pthis)
         pThis->info.addrlen_ = (socklen_t *) &clilen;
         if (pThis->info.cb_ != NULL) 
 			pThis->info.cb_(pThis->info.param_);
-        pThis->pUnixChannel_->disableReading();
+         //pThis->pUnixChannel_->disableReading();
+		 pThis->info.inUse_ = false;
     }
 
 	// test use

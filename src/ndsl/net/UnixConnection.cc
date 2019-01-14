@@ -16,9 +16,12 @@
 
 namespace ndsl {
 namespace net {
+	
+UnixConnection::UnixConnection():pUnixAcceptor_(NULL), pUnixChannel_(NULL){}
 
 UnixConnection::UnixConnection(UnixAcceptor *unixAcceptor)
-	:pUnixAcceptor_(unixAcceptor){}
+	:pUnixAcceptor_(unixAcceptor), pUnixChannel_(NULL){}
+
 UnixConnection::~UnixConnection() {}
 
 int UnixConnection::createChannel(int sockfd, EventLoop *pLoop)
@@ -60,7 +63,7 @@ int UnixConnection::onSend(
 
     qSendInfo_.push(tsi);
 
-    pUnixChannel_->enableWriting();
+    // pUnixChannel_->enableWriting();
 
     return S_OK;
 }
@@ -70,7 +73,7 @@ int UnixConnection::handleWrite(void *pthis)
 	UnixConnection *pThis = static_cast<UnixConnection *>(pthis);
     int sockfd = pThis->pUnixChannel_->getFd();
     if (sockfd < 0) { return -1; }
-    size_t n;
+    ssize_t n;
 
     if (pThis->qSendInfo_.size() > 0) {
         pInfo tsi = pThis->qSendInfo_.front();
@@ -85,8 +88,8 @@ int UnixConnection::handleWrite(void *pthis)
             if (tsi->offset_ == tsi->len_) {
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();    // 无写事件 注销写事件
-                if (pThis->qSendInfo_.size() == 0) 
-					pThis->pUnixChannel_->disableWriting();
+                // if (pThis->qSendInfo_.size() == 0) 
+					// pThis->pUnixChannel_->disableWriting();
                 delete tsi; // 删除申请的内存
             } else if (n == 0) {  // 发送缓冲区满 等待下一次被调用
                 return S_OK;
@@ -98,8 +101,8 @@ int UnixConnection::handleWrite(void *pthis)
             delete tsi;
 
             // 无写事件 注销写事件
-            if (pThis->qSendInfo_.size() == 0) 
-				pThis->pUnixChannel_->disableWriting();
+            // if (pThis->qSendInfo_.size() == 0) 
+				// pThis->pUnixChannel_->disableWriting();
 
             return S_FALSE;
         }
@@ -118,17 +121,17 @@ int UnixConnection::onRecv(
     int sockfd = pUnixChannel_->getFd();
     if ((len = recv(sockfd, buf, MAXLINE, flags)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            pUnixChannel_->enableReading();
+            // pUnixChannel_->enableReading();
 
-            pInfo tsi = new Info;
-            tsi->readBuf_ = buf;
-            tsi->sendBuf_ = NULL;
-            tsi->flags_ = flags;
-            tsi->len_ = len;
-            tsi->cb_ = cb;
-            tsi->param_ = param;
+            // pInfo tsi = new Info;
+            RecvInfo_.readBuf_ = buf;
+            RecvInfo_.sendBuf_ = NULL;
+            RecvInfo_.flags_ = flags;
+            RecvInfo_.len_ = len;
+            RecvInfo_.cb_ = cb;
+            RecvInfo_.param_ = param;
 
-            qRecvInfo_.push(tsi);
+            // qRecvInfo_.push(tsi);
             return S_OK;
         } else {
 			// error occurs,callback user
@@ -150,23 +153,33 @@ int UnixConnection::handleRead(void *pthis)
 	{ 
 		return S_FALSE; 
 	}
-    pInfo tsi = pThis->qRecvInfo_.front();
+    // pInfo tsi = pThis->qRecvInfo_.front();
+	ssize_t n;
 
-    if (pThis->qRecvInfo_.size() > 0) {
-        if ((tsi->len_ = recv(sockfd, tsi->readBuf_, MAXLINE, tsi->flags_)) <0) {   // 出错就设置错误码
-			// error occurs
-			pThis->errorHandle_(errno, pThis->pUnixChannel_->getFd());
-			return S_FALSE;
-        }
+    // if (pThis->qRecvInfo_.size() > 0) {
+        // if ((tsi->len_ = recv(sockfd, tsi->readBuf_, MAXLINE, tsi->flags_)) <0) {   // 出错就设置错误码
+			// // error occurs
+			// pThis->errorHandle_(errno, pThis->pUnixChannel_->getFd());
+			// return S_FALSE;
+        // }
+    // }
+	if ((n = recv(sockfd, pThis->RecvInfo_.readBuf_, MAXLINE, pThis->RecvInfo_.->flags_)) <0) 
+	{   // 出错就设置错误码
+		// error occurs
+		pThis->errorHandle_(errno, pThis->pUnixChannel_->getFd());
+		(*pThis->RecvInfo_.len_) = n;
+		return S_FALSE;
     }
 
+	(*pThis->RecvInfo_.len_) = n;
     // 无论出错还是完成数据读取之后都得通知用户
-    if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
-    pThis->qRecvInfo_.pop();
-    delete tsi;
-    if (pThis->qRecvInfo_.size() == 0) {  // 将读事件移除
-        pThis->pUnixChannel_->disableReading();
-    }
+    if (pThis->RecvInfo_.cb_ != NULL) 
+		pThis->RecvInfo_.cb_(pThis->RecvInfo_.param_);
+    // pThis->qRecvInfo_.pop();
+    // delete tsi;
+    // if (pThis->qRecvInfo_.size() == 0) {  // 将读事件移除
+        // pThis->pUnixChannel_->disableReading();
+    // }
 
     return S_OK;
 }
@@ -178,10 +191,10 @@ int UnixConnection::onAccept(
     Callback cb,
     void *param)
 {
-	pUnixAcceptor_->setInfo(pCon, addr, addrlen, cb, param);
-	pUnixAcceptor_->getUnixChannel()->enableReading();
+	return pUnixAcceptor_->setInfo(pCon, addr, addrlen, cb, param);
+	// pUnixAcceptor_->getUnixChannel()->enableReading();
 
-	return S_OK;
+	// return S_OK;
 }
 
 int UnixConnection::onError(ErrorHandle cb)

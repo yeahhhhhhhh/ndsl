@@ -50,6 +50,7 @@ class UnixConnection
 	ErrorHandle errorHandle_;
 
   public:
+	UnixConnection();
     UnixConnection(UnixAcceptor *unixAcceptor);
     ~UnixConnection();
 
