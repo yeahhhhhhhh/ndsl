@@ -7,7 +7,7 @@
 # @email xiaowen.nie.cn@gmail.com
 #
 include_directories(${CMAKE_SOURCE_DIR}/include)
-add_subdirectory(entitytest)
+#add_subdirectory(entitytest)
 
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -15,20 +15,21 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 # 设置单元测试的文件
 set(TEST 
 testMain.cc
+
 net/MultiplexerTest.cc
 # All files
 net/EpollTest.cc
 net/EventLoopTest.cc
- net/FifoIpcTest.cc
+net/FifoIpcTest.cc
 
- net/PipeAndFifoTest.cc
+net/PipeAndFifoTest.cc
 net/SignalfdTest.cc
- net/TcpAcceptorTest.cc
+net/TcpAcceptorTest.cc
 net/TcpConnectionTest.cc
 net/TimeWheelTest.cc
-net/UdpEndpointTest.cc
- net/UnixAndTcpSocketAddressTest.cc
- net/UnixConnectionTest.cc
+net/UdpEndpointTest.cc 
+net/UnixAndTcpSocketAddressTest.cc
+net/UnixConnectionTest.cc
 
 utils/EndianTest.cc
 utils/ErrorTest.cc
@@ -38,7 +39,7 @@ utils/LogTest.cc
 utils/PluginTest.cc
 utils/ThreadTest.cc
 utils/TimeStampTest.cc
- utils/XMLConfig_test.cc
+utils/XMLConfig_test.cc
 )
 
 # 设置ping-pong单元测试的文件

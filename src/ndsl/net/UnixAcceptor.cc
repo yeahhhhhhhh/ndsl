@@ -14,12 +14,12 @@
 #include <cstdio>
 #include <iostream>
 #include <errno.h>
-#include "config.h"
-#include "error.h"
-#include "Log.h"
-#include "UnixAcceptor.h"
-#include "SocketAddressUn.h"
-#include "UnixConnection.h"
+#include "ndsl/config.h"
+#include "ndsl/utils/Error.h"
+#include "ndsl/utils/Log.h"
+#include "ndsl/net/UnixAcceptor.h"
+#include "ndsl/net/SocketAddressUn.h"
+#include "ndsl/net/UnixConnection.h"
 
 using namespace std;
 
