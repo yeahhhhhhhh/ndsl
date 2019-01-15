@@ -14,73 +14,52 @@ add_subdirectory(net)
 add_subdirectory(utils)
 
 set(LIB_NDSL_SRC
- net/Epoll.cc
-net/EventLoop.cc
- net/BaseChannel.cc
- net/TcpChannel.cc
- net/TcpConnection.cc
- net/TcpAcceptor.cc
-net/UdpEndpoint.cc
-utils/Endian.cc
-utils/Error.cc
- net/Multiplexer.cc
-net/SocketAddress.cc
- net/SocketAddressUn.cc
- net/TcpClient.cc
- net/SocketAddress.cc
- net/SocketAddressUn.cc
- utils/Log.cc
- net/UdpChannel.cc
- utils/TimeStamp.cc
-
- #utils/Guid.cc
- utils/Thread.cc
-#  net/WorkQueue.cc
-#  net/InterruptChannel.cc
- utils/EventLoopThreadpool.cc
- net/SignalChannel.cc
-net/SignalHandler.cc
-
   #all files
- net/BaseChannel.cc
- net/EventLoop.cc
- net/PipeChannel.cc
- # net/SignalHandler.cc
+  net/BaseChannel.cc
+  net/EventLoop.cc
+  net/PipeChannel.cc
+  net/SignalHandler.cc
   net/TcpAcceptor.cc
+
   net/TcpConnection.cc
- #net/UdpClient.cc
- net/UnixChannel.cc
+  #net/UdpClient.cc
+  net/UnixChannel.cc
   net/Multiplexer.cc
- net/SocketAddress.cc
+  net/SocketAddress.cc
+
   net/TcpChannel.cc
- net/TimeWheel.cc
- #net/UdpEndpoint.cc
- net/UnixConnection.cc
- net/Epoll.cc
- #net/PipeAndFifo.cc
- #  net/SignalChannel.cc
- net/SocketAddressUn.cc
- net/TcpClient.cc
- #net/UdpChannel.cc
- net/UnixAcceptor.cc
+  net/TimeWheel.cc
+  net/UdpEndpoint.cc
+  net/UnixConnection.cc
+  net/Epoll.cc
 
-#  third/pugixml.cpp
+  net/PipeAndFifo.cc
+  net/SignalChannel.cc
+  net/SocketAddressUn.cc
+  net/TcpClient.cc
+  net/UdpChannel.cc
+  net/UnixAcceptor.cc
 
-#  utils/Clientplugin.cc
- #utils/Endian.cc
- utils/EventLoopThreadpool.cc
- utils/Interrupter.cc
- # utils/Plugin.cc
- utils/TimeStamp.cc
- utils/Error.cc
- # utils/Guid.cc
- utils/Log.cc
- utils/Thread.cc
-#  utils/xmlconfig.cpp
+
+  #third/pugixml.cpp
+
+
+  #utils/Clientplugin.cc
+  utils/Endian.cc
+  utils/EventLoopThreadpool.cc
+  utils/Interrupter.cc
+  utils/Plugin.cc
+
+  utils/TimeStamp.cc
+  utils/Error.cc
+  utils/Guid.cc
+  utils/Log.cc
+  utils/Thread.cc
+  #utils/xmlconfig.cpp
  )
 
 add_library(ndsl ${LIB_NDSL_SRC})
-# #target_link_libraries(ndsl uuid)
+target_link_libraries(ndsl uuid)
 
 #生成libplugin.so
  #set(LIB_SRC utils/Plugin.cc)
