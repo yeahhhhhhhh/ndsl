@@ -19,12 +19,12 @@ net/MultiplexerTest.cc
 # All files
 #net/EpollTest.cc
 #net/EventLoopTest.cc
-# net/FifoIpcTest.cc
-#net/MultiplexerTest.cc
-# net/PipeAndFifoTest.cc
+#net/FifoIpcTest.cc
+
+#net/PipeAndFifoTest.cc
 #net/SignalfdTest.cc
-# net/TcpAcceptorTest.cc
-#net/TcpConnectionTest.cc
+net/TcpAcceptorTest.cc
+net/TcpConnectionTest.cc
 #net/TimeWheelTest.cc
 net/UdpEndpointTest.cc
 # net/UnixAndTcpSocketAddressTest.cc
