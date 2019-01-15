@@ -29,11 +29,11 @@ UdpEndpoint *UdpClient::begin(EventLoop *loop)
     inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 
     int n;
-    UdpEndpoint *ue = new UdpEndpoint();
-
-    ue->pUdpChannel_ = new UdpChannel(sfd, loop);
-    ue->pUdpChannel_->setCallBack(UdpEndpoint::handleRead, NULL, ue);
-    n = ue->pUdpChannel_->enrollIn(true);
+    UdpEndpoint *ue=new UdpEndpoint(loop);
+    if((n=ue->createChannel(sfd,loop))< 0)
+    {
+        return NULL;
+    }
 
     return ue;
 }
