@@ -37,7 +37,7 @@ net/SocketAddress.cc
 #  net/WorkQueue.cc
 #  net/InterruptChannel.cc
  utils/EventLoopThreadpool.cc
- net/SignalChannel.cc
+ #net/SignalChannel.cc
 net/SignalHandler.cc
 
  )

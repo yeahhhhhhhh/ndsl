@@ -273,16 +273,6 @@ int UdpEndpoint::handleRead(void *pthis)
     return S_OK;
 }
 
- int UdpEndpoint::onData(
-        struct sockaddr *addr,
-        socklen_t *addrlen,
-        Callback cb,
-        void *param)
- {
-
-     return setInfo(addr,addrlen,cb,param);
-  }
-
 // int UdpEndpoint::remove()
 // {
 //     pUdpChannel_->erase();

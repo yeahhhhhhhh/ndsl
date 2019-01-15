@@ -67,11 +67,10 @@ class  UdpEndpoint
     // 创建一个channel,并将fd发给channel,param为用户回调参数
     int createChannel(int sockfd,EventLoop *pLoop); 
 
-    // 客户端连接后的处理
     static int handleRead1(void *pthis);
     int start(struct SocketAddress4 servaddr);
 
-    // 保存用户信息 填充上面的结构体
+    // 保存用户信息,主要是地址
     int setInfo(
         struct sockaddr *addr,
         socklen_t *addrlen,
@@ -87,12 +86,6 @@ class  UdpEndpoint
 
     int onSend(void *buf, ssize_t len, int flags,struct sockaddr *dest_addr_,socklen_t addrlen,Callback cb, void *param); // 用户调用send发送数据
 
-    int onData(
-        struct sockaddr *addr,
-        socklen_t *addrlen,
-        Callback cb,
-        void *param);
-    
     // // 清除注册
     // int remove();
 };

@@ -54,7 +54,7 @@ TEST_CASE("net/UdpEndpoint")
 		REQUIRE((pClient = pCli->begin(&loop,cliservaddr))!= NULL);
 	}
 
-	SECTION("regist"){
+	SECTION("注册udpchannel"){
 		
   		REQUIRE(t->createChannel(s,&loop)== 0);
   		
