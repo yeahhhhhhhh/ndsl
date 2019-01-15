@@ -13,8 +13,8 @@
 TEST_CASE("Xml")
 {
     std::ifstream stream1("phone.xml");
-    for (std::string str; getline(stream1, str);) // getline()逐行读取文本
-        std::cout << str << std::endl;
+    // for (std::string str; getline(stream1, str);) // getline()逐行读取文本
+    // std::cout << str << std::endl;
     // stream1->std::cout;
     ndsl::utils::XML xml;
     xml_node node(NULL);
@@ -25,10 +25,10 @@ TEST_CASE("Xml")
     {
         // REQUIRE(xml.loadstream(stream) == 0);
 
-        REQUIRE(xml.getfirstnode("phone_books", node) == 0);
+        REQUIRE(xml.getfirstnode("phone_books/phone", node) == 0);
         // node.print(std::cout);
 
-        REQUIRE(xml.getnodesets("phone_books", set) == 0);
+        // REQUIRE(xml.getnodesets("phone_books", set) == 0);
 
         //  xml.getfirstnode("Phone_books/phone", node);
 
