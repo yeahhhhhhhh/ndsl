@@ -28,11 +28,17 @@ utils/Error.cc
 net/SocketAddress.cc
  net/SocketAddressUn.cc
  net/TcpClient.cc
+ net/PipeChannel.cc
+ net/PipeAndFifo.cc
  net/SocketAddress.cc
  net/SocketAddressUn.cc
  utils/Log.cc
  net/UdpChannel.cc
  utils/TimeStamp.cc
+ net/TimeWheel.cc
+ net/UnixConnection.cc
+ net/UnixChannel.cc
+ net/UnixAcceptor
 
  #utils/Guid.cc
  utils/Thread.cc
