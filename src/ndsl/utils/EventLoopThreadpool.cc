@@ -81,6 +81,10 @@ EventLoop *EventLoopThreadpool::getNextEventLoop()
         return loops_[nextThread_++];
     else if (nextThread_ == loops_.size()) {
         EventLoop *el = new EventLoop();
+
+        // TODO: 在这里对EventLoop进行初始化
+        el->init();
+
         EventLoopThread *elt = new EventLoopThread(el);
 
         loops_.push_back(el);

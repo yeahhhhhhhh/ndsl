@@ -7,19 +7,22 @@
 // @email 1575033031@qq.com
 //
 #include "../catch.hpp"
+#include "ndsl/config.h"
 #include "ndsl/utils/Plugin.h"
 
-int func(int para)
+
+
+void func(void* para)
 {
-    para++;
-    return para;
+    //cdprintf("func!\n");
 }
+
 TEST_CASE("Plugin")
 {
-    // ndsl::utils::Plugin plugin;
     SECTION("doit")
-    {
-        // plugin = CreatPlugin();
-        // REQUIRE(plugin.doit(func,5) == 6);
+    {      
+        Plugin1* plugin;
+        plugin = (Plugin1 *)CreatPlugin(1);
+        REQUIRE(plugin->doit(func,NULL) == S_OK);
     }
 }

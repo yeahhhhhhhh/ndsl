@@ -8,7 +8,7 @@
 //
 #ifndef __NDSL_NET_UNIXCHANNEL_H__
 #define __NDSL_NET_UNIXCHANNEL_H__
-#include "BaseChannel.h"
+#include "ndsl/net/BaseChannel.h"
 
 namespace ndsl {
 namespace net {

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-//#include <uuid/uuid.h>
+#include <uuid/uuid.h>
 #include "ndsl/utils/Guid.h"
 
 #include <iostream>

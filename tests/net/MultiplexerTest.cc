@@ -15,6 +15,7 @@
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/TcpClient.h"
 #include "ndsl/net/Epoll.h"
+#include "ndsl/net/SocketAddress.h"
 #include <sys/socket.h>
 #include "ndsl/config.h"
 #include <cstring>
@@ -26,7 +27,8 @@ using namespace ndsl;
 using namespace net;
 
 int id = 11;
-static void entitycallbak(char *data, int len, int ero)
+static void
+entitycallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
     printf("********entity callback********\n");
     char *p = data;
@@ -37,9 +39,9 @@ static void entitycallbak(char *data, int len, int ero)
     printf("\n");
 }
 
-bool flag = false;
+bool flag3 = false;
 
-void fun1(void *a) { flag = true; }
+void fun3(void *a) { flag3 = true; }
 
 TEST_CASE("Mutiplexer/cbmaptest")
 {
@@ -48,8 +50,10 @@ TEST_CASE("Mutiplexer/cbmaptest")
     EventLoop loop;
     REQUIRE(loop.init() == S_OK);
 
+    struct SocketAddress4 servaddr("0.0.0.0", 7878);
+
     TcpAcceptor *tAc = new TcpAcceptor(&loop);
-    tAc->start();
+    tAc->start(servaddr);
 
     // 准备接收的数据结构
     struct sockaddr_in rservaddr;
@@ -57,12 +61,12 @@ TEST_CASE("Mutiplexer/cbmaptest")
     socklen_t addrlen;
 
     TcpConnection *Conn = new TcpConnection(tAc);
-    Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
+    Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun3, NULL);
 
     // 启动一个客户端
+    struct SocketAddress4 clientservaddr("127.0.0.1", 7878);
     TcpClient *pCli = new TcpClient();
-    if (pCli->onConnect(&loop) == NULL) printf("kong\n");
-    // REQUIRE(pCli->onConnect(&loop) == S_OK);
+    if (pCli->onConnect(&loop, true, clientservaddr) == NULL) printf("kong\n");
 
     // 添加中断
     loop.quit();
@@ -143,7 +147,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
 
         /*********************************
          * dispatch 测试：一个长消息
-         ********************************/
+        //  ********************************/
         int id2 = 99;
         mymulti->addInsertWork(id2, entitycallbak);
         int len2 = 60;

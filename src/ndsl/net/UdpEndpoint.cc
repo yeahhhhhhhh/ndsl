@@ -39,12 +39,11 @@ UdpEndpoint::UdpEndpoint(EventLoop *pLoop)
 
 UdpEndpoint::~UdpEndpoint() {}
 
-
-int UdpEndpoint::createChannel(int sockfd,EventLoop *pLoop)
+int UdpEndpoint::createChannel(int sockfd, EventLoop *pLoop)
 {
     pUdpChannel_ = new UdpChannel(sockfd, pLoop);
     pUdpChannel_->setCallBack(handleRead, handleWrite, this);
-    return pUdpChannel_->enroll(true); 
+    return pUdpChannel_->enroll(true);
 }
 
 int UdpEndpoint::setInfo(
@@ -82,10 +81,8 @@ int UdpEndpoint::start(struct SocketAddress4 servaddr)
 
 int UdpEndpoint::createAndBind(struct SocketAddress4 servaddr)
 {
-    sockfd_ = socket(AF_INET,SOCK_STREAM,0);
-    if(sockfd_ < 0){
-        return S_FALSE;
-    }
+    sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd_ < 0) { return S_FALSE; }
 
     // struct SocketAddress4 servaddr;
      // 设置非阻塞
@@ -93,8 +90,7 @@ int UdpEndpoint::createAndBind(struct SocketAddress4 servaddr)
    
     servaddr.setPort(SERV_PORT);
 
-    if (-1 ==
-        bind(sockfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
+    if (-1 == bind(sockfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
         printf("UdpEndpoint bind error\n");
         return S_FALSE;
     }
@@ -106,19 +102,18 @@ int UdpEndpoint::handleRead1(void *pthis)
     UdpEndpoint *pThis = static_cast<UdpEndpoint *>(pthis);
 
     int fd;
-    fd = socket(AF_INET,SOCK_STREAM,0);
+    fd = socket(AF_INET, SOCK_STREAM, 0);
 
     struct sockaddr_in cliaddr;
     socklen_t clilen = sizeof(struct sockaddr_in);
 
-
     // 设置非阻塞io
     fcntl(fd, F_SETFL, O_NONBLOCK);
 
-        pThis->createChannel(fd, pThis->pUdpChannel_->pLoop_);
-        pThis->info.addr_ = (struct sockaddr *) &cliaddr;
-        pThis->info.addrlen_ = (socklen_t *) &clilen;
-        if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
+    pThis->createChannel(fd, pThis->pUdpChannel_->pLoop_);
+    pThis->info.addr_ = (struct sockaddr *) &cliaddr;
+    pThis->info.addrlen_ = (socklen_t *) &clilen;
+    if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
 
     // 测试专用
     if (pThis->cb_ != NULL) pThis->cb_(NULL);
@@ -134,17 +129,17 @@ int UdpEndpoint::onSend(
     socklen_t addrlen,
     Callback cb,
     void *param)
-{ 
+{
     int sockfd = pUdpChannel_->getFd();
 
     ssize_t n = sendto(sockfd, buf, len, flags,(struct sockaddr*)&dest_addr,addrlen);
     if (n == len) {
         // 写完，通知用户
-        if (cb != NULL) cb(param); 
+        if (cb != NULL) cb(param);
         return S_OK;
-    } else if (n < 0) {      
-		// error occurs, tell user
-		printf("send error");
+    } else if (n < 0) {
+        // error occurs, tell user
+        printf("send error");
         return S_FALSE;
     }
 
@@ -169,7 +164,7 @@ int UdpEndpoint::onSend(
 
 int UdpEndpoint::handleWrite(void *pthis)
 {
-	UdpEndpoint *pThis = static_cast<UdpEndpoint *>(pthis);
+    UdpEndpoint *pThis = static_cast<UdpEndpoint *>(pthis);
     int sockfd = pThis->pUdpChannel_->getFd();
     if (sockfd < 0) { return -1; }
     ssize_t n;
@@ -180,24 +175,25 @@ int UdpEndpoint::handleWrite(void *pthis)
         if ((n = sendto(
                  sockfd,
                  (char *) tsi->sendBuf_ + tsi->offset_,
-                 (*tsi->len_ )- tsi->offset_,
-                 tsi->flags_,tsi->dest_addr_,tsi->addrlen_)) > 0) {
+                 (*tsi->len_) - tsi->offset_,
+                 tsi->flags_,
+                 tsi->dest_addr_,
+                 tsi->addrlen_)) > 0) {
             tsi->offset_ += n;
 
             if (tsi->offset_ == (*tsi->len_)) {
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
-                pThis->qSendInfo_.pop();    // 无写事件 注销写事件
+                pThis->qSendInfo_.pop(); // 无写事件 注销写事件
 
-
-                delete tsi; // 删除申请的内存
-            } else if (n == 0) {  // 发送缓冲区满 等待下一次被调用
+                delete tsi;      // 删除申请的内存
+            } else if (n == 0) { // 发送缓冲区满 等待下一次被调用
                 return S_OK;
             }
         } else if (n < 0) {
             printf("send error other\n");
-    
+
             // 将事件从队列中移除
-            pThis->qSendInfo_.pop(); 
+            pThis->qSendInfo_.pop();
             delete tsi;
 
             return S_FALSE;
@@ -206,7 +202,8 @@ int UdpEndpoint::handleWrite(void *pthis)
     return S_OK;
 }
 
-// 如果执行成功，返回值就为 S_OK；如果出现错误，返回值就为 S_FAIL，并设置 errno 的值。
+// 如果执行成功，返回值就为 S_OK；如果出现错误，返回值就为 S_FAIL，并设置 errno
+// 的值。
 int UdpEndpoint::onRecv(
     char *buf,
     ssize_t *len,
@@ -219,9 +216,8 @@ int UdpEndpoint::onRecv(
     int sockfd = pUdpChannel_->getFd();
     ssize_t n;
 
-    if ((n = recvfrom(sockfd, buf, MAXLINE, flags,src_addr,&addrlen)) < 0) {
+    if ((n = recvfrom(sockfd, buf, MAXLINE, flags, src_addr, &addrlen)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-
             // 保存用户信息
             RecvInfo_.recvBuf_ = buf;
             RecvInfo_.sendBuf_ = NULL;
@@ -232,13 +228,13 @@ int UdpEndpoint::onRecv(
 
             return S_OK;
         } else {
-			// error occurs,callback user
+            // error occurs,callback user
             return S_FALSE;
         }
     }
 
     (*len) = n;
-	// tell user after reading successfully in one time
+    // tell user after reading successfully in one time
     if (cb != NULL) cb(param);
     // 先返回，最终的处理在onRead()里面
     return S_OK;
@@ -246,12 +242,9 @@ int UdpEndpoint::onRecv(
 
 int UdpEndpoint::handleRead(void *pthis)
 {
-	UdpEndpoint *pThis = static_cast<UdpEndpoint *>(pthis);
+    UdpEndpoint *pThis = static_cast<UdpEndpoint *>(pthis);
     int sockfd = pThis->pUdpChannel_->getFd();
-    if (sockfd < 0) 
-	{ 
-		return S_FALSE; 
-	}
+    if (sockfd < 0) { return S_FALSE; }
 
     ssize_t n;
     if ((n = recv(

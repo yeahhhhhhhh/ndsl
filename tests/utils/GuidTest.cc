@@ -8,6 +8,7 @@
 //
 #include "../catch.hpp"
 #include "ndsl/utils/Guid.h"
+#include "ndsl/utils/Log.h"
 
 TEST_CASE("Guid"){
 	

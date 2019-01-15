@@ -9,8 +9,6 @@
 #ifndef _SOCKETADDRESS_H_
 #define _SOCKETADDRESS_H_
 
-using namespace std;
-
 #include <string>
 #include <netinet/in.h>
 
@@ -28,9 +26,9 @@ struct SocketAddress4 : sockaddr_in
     void getIP(char *strbuf4) const;
     unsigned short getPort(void) const;
     sockaddr_in getAddr();
-    bool getAddr(sockaddr_in &addr);
+    int getAddr(sockaddr_in &addr);
     void setPort(unsigned short);
-    void convertToString(string &);
+    void convertToString(std::string &);
     bool operator==(const SocketAddress4 &) const; // 判断两个地址是否相同
     SocketAddress4 &operator=(const SocketAddress4 &); // 地址的赋值
 };
@@ -46,9 +44,9 @@ struct SocketAddress6 : sockaddr_in6
     void getIP(char *strbuf4) const;
     unsigned short getPort(void) const;
     sockaddr_in6 getAddr();
-    bool getAddr(sockaddr_in6 &addr);
+    int getAddr(sockaddr_in6 &addr);
     void setPort(unsigned short);
-    void convertToString(string &);
+    void convertToString(std::string &);
     bool operator==(const SocketAddress6 &) const; // 判断两个地址是否相同
     SocketAddress6 &operator=(const SocketAddress6 &); // 地址的赋值
 };

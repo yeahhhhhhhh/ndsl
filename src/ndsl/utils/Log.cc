@@ -16,7 +16,7 @@
 #include <ndsl/utils/Log.h>
 #include <ndsl/utils/TimeStamp.h>
 
-int tag = 0;
+static int tag = 0;
 
 ////
 // @biref
@@ -45,6 +45,7 @@ class Filelog
         ts.now();
         ts.to_string(path, 256);
         int len = ::strlen(path);
+        len = len - 7;
         sprintf(path + len, ".log");
 
         m_file = ::open(
@@ -62,11 +63,11 @@ class Filelog
 // 全局logger
 //
 static Filelog file_log;
+static int log_source_tag = 35;
 
-void set_ndsl_log_sinks(int sinks, int file_or_ter) // file = 1, ter = 0
+void set_ndsl_log_sinks(uint64_t sinks, int file_or_ter) // file = 1, ter = 0
 {
-    if (sinks > 64 || sinks < 0) return;
-    if (file_or_ter) {
+    if (file_or_ter == 1) {
         tag = 1;
         file_log.init();
     } else {
@@ -74,9 +75,17 @@ void set_ndsl_log_sinks(int sinks, int file_or_ter) // file = 1, ter = 0
     }
 }
 
-void ndsl_log_into_sink(int level, int source, const char *format, ...)
+uint64_t add_source()
 {
-    int i = 1;
+    uint64_t module = 1 << log_source_tag ;
+    log_source_tag ++;
+    return module;
+}
+
+void ndsl_log_into_sink(int level, uint64_t source,const char* file_name,const char * func_name, const char *format, ...)
+{
+    uint64_t i = 1;
+    int k = 0;
     ndsl::utils::TimeStamp ts;
     char buffer[4096] = {0};
 
@@ -84,25 +93,31 @@ void ndsl_log_into_sink(int level, int source, const char *format, ...)
     buffer[0] = '[';
     ts.to_string(buffer + 1, 4096);
     int ret1 = ::strlen(buffer);
+    
+
     buffer[ret1] = ']';
 
     int ret2 = sprintf(
         buffer + ret1 + 1,
-        " lv=%d pid=%d tid=%lx ",
+        " lv=%d pid=%d tid=%lx file_name = %s func_name = %s ",
         level,
         ::getpid(),
-        (long) ::pthread_self()); // 毫秒
+        (long) ::pthread_self(),
+        file_name,
+        func_name
+        ); // 毫秒
 
+    
     // 复制数据
     va_list ap;
     va_start(ap, format);
     int ret3 =
         vsnprintf(buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
     if (ret3 < 0) return;
-
     if (tag == 0) { std::cout << buffer << std::endl; }
-    while ((i <= source) && (tag == 1)) {
+    while ((k <= log_source_tag) && (tag == 1)) {
         if (source & i) { file_log.log(buffer, ret1 + ret2 + ret3 + 1); }
         i = i * 2;
+        k++;
     }
 }
