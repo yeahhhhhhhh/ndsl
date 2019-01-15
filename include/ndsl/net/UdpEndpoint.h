@@ -24,6 +24,7 @@ using Callback = void (*)(void *); // Callback 函数指针原型
 class  UdpEndpoint
 {
   public:
+    UdpEndpoint();
     UdpEndpoint(EventLoop *pLoop);
     ~ UdpEndpoint();
   private:
@@ -55,7 +56,7 @@ class  UdpEndpoint
         Callback cb_;           // 回调函数
         void *param_;           // 回调函数参数
     }info;
-    int createAndBind();
+    int createAndBind(struct SocketAddress4 servaddr);
 
     std::queue<pInfo> qSendInfo_; // 等待发送的队列
     Info RecvInfo_;
@@ -68,7 +69,7 @@ class  UdpEndpoint
 
     // 客户端连接后的处理
     static int handleRead1(void *pthis);
-    int start();
+    int start(struct SocketAddress4 servaddr);
 
     // 保存用户信息 填充上面的结构体
     int setInfo(

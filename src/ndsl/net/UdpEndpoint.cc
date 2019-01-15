@@ -25,9 +25,16 @@
 namespace ndsl {
 namespace net {
 
+
+UdpEndpoint::UdpEndpoint()
+    : pUdpChannel_(NULL)
+{}
 UdpEndpoint::UdpEndpoint(EventLoop *pLoop) 
+    : sockfd_(-1)
+    ,pLoop_(pLoop)
+    ,pUdpChannel_(NULL)
 {
-    pLoop_ = pLoop;
+    cb_ = NULL;
 }
 
 UdpEndpoint::~UdpEndpoint() {}
@@ -56,35 +63,35 @@ int UdpEndpoint::setInfo(
     return S_OK;
 }
 
-int UdpEndpoint::start()
+int UdpEndpoint::start(struct SocketAddress4 servaddr)
 {
-    int n = createAndBind();
+    int n = createAndBind(servaddr);
     if(n <0){
         return S_FALSE;
     }
 
     pUdpChannel_ = new UdpChannel(sockfd_,pLoop_);
-    // if(pUdpChannel_ == NULL){
-    //     return S_FALSE;
-    // } else {
-    //     pUdpChannel_->setCallBack(handleRead1,NULL,this);
-    //     pUdpChannel_->enroll(false);
-    // }
+    if(pUdpChannel_ == NULL){
+        return S_FALSE;
+    } else {
+        pUdpChannel_->setCallBack(handleRead1,NULL,this);
+        pUdpChannel_->enroll(false);
+    }
     return S_OK;
 }
 
-int UdpEndpoint::createAndBind()
+int UdpEndpoint::createAndBind(struct SocketAddress4 servaddr)
 {
     sockfd_ = socket(AF_INET,SOCK_STREAM,0);
     if(sockfd_ < 0){
         return S_FALSE;
     }
 
-    struct SocketAddress4 servaddr;
+    // struct SocketAddress4 servaddr;
      // 设置非阻塞
     fcntl(sockfd_, F_SETFL, O_NONBLOCK);
    
-    servaddr.setPort(9877);
+    servaddr.setPort(SERV_PORT);
 
     if (-1 ==
         bind(sockfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
