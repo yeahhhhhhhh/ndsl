@@ -101,6 +101,8 @@ class Client
 
         // 初始化定时器
         TimeWheel *time = new TimeWheel(threadPool_->getNextEventLoop());
+        // 开始时间轮
+        time->start();
 
         // 初始化定时器任务
         // printf("nClient::Client timeout_ = %d\n", timeout_);
@@ -112,9 +114,6 @@ class Client
 
         // 添加任务
         time->addTask(t);
-
-        // 开始时间轮
-        time->start();
 
         // printf("nClient::Client addTask OK\n");
 
