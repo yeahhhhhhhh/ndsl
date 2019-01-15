@@ -70,8 +70,11 @@ class EventLoopThreadpool
     int setMaxThreads(unsigned int maxThreads);
     // 获取最大线程数
     unsigned int getMaxThreads();
+
     // 关闭线程池中所有线程
-    void quit();
+    int quit();
+    // 已有EventLoop数量
+    int getLoopsNum();
 };
 
 } // namespace utils
