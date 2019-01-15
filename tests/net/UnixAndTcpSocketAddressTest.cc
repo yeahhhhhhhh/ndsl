@@ -1,5 +1,3 @@
-#include <sys/socket.h>
-#include <iostream>
 #include "../catch.hpp"
 #include "ndsl/utils/Error.h"
 #include "ndsl/net/SocketAddressUn.h"

@@ -31,15 +31,33 @@ testMain.cc
 net/UnixAndTcpSocketAddressTest.cc
 net/UnixConnectionTest.cc
 
- #utils/EndianTest.cc
- #utils/ErrorTest.cc
- #utils/EventLoopThreadpoolTest.cc
- #utils/GuidTest.cc
- #utils/LogTest.cc
- #utils/PluginTest.cc
- #utils/ThreadTest.cc
- #utils/TimeStampTest.cc
-# utils/XMLConfig_test.cc
+    # All files
+    net/EpollTest.cc
+    net/EventLoopTest.cc
+    # net/FifoIpcTest.cc
+    net/MultiplexerTest.cc
+
+    net/PipeAndFifoTest.cc
+    net/SignalfdTest.cc
+    net/TcpAcceptorTest.cc
+    net/TcpConnectionTest.cc
+
+    net/TimeWheelTest.cc
+    net/UdpEndpointTest.cc
+    net/UnixAndTcpSocketAddressTest.cc
+    net/UnixConnectionTest.cc
+
+
+    utils/EndianTest.cc
+    utils/ErrorTest.cc
+    utils/EventLoopThreadpoolTest.cc
+    utils/GuidTest.cc
+    utils/LogTest.cc
+
+    utils/PluginTest.cc
+    utils/ThreadTest.cc
+    utils/TimeStampTest.cc
+    # utils/XMLConfig_test.cc
 )
 
 # 设置ping-pong单元测试的文件
