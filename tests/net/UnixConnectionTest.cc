@@ -34,9 +34,9 @@ static void iserror(int a, int b) { unixflagerror = true; }
 bool unixflagrecv = false;
 static void recvTest(void *a) { unixflagrecv = true; }
 
-TEST_CASE("net/TcpConnection(onRecv)")
+TEST_CASE("UnixConnection(onRecv)")
 {
-    SECTION("onAccept")
+    SECTION("onAccept/onSend/onRecv")
     {
         // 启动服务
         // 初始化EPOLL
