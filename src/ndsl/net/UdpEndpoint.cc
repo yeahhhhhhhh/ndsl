@@ -120,8 +120,8 @@ int UdpEndpoint::handleRead1(void *pthis)
 }
 
 int UdpEndpoint::onSend(
-    const void *buf,
-    size_t len,
+    void *buf,
+    ssize_t len,
     int flags,
     struct sockaddr *dest_addr,
     socklen_t addrlen,
@@ -130,7 +130,7 @@ int UdpEndpoint::onSend(
 { 
     int sockfd = pUdpChannel_->getFd();
 
-    size_t n = sendto(sockfd, buf, len, flags,(struct sockaddr*)&dest_addr,addrlen);
+    ssize_t n = sendto(sockfd, buf, len, flags,(struct sockaddr*)&dest_addr,addrlen);
     if (n == len) {
         // 写完，通知用户
         if (cb != NULL) cb(param); 
@@ -143,10 +143,10 @@ int UdpEndpoint::onSend(
 
     pInfo tsi = new Info;
     tsi->offset_ = n;
-    tsi->sendBuf_ = buf;
+    tsi->sendBuf_ =(void *)buf;
     tsi->recvBuf_ = NULL;
 
-    // tsi->len_= new ssize_t;
+    tsi->len_= new ssize_t;
     (*tsi->len_) = len;
 
     tsi->flags_ = flags;
@@ -165,7 +165,7 @@ int UdpEndpoint::handleWrite(void *pthis)
 	UdpEndpoint *pThis = static_cast<UdpEndpoint *>(pthis);
     int sockfd = pThis->pUdpChannel_->getFd();
     if (sockfd < 0) { return -1; }
-    size_t n;
+    ssize_t n;
 
     if (pThis->qSendInfo_.size() > 0) {
         pInfo tsi = pThis->qSendInfo_.front();
@@ -202,7 +202,7 @@ int UdpEndpoint::handleWrite(void *pthis)
 // 如果执行成功，返回值就为 S_OK；如果出现错误，返回值就为 S_FAIL，并设置 errno 的值。
 int UdpEndpoint::onRecv(
     char *buf,
-    size_t *len,
+    ssize_t *len,
     int flags,
     struct sockaddr *src_addr,
     socklen_t addrlen,

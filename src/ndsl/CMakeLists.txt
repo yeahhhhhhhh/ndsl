@@ -19,6 +19,7 @@ net/EventLoop.cc
  net/TcpConnection.cc
  net/TcpAcceptor.cc
 net/UdpEndpoint.cc
+net/UdpClient.cc
 utils/Endian.cc
 utils/Error.cc
  net/Multiplexer.cc
