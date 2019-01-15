@@ -59,9 +59,9 @@ int TcpConnection::onSend(
         ssize_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
         if (n == len) {
             // 写完 通知用户
-            LOG(LOG_INFO_LEVEL,
-                LOG_SOURCE_TCPCONNECTION,
-                "TcpConnection::onSend write complete\n");
+            // LOG(LOG_INFO_LEVEL,
+            //     LOG_SOURCE_TCPCONNECTION,
+            //     "TcpConnection::onSend write complete\n");
             if (cb != NULL) cb(param);
             // 释放掉buf占用的空间 TODO: 暂时注释
             // if (buf != NULL) free(buf);
@@ -203,7 +203,7 @@ int TcpConnection::onRecv(
 
 int TcpConnection::handleRead(void *pthis)
 {
-    printf("TcpConnection::handleRead\n");
+    // printf("TcpConnection::handleRead\n");
 
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();

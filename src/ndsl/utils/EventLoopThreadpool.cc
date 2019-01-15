@@ -65,6 +65,8 @@ int EventLoopThreadpool::start()
     EventLoop *el = new EventLoop();
     EventLoopThread *elt = new EventLoopThread(el);
 
+    el->init();
+
     loops_.push_back(el);
     loopThreads_.push_back(elt);
     // 开启线程

@@ -26,7 +26,7 @@ class TcpClient
     TcpConnection *onConnect(
         EventLoop *loop,
         bool isConnNoBlock,
-        struct SocketAddress4 servaddr);
+        struct SocketAddress4 *servaddr);
 
     // 与服务器断开链接
     int disConnect();

@@ -26,7 +26,7 @@ TcpClient::~TcpClient() {}
 TcpConnection *TcpClient::onConnect(
     EventLoop *loop,
     bool isConnNoBlock,
-    struct SocketAddress4 servaddr)
+    struct SocketAddress4 *servaddr)
 {
     sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -39,7 +39,8 @@ TcpConnection *TcpClient::onConnect(
     if (isConnNoBlock) fcntl(sockfd_, F_SETFL, O_NONBLOCK);
 
     int n;
-    if ((n = connect(sockfd_, (SA *) &servaddr, sizeof(servaddr))) < 0) {
+    if ((n = connect(sockfd_, (SA *) servaddr, sizeof(struct SocketAddress4))) <
+        0) {
         if (errno != EINPROGRESS) {
             // connect出错 返回
             // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "connect fail\n");
