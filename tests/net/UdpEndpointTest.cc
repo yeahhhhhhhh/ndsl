@@ -19,18 +19,18 @@
 #include "ndsl/net/UdpClient.h"
 #include "ndsl/net/SocketAddress.h"
 
-bool flag = false;
+bool flag_ = false;
 
-void fun1(void *a) { flag = true; }
+void sign(void *a) { flag_ = true; }
 
-bool flagsend = false;
-static void sendTest(void *a) { flagsend = true; }
+bool udpflagsend = false;
+static void sendTest(void *a) { udpflagsend = true; }
 
-bool flagrecv = false;
-static void recvTest(void *a) { flagrecv = true; }
+bool udpflagrecv = false;
+static void recvTest(void *a) { udpflagrecv = true; }
 
-bool clientRecv = false;
-static void ClientRecvTest(void *a) { clientRecv = true; }
+bool udpclientRecv = false;
+static void ClientRecvTest(void *a) { udpclientRecv = true; }
 
 using namespace ndsl::net;
 
@@ -52,7 +52,7 @@ TEST_CASE("net/UdpEndpoint")
 		struct sockaddr_in rservaddr;
 		bzero(&rservaddr, sizeof(rservaddr));
 		socklen_t addrlen;
-		t->onData((SA*)&rservaddr,&addrlen,fun1,NULL);
+		t->onData((SA*)&rservaddr,&addrlen,sign,NULL);
 
         UdpEndpoint *pClient;
 		// 启动一个客户端
@@ -75,8 +75,8 @@ TEST_CASE("net/UdpEndpoint")
 		t->onRecv(recvBuf, &recvLen, 0, (struct sockaddr*)&rservaddr,sizeof(rservaddr),ClientRecvTest, NULL);
 
 		REQUIRE(strcmp("hello world", recvBuf) == 0);
-		REQUIRE(flagsend == true);
-		REQUIRE(clientRecv == true);
+		REQUIRE(udpflagsend == true);
+		REQUIRE(udpclientRecv == true);
 
 		// 测试onRecv
 		memset(recvBuf, 0, sizeof(recvBuf));
@@ -85,7 +85,7 @@ TEST_CASE("net/UdpEndpoint")
 
 		REQUIRE(t->onRecv(recvBuf, &len, 0,(struct sockaddr*)&rservaddr,sizeof(rservaddr),recvTest, NULL) == S_OK);
 		REQUIRE(len == strlen("hello world"));
-		REQUIRE(flagrecv == true);
+		REQUIRE(udpflagrecv == true);
 
 		// 第二次不需要添加中断
 		// loop.quit();
