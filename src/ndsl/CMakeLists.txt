@@ -10,6 +10,7 @@
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_subdirectory(net)
+add_subdirectory(third)
 add_subdirectory(utils)
 
 set(LIB_NDSL_SRC
@@ -38,7 +39,7 @@ set(LIB_NDSL_SRC
  net/UdpChannel.cc
 #  net/UnixAcceptor.cc
 
-#  third/pugixml.cpp
+ third/pugixml.cpp
 
 #  utils/Clientplugin.cc
  utils/Endian.cc
@@ -50,7 +51,7 @@ set(LIB_NDSL_SRC
  utils/Guid.cc
  utils/Log.cc
  utils/Thread.cc
-#  utils/xmlconfig.cpp
+ utils/Xml.cc
  )
 
 list(APPEND LIB_NDSL_SRC ${LIB_NDSL_SRC1})
