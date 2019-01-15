@@ -8,7 +8,7 @@
 using namespace ndsl::net;
 using namespace std;
 
-TEST_CASE("44rxj", "test-socketaddress4"){
+TEST_CASE( "test-socketaddress4"){
 	SocketAddress4 a;
 	REQUIRE(a.sin_port == 0);
 	SocketAddress4 b("192.168.1.121", 555);
@@ -34,7 +34,7 @@ TEST_CASE("44rxj", "test-socketaddress4"){
 	REQUIRE(b.getAddr(e) == S_OK);
 }
 
-TEST_CASE("rxj66", "test-SocketAddress6")
+TEST_CASE("test-SocketAddress6")
 {
 	char buf6[50];
 	string str6;
@@ -61,18 +61,16 @@ TEST_CASE("rxj66", "test-SocketAddress6")
 	REQUIRE(d.getAddr(g) == S_OK);
 }
 
-TEST_CASE( "rxj", "test_unixsouncket")
+TEST_CASE("test_unixsouncket")
 {
 	SocketAddressUn una;
 	REQUIRE(una.sun_family == AF_LOCAL);
 	REQUIRE( una.sun_path[0] == una.sun_path[5] );
-	cout<< "path" << una.sun_path <<endl;
 	REQUIRE( una.sun_path[5] == 0 );
 	string ss = "/ranxiangjun/mnt/xxx";
 	SocketAddressUn unb(ss);
 	REQUIRE( strcmp( unb.sun_path, ss.c_str() ) == 0 );
 	SocketAddressUn unc( unb );
-	cout<< unc.sun_path <<endl;
 	REQUIRE( strcmp( unc.sun_path, ss.c_str() ) == 0 );
 	una = unb;
 	REQUIRE( strcmp( una.sun_path, ss.c_str() ) == 0 );

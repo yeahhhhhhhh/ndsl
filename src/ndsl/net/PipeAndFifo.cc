@@ -134,7 +134,8 @@ int PipeAndFifo::onRecv(char *buf, size_t len, int flags, Callback cb, void *par
 	{
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
 		{
-			cout <<"receive meet EGAIN"<<endl;
+			// cout <<"receive meet EGAIN"<<endl;
+			LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "receive meet EAGAIN\n");
 			
 			RecvInfo_.readBuf_ = buf;
 			RecvInfo_.sendBuf_ = NULL;
