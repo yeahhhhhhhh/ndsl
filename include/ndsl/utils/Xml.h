@@ -12,13 +12,13 @@
 
 #include <string>
 #include <iostream>
-//#include <fstream>
-#include "ndsl/include/ndsl/third/pugixml.hpp"
-//#include "ndsl/thirdlib/pugiconfig.hpp"
+#include "ndsl/third/pugixml.hpp"
 #include "Error.h"
 
 using namespace pugi;
 
+namespace ndsl {
+namespace utils {
 class XML
 {
   public:
@@ -53,4 +53,6 @@ class XML
     xml_document m_doc;
     xml_node m_node;
 };
-#endif
+} // namespace utils
+} // namespace ndsl
+#endif // __NDSL_UTILS_XML_H__

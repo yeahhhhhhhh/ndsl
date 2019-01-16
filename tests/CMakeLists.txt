@@ -12,6 +12,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
+
 # 设置单元测试的文件
 set(TEST 
 test.cc
@@ -23,11 +24,11 @@ test.cc
 
     # net/PipeAndFifoTest.cc
     net/SignalfdTest.cc
-    net/TcpAcceptorTest.cc
-    net/TcpConnectionTest.cc
+    # net/TcpAcceptorTest.cc
+    # net/TcpConnectionTest.cc
 
     net/TimeWheelTest.cc
-    # net/UdpEndpointTest.cc
+    net/UdpEndpointTest.cc
     net/UnixAndTcpSocketAddressTest.cc
     net/UnixConnectionTest.cc
 
@@ -40,7 +41,7 @@ test.cc
     utils/PluginTest.cc
     utils/ThreadTest.cc
     utils/TimeStampTest.cc
-    # utils/XMLConfig_test.cc
+    utils/XmlTest.cc
 )
 
 # 设置ping-pong单元测试的文件

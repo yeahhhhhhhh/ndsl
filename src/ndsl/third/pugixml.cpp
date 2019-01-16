@@ -14,7 +14,8 @@
 #ifndef SOURCE_PUGIXML_CPP
 #define SOURCE_PUGIXML_CPP
 
-#include "ndsl\include\ndsl\third\pugiconfig.hpp"
+
+#include "ndsl/third/pugixml.hpp"
 
 #include <stdlib.h>
 #include <stdio.h>
