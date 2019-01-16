@@ -109,12 +109,23 @@ class Client
         message_[blockSize] = '\0';
 
         // 准备发送数据
+        // FIXME: 得在另一个线程里面做全套的动作
         for (int i = 0; i < sessionCount; ++i) {
-            Session *session =
-                new Session(threadPool_->getNextEventLoop(), this);
+            printf("nClient::client i = %d\n", i);
+            threadPool_->getNextEventLoop();
+            // Session *session =
+            //     new Session(threadPool_->getNextEventLoop(), this);
+            // // sleep(1);
+            // sessions_.push_back(session);
+            // session->start();
+        }
+        while (1)
+            ;
+        for (vector<Session *>::iterator it = sessions_.begin();
+             it != sessions_.end();
+             ++it) {
             // 发送数据
-            sessions_.push_back(session);
-            session->start();
+            (*it)->start();
         }
     }
 
@@ -133,6 +144,7 @@ class Client
             // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TESTCLIENT, "all connected\n");
             printf("nClient::onConection all connected\n");
 
+            // 新开线程放定时器
             // FIXME:MEMORY LEAK!!!
             EventLoop *loop = new EventLoop;
             loop->init();
@@ -182,6 +194,7 @@ class Client
             for (vector<Session *>::iterator it = sessions_.begin();
                  it != sessions_.end();
                  ++it) {
+                printf("bytesRead = %ld\n", (*it)->bytesRead());
                 totalBytesRead += (*it)->bytesRead();
                 totalMessagesRead += (*it)->messagesRead();
             }
@@ -246,8 +259,6 @@ void Session::start()
     printf("nClient::Session start\n");
 
     // 阻塞建立连接 建立好的之后调用client的onConnect
-    // TODO: 确认下端口号是否正确
-    // struct SocketAddress4 servaddr("127.0.0.1", 9999);
     conn_ = client_.onConnect(loop_, false, owner_->servaddr_);
 
     if (conn_ == NULL) { printf("nClient::Session::start onConnect fail\n"); }
@@ -255,13 +266,6 @@ void Session::start()
     if (conn_ != NULL) conn_->onRecv(buf, &len, 0, onMessage, this);
 
     if (conn_ != NULL) owner_->onConnect();
-
-    // if (NULL == conn_) { printf("Session::start conn_ == NULL\n"); }
-
-    // loop跑起来
-    // loop_->loop(loop_);
-
-    // printf("Session::start loop already run\n");
 }
 
 void Session::stop()
@@ -295,17 +299,16 @@ int main(int argc, char *argv[])
         // 在线程里new一个EventLoop
         // 只是让线程跑起来，里面的EventLoop并没开始循环
         threadPool->start();
+        // sleep(1);
 
         // 将buf的空间new出来 Memory leak
         buf = (char *) malloc(sizeof(char) * blockSize);
 
         Client client(threadPool, blockSize, sessionCount, timeout, servaddr);
-        // ，貌似没有作用
+
+        // 防止主线程提前结束
         while (!toEnd)
             ;
-
-        // FIXME: 主线程竟然结束了 !!!!
-        printf("main end\n");
     }
 
     return 0;
