@@ -55,6 +55,12 @@ int TcpConnection::onSend(
     } else {
         int sockfd = pTcpChannel_->getFd();
 
+        // printf("*********\n");
+        // printf("TcpConnection::onSend\n");
+        // printf("buf = %s\n", (char *) buf);
+        // printf("len = %lu\n", len);
+        // printf("*********\n");
+
         // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
         ssize_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
         if (n == len) {
@@ -68,7 +74,7 @@ int TcpConnection::onSend(
             return S_OK;
         } else if (n < 0) {
             // 出错 通知用户
-            LOG(LOG_ERROR_LEVEL,
+            LOG(LOG_INFO_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onSend send error\n");
             errorHandle_(errno, pTcpChannel_->getFd());
@@ -121,6 +127,11 @@ int TcpConnection::handleWrite(void *pthis)
             if (tsi->offset_ == (*tsi->len_)) {
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();
+
+                // LOG(LOG_INFO_LEVEL,
+                //     LOG_SOURCE_TCPCONNECTION,
+                //     "TcpConnection::handleWrite send complete\n");
+
                 // 释放掉buf占用的空间 TODO: 暂时注释
                 // if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
                 delete tsi; // 删除申请的内存
@@ -164,6 +175,7 @@ int TcpConnection::onRecv(
     // 作为下面recv接收的临时量，直接用(*len)接收会变成2^64-1 不知道为什么
     // 答案1：是flag参数的问题
     ssize_t n;
+    bool isOK = true;
 
     int sockfd = pTcpChannel_->getFd();
     if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
@@ -171,40 +183,39 @@ int TcpConnection::onRecv(
             LOG(LOG_INFO_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onRecv EAGAIN\n");
-
-            // 保存用户信息
-            RecvInfo_.readBuf_ = buf;
-            RecvInfo_.sendBuf_ = NULL;
-            RecvInfo_.flags_ = flags | MSG_NOSIGNAL;
-            RecvInfo_.len_ = len;
-            RecvInfo_.cb_ = cb;
-            RecvInfo_.param_ = param;
-
-            return S_OK;
         } else {
             // 出错 回调用户
             LOG(LOG_INFO_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onRecv recv error can not deal\n");
             errorHandle_(errno, pTcpChannel_->getFd());
-            return S_FALSE;
+            isOK = false;
         }
+    } else {
+        // LOG(LOG_INFO_LEVEL,
+        //     LOG_SOURCE_TCPCONNECTION,
+        //     "TcpConnection::onRecv recv complete\n");
+
+        (*len) = n;
+        // 一次性读完之后通知用户
+        if (cb != NULL) cb(param);
     }
-    (*len) = n;
 
-    LOG(LOG_INFO_LEVEL,
-        LOG_SOURCE_TCPCONNECTION,
-        "TcpConnection::onRecv recv complete\n");
+    // printf("TcpConnection::onRecv n = %lu\n", n);
 
-    // 一次性读完之后通知用户
-    if (cb != NULL) cb(param);
-    return S_OK;
+    // 因为一直epollIn语义 所以无论怎样都得保存用户信息
+    RecvInfo_.readBuf_ = buf;
+    RecvInfo_.sendBuf_ = NULL;
+    RecvInfo_.flags_ = flags | MSG_NOSIGNAL;
+    RecvInfo_.len_ = len;
+    RecvInfo_.cb_ = cb;
+    RecvInfo_.param_ = param;
+
+    return isOK;
 }
 
 int TcpConnection::handleRead(void *pthis)
 {
-    // printf("TcpConnection::handleRead\n");
-
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FALSE; }
@@ -216,12 +227,19 @@ int TcpConnection::handleRead(void *pthis)
              MAXLINE,
              pThis->RecvInfo_.flags_)) < 0) {
         // 出错
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_TCPCONNECTION,
+            "TcpConnection::handleRead recv fail\n");
         pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
         (*pThis->RecvInfo_.len_) = n;
         return S_FALSE;
     }
 
     (*pThis->RecvInfo_.len_) = n;
+
+    // LOG(LOG_INFO_LEVEL,
+    //     LOG_SOURCE_TCPCONNECTION,
+    //     "TcpConnection::handleRead recv complete\n");
 
     // 完成数据读取之后通知mul
     if (pThis->RecvInfo_.cb_ != NULL)

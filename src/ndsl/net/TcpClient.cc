@@ -57,6 +57,7 @@ TcpConnection *TcpClient::onConnect(
     if (NULL == conn) {
         // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "new TcpConnection
         // fail\n");
+        printf("new TcpConnection fail\n");
         return NULL;
     }
 

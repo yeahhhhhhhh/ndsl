@@ -113,7 +113,6 @@ class Client
         time->start();
 
         // 初始化定时器任务
-        // printf("nClient::Client timeout_ = %d\n", timeout_);
         TimeWheel::Task *t = new TimeWheel::Task;
         t->setInterval = timeout_; // 中断
         t->times = 1;
@@ -150,6 +149,11 @@ class Client
 
     void onConnect()
     {
+        printf("nClient::Client onConnect sessionCount = %d\n", sessionCount_);
+        printf(
+            "nClient::Client onConnect numConnected = %d\n",
+            (int) numConnected_);
+
         // 等所有链接都建立之后 设置定时器 发送数据
         if ((++numConnected_) == sessionCount_) {
             // 提示所有链接已建立 TODO: 等待LOG确认写法
@@ -246,11 +250,14 @@ void Session::start()
     // TODO: 确认下端口号是否正确
     // struct SocketAddress4 servaddr("127.0.0.1", 9999);
     conn_ = client_.onConnect(loop_, false, owner_->servaddr_);
+
     if (conn_ == NULL) { printf("nClient::Session::start onConnect fail\n"); }
     // 将自身的recv函数注册进去
     if (conn_ != NULL) conn_->onRecv(buf, &len, 0, onMessage, this);
 
     if (conn_ != NULL) owner_->onConnect();
+
+    // if (NULL == conn_) { printf("Session::start conn_ == NULL\n"); }
 
     // loop跑起来
     // loop_->loop(loop_);
