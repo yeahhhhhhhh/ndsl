@@ -116,6 +116,8 @@ int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
 
 int TcpAcceptor::handleRead(void *pthis)
 {
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "TcpAcceptor::handleRead\n");
+
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
     int connfd;
     struct sockaddr_in cliaddr;
