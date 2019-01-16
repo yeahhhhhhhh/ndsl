@@ -65,12 +65,24 @@ int EventLoopThreadpool::start()
     EventLoop *el = new EventLoop();
     EventLoopThread *elt = new EventLoopThread(el);
 
-    el->init();
+    int ret = el->init();
+    if (ret != S_OK) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_EVENTLOOPTHREADPOOL,
+            "EventLoopThreadpool::start init() error");
+        return ret;
+    }
 
     loops_.push_back(el);
     loopThreads_.push_back(elt);
+
     // 开启线程
-    elt->run();
+    ret = elt->run();
+    if (ret != S_OK) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_EVENTLOOPTHREADPOOL,
+            "EventLoopThreadpool::start run() error");
+    }
 
     return S_OK;
 }
@@ -85,7 +97,13 @@ EventLoop *EventLoopThreadpool::getNextEventLoop()
         EventLoop *el = new EventLoop();
 
         // TODO: 在这里对EventLoop进行初始化
-        el->init();
+        int ret = el->init();
+        if (ret != S_OK) {
+            LOG(LOG_ERROR_LEVEL,
+                LOG_SOURCE_EVENTLOOPTHREADPOOL,
+                "EventLoopThreadpool::getNextEventLoop init() error");
+            return NULL;
+        }
 
         EventLoopThread *elt = new EventLoopThread(el);
 
@@ -93,7 +111,13 @@ EventLoop *EventLoopThreadpool::getNextEventLoop()
         loopThreads_.push_back(elt);
 
         // 开启线程
-        elt->run();
+        ret = elt->run();
+        if (ret != S_OK) {
+            LOG(LOG_ERROR_LEVEL,
+                LOG_SOURCE_EVENTLOOPTHREADPOOL,
+                "EventLoopThreadpool::getNextEventLoop run() error");
+            return NULL;
+        }
 
         return loops_[nextThread_++];
     } else {
@@ -119,19 +143,28 @@ int EventLoopThreadpool::setMaxThreads(unsigned int maxThreads)
 
 unsigned int EventLoopThreadpool::getMaxThreads() { return MaxThreads_; }
 
-void EventLoopThreadpool::quit()
+int EventLoopThreadpool::quit()
 {
     if (loopThreads_.size() != loops_.size()) {
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_EVENTLOOPTHREADPOOL,
             "EventLoopThreadpool::quit");
-        return;
+        return S_FALSE;
     }
 
-    for (unsigned int i = 0; i < loops_.size(); i++) {
+    printf("size = %lu\n", loops_.size());
+
+    for (int i = loops_.size() - 1; i >= 0; i--) {
         delete loopThreads_[i];
         delete loops_[i];
+
+        loops_.pop_back();
+        loopThreads_.pop_back();
     }
+
+    return S_OK;
 }
+
+int EventLoopThreadpool::getLoopsNum() { return loops_.size(); }
 } // namespace utils
 } // namespace ndsl

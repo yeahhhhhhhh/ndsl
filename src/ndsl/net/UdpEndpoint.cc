@@ -25,7 +25,17 @@
 namespace ndsl {
 namespace net {
 
-UdpEndpoint::UdpEndpoint(EventLoop *pLoop) { pLoop_ = pLoop; }
+
+UdpEndpoint::UdpEndpoint()
+    : pUdpChannel_(NULL)
+{}
+UdpEndpoint::UdpEndpoint(EventLoop *pLoop) 
+    : sockfd_(-1)
+    ,pLoop_(pLoop)
+    ,pUdpChannel_(NULL)
+{
+    cb_ = NULL;
+}
 
 UdpEndpoint::~UdpEndpoint() {}
 
@@ -52,31 +62,33 @@ int UdpEndpoint::setInfo(
     return S_OK;
 }
 
-int UdpEndpoint::start()
+int UdpEndpoint::start(struct SocketAddress4 servaddr)
 {
-    int n = createAndBind();
-    if (n < 0) { return S_FALSE; }
+    int n = createAndBind(servaddr);
+    if(n <0){
+        return S_FALSE;
+    }
 
-    pUdpChannel_ = new UdpChannel(sockfd_, pLoop_);
-    // if(pUdpChannel_ == NULL){
-    //     return S_FALSE;
-    // } else {
-    //     pUdpChannel_->setCallBack(handleRead1,NULL,this);
-    //     pUdpChannel_->enroll(false);
-    // }
+    pUdpChannel_ = new UdpChannel(sockfd_,pLoop_);
+    if(pUdpChannel_ == NULL){
+        return S_FALSE;
+    } else {
+        pUdpChannel_->setCallBack(handleRead1,NULL,this);
+        pUdpChannel_->enroll(false);
+    }
     return S_OK;
 }
 
-int UdpEndpoint::createAndBind()
+int UdpEndpoint::createAndBind(struct SocketAddress4 servaddr)
 {
     sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd_ < 0) { return S_FALSE; }
 
-    struct SocketAddress4 servaddr;
-    // 设置非阻塞
+    // struct SocketAddress4 servaddr;
+     // 设置非阻塞
     fcntl(sockfd_, F_SETFL, O_NONBLOCK);
-
-    servaddr.setPort(9877);
+   
+    servaddr.setPort(SERV_PORT);
 
     if (-1 == bind(sockfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
         printf("UdpEndpoint bind error\n");
@@ -110,8 +122,8 @@ int UdpEndpoint::handleRead1(void *pthis)
 }
 
 int UdpEndpoint::onSend(
-    const void *buf,
-    size_t len,
+    void *buf,
+    ssize_t len,
     int flags,
     struct sockaddr *dest_addr,
     socklen_t addrlen,
@@ -120,8 +132,7 @@ int UdpEndpoint::onSend(
 {
     int sockfd = pUdpChannel_->getFd();
 
-    size_t n = sendto(
-        sockfd, buf, len, flags, (struct sockaddr *) &dest_addr, addrlen);
+    ssize_t n = sendto(sockfd, buf, len, flags,(struct sockaddr*)&dest_addr,addrlen);
     if (n == len) {
         // 写完，通知用户
         if (cb != NULL) cb(param);
@@ -134,10 +145,10 @@ int UdpEndpoint::onSend(
 
     pInfo tsi = new Info;
     tsi->offset_ = n;
-    tsi->sendBuf_ = buf;
+    tsi->sendBuf_ =(void *)buf;
     tsi->recvBuf_ = NULL;
 
-    // tsi->len_= new ssize_t;
+    tsi->len_= new ssize_t;
     (*tsi->len_) = len;
 
     tsi->flags_ = flags;
@@ -156,7 +167,7 @@ int UdpEndpoint::handleWrite(void *pthis)
     UdpEndpoint *pThis = static_cast<UdpEndpoint *>(pthis);
     int sockfd = pThis->pUdpChannel_->getFd();
     if (sockfd < 0) { return -1; }
-    size_t n;
+    ssize_t n;
 
     if (pThis->qSendInfo_.size() > 0) {
         pInfo tsi = pThis->qSendInfo_.front();
@@ -195,7 +206,7 @@ int UdpEndpoint::handleWrite(void *pthis)
 // 的值。
 int UdpEndpoint::onRecv(
     char *buf,
-    size_t *len,
+    ssize_t *len,
     int flags,
     struct sockaddr *src_addr,
     socklen_t addrlen,
@@ -253,15 +264,6 @@ int UdpEndpoint::handleRead(void *pthis)
         pThis->RecvInfo_.cb_(pThis->RecvInfo_.param_);
 
     return S_OK;
-}
-
-int UdpEndpoint::onData(
-    struct sockaddr *addr,
-    socklen_t *addrlen,
-    Callback cb,
-    void *param)
-{
-    return setInfo(addr, addrlen, cb, param);
 }
 
 // int UdpEndpoint::remove()

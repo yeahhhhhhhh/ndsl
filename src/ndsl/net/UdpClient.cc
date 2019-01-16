@@ -7,6 +7,7 @@
 // @email luckylanry@163.com
 //
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/UdpClient.h"
 #include "ndsl/net/UdpChannel.h"
@@ -19,21 +20,19 @@ namespace net {
 UdpClient::UdpClient() {}
 UdpClient::~UdpClient() {}
 
-UdpEndpoint *UdpClient::begin(EventLoop *loop)
+UdpEndpoint *UdpClient::begin(EventLoop *loop,struct SocketAddress4 servaddr)
 {
     sfd = socket(AF_INET, SOCK_STREAM, 0);
-
-    struct SocketAddress4 servaddr;
-    servaddr.setPort(SERV_PORT);
-
-    inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+    fcntl(sfd,F_SETFL,O_NONBLOCK);
 
     int n;
-    UdpEndpoint *ue = new UdpEndpoint();
 
-    ue->pUdpChannel_ = new UdpChannel(sfd, loop);
-    ue->pUdpChannel_->setCallBack(UdpEndpoint::handleRead, NULL, ue);
-    n = ue->pUdpChannel_->enrollIn(true);
+    UdpEndpoint *ue=new UdpEndpoint();
+
+    if((n=ue->createChannel(sfd,loop))< 0)
+    {
+        return NULL;
+    }
 
     return ue;
 }

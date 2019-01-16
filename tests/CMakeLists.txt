@@ -13,20 +13,19 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # 设置单元测试的文件
-#set(TEST 
-#testMain.cc
+set(TEST 
+test.cc
 
-#net/MultiplexerTest.cc
 # All files
 #net/EpollTest.cc
 #net/EventLoopTest.cc
-#net/FifoIpcTest.cc
+# net/MultiplexerTest.cc
 
 #net/PipeAndFifoTest.cc
 #net/SignalfdTest.cc
 #net/TcpAcceptorTest.cc
 #net/TcpConnectionTest.cc
-#net/TimeWheelTest.cc
+net/TimeWheelTest.cc
 #net/UdpEndpointTest.cc 
 #net/UnixAndTcpSocketAddressTest.cc
 #net/UnixConnectionTest.cc
@@ -40,7 +39,7 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 #utils/ThreadTest.cc
 #utils/TimeStampTest.cc
 #utils/XMLConfig_test.cc
-#)
+)
 
 # 设置ping-pong单元测试的文件
 set(pingserver ping-pong/server.cc)
@@ -48,10 +47,10 @@ set(pingclient ping-pong/nClient.cc)
 include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 # net和utils下的测试文件
-#add_executable(utest ${TEST})
-#add_dependencies(utest ndsl)
-#target_link_libraries(utest ndsl)
-#target_link_libraries(utest ndsl pthread) # boost_system)
+add_executable(utest ${TEST})
+add_dependencies(utest ndsl)
+target_link_libraries(utest ndsl)
+target_link_libraries(utest ndsl pthread) # boost_system)
 
 # 生成pingpong测试 服务端
 add_executable(server ${pingserver})

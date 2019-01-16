@@ -113,9 +113,18 @@ void *EventLoop::loop(void *pThis)
         // printf("EventLoop::loop flag 2\n");
 
         // 处理任务队列
-        if (haswork) { el->pQueCh_->handleEvent(); }
+        if (haswork) {
+            uint64_t data;
+            read(el->pQueCh_->getFd(), &data, sizeof data);
+            el->pQueCh_->handleEvent();
+        }
         // 退出
-        if (quit) break;
+        if (quit) {
+            uint64_t data;
+            read(el->pIntrCh_->getFd(), &data, sizeof data);
+            LOG(LOG_INFO_LEVEL, LOG_SOURCE_EVENTLOOP, "EventLoop::loop quit()");
+            break;
+        }
     }
     // printf("EventLoop::loop quit\n");
     return S_OK;
