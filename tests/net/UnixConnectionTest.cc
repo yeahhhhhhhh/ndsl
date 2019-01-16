@@ -74,7 +74,8 @@ TEST_CASE("UnixConnection(onRecv)")
 
         // 测试onSend
         Conn->onError(unixiserror);
-        Conn->onSend("hello world", sizeof("hello world"), 0, unixsendTest, NULL);
+        Conn->onSend(
+            "hello world", sizeof("hello world"), 0, unixsendTest, NULL);
 
         char recvBuf[15];
         memset(recvBuf, 0, sizeof(recvBuf));
@@ -91,7 +92,8 @@ TEST_CASE("UnixConnection(onRecv)")
         REQUIRE(Conn->onRecv(recvBuf, &len, 0, unixrecvTest, NULL) == S_OK);
         REQUIRE(unixflagrecv == true);
 
-        // 第二次不需要添加中断
+        // 第二次需要添加中断
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
     }
 

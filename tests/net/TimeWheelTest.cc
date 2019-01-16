@@ -34,7 +34,7 @@ TEST_CASE("net/TimeWheel")
     // 如何测?
     SECTION("addTask")
     {
-        tw.start();
+        // tw.start();
         TimeWheel::Task *task = new TimeWheel::Task;
 
         task->doit = func3;
@@ -44,7 +44,7 @@ TEST_CASE("net/TimeWheel")
 
         REQUIRE(tw.addTask(task) == S_OK);
 
-        eloop.loop(&eloop);
+        // eloop.loop(&eloop);
     }
 
     // 如何测?
