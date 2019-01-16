@@ -48,7 +48,6 @@ set(LIB_NDSL_SRC
   # utils/Clientplugin.cc
   utils/Endian.cc
   utils/EventLoopThreadpool.cc
-  utils/Interrupter.cc
   utils/Plugin.cc
 
   utils/TimeStamp.cc
