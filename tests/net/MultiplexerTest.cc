@@ -66,7 +66,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
     // 启动一个客户端
     struct SocketAddress4 clientservaddr("127.0.0.1", 7878);
     TcpClient *pCli = new TcpClient();
-    if (pCli->onConnect(&loop, true, clientservaddr) == NULL) printf("kong\n");
+    if (pCli->onConnect(&loop, true, &clientservaddr) == NULL) printf("kong\n");
 
     // 添加中断
     loop.quit();
@@ -135,14 +135,15 @@ TEST_CASE("Mutiplexer/cbmaptest")
 
         write(pCli->sockfd_, buffer, 10);
         printf("writed!\n");
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer + 10, 40);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer + 50, 40);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************
@@ -161,11 +162,11 @@ TEST_CASE("Mutiplexer/cbmaptest")
         memcpy(buffer2 + sizeof(struct Message), data2, len2);
 
         write(pCli->sockfd_, buffer2, 40);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer2 + 40, 28);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************

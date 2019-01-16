@@ -126,7 +126,6 @@ void *EventLoop::loop(void *pThis)
             break;
         }
     }
-    // printf("EventLoop::loop quit\n");
     return S_OK;
 }
 
@@ -143,7 +142,11 @@ int EventLoop::modify(Channel *pCh) { return epoll_.modify(pCh); }
 
 int EventLoop::erase(Channel *pCh) { return epoll_.erase(pCh); }
 
-void EventLoop::quit() { pIntrCh_->onWrite(); }
+void EventLoop::quit()
+{
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_EVENTLOOP, "quit quit");
+    pIntrCh_->onWrite();
+}
 
 } // namespace net
 } // namespace ndsl
