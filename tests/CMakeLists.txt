@@ -19,7 +19,7 @@ test.cc
 
 # All files
 #net/EpollTest.cc
-#net/EventLoopTest.cc
+net/EventLoopTest.cc
 # net/MultiplexerTest.cc
 
     # net/PipeAndFifoTest.cc

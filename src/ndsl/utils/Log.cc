@@ -7,6 +7,7 @@
 // @email 1575033031@qq.com
 //
 #include <iostream>
+#include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -88,8 +89,6 @@ uint64_t add_source()
 
 void ndsl_log_into_sink(int level, uint64_t source,const char* file_name,const char * func_name, const char *format, ...)
 {
-    int k_file = 0;
-    int k_ter = 0;
     ndsl::utils::TimeStamp ts;
     char buffer[4096] = {0};
 
@@ -121,20 +120,12 @@ void ndsl_log_into_sink(int level, uint64_t source,const char* file_name,const c
     int ret3 =
         vsnprintf(buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
     if (ret3 < 0) return;
-    while ((k_ter <= log_source_tag) && (tag == 0)) {
-        //printf("source = %lu,_sinks = %lu\n",source,_sinks);
-        if (source & _sinks) {  
-            std::cout << buffer << std::endl;
-            source = source * 2;  
-        }
-        k_ter++;
-    }
-    while ((k_file <= log_source_tag) && (tag == 1)) {
-        if (source & _sinks) { 
-            file_log.log(buffer, ret1 + ret2 + ret3 + 1);
-            source = source * 2;  
+ 
+    if((source & _sinks)&& (tag == 0))
+        printf("%s",buffer);
 
-        }
-        k_file++;
+    if ((source & _sinks) && (tag == 1)) { 
+        file_log.log(buffer, ret1 + ret2 + ret3 + 1);
     }
+    
 }
