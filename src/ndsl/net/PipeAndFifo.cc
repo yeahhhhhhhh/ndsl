@@ -7,14 +7,13 @@
 //
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <iostream>
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
-#include "config.h"
-#include "error.h"
-#include "Log.h"
-#include "PipeAndFifo.h"
+#include "ndsl/config.h"
+#include "ndsl/utils/Error.h"
+#include "ndsl/utils/Log.h"
+#include "ndsl/net/PipeAndFifo.h"
 using namespace std;
 
 namespace ndsl{
@@ -105,7 +104,7 @@ int PipeAndFifo::createPipe(int fd[2])
 				if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
 				pThis->qSendInfo_.pop();
 				delete tsi;
-				cout<<"send over"<<endl;
+				LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "PipeAndFifo::send error\n");
 			}else
 			{
 				// cout<<"only send part of info"<<endl;
@@ -115,7 +114,7 @@ int PipeAndFifo::createPipe(int fd[2])
 			
 		}else if (n < 0)
 		{
-			cout << "send error"<<endl;
+			LOG(LOG_INFO_LEVEL, LOG_SOURCE_UNIXCONNECTION, "PipeAndFifo::send error\n");
 			pThis->errorHandle_(errno, pThis->pPipeChannel_->getFd());
 			pThis->qSendInfo_.pop();
 			delete tsi;
@@ -134,7 +133,8 @@ int PipeAndFifo::onRecv(char *buf, size_t len, int flags, Callback cb, void *par
 	{
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
 		{
-			cout <<"receive meet EGAIN"<<endl;
+			// cout <<"receive meet EGAIN"<<endl;
+			LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "receive meet EAGAIN\n");
 			
 			RecvInfo_.readBuf_ = buf;
 			RecvInfo_.sendBuf_ = NULL;
@@ -203,8 +203,7 @@ int PipeAndFifo::createAndOpenFifo(const char *pathname1, const char *pathname2,
 	}
 	if ((readfd = open(pathname1, O_RDONLY, 0)) < 0)
 	{
-		cout<< "open :"<<pathname1<< "error   "<<strerror(errno)<<endl;
-		LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "open path1 error\n");
+		LOG(LOG_INFO_LEVEL, LOG_SOURCE_UNIXCONNECTION, "PipeAndFifo::open pathname1 error: %s\n", strerror(errno));
 		return S_OK;
 	}
 	fd[0] = readfd;
@@ -230,8 +229,7 @@ int PipeAndFifo::createAndOpenFifo(const char *pathname1, const char *pathname2,
 	
 	if ((writefd = open(pathname2, O_WRONLY, 0)) < 0)
 	{
-		// cout<< "open :"<<pathname2<< "error   "<<strerror(errno)<<endl;
-		LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "open path2 error\n");
+		LOG(LOG_ERROR_LEVEL, LOG_SOURCE_UNIXCONNECTION, "open pathname2 error: %s\n", strerror(errno));
 		return S_OK;
 	}
 	fd[1] = writefd;

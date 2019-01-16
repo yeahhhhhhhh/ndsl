@@ -99,7 +99,8 @@ int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
 
     if (-1 ==
         bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "TcpAcceptor bind error\n");
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "TcpAcceptor bind error");
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, strerror(errno));
         return S_FALSE;
     }
 

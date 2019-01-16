@@ -6,7 +6,6 @@
  * @author zzt
  * @emial 429834658@qq.com
  **/
-#include "../catch.hpp"
 #include "ndsl/net/Entity.h"
 #include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/TcpConnection.h"
@@ -23,7 +22,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string>
-#include "ndsl/net/Protbload.pb.h"
+#include "Protbload.pb.h"
 
 using namespace ndsl;
 using namespace net;
@@ -52,17 +51,18 @@ void clientcallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
     printf("result==%d \n", resultmessage->answer());
 }
 
-bool flag = false;
+bool flag2 = false;
 
-void fun1(void *a) { flag = true; }
-
-TEST_CASE("Entitytest")
+void fun2(void *a) { flag2 = true; }
+int main()
 {
     // 启动服务
     // 初始化EPOLL
     EventLoop loop;
-    REQUIRE(loop.init() == S_OK);
-    struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
+    loop.init();
+
+    // unsigned short p = 8888;
+    struct SocketAddress4 servaddr("0.0.0.0", 8456);
 
     TcpAcceptor *tAc = new TcpAcceptor(&loop);
     tAc->start(servaddr);
@@ -73,49 +73,52 @@ TEST_CASE("Entitytest")
     socklen_t addrlen;
 
     TcpConnection *Conn = new TcpConnection(tAc);
-    Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
+    Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun2, NULL);
 
     // 启动一个客户端
+    struct SocketAddress4 clientservaddr("127.0.0.1", 8456);
     TcpConnection *serverconn;
     TcpClient *pCli = new TcpClient();
-    REQUIRE((serverconn = pCli->onConnect(&loop, true)) != NULL);
-    // REQUIRE(pCli->onConnect(&loop) == S_OK);
-
+    serverconn = pCli->onConnect(&loop, true, clientservaddr);
+    printf("success \n");
     // 添加中断
     loop.quit();
-    REQUIRE(loop.loop(&loop) == S_OK);
+    loop.loop(&loop);
+
     Multiplexer *clientmulti = new Multiplexer(Conn);
+
     Multiplexer *servermulti = new Multiplexer(serverconn);
 
-    REQUIRE(loop.loop(&loop) == S_OK);
+    loop.loop(&loop);
 
-    SECTION("entity")
-    {
-        /******
-         * addInsertwork()测试
-         *****/
-        int clientid = 10;
-        int serverid = 12;
-        Entity *client = new Entity(clientid, clientcallbak, clientmulti);
-        client->pri();
-        Entity *server = new Entity(serverid, servercallbak, servermulti);
-        server->pri();
-        REQUIRE(loop.loop(&loop) == S_OK);
+    /******
+     * addInsertwork()测试
+     *****/
+    int clientid = 10;
+    int serverid = 12;
+    Entity *client = new Entity(clientid, clientcallbak, clientmulti);
+    client->pri();
+    Entity *server = new Entity(serverid, servercallbak, servermulti);
+    server->pri();
 
-        /*********************************
-         * 客户端服务器实体测试：
-         ********************************/
-        std::string pstr;
-        Protbload::ADD *addmessage = new Protbload::ADD;
-        addmessage->set_agv1(111);
-        addmessage->set_agv2(222);
-        addmessage->SerializeToString(&pstr);
-        int mlen = pstr.size();
-        printf("the size of pstr is %d\n", mlen);
+    loop.loop(&loop);
+    /*********************************
+     * 客户端服务器实体测试：
+     ********************************/
+    int a, b;
+    printf("input the agv1 and agv2 of ADD: \n");
+    scanf("%d %d", &a, &b);
+    std::string pstr;
+    Protbload::ADD *addmessage = new Protbload::ADD;
+    addmessage->set_agv1(a);
+    addmessage->set_agv2(b);
+    addmessage->SerializeToString(&pstr);
+    int mlen = pstr.size();
+    printf("the size of pstr is %d\n", mlen);
 
-        client->multiplexer_->sendMessage(serverid, mlen, pstr.c_str());
-        printf("sendMessage!\n");
-        REQUIRE(loop.loop(&loop) == S_OK);
-        REQUIRE(loop.loop(&loop) == S_OK);
-    }
+    client->multiplexer_->sendMessage(serverid, mlen, pstr.c_str());
+    printf("sendMessage!\n");
+    loop.loop(&loop);
+    loop.loop(&loop);
+    return 0;
 }

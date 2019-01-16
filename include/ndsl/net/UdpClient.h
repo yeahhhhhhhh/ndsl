@@ -7,6 +7,8 @@
  */
 #ifndef __UDPCLIENT_H__
 #define __UDPCLIENT_H__
+#include "EventLoop.h"
+#include "ndsl/net/UdpEndpoint.h"
 
 namespace ndsl {
 namespace net {
@@ -14,8 +16,13 @@ namespace net {
 class UdpClient
 {
   public:
-    int sockfd_; //用来保存链接fd
-    int start();
+    UdpClient();
+    ~UdpClient();
+
+    int sfd; //用来保存链接fd
+    UdpEndpoint *begin(EventLoop *loop,struct SocketAddress4 servaddr);
+
+    int end();
 };
 
 } // namespace net

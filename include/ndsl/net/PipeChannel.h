@@ -7,7 +7,7 @@
 //
 #ifndef _NDSL_NET_PIPECHANNEL_H_
 #define _NDSL_NET_PIPECHANNEL_H_
-#include "BaseChannel.h"
+#include "ndsl/net/BaseChannel.h"
 
 namespace ndsl{
 namespace net{

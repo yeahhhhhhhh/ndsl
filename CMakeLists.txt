@@ -68,13 +68,4 @@ set(CMAKE_CXX_RELWITHDEBINFO_RELEASE  "-O2")
 add_subdirectory(src)
 add_subdirectory(tests)
 
-# find_package(Protobuf REQUIRED)
-# if(PROTOBUF_FOUND)
-#    message(STATUS "protobuf library found")
-# else()
-#     message(FATAL_ERROR "protobuf library is needed but cant be found")
-# endif()
-include_directories(${PROTOBUF_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-
 message(STATUS "### Done ###")

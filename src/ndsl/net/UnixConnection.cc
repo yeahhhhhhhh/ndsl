@@ -8,11 +8,11 @@
 #include <errno.h>
 #include <unistd.h>
 #include <sys/un.h>
-#include "UnixConnection.h"
-#include "config.h"
-#include "error.h"
-#include "UnixChannel.h"
-#include "UnixAcceptor.h"
+#include "ndsl/net/UnixConnection.h"
+#include "ndsl/config.h"
+#include "ndsl/utils/Error.h"
+#include "ndsl/net/UnixChannel.h"
+#include "ndsl/net/UnixAcceptor.h"
 
 namespace ndsl {
 namespace net {

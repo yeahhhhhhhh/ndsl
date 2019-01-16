@@ -5,7 +5,7 @@
 // @auther ranxiangjun
 // @email ranxianshen@gmail.compare
 //
-#include "PipeChannel.h"
+#include "ndsl/net/PipeChannel.h"
 
 namespace ndsl{
 namespace net{

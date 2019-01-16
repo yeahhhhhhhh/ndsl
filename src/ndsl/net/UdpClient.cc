@@ -7,25 +7,40 @@
 // @email luckylanry@163.com
 //
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/UdpClient.h"
-#include "ndsl/utils/temp_define.h"
+#include "ndsl/net/UdpChannel.h"
+#include "ndsl/config.h"
 #include "ndsl/utils/Error.h"
 
 namespace ndsl {
 namespace net {
 
-int UdpClient::start()
+UdpClient::UdpClient() {}
+UdpClient::~UdpClient() {}
+
+UdpEndpoint *UdpClient::begin(EventLoop *loop,struct SocketAddress4 servaddr)
 {
-    sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
+    sfd = socket(AF_INET, SOCK_STREAM, 0);
+    fcntl(sfd,F_SETFL,O_NONBLOCK);
 
-    struct SocketAddress4 servaddr;
-    servaddr.setPort(SERV_PORT);
+    int n;
 
-    inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+    UdpEndpoint *ue=new UdpEndpoint();
 
-    return S_OK;
+    if((n=ue->createChannel(sfd,loop))< 0)
+    {
+        return NULL;
+    }
+
+    return ue;
 }
 
+int UdpClient::end()
+{
+    close(sfd);
+    return S_OK;
+}
 } // namespace net
 } // namespace ndsl

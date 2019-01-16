@@ -11,8 +11,8 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include "SocketAddress.h"
-#include "Error.h"
+#include "ndsl/net/SocketAddress.h"
+#include "ndsl/utils/Error.h"
 
 using namespace std;
 
@@ -148,19 +148,19 @@ void SocketAddress6::convertToString( string& str )
 	str = buf;
 }
 
-int SocketAddress4::operator == ( const SocketAddress4& h )const
+bool SocketAddress4::operator == ( const SocketAddress4& h )const
 {
     if ( sin_addr.s_addr == h.sin_addr.s_addr && sin_port == h.sin_port )
     {
-        return S_OK;
+        return true;
     }
     else
     {
-        return S_FALSE;
+        return false;
     }
 }
 
-int SocketAddress6::operator == ( const SocketAddress6& h )const
+bool SocketAddress6::operator == ( const SocketAddress6& h )const
 {
 	char buf1[50];
 	char buf2[50];
@@ -168,11 +168,11 @@ int SocketAddress6::operator == ( const SocketAddress6& h )const
 	getIP(buf2);
     if (strcmp(buf1, buf2) == 0 && sin6_port == h.sin6_port )
     {
-        return S_OK;
+        return true;
     }
     else
     {
-        return S_FALSE;
+        return false;
     }
 }
 
