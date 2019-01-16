@@ -99,33 +99,6 @@ class Client
         // 初始化已连接数量
         numConnected_ = 0;
 
-        // FIXME:MEMORY LEAK!!!
-        EventLoop *loop = new EventLoop;
-        loop->init();
-        // FIXME:MEMORY LEAK!!!
-        EventLoopThread *th0 = new EventLoopThread(loop);
-        // EventLoop *loop = threadPool_->getNextEventLoop();
-
-        // 初始化定时器
-        TimeWheel *time = new TimeWheel(loop);
-        // TimeWheel *time = new TimeWheel(threadPool_->getNextEventLoop());
-        // 开始时间轮
-        time->start();
-
-        // 初始化定时器任务
-        TimeWheel::Task *t = new TimeWheel::Task;
-        t->setInterval = timeout_; // 中断
-        t->times = 1;
-        t->doit = handleTimeout;
-        t->param = this;
-
-        // 添加任务
-        time->addTask(t);
-
-        th0->run();
-
-        // printf("nClient::Client addTask OK\n");
-
         // new出数据需要的空间
         message_ = (char *) malloc(sizeof(char) * blockSize);
 
@@ -149,16 +122,41 @@ class Client
 
     void onConnect()
     {
-        printf("nClient::Client onConnect sessionCount = %d\n", sessionCount_);
-        printf(
-            "nClient::Client onConnect numConnected = %d\n",
-            (int) numConnected_);
+        // printf("nClient::Client onConnect sessionCount = %d\n",
+        // sessionCount_); printf(
+        //     "nClient::Client onConnect numConnected = %d\n",
+        //     (int) numConnected_);
 
         // 等所有链接都建立之后 设置定时器 发送数据
         if ((++numConnected_) == sessionCount_) {
             // 提示所有链接已建立 TODO: 等待LOG确认写法
             // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TESTCLIENT, "all connected\n");
             printf("nClient::onConection all connected\n");
+
+            // FIXME:MEMORY LEAK!!!
+            EventLoop *loop = new EventLoop;
+            loop->init();
+            // FIXME:MEMORY LEAK!!!
+            EventLoopThread *th0 = new EventLoopThread(loop);
+            // EventLoop *loop = threadPool_->getNextEventLoop();
+
+            // 初始化定时器
+            TimeWheel *time = new TimeWheel(loop);
+            // TimeWheel *time = new TimeWheel(threadPool_->getNextEventLoop());
+            // 开始时间轮
+            time->start();
+
+            // 初始化定时器任务
+            TimeWheel::Task *t = new TimeWheel::Task;
+            t->setInterval = timeout_; // 中断
+            t->times = 1;
+            t->doit = handleTimeout;
+            t->param = this;
+
+            // 添加任务
+            time->addTask(t);
+
+            th0->run();
 
             for (vector<Session *>::iterator it = sessions_.begin();
                  it != sessions_.end();
@@ -213,14 +211,15 @@ class Client
         printf("nClient::handleTimeout\n");
 
         Client *pThis = static_cast<Client *>(pthis);
+
         // 计时器时间到
         pThis->threadPool_->quit();
 
-        // TODO: 换成自己的
+        // 关闭每个链接
         for (vector<Session *>::iterator it = pThis->sessions_.begin();
              it != pThis->sessions_.end();
              ++it) {
-            boost::mem_fn(&Session::stop);
+            (*it)->stop();
         }
         // std::for_each(
         //     pThis->sessions_.begin(),
