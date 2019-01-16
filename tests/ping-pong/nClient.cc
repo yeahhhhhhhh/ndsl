@@ -99,8 +99,16 @@ class Client
         // 初始化已连接数量
         numConnected_ = 0;
 
+        // FIXME:MEMORY LEAK!!!
+        EventLoop *loop = new EventLoop;
+        loop->init();
+        // FIXME:MEMORY LEAK!!!
+        EventLoopThread *th0 = new EventLoopThread(loop);
+        // EventLoop *loop = threadPool_->getNextEventLoop();
+
         // 初始化定时器
-        TimeWheel *time = new TimeWheel(threadPool_->getNextEventLoop());
+        TimeWheel *time = new TimeWheel(loop);
+        // TimeWheel *time = new TimeWheel(threadPool_->getNextEventLoop());
         // 开始时间轮
         time->start();
 
@@ -114,6 +122,8 @@ class Client
 
         // 添加任务
         time->addTask(t);
+
+        th0->run();
 
         // printf("nClient::Client addTask OK\n");
 
@@ -173,6 +183,10 @@ class Client
                 totalBytesRead += (*it)->bytesRead();
                 totalMessagesRead += (*it)->messagesRead();
             }
+            printf(
+                "%lf MiB/s throughput\n",
+                static_cast<double>(totalBytesRead) / (timeout_ * 1024 * 1024));
+
             // LOG_WARN << totalBytesRead << " total bytes read";
             // LOG_WARN << totalMessagesRead << " total messages read";
             // LOG_WARN << static_cast<double>(totalBytesRead) /
@@ -239,7 +253,7 @@ void Session::start()
     if (conn_ != NULL) owner_->onConnect();
 
     // loop跑起来
-    loop_->loop(loop_);
+    // loop_->loop(loop_);
 
     // printf("Session::start loop already run\n");
 }

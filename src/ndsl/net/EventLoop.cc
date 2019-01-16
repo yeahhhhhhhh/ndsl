@@ -122,7 +122,10 @@ void *EventLoop::loop(void *pThis)
         if (quit) {
             uint64_t data;
             read(el->pIntrCh_->getFd(), &data, sizeof data);
-            LOG(LOG_INFO_LEVEL, LOG_SOURCE_EVENTLOOP, "EventLoop::loop quit()");
+            LOG(LOG_INFO_LEVEL,
+                LOG_SOURCE_EVENTLOOP,
+                "EventLoop::loop quit()\n");
+            // FIXME: 退出的时候是不是应该把epoll里面的东西全取消掉
             break;
         }
     }

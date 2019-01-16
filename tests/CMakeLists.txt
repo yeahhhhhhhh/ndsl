@@ -25,7 +25,7 @@ test.cc
 #net/SignalfdTest.cc
 #net/TcpAcceptorTest.cc
 #net/TcpConnectionTest.cc
-net/TimeWheelTest.cc
+# net/TimeWheelTest.cc
 #net/UdpEndpointTest.cc 
 #net/UnixAndTcpSocketAddressTest.cc
 #net/UnixConnectionTest.cc
@@ -36,7 +36,7 @@ net/TimeWheelTest.cc
 #utils/GuidTest.cc
 #utils/LogTest.cc
 #utils/PluginTest.cc
-#utils/ThreadTest.cc
+utils/ThreadTest.cc
 #utils/TimeStampTest.cc
 #utils/XMLConfig_test.cc
 )

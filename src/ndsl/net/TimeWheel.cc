@@ -161,7 +161,16 @@ int TimeWheel::onTick(void *pThis)
 
     int ret = read(ptw->ptimerfdChannel_->getFd(), &exp, sizeof(uint64_t));
     if (ret == -1) {
-        LOG(LOG_DEBUG_LEVEL, LOG_SOURCE_TIMEWHEEL, "TimeWheel::onTick read\n");
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_TIMEWHEEL,
+            "TimeWheel::onTick read error\n");
+
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_TIMEWHEEL,
+            "fd = %d, errno = %d, %s",
+            ptw->ptimerfdChannel_->getFd(),
+            errno,
+            strerror(errno));
         return errno;
     }
 

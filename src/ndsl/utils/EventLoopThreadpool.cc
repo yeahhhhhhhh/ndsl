@@ -78,6 +78,7 @@ int EventLoopThreadpool::start()
 
     // 开启线程
     ret = elt->run();
+
     if (ret != S_OK) {
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_EVENTLOOPTHREADPOOL,
@@ -151,8 +152,6 @@ int EventLoopThreadpool::quit()
             "EventLoopThreadpool::quit");
         return S_FALSE;
     }
-
-    printf("size = %lu\n", loops_.size());
 
     for (int i = loops_.size() - 1; i >= 0; i--) {
         delete loopThreads_[i];

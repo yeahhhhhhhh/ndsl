@@ -49,6 +49,12 @@ int Epoll::enroll(Channel *pCh)
 
     if (ret < 0) {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "Epoll::enroll epoll_ctl\n");
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_EPOLL,
+            "epfd_ = %d, errno = %d, %s",
+            epfd_,
+            errno,
+            strerror(errno));
         return errno;
     }
 
@@ -94,7 +100,12 @@ int Epoll::wait(Channel *channels[], int &nEvents, int timeoutMs)
 
     if (ret < 0) {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "Epoll::wait epoll_wait\n");
-        printf("Epoll::wait errno = %d,%s\r\n", errno, strerror(errno));
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_EPOLL,
+            "Epoll::wait epfd = %d, errno = %d,%s\r\n",
+            epfd_,
+            errno,
+            strerror(errno));
         return errno;
     }
 

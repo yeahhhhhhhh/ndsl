@@ -68,7 +68,7 @@ int TcpConnection::onSend(
             return S_OK;
         } else if (n < 0) {
             // 出错 通知用户
-            LOG(LOG_INFO_LEVEL,
+            LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onSend send error\n");
             errorHandle_(errno, pTcpChannel_->getFd());

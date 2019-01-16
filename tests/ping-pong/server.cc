@@ -34,6 +34,7 @@ static void onMessage(void *a)
     // printf("server::Message\n");
     // printf("server::Message len = %ld\n", len);
     if (len > 0) Conn->onSend(sbuf, len, 0, onSendMessage, NULL);
+    memset(sbuf, 0, sizeof(sbuf));
 }
 
 static void onConnection(void *a)

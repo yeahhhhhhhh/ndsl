@@ -32,13 +32,23 @@ int Thread::run()
 int Thread::join(void **retval)
 {
     int ret = ::pthread_join(id_, retval);
-    if (ret != S_OK)
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_THREAD, "Thread::join pthread_join!");
+    if (ret != S_OK) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_THREAD,
+            "Thread::join pthread_join error");
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_THREAD,
+            "errno = %d, %s",
+            errno,
+            strerror(errno));
+    }
     return ret;
 }
 
 void *Thread::runInThread(void *arg)
 {
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_THREAD, "one thread is running!\n");
+
     Thread *th = static_cast<Thread *>(arg);
     th->ret_ = th->func_(th->param_);
     return (void *) th->ret_;

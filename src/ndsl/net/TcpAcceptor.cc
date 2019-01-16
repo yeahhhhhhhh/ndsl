@@ -74,7 +74,7 @@ int TcpAcceptor::start(struct SocketAddress4 servaddr)
         return S_FALSE;
     } else {
         pTcpChannel_->setCallBack(handleRead, NULL, this);
-        pTcpChannel_->enroll(false);
+        pTcpChannel_->enrollIn(false);
     }
 
     return S_OK;
@@ -116,6 +116,8 @@ int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
 
 int TcpAcceptor::handleRead(void *pthis)
 {
+    // printf("TcpAcceptor::handleRead\n");
+
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
     int connfd;
     struct sockaddr_in cliaddr;
