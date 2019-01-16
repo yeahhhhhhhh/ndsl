@@ -135,14 +135,15 @@ TEST_CASE("Mutiplexer/cbmaptest")
 
         write(pCli->sockfd_, buffer, 10);
         printf("writed!\n");
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer + 10, 40);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer + 50, 40);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************
@@ -161,11 +162,11 @@ TEST_CASE("Mutiplexer/cbmaptest")
         memcpy(buffer2 + sizeof(struct Message), data2, len2);
 
         write(pCli->sockfd_, buffer2, 40);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer2 + 40, 28);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************

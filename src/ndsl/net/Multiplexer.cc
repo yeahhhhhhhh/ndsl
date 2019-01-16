@@ -32,7 +32,7 @@ void Multiplexer::insert(void *pa)
     if (iter == pthis->cbMap_.end() || iter->first != p->id) {
         pthis->cbMap_.insert(std::make_pair(p->id, p->cb));
     }
-
+    printf("success insert id %d\n", p->id);
     if (p != NULL) // 释放para
     {
         delete p;
@@ -52,7 +52,7 @@ void Multiplexer::addInsertWork(int id, Callback cb)
     w1->doit = insert;
     w1->param = static_cast<void *>(p);
     conn_->pTcpChannel_->pLoop_->addWork(w1);
-    printf("success insert !\n");
+    printf("add insert work!\n");
 }
 
 // 在map中删除<id,callback>对
@@ -142,7 +142,7 @@ void Multiplexer::dispatch(void *p)
         pthis->id_ = be32toh(message->id);
         pthis->len_ = be32toh(message->len);
 
-        // printf("id:%d, len:%d \n", pthis->id_, pthis->len_);
+        printf("id:%d, len:%d \n", pthis->id_, pthis->len_);
 
         pthis->left_ = pthis->len_;
         pthis->rlen_ -= sizeof(int) * 2;     // 对rlen_做更新
