@@ -32,8 +32,8 @@ test.cc
     # net/UnixAndTcpSocketAddressTest.cc
     # net/UnixConnectionTest.cc
 
-    # utils/EndianTest.cc
-    # utils/ErrorTest.cc
+    utils/EndianTest.cc
+    utils/ErrorTest.cc
     # utils/EventLoopThreadpoolTest.cc
     # utils/GuidTest.cc
     # utils/LogTest.cc
