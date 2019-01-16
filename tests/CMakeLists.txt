@@ -24,13 +24,13 @@ test.cc
 
     # net/PipeAndFifoTest.cc
     net/SignalfdTest.cc
-    net/TcpAcceptorTest.cc
-    net/TcpConnectionTest.cc
+    # net/TcpAcceptorTest.cc
+    # net/TcpConnectionTest.cc
 
     net/TimeWheelTest.cc
     net/UdpEndpointTest.cc
     net/UnixAndTcpSocketAddressTest.cc
-    net/UnixConnectionTest.cc
+    # net/UnixConnectionTest.cc
 
     utils/EndianTest.cc
     utils/ErrorTest.cc
