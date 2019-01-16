@@ -27,7 +27,7 @@ test.cc
     net/TcpConnectionTest.cc
 
     net/TimeWheelTest.cc
-    # net/UdpEndpointTest.cc
+    net/UdpEndpointTest.cc
     net/UnixAndTcpSocketAddressTest.cc
     net/UnixConnectionTest.cc
 
