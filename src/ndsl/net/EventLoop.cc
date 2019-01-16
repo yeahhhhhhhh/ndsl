@@ -122,7 +122,7 @@ void *EventLoop::loop(void *pThis)
         if (quit) {
             uint64_t data;
             read(el->pIntrCh_->getFd(), &data, sizeof data);
-            LOG(LOG_INFO_LEVEL, LOG_SOURCE_EVENTLOOP, "EventLoop::loop quit()");
+            LOG(LOG_INFO_LEVEL, LOG_SOURCE_EVENTLOOP, "EventLoop::loop quit");
             break;
         }
     }
@@ -142,11 +142,7 @@ int EventLoop::modify(Channel *pCh) { return epoll_.modify(pCh); }
 
 int EventLoop::erase(Channel *pCh) { return epoll_.erase(pCh); }
 
-void EventLoop::quit()
-{
-    LOG(LOG_INFO_LEVEL, LOG_SOURCE_EVENTLOOP, "quit quit");
-    pIntrCh_->onWrite();
-}
+void EventLoop::quit() { pIntrCh_->onWrite(); }
 
 } // namespace net
 } // namespace ndsl
