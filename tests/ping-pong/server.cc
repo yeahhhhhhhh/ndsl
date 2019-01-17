@@ -25,14 +25,14 @@ TcpConnection *Conn;
 char sbuf[BUFSIZE];
 ssize_t len;
 
- static void mError(int a, int b) { printf("there is a error\n"); }
+static void mError(int a, int b) { printf("there is a error\n"); }
 
 static void onSendMessage(void *a) {} // printf("send a message\n"); }
 
 static void onMessage(void *a)
 {
-    printf("server::Message\n");
-    printf("server::Message len = %ld\n", len);
+    // printf("server::Message\n");
+    // printf("server::Message len = %ld\n", len);
     if (len > 0) Conn->onSend(sbuf, len, 0, onSendMessage, NULL);
 }
 

@@ -7,115 +7,89 @@
 // @email luckylanry@163.com 
 //
 
-#define CATCH_CONFIG_MAIN
 #include "../catch.hpp"
-#include "ndsl/net/UdpChannel.h"
-#include "ndsl/net/UdpEndpoint.h"
-#include "ndsl/net/EventLoop.h"
-#include "ndsl/net/Epoll.h"
-#include "ndsl/net/UdpClient.h"
 #include <cstring>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
+#include "ndsl/net/EventLoop.h"
+#include "ndsl/net/UdpChannel.h"
+#include "ndsl/net/UdpEndpoint.h"
+#include "ndsl/net/Epoll.h"
+#include "ndsl/net/UdpClient.h"
+#include "ndsl/net/SocketAddress.h"
+bool flag_ = false;
 
-bool flag = false;
+void TestFun1(void *a) { flag_ = true; }
 
-void fun1(void *a) { flag = true; }
+bool udpTestFlagSend = false;
 
-bool flagsend = false;
-static void sendTest(void *a) { flagsend = true; }
+static void udpSendTest(void *aa) { udpTestFlagSend = true; }
 
-// bool flagerror = false;
-// static void iserror(int a, int b) { flagerror = true; }
+bool udpFlagRecv = false;
 
-// bool flagrecv = false;
-// static void recvTest(void *a) { flagrecv = true; }
+static void udpRecvTest(void *aa) { udpFlagRecv = true; }
+
+bool udpClientRecv = false;
+static void ClientudpRecvTest(void *aa)
+{
+    udpClientRecv = true;
+}
 
 using namespace ndsl::net;
 
 TEST_CASE("net/UdpEndpoint")
-{   
-    // 启动服务
-    // 初始化EPOLL
-    EventLoop loop;
-    loop.init();
-    int sockfd = socket(AF_LOCAL, SOCK_STREAM, 0);
-    // SECTION("createChannel"){
-       
-    //     //注册udpchannel
-    //     REQUIRE(ue.createChannel(sockfd,sendTest,NULL) == 0);
-    //     if(fork() == 0){
-    //         exit(0);
-    //     }
-    //     sleep(1);
+{
+	// 初始化EPOLL 服务器 客户端共用一个EPOLL
+	EventLoop loop;
+	REQUIRE(loop.init() == S_OK);
 
-    //     // 添加中断
-    //     loop.quit();
-    //     // 开始loop
-    //     loop.loop();
-    // }
-        
-    // SECTION("remove"){
-       
-    //     REQUIRE(ue.createChannel(sockfd,sendTest,NULL) == 0);
-    //     if(fork() == 0){
-    //         exit(0);
-    //     }
-    //     sleep(1);
+	UdpEndpoint *t = new UdpEndpoint(&loop);
 
-    //     REQUIRE(ue.remove() == 0);
-    //     // 添加中断
-    //     loop.quit();
-    //     // 开始loop
-    //     loop.loop();
-    // }
+	SECTION("udp")
+	{
+		// 准备客户端的接受参数 默认全ip接受 
+		struct SocketAddress4 servaddr("0.0.0.0", 6666);
+        bzero(&servaddr, sizeof(servaddr));
+		socklen_t addrlen;
+		addrlen =sizeof(servaddr);
+		REQUIRE((t->start(servaddr))== 0);
 
-    SECTION("onAccept")
-    {
-        UdpEndpoint ue(&loop);
-        ue.createChannel(sockfd,sendTest,NULL);
-        // 准备接收的数据结构
-        struct sockaddr_in rservaddr;
-        bzero(&rservaddr, sizeof(rservaddr));
-        // socklen_t addrlen;
+		t->setInfo(
+            (SA *) &servaddr,addrlen,TestFun1, NULL);
 
-        // 启动一个客户端
-        UdpClient *pCli = new UdpClient();
-        REQUIRE(pCli->start() == S_OK);
+        UdpEndpoint *pClient;
+		struct SocketAddress4 cliaddr("127.0.0.1", 6666);
+		UdpClient *pCli = new UdpClient();
 
-        // // 添加中断
-        loop.quit();
-        REQUIRE(loop.loop(&loop) == S_OK);
+	    REQUIRE((pClient = pCli->begin(&loop,cliaddr))!= NULL);
 
-        // 测试是否接收到了客户的连接
-        REQUIRE(flag == true);
+		// 测试Send
+        char *sendbuf = (char *) malloc(sizeof(char) * 12);
+        strcpy(sendbuf, "hello world\0");
 
-        // // 测试send
-        // Conn->onError(iserror);
-        // char *sendbuf = (char *) malloc(sizeof(char) * 12);
-        // // sendbuf = 'hello world';
-        // strcpy(sendbuf, "hello world\0");
-        // Conn->onSend(sendbuf, strlen("hello world"), 0, sendTest, NULL);
+        t->onSend(
+            sendbuf,strlen("hello world"),0,(struct sockaddr*)&cliaddr,sizeof(sockaddr),udpSendTest, NULL);
+        // REQUIRE(udpTestFlagSend== true);
 
-        // char recvBuf[15];
-        // memset(recvBuf, 0, sizeof(recvBuf));
-        // read(pCli->sockfd_, recvBuf, MAXLINE);
+        char recvBuf[15];
+        ssize_t recvLen;
+        memset(recvBuf, 0, sizeof(recvBuf));
+        pClient->onRecv(
+            recvBuf, &recvLen, 0,(struct sockaddr*)&servaddr,addrlen,ClientudpRecvTest, NULL);
 
         // REQUIRE(strcmp("hello world", recvBuf) == 0);
-        // REQUIRE(flagsend == true);
+        // REQUIRE(udpClientRecv == true);
 
-        // // 测试onRecv
-        // memset(recvBuf, 0, sizeof(recvBuf));
-        // size_t len;
-        // write(pCli->sockfd_, "hello world", strlen("hello world"));
+        // 测试onRecv
+        memset(recvBuf, 0, sizeof(recvBuf));
+        ssize_t len;
+        write(pCli->sfd, "hello world", strlen("hello world"));
 
-        // REQUIRE(Conn->onRecv(recvBuf, &len, 0, recvTest, NULL) == S_OK);
+        REQUIRE(
+           t->onRecv(recvBuf, &len,0,(struct sockaddr*)&cliaddr,sizeof(cliaddr),udpRecvTest, NULL) ==
+            S_OK);
         // REQUIRE(len == strlen("hello world"));
-        // REQUIRE(flagrecv == true);
-
-        // // 第二次不需要添加中断
-        // loop.quit();
-        // REQUIRE(loop.loop() == S_OK);
-     }
+        // REQUIRE(udpFlagRecv == true);
+	}
 }

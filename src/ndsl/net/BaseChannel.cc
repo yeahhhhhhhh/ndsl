@@ -51,7 +51,7 @@ int BaseChannel::handleEvent()
     }
 
     if (revents_ & EPOLLIN) {
-        printf("BaseChannel::handleEvent EPOLLIN\n");
+        // printf("BaseChannel::handleEvent EPOLLIN\n");
         if (handleRead_) handleRead_(pThis_);
     }
 

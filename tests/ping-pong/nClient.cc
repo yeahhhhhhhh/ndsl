@@ -23,6 +23,7 @@
 #include "ndsl/net/SocketAddress.h"
 
 #include <cstdio>
+#include <iostream>
 
 using namespace std;
 using namespace ndsl;
@@ -57,7 +58,7 @@ class Session
   private:
     static void onMessage(void *pthis)
     {
-        printf("nClient::onMessage\n");
+        // printf("nClient::onMessage\n");
         Session *pThis = static_cast<Session *>(pthis);
         pThis->messagesRead_++;
         pThis->bytesRead_ += pThis->len;
@@ -88,34 +89,32 @@ class Client
         EventLoopThreadpool *threadPool,
         int blockSize,
         int sessionCount,
-        int timeout)
+        int timeout,
+        struct SocketAddress4 *servaddr)
         : blockSize_(blockSize)
         , threadPool_(threadPool)
         , sessionCount_(sessionCount)
         , timeout_(timeout)
+        , servaddr_(servaddr)
     {
         // 初始化已连接数量
         numConnected_ = 0;
 
         // 初始化定时器
         TimeWheel *time = new TimeWheel(threadPool_->getNextEventLoop());
-        time->init();
-
-        // printf("nClient::Client TimeWheel init OK\n");
+        // 开始时间轮
+        time->start();
 
         // 初始化定时器任务
         // printf("nClient::Client timeout_ = %d\n", timeout_);
         TimeWheel::Task *t = new TimeWheel::Task;
-        t->setInterval = timeout_ * 10000; // 中断
+        t->setInterval = timeout_; // 中断
         t->times = 1;
         t->doit = handleTimeout;
         t->param = this;
 
         // 添加任务
         time->addTask(t);
-
-        // 开始时间轮
-        time->start();
 
         // printf("nClient::Client addTask OK\n");
 
@@ -221,6 +220,9 @@ class Client
     char *message_;
     // 原子操作 C++支持的
     atomic_int numConnected_;
+
+  public:
+    struct SocketAddress4 *servaddr_;
 };
 
 void Session::start()
@@ -229,8 +231,8 @@ void Session::start()
 
     // 阻塞建立连接 建立好的之后调用client的onConnect
     // TODO: 确认下端口号是否正确
-    struct SocketAddress4 servaddr("127.0.0.1", SERV_PORT);
-    conn_ = client_.onConnect(loop_, false, servaddr);
+    // struct SocketAddress4 servaddr("127.0.0.1", 9999);
+    conn_ = client_.onConnect(loop_, false, owner_->servaddr_);
     if (conn_ == NULL) { printf("nClient::Session::start onConnect fail\n"); }
     // 将自身的recv函数注册进去
     if (conn_ != NULL) conn_->onRecv(buf, &len, 0, onMessage, this);
@@ -251,14 +253,21 @@ void Session::stop()
 
 int main(int argc, char *argv[])
 {
-    if (argc != 5) {
+    if (argc != 7) {
         fprintf(
-            stderr, "Usage: client <threads> <blocksize> <sessions> <time>\n");
+            stderr,
+            "Usage: client <address> <port> <threads> <blocksize> <sessions> "
+            "<time>\n");
     } else {
-        int threadCount = atoi(argv[1]);
-        int blockSize = atoi(argv[2]);
-        int sessionCount = atoi(argv[3]);
-        int timeout = atoi(argv[4]);
+        uint64_t mlog = add_source();
+        set_ndsl_log_sinks(mlog | LOG_SOURCE_TCPCONNECTION | LOG_SOURCE_EVENTLOOP, LOG_OUTPUT_TER);
+
+        struct SocketAddress4 *servaddr = new struct SocketAddress4(
+            argv[1], static_cast<unsigned short>(atoi(argv[2])));
+        int threadCount = atoi(argv[3]);
+        int blockSize = atoi(argv[4]);
+        int sessionCount = atoi(argv[5]);
+        int timeout = atoi(argv[6]);
 
         // 初始化线程池 设置线程
         EventLoopThreadpool *threadPool = new EventLoopThreadpool();
@@ -271,14 +280,14 @@ int main(int argc, char *argv[])
         // 将buf的空间new出来 Memory leak
         buf = (char *) malloc(sizeof(char) * blockSize);
 
-        Client client(threadPool, blockSize, sessionCount, timeout);
+        Client client(threadPool, blockSize, sessionCount, timeout, servaddr);
+        // ，貌似没有作用
+        while (!toEnd)
+            ;
+
+        // FIXME: 主线程竟然结束了 !!!!
+        printf("main end\n");
     }
 
-    // ，貌似没有作用
-    while (!toEnd)
-        ;
-
-    // FIXME: 主线程竟然结束了 !!!!
-    printf("main end\n");
     return 0;
 }

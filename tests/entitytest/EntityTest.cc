@@ -79,7 +79,7 @@ int main()
     struct SocketAddress4 clientservaddr("127.0.0.1", 8456);
     TcpConnection *serverconn;
     TcpClient *pCli = new TcpClient();
-    serverconn = pCli->onConnect(&loop, true, clientservaddr);
+    serverconn = pCli->onConnect(&loop, true, &clientservaddr);
     printf("success \n");
     // 添加中断
     loop.quit();

@@ -26,6 +26,8 @@
 using namespace ndsl;
 using namespace net;
 
+#define PORT 7878
+
 int id = 11;
 static void
 entitycallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
@@ -50,7 +52,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
     EventLoop loop;
     REQUIRE(loop.init() == S_OK);
 
-    struct SocketAddress4 servaddr("0.0.0.0", 7878);
+    struct SocketAddress4 servaddr("0.0.0.0", PORT);
 
     TcpAcceptor *tAc = new TcpAcceptor(&loop);
     tAc->start(servaddr);
@@ -64,10 +66,11 @@ TEST_CASE("Mutiplexer/cbmaptest")
     Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun3, NULL);
 
     // 启动一个客户端
-    struct SocketAddress4 clientservaddr("127.0.0.1", 7878);
+    struct SocketAddress4 clientservaddr("127.0.0.1", PORT);
     TcpClient *pCli = new TcpClient();
     // pCli->onConnect(&loop, true, clientservaddr);
-    TcpConnection *clientconn = pCli->onConnect(&loop, true, clientservaddr);
+    TcpConnection *clientconn;
+    clientconn = pCli->onConnect(&loop, true, &clientservaddr);
     // 添加中断
     loop.quit();
     REQUIRE(loop.loop(&loop) == S_OK);
@@ -124,7 +127,8 @@ TEST_CASE("Mutiplexer/cbmaptest")
         int len = 10;
         char *buffer =
             (char *) malloc((sizeof(int) * 2 + sizeof(char) * len) * 5);
-
+        // if (buffer != NULL) free(buffer);
+        printf("buffer len = %lu", (sizeof(int) * 2 + sizeof(char) * len) * 5);
         Message *message = reinterpret_cast<struct Message *>(buffer);
         message->id = htobe32(id);
         message->len = htobe32(len);
@@ -137,7 +141,6 @@ TEST_CASE("Mutiplexer/cbmaptest")
         }
 
         write(pCli->sockfd_, buffer, 10);
-        printf("writed!\n");
         loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
@@ -146,6 +149,10 @@ TEST_CASE("Mutiplexer/cbmaptest")
         REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer + 50, 40);
+        loop.quit();
+        REQUIRE(loop.loop(&loop) == S_OK);
+        loop.quit();
+        REQUIRE(loop.loop(&loop) == S_OK);
         loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 

@@ -28,7 +28,7 @@ class EventLoopThread
   private:
     net::EventLoop *loop_; // 记录线程中的loop
     Thread thread_;        // 线程
-    bool running;          // 标志线程是否在使用
+    bool running_;         // 标志线程是否在使用
 
   public:
     EventLoopThread(net::EventLoop *loop);
@@ -69,9 +69,15 @@ class EventLoopThreadpool
     // 设置最大线程数
     int setMaxThreads(unsigned int maxThreads);
     // 获取最大线程数
-    unsigned int getMaxThreads();
+    unsigned int getMaxThreads() const;
+
     // 关闭线程池中所有线程
-    void quit();
+    int quit();
+    // 已有EventLoop数量
+    int getLoopsNum();
+
+  private:
+    int capacity(); // 默认最大线程数
 };
 
 } // namespace utils
