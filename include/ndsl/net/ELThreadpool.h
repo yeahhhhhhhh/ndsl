@@ -16,14 +16,11 @@ namespace ndsl {
 
 namespace net {
 class EventLoop;
-}
-
-namespace utils {
 
 // 线程类
 class Thread
-    : public noncopyable
-    , public nonmoveable
+    : public utils::noncopyable
+    , public utils::nonmoveable
 {
   public:
     using ThreadFunc = void *(*) (void *); // 线程函数
@@ -51,16 +48,16 @@ class Thread
 
 // EventLoop线程类
 class ELThread
-    : public noncopyable
-    , public nonmoveable
+    : public utils::noncopyable
+    , public utils::nonmoveable
 {
   private:
-    net::EventLoop *loop_; // 记录线程中的loop
-    Thread thread_;        // 线程
-    bool running_;         // 标志线程是否在使用
+    EventLoop *loop_; // 记录线程中的loop
+    Thread thread_;   // 线程
+    bool running_;    // 标志线程是否在使用
 
   public:
-    ELThread(net::EventLoop *loop);
+    ELThread(EventLoop *loop);
     ~ELThread();
 
     // 启动线程
@@ -73,12 +70,12 @@ class ELThread
 
 // EventLoop线程池
 class ELThreadpool
-    : public noncopyable
-    , public nonmoveable
+    : public utils::noncopyable
+    , public utils::nonmoveable
 {
   private:
     std::vector<ELThread *> loopThreads_; // 线程池中的所有线程
-    std::vector<net::EventLoop *> loops_; // 线程池中所有的EventLoop
+    std::vector<EventLoop *> loops_;      // 线程池中所有的EventLoop
 
     // 线程池容量与CPU物理核心的倍数
     static const int Redundancy = 2;
@@ -94,7 +91,7 @@ class ELThreadpool
     // 初始化线程池
     int start();
     // 获取EventLoop
-    net::EventLoop *getNextEventLoop();
+    EventLoop *getNextEventLoop();
 
     // 设置最大线程数
     int setMaxThreads(unsigned int maxThreads);
@@ -110,7 +107,7 @@ class ELThreadpool
     int capacity(); // 默认最大线程数
 };
 
-} // namespace utils
+} // namespace net
 } // namespace ndsl
 
 #endif // __NDSL_UTILS_EVENTLOOPTHREAD_H__

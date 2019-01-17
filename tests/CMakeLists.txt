@@ -25,7 +25,7 @@ set(TEST
     net/PipeAndFifoTest.cc
     net/SignalfdTest.cc
     net/TcpAcceptorTest.cc
-    # net/TcpConnectionTest.cc
+    net/TcpConnectionTest.cc
 
     net/TimeWheelTest.cc
     net/UdpEndpointTest.cc
@@ -38,6 +38,7 @@ set(TEST
     utils/GuidTest.cc
     utils/LogTest.cc
     utils/PluginTest.cc
+    utils/SemaphoreTest.cc
     utils/TimeStampTest.cc
     # utils/XmlTest.cc
 )

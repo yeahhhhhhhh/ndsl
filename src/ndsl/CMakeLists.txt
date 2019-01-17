@@ -44,6 +44,7 @@ set(LIB_NDSL_SRC
 
   utils/Endian.cc
   utils/Plugin.cc
+  utils/Semaphore.cc
 
   utils/TimeStamp.cc
   utils/Error.cc

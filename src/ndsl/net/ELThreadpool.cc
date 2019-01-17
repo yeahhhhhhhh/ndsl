@@ -14,8 +14,7 @@
 
 namespace ndsl {
 
-using namespace net;
-namespace utils {
+namespace net {
 
 Thread::Thread(ThreadFunc threadfunc, void *param)
     : func_(threadfunc)
@@ -231,5 +230,5 @@ int ELThreadpool::capacity()
 
     return Redundancy * processors;
 }
-} // namespace utils
+} // namespace net
 } // namespace ndsl
