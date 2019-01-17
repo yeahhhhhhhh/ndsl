@@ -25,7 +25,7 @@ set(LIB_NDSL_SRC
   net/TcpConnection.cc
   net/UdpClient.cc
   net/UnixChannel.cc
-  # net/Multiplexer.cc
+  net/Multiplexer.cc
   net/SocketAddress.cc
 
   net/TcpChannel.cc

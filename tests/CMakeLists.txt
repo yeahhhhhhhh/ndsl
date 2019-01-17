@@ -20,7 +20,7 @@ test.cc
     # All files
     net/EpollTest.cc
     net/EventLoopTest.cc
-    # net/MultiplexerTest.cc
+    net/MultiplexerTest.cc
 
     # net/PipeAndFifoTest.cc
     net/SignalfdTest.cc
@@ -45,9 +45,9 @@ test.cc
 )
 
 # 设置ping-pong单元测试的文件
-set(pingserver ping-pong/server.cc)
-set(pingclient ping-pong/nClient.cc)
-include_directories(${CMAKE_SOURCE_DIR}/tests)
+# set(pingserver ping-pong/server.cc)
+# set(pingclient ping-pong/nClient.cc)
+# include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 # net和utils下的测试文件
 add_executable(utest ${TEST})
@@ -56,14 +56,14 @@ target_link_libraries(utest ndsl)
 target_link_libraries(utest ndsl pthread) # boost_system)
 
 # 生成pingpong测试 服务端
-add_executable(server ${pingserver})
-add_dependencies(server ndsl)
-target_link_libraries(server ndsl)
+# add_executable(server ${pingserver})
+# add_dependencies(server ndsl)
+# target_link_libraries(server ndsl)
 
 # 生成pingpong测试 客户端
-add_executable(client ${pingclient})
-add_dependencies(client ndsl)
-target_link_libraries(client ndsl boost_system pthread)
+# add_executable(client ${pingclient})
+# add_dependencies(client ndsl)
+# target_link_libraries(client ndsl boost_system pthread)
 
 #设置插件单元测试
 #set(SRC_list Plugintest/plugintest.cc) #宏定义

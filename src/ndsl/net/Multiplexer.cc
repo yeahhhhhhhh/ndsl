@@ -15,6 +15,7 @@
 #include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/TcpChannel.h"
+#include "ndsl/utils/Log.h"
 //#include "ndsl/utils/Endian.h"
 #include <endian.h>
 
@@ -61,8 +62,12 @@ void Multiplexer::remove(void *pa)
     struct para *p = static_cast<struct para *>(pa);
     int id = p->id;
 
-    p->pthis->cbMap_.erase(id);
-
+    if (p->pthis->cbMap_.find(id) != p->pthis->cbMap_.end())
+        p->pthis->cbMap_.erase(id);
+    else
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_MULTIPLEXER,
+            "MULTIPLEXER::REMOVE cant remove the entity, not in the map\n");
     if (p != NULL) // 释放para
     {
         delete p;
@@ -135,6 +140,7 @@ void Multiplexer::dispatch(void *p)
 
     if (pthis->left_ == 0) // 是新任务，处理读取消息头的逻辑
     {
+        printf("left_ == 0, rlen_ == %lu\n", pthis->rlen_);
         struct Message *message =
             reinterpret_cast<struct Message *>(pthis->location_);
         // pthis->id_ = ndsl::utils::Endian::nToH32(message->id);
@@ -142,8 +148,15 @@ void Multiplexer::dispatch(void *p)
         pthis->id_ = be32toh(message->id);
         pthis->len_ = be32toh(message->len);
 
-        printf("id:%d, len:%d \n", pthis->id_, pthis->len_);
-
+        Multiplexer::CallbackMap::iterator iter =
+            pthis->cbMap_.find(pthis->id_);
+        if (iter == pthis->cbMap_.end()) {
+            LOG(LOG_ERROR_LEVEL,
+                LOG_SOURCE_MULTIPLEXER,
+                "MULTIPLEXER::DISPATCH the entity id:%d is not in the map\n",
+                pthis->id_);
+            return;
+        }
         pthis->left_ = pthis->len_;
         pthis->rlen_ -= sizeof(int) * 2;     // 对rlen_做更新
         pthis->left_ -= pthis->rlen_;        // 对left_做更新
