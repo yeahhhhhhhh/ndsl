@@ -66,14 +66,15 @@ TEST_CASE("Mutiplexer/cbmaptest")
     // 启动一个客户端
     struct SocketAddress4 clientservaddr("127.0.0.1", 7878);
     TcpClient *pCli = new TcpClient();
-    if (pCli->onConnect(&loop, true, clientservaddr) == NULL) printf("kong\n");
-
+    // pCli->onConnect(&loop, true, clientservaddr);
+    TcpConnection *clientconn = pCli->onConnect(&loop, true, clientservaddr);
     // 添加中断
     loop.quit();
     REQUIRE(loop.loop(&loop) == S_OK);
 
     Multiplexer *mymulti = new Multiplexer(Conn);
-
+    Multiplexer *multi2 = new Multiplexer(clientconn);
+    multi2->hellom();
     // SECTION("addInsertWork")
     // {
     //     int id = 1;
@@ -99,7 +100,9 @@ TEST_CASE("Mutiplexer/cbmaptest")
         std::map<int, Multiplexer::Callback>::iterator iter;
         iter = mymulti->cbMap_.find(id);
         REQUIRE(iter != mymulti->cbMap_.end());
-
+        multi2->addInsertWork(id, entitycallbak);
+        loop.quit();
+        REQUIRE(loop.loop(&loop) == S_OK);
         printf("insert entity\n");
 
         /********************************
@@ -128,21 +131,22 @@ TEST_CASE("Mutiplexer/cbmaptest")
         memcpy(buffer + sizeof(struct Message), data, len);
 
         char *p = buffer;
-        for (int i = 1; i <= 5; i++) //发了5个消息过去
+        for (int i = 1; i <= 4; i++) //发了5个消息过去
         {
             memcpy(buffer + 18 * i, p, 18);
         }
 
         write(pCli->sockfd_, buffer, 10);
         printf("writed!\n");
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer + 10, 40);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer + 50, 40);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************
@@ -150,6 +154,9 @@ TEST_CASE("Mutiplexer/cbmaptest")
         //  ********************************/
         int id2 = 99;
         mymulti->addInsertWork(id2, entitycallbak);
+        loop.quit();
+        REQUIRE(loop.loop(&loop) == S_OK);
+
         int len2 = 60;
         char data2[] =
             "helloworldhelloworldhelloworldhelloworldhelloworldhelloworld";
@@ -161,31 +168,22 @@ TEST_CASE("Mutiplexer/cbmaptest")
         memcpy(buffer2 + sizeof(struct Message), data2, len2);
 
         write(pCli->sockfd_, buffer2, 40);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         write(pCli->sockfd_, buffer2 + 40, 28);
-
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************
          * sendMessage测试
          ********************************/
-        // char data[] = "helloworld\0";
-        // int len = 11;
-        // mymulti->sendMessage(id, len, data);
 
-        // char recvBuf[20];
-        // loop.quit();
-        // REQUIRE(loop.loop() == S_OK);
+        char data3[] = "helloworld";
+        int len3 = 10;
+        mymulti->sendMessage(id, len3, data3);
 
-        // read(pCli->sockfd_, recvBuf, MAXLINE);
-        // char *p = recvBuf;
-        // for (int i = 0; i < 10; i++) {
-        //     printf("%c", *(p + 8));
-        //     p++;
-        // }
-        // printf("\n");
-        // REQUIRE(loop.loop() == S_OK);
+        loop.quit();
+        REQUIRE(loop.loop(&loop) == S_OK);
     }
 }

@@ -88,7 +88,7 @@ int main()
     Multiplexer *clientmulti = new Multiplexer(Conn);
 
     Multiplexer *servermulti = new Multiplexer(serverconn);
-
+    loop.quit();
     loop.loop(&loop);
 
     /******
@@ -100,7 +100,7 @@ int main()
     client->pri();
     Entity *server = new Entity(serverid, servercallbak, servermulti);
     server->pri();
-
+    loop.quit();
     loop.loop(&loop);
     /*********************************
      * 客户端服务器实体测试：
@@ -118,7 +118,9 @@ int main()
 
     client->multiplexer_->sendMessage(serverid, mlen, pstr.c_str());
     printf("sendMessage!\n");
+    loop.quit();
     loop.loop(&loop);
+    loop.quit();
     loop.loop(&loop);
     return 0;
 }
