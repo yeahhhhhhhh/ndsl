@@ -1,5 +1,5 @@
 /**
- * @file EventLoopThreadpool.h
+ * @file ELThreadpool.h
  * @brief
  * 封装EventLoop的线程和线程池
  *
@@ -11,7 +11,6 @@
 #include <pthread.h>
 #include <vector>
 #include "ndsl/utils/Noncopyable.h"
-#include "ndsl/utils/Thread.h"
 
 namespace ndsl {
 
@@ -21,18 +20,48 @@ class EventLoop;
 
 namespace utils {
 
-class EventLoopThread
+// 线程类
+class Thread
+    : public noncopyable
+    , public nonmoveable
+{
+  public:
+    using ThreadFunc = void *(*) (void *); // 线程函数
+
+  private:
+    ThreadFunc func_; // 线程函数
+    void *param_;     // 函数参数
+    pthread_t id_;    // 线程id
+    void *ret_;       // 线程返回值
+
+  public:
+    Thread(ThreadFunc threadfunc, void *param);
+    ~Thread();
+
+    // 开启线程
+    int run();
+    // 等待线程结束
+    int join(void **retval = NULL);
+    // CPU核心数
+    static int getNumberOfProcessors();
+
+  private:
+    static void *runInThread(void *);
+};
+
+// EventLoop线程类
+class ELThread
     : public noncopyable
     , public nonmoveable
 {
   private:
     net::EventLoop *loop_; // 记录线程中的loop
     Thread thread_;        // 线程
-    bool running;          // 标志线程是否在使用
+    bool running_;         // 标志线程是否在使用
 
   public:
-    EventLoopThread(net::EventLoop *loop);
-    ~EventLoopThread();
+    ELThread(net::EventLoop *loop);
+    ~ELThread();
 
     // 启动线程
     int run();
@@ -42,12 +71,13 @@ class EventLoopThread
     bool isRunning() const;
 };
 
-class EventLoopThreadpool
+// EventLoop线程池
+class ELThreadpool
     : public noncopyable
     , public nonmoveable
 {
   private:
-    std::vector<EventLoopThread *> loopThreads_; // 线程池中的所有线程
+    std::vector<ELThread *> loopThreads_; // 线程池中的所有线程
     std::vector<net::EventLoop *> loops_; // 线程池中所有的EventLoop
 
     // 线程池容量与CPU物理核心的倍数
@@ -58,8 +88,8 @@ class EventLoopThreadpool
     unsigned int nextThread_;
 
   public:
-    EventLoopThreadpool();
-    ~EventLoopThreadpool();
+    ELThreadpool();
+    ~ELThreadpool();
 
     // 初始化线程池
     int start();
@@ -69,9 +99,15 @@ class EventLoopThreadpool
     // 设置最大线程数
     int setMaxThreads(unsigned int maxThreads);
     // 获取最大线程数
-    unsigned int getMaxThreads();
+    unsigned int getMaxThreads() const;
+
     // 关闭线程池中所有线程
-    void quit();
+    int quit();
+    // 已有EventLoop数量
+    int getLoopsNum();
+
+  private:
+    int capacity(); // 默认最大线程数
 };
 
 } // namespace utils

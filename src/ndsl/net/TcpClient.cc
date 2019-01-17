@@ -23,24 +23,27 @@ namespace net {
 TcpClient::TcpClient() {}
 TcpClient::~TcpClient() {}
 
-TcpConnection *TcpClient::onConnect(EventLoop *loop, bool isConnNoBlock)
+TcpConnection *TcpClient::onConnect(
+    EventLoop *loop,
+    bool isConnNoBlock,
+    struct SocketAddress4 *servaddr)
 {
     sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
-    struct SocketAddress4 servaddr;
-    servaddr.setPort(SERV_PORT);
+    // struct SocketAddress4 servaddr;
+    // servaddr.setPort(SERV_PORT);
 
-    inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+    // inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 
     // 设成非阻塞
     if (isConnNoBlock) fcntl(sockfd_, F_SETFL, O_NONBLOCK);
 
     int n;
-    if ((n = connect(sockfd_, (SA *) &servaddr, sizeof(servaddr))) < 0) {
+    if ((n = connect(sockfd_, (SA *) servaddr, sizeof(struct SocketAddress4))) <
+        0) {
         if (errno != EINPROGRESS) {
             // connect出错 返回
-            // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "connect fail\n");
-            printf("TcpClient::onConnection connect fail\n");
+            LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCLIENT, "connect fail");
             return NULL;
         }
     }
@@ -51,13 +54,12 @@ TcpConnection *TcpClient::onConnect(EventLoop *loop, bool isConnNoBlock)
     // 创建一个TcpConnection
     TcpConnection *conn = new TcpConnection();
     if (NULL == conn) {
-        // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "new TcpConnection
-        // fail\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCLIENT, "new TcpConnection fail");
         return NULL;
     }
 
     if ((n = conn->createChannel(sockfd_, loop)) < 0) {
-        printf("TcpClient::onConnection createChannel fail\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCLIENT, "createChannel fail");
         return NULL;
     }
 

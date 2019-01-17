@@ -1,5 +1,5 @@
 ////
-// @file Log.h
+// @file Plugin.cc
 // @brief
 // plugin 实现
 //

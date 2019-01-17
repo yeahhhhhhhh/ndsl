@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "algorithm": "cpp",
-        "string_view": "cpp"
-    }
+        "string_view": "cpp",
+        "string": "cpp",
+        "thread": "cpp",
+        "array": "cpp"
+    },
+    "editor.suggestFontSize": 20
 }

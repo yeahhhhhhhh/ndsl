@@ -5,7 +5,7 @@
  * 消息分发器，实现不同通信实体对tcp长连接的复用，每个通信实体拥有一个id，
  * 将通信实体的id与回调函数作为键值对存入map方便进行检索，回调相应的回调函数。
  * 分发器绑定在connection上，即 one multiplexer per connection.
- * 实现功能：
+ * 实现功能如下：
  *  1.绑定connection
  *  2.插入通信实体
  *  3.删除通信实体
@@ -45,13 +45,14 @@ class Multiplexer
 {
   public:
     // 定义消息回调函数
-    using Callback = void (*)(char *buffer, int len, int error);
+    using Callback =
+        void (*)(Multiplexer *Multiplexer, char *buffer, int len, int error);
 
   private:
     // 回调函数映射容器
     using CallbackMap = std::map<int, Callback>;
 
-    ndsl::net::TcpConnection *conn_; // 绑定的connection
+    ndsl::net::TcpConnection *conn_ = NULL; // 绑定的connection
 
     int error_ = 0;
     int msghead = 0;
@@ -69,10 +70,11 @@ class Multiplexer
     Multiplexer(ndsl::net::TcpConnection *conn)
         : conn_(conn)
     {
+        if (conn_ == NULL) printf("conn = NULL\n");
         conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
     }
 
-    Multiplexer() { printf("in gouzao hanshu \n"); }
+    Multiplexer() {}
     CallbackMap cbMap_; // 回调函数映射容器
 
     // 在loop工作队列中加入insert任务
@@ -88,7 +90,7 @@ class Multiplexer
     static void remove(void *pa);
 
     // 向上层提供发送消息接口
-    void sendMessage(int id, int length, char *data);
+    void sendMessage(int id, int length, const char *data);
 
     // 分发消息给通信实体
     static void dispatch(void *p);

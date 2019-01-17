@@ -6,63 +6,54 @@
 # @author niexw
 # @email xiaowen.nie.cn@gmail.com
 #
-add_subdirectory(net)
-add_subdirectory(utils)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/third)
+
+add_subdirectory(net)
+add_subdirectory(third)
+add_subdirectory(utils)
 
 set(LIB_NDSL_SRC
-
- net/Epoll.cc
- net/EventLoop.cc
- net/BaseChannel.cc
- #net/TcpChannel.cc
- #net/TcpConnection.cc
- #net/TcpAcceptor.cc
-
- #net/Multiplexer.cc
- #net/SocketAddress.cc
- #net/SocketAddressUn.cc
- #net/TcpClient.cc
- #net/SocketAddress.cc
- #net/SocketAddressUn.cc
- utils/Log.cc
- utils/TimeStamp.cc
- #utils/Plugin.cc
- utils/Guid.cc
-
-#  net/Epoll.cc
-#  net/EventLoop.cc
-#  net/BaseChannel.cc
-#  net/TcpChannel.cc
-#  net/TcpConnection.cc
-#  net/TcpAcceptor.cc
-#  net/UdpEndpoint.cc
-#  utils/Error.cc
-#  net/Multiplexer.cc
-#  net/SocketAddress.cc
-#  net/SocketAddressUn.cc
-#  net/TcpClient.cc
-#  net/SocketAddress.cc
-#  net/SocketAddressUn.cc
-#  utils/Log.cc
-#  utils/TimeStamp.cc
-
- #utils/Guid.cc
- #utils/Thread.cc
- #net/WorkQueue.cc
- #net/InterruptChannel.cc
- #utils/EventLoopThreadpool.cc
-  net/SignalChannel.cc
+  #all files
+  net/BaseChannel.cc
+  net/EventLoop.cc
+  net/PipeChannel.cc
   net/SignalHandler.cc
+  net/TcpAcceptor.cc
 
- #net/TimeWheel.cc
- #utils/Thread.cc
+  net/TcpConnection.cc
+  net/UdpClient.cc
+  net/UnixChannel.cc
+  net/Multiplexer.cc
+  net/SocketAddress.cc
 
+  net/TcpChannel.cc
+  net/TimeWheel.cc
+  net/UdpEndpoint.cc
+  net/UnixConnection.cc
+  net/Epoll.cc
+
+  net/PipeAndFifo.cc
+  net/SignalChannel.cc
+  net/SocketAddressUn.cc
+  net/TcpClient.cc
+  net/UdpChannel.cc
+  net/UnixAcceptor.cc
+  net/ELThreadpool.cc
+
+  utils/Endian.cc
+  utils/Plugin.cc
+
+  utils/TimeStamp.cc
+  utils/Error.cc
+  utils/Guid.cc
+  utils/Log.cc
+  utils/Xml.cc
  )
 
- add_library(ndsl ${LIB_NDSL_SRC})
- target_link_libraries(ndsl uuid)
+add_library(ndsl ${LIB_NDSL_SRC})
+target_link_libraries(ndsl uuid)
 
 #生成libplugin.so
  #set(LIB_SRC utils/Plugin.cc)
