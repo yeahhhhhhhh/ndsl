@@ -25,7 +25,7 @@ set(LIB_NDSL_SRC
   net/TcpConnection.cc
   net/UdpClient.cc
   net/UnixChannel.cc
-  # net/Multiplexer.cc
+  net/Multiplexer.cc
   net/SocketAddress.cc
 
   net/TcpChannel.cc
@@ -40,21 +40,15 @@ set(LIB_NDSL_SRC
   net/TcpClient.cc
   net/UdpChannel.cc
   net/UnixAcceptor.cc
+  net/ELThreadpool.cc
 
-
-  third/pugixml.cpp
-
-
-  # utils/Clientplugin.cc
   utils/Endian.cc
-  utils/EventLoopThreadpool.cc
   utils/Plugin.cc
 
   utils/TimeStamp.cc
   utils/Error.cc
   utils/Guid.cc
   utils/Log.cc
-  utils/Thread.cc
   utils/Xml.cc
  )
 

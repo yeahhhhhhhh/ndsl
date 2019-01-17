@@ -1,13 +1,13 @@
 /**
- * @file EventLoopThreadpoolTest.cc
+ * @file ELThreadpoolTest.cc
  * @brief
- * EventLoopThreadpool的单元测试
+ * ELThreadpool的单元测试
  *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
 #include "../catch.hpp"
-#include "ndsl/utils/EventLoopThreadpool.h"
+#include "ndsl/net/ELThreadpool.h"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/utils/Error.h"
 
@@ -16,9 +16,29 @@ using namespace ndsl::utils;
 
 void ELTP_func(void *) {}
 
-TEST_CASE("EventLoopThreadpool")
+void *test1(void *arg)
 {
-    EventLoopThreadpool eltp;
+    LOG(LOG_INFO_LEVEL,
+        LOG_SOURCE_ELTHREADPOOL,
+        "This is thread %ld\n",
+        (long) arg);
+    return (void *) 0;
+}
+
+TEST_CASE("Thread")
+{
+    SECTION("run and join")
+    {
+        Thread t1(test1, (void *) 1);
+        REQUIRE(t1.run() == S_OK);
+
+        REQUIRE(t1.join() == S_OK);
+    }
+}
+
+TEST_CASE("ELThreadpool")
+{
+    ELThreadpool eltp;
     SECTION("setMaxThreads")
     {
         int ret = eltp.setMaxThreads(4);

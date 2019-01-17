@@ -19,7 +19,7 @@
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TimeWheel.h"
 #include "ndsl/utils/Log.h"
-#include "ndsl/utils/EventLoopThreadpool.h"
+#include "ndsl/net/ELThreadpool.h"
 #include "ndsl/net/SocketAddress.h"
 
 #include <cstdio>
@@ -86,7 +86,7 @@ class Client
   public:
     // Client client(threadPool, blockSize, sessionCount, timeout);
     Client(
-        EventLoopThreadpool *threadPool,
+        ELThreadpool *threadPool,
         int blockSize,
         int sessionCount,
         int timeout,
@@ -212,8 +212,8 @@ class Client
 
     // EventLoop *loop_;
     int blockSize_;
-    // EventLoopThreadPool threadPool_;
-    EventLoopThreadpool *threadPool_;
+    // ELThreadPool threadPool_;
+    ELThreadpool *threadPool_;
     int sessionCount_;
     int timeout_;
     vector<Session *> sessions_;
@@ -260,7 +260,9 @@ int main(int argc, char *argv[])
             "<time>\n");
     } else {
         uint64_t mlog = add_source();
-        set_ndsl_log_sinks(mlog | LOG_SOURCE_TCPCONNECTION | LOG_SOURCE_EVENTLOOP, LOG_OUTPUT_TER);
+        set_ndsl_log_sinks(
+            mlog | LOG_SOURCE_TCPCONNECTION | LOG_SOURCE_EVENTLOOP,
+            LOG_OUTPUT_TER);
 
         struct SocketAddress4 *servaddr = new struct SocketAddress4(
             argv[1], static_cast<unsigned short>(atoi(argv[2])));
@@ -270,7 +272,7 @@ int main(int argc, char *argv[])
         int timeout = atoi(argv[6]);
 
         // 初始化线程池 设置线程
-        EventLoopThreadpool *threadPool = new EventLoopThreadpool();
+        ELThreadpool *threadPool = new ELThreadpool();
         threadPool->setMaxThreads(threadCount);
 
         // 在线程里new一个EventLoop
