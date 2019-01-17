@@ -27,9 +27,9 @@ UdpEndpoint *UdpClient::begin(EventLoop *loop,struct SocketAddress4 servaddr)
 
     int n;
 
-    UdpEndpoint *ue=new UdpEndpoint();
+    UdpEndpoint *ue=new UdpEndpoint(loop);
 
-    if((n=ue->createChannel(sfd,loop))< 0)
+    if((n=ue->createChannel(sfd))< 0)
     {
         return NULL;
     }
