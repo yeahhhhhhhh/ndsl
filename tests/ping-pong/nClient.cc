@@ -109,24 +109,19 @@ class Client
         message_[blockSize] = '\0';
 
         // 准备发送数据
-        // FIXME: 得在另一个线程里面做全套的动作
         for (int i = 0; i < sessionCount; ++i) {
-            printf("nClient::client i = %d\n", i);
-            threadPool_->getNextEventLoop();
-            // Session *session =
-            //     new Session(threadPool_->getNextEventLoop(), this);
-            // // sleep(1);
-            // sessions_.push_back(session);
-            // session->start();
+            Session *session =
+                new Session(threadPool_->getNextEventLoop(), this);
+            sessions_.push_back(session);
+            session->start();
         }
-        while (1)
-            ;
-        for (vector<Session *>::iterator it = sessions_.begin();
-             it != sessions_.end();
-             ++it) {
-            // 发送数据
-            (*it)->start();
-        }
+
+        // for (vector<Session *>::iterator it = sessions_.begin();
+        //      it != sessions_.end();
+        //      ++it) {
+        //     // 发送数据
+        //     (*it)->start();
+        // }
     }
 
     const char *message() const { return message_; }
@@ -140,6 +135,7 @@ class Client
 
         // 等所有链接都建立之后 设置定时器 发送数据
         if ((++numConnected_) == sessionCount_) {
+            // sleep(1);
             // 提示所有链接已建立 TODO: 等待LOG确认写法
             // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TESTCLIENT, "all connected\n");
             printf("nClient::onConection all connected\n");
@@ -194,7 +190,7 @@ class Client
             for (vector<Session *>::iterator it = sessions_.begin();
                  it != sessions_.end();
                  ++it) {
-                printf("bytesRead = %ld\n", (*it)->bytesRead());
+                // printf("bytesRead = %ld\n", (*it)->bytesRead());
                 totalBytesRead += (*it)->bytesRead();
                 totalMessagesRead += (*it)->messagesRead();
             }
@@ -256,7 +252,7 @@ class Client
 
 void Session::start()
 {
-    printf("nClient::Session start\n");
+    // printf("nClient::Session start\n");
 
     // 阻塞建立连接 建立好的之后调用client的onConnect
     conn_ = client_.onConnect(loop_, false, owner_->servaddr_);

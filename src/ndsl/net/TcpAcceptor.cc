@@ -116,7 +116,7 @@ int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
 
 int TcpAcceptor::handleRead(void *pthis)
 {
-    LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "TcpAcceptor::handleRead\n");
+    // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "TcpAcceptor::handleRead\n");
 
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
     int connfd;
@@ -127,9 +127,9 @@ int TcpAcceptor::handleRead(void *pthis)
 
     if (connfd > 0) {
         // 连接成功
-        LOG(LOG_INFO_LEVEL,
-            LOG_SOURCE_TCPACCETPOR,
-            "TcpAcceptor::connect succ\n");
+        // LOG(LOG_INFO_LEVEL,
+        //     LOG_SOURCE_TCPACCETPOR,
+        //     "TcpAcceptor::connect succ\n");
     } else {
         // 连接失败
         LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "connect fail\n");
@@ -140,15 +140,19 @@ int TcpAcceptor::handleRead(void *pthis)
     fcntl(connfd, F_SETFL, O_NONBLOCK);
 
     if (pThis->info.inUse_) {
+        // printf("TcpAcceptor::handleRead info.inUser_ = true\n");
+
         ((pThis->info).pCon_)
             ->createChannel(connfd, pThis->pTcpChannel_->pLoop_);
-        pThis->info.addr_ = (struct sockaddr *) &cliaddr;
-        pThis->info.addrlen_ = (socklen_t *) &clilen;
-
-        if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
+        if (NULL != pThis->info.addr_)
+            pThis->info.addr_ = (struct sockaddr *) &cliaddr;
+        if (NULL != pThis->info.addrlen_)
+            pThis->info.addrlen_ = (socklen_t *) &clilen;
 
         // proactor模式，需要循环注册
         pThis->info.inUse_ = false;
+
+        if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
     }
 
     // 测试专用

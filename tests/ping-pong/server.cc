@@ -24,27 +24,36 @@ using namespace net;
 TcpConnection *Conn;
 char sbuf[BUFSIZE];
 ssize_t len;
+TcpAcceptor *tAc;
 
 static void mError(int a, int b) { printf("there is a error\n"); }
 
 static void onSendMessage(void *a) {} // printf("send a message\n"); }
 
-static void onMessage(void *a)
+static void onMessage(void *conn)
 {
+    TcpConnection *con1 = static_cast<TcpConnection *>(conn);
     // printf("server::Message\n");
     // printf("server::Message len = %ld\n", len);
-    if (len > 0) Conn->onSend(sbuf, len, 0, onSendMessage, NULL);
-    memset(sbuf, 0, sizeof(sbuf));
+    // printf("%d", con1->pTcpChannel_->getFd());
+    if (len > 0) con1->onSend(sbuf, len, 0, onSendMessage, NULL);
+    // memset(sbuf, 0, sizeof(sbuf));
 }
 
-static void onConnection(void *a)
+static void onConnection(void *conn)
 {
-    printf("server::onConnection\n");
+    // printf("server::onConnection\n");
+    TcpConnection *Con = static_cast<TcpConnection *>(conn);
+
+    // printf("server::onConnection sockfd = %d\n", Con->pTcpChannel_->getFd());
 
     // 初始化
     memset(sbuf, 0, sizeof(sbuf));
     len = 0;
-    Conn->onRecv(sbuf, &len, 0, onMessage, NULL);
+    Con->onRecv(sbuf, &len, 0, onMessage, Con);
+
+    TcpConnection *con1 = new TcpConnection(tAc);
+    con1->onAccept(con1, NULL, NULL, onConnection, con1);
 }
 
 int main(int argc, char *argv[])
@@ -65,7 +74,7 @@ int main(int argc, char *argv[])
         // TODO: 线程还没加入 后面加
         // int threadCount = atoi(argv[3]);
 
-        TcpAcceptor *tAc = new TcpAcceptor(&loop);
+        tAc = new TcpAcceptor(&loop);
         s = tAc->start(servaddr);
         if (s < 0) printf("tAc->start fail\n");
 
@@ -74,10 +83,11 @@ int main(int argc, char *argv[])
         bzero(&rservaddr, sizeof(rservaddr));
         socklen_t addrlen;
 
+        // FIXME: 这里只能建立一个连接
         Conn = new TcpConnection(tAc);
         Conn->onError(mError);
         Conn->onAccept(
-            Conn, (struct sockaddr *) &rservaddr, &addrlen, onConnection, NULL);
+            Conn, (struct sockaddr *) &rservaddr, &addrlen, onConnection, Conn);
 
         // 运行
         EventLoop::loop(&loop);

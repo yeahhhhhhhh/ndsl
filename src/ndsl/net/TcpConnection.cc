@@ -77,15 +77,16 @@ int TcpConnection::onSend(
             LOG(LOG_INFO_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onSend send error\n");
+            // printf("errno = %d\n%s\n", errno, strerror(errno));
             errorHandle_(errno, pTcpChannel_->getFd());
             // 释放掉buf占用的空间 TODO: 暂时注释
             // if (buf != NULL) free(buf);
             return S_FALSE;
         }
 
-        LOG(LOG_INFO_LEVEL,
-            LOG_SOURCE_TCPCONNECTION,
-            "TcpConnection::onSend send for next time\n");
+        // LOG(LOG_INFO_LEVEL,
+        //     LOG_SOURCE_TCPCONNECTION,
+        //     "TcpConnection::onSend send for next time\n");
         pInfo tsi = new Info;
         tsi->offset_ = n;
         tsi->sendBuf_ = (void *) buf;
@@ -180,9 +181,9 @@ int TcpConnection::onRecv(
     int sockfd = pTcpChannel_->getFd();
     if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            LOG(LOG_INFO_LEVEL,
-                LOG_SOURCE_TCPCONNECTION,
-                "TcpConnection::onRecv EAGAIN\n");
+            // LOG(LOG_INFO_LEVEL,
+            //     LOG_SOURCE_TCPCONNECTION,
+            //     "TcpConnection::onRecv EAGAIN\n");
         } else {
             // 出错 回调用户
             LOG(LOG_INFO_LEVEL,
@@ -221,6 +222,7 @@ int TcpConnection::handleRead(void *pthis)
     if (sockfd < 0) { return S_FALSE; }
 
     ssize_t n;
+    // TODO: 检查参数是否正确
     if ((n = recv(
              sockfd,
              pThis->RecvInfo_.readBuf_,
@@ -255,6 +257,7 @@ int TcpConnection::onAccept(
     Callback cb,
     void *param)
 {
+    // printf("TcpConnection::onAccept\n");
     return pTcpAcceptor_->setInfo(pCon, addr, addrlen, cb, param);
 }
 
