@@ -67,7 +67,7 @@ const uint64_t LOG_SOURCE_ERROR = 1UL << 28;
 const uint64_t LOG_SOURCE_PLUGIN = 1UL << 29;
 const uint64_t LOG_SOURCE_ADDRESS4 = 1UL << 30;
 const uint64_t LOG_SOURCE_GUID = 1UL << 31;
-const uint64_t LOG_SOURCE_EVENTLOOPTHREADPOOL = 1UL << 32;
+const uint64_t LOG_SOURCE_ELTHREADPOOL = 1UL << 32;
 const uint64_t LOG_SOURCE_TCPCLIENT = 1UL << 33;
 const uint64_t LOG_SOURCE_ALL = ~0;
 
