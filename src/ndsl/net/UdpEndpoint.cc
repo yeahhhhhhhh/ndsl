@@ -25,14 +25,13 @@
 namespace ndsl {
 namespace net {
 
-
 UdpEndpoint::UdpEndpoint()
     : pUdpChannel_(NULL)
 {}
-UdpEndpoint::UdpEndpoint(EventLoop *pLoop) 
+UdpEndpoint::UdpEndpoint(EventLoop *pLoop)
     : sockfd_(-1)
-    ,pLoop_(pLoop)
-    ,pUdpChannel_(NULL)
+    , pLoop_(pLoop)
+    , pUdpChannel_(NULL)
 {
     cb_ = NULL;
 }
@@ -65,15 +64,13 @@ int UdpEndpoint::setInfo(
 int UdpEndpoint::start(struct SocketAddress4 servaddr)
 {
     int n = createAndBind(servaddr);
-    if(n <0){
-        return S_FALSE;
-    }
+    if (n < 0) { return S_FALSE; }
 
-    pUdpChannel_ = new UdpChannel(sockfd_,pLoop_);
-    if(pUdpChannel_ == NULL){
+    pUdpChannel_ = new UdpChannel(sockfd_, pLoop_);
+    if (pUdpChannel_ == NULL) {
         return S_FALSE;
     } else {
-        pUdpChannel_->setCallBack(handleRead1,NULL,this);
+        pUdpChannel_->setCallBack(handleRead1, NULL, this);
         pUdpChannel_->enroll(false);
     }
     return S_OK;
@@ -85,9 +82,9 @@ int UdpEndpoint::createAndBind(struct SocketAddress4 servaddr)
     if (sockfd_ < 0) { return S_FALSE; }
 
     // struct SocketAddress4 servaddr;
-     // 设置非阻塞
+    // 设置非阻塞
     fcntl(sockfd_, F_SETFL, O_NONBLOCK);
-   
+
     servaddr.setPort(SERV_PORT);
 
     if (-1 == bind(sockfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
@@ -132,7 +129,8 @@ int UdpEndpoint::onSend(
 {
     int sockfd = pUdpChannel_->getFd();
 
-    ssize_t n = sendto(sockfd, buf, len, flags,(struct sockaddr*)&dest_addr,addrlen);
+    ssize_t n = sendto(
+        sockfd, buf, len, flags, (struct sockaddr *) &dest_addr, addrlen);
     if (n == len) {
         // 写完，通知用户
         if (cb != NULL) cb(param);
@@ -145,10 +143,10 @@ int UdpEndpoint::onSend(
 
     pInfo tsi = new Info;
     tsi->offset_ = n;
-    tsi->sendBuf_ =(void *)buf;
+    tsi->sendBuf_ = (void *) buf;
     tsi->recvBuf_ = NULL;
 
-    tsi->len_= new ssize_t;
+    tsi->len_ = new ssize_t;
     (*tsi->len_) = len;
 
     tsi->flags_ = flags;

@@ -20,19 +20,16 @@ namespace net {
 UdpClient::UdpClient() {}
 UdpClient::~UdpClient() {}
 
-UdpEndpoint *UdpClient::begin(EventLoop *loop,struct SocketAddress4 servaddr)
+UdpEndpoint *UdpClient::begin(EventLoop *loop, struct SocketAddress4 servaddr)
 {
     sfd = socket(AF_INET, SOCK_STREAM, 0);
-    fcntl(sfd,F_SETFL,O_NONBLOCK);
+    fcntl(sfd, F_SETFL, O_NONBLOCK);
 
     int n;
 
-    UdpEndpoint *ue=new UdpEndpoint();
+    UdpEndpoint *ue = new UdpEndpoint();
 
-    if((n=ue->createChannel(sfd,loop))< 0)
-    {
-        return NULL;
-    }
+    if ((n = ue->createChannel(sfd, loop)) < 0) { return NULL; }
 
     return ue;
 }

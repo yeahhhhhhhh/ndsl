@@ -47,7 +47,7 @@ TEST_CASE("net/TcpAcceptor")
         TcpConnection *pClientConn;
         TcpClient *pCli = new TcpClient();
         REQUIRE(
-            (pClientConn = pCli->onConnect(&loop, true, clientservaddr)) !=
+            (pClientConn = pCli->onConnect(&loop, true, &clientservaddr)) !=
             NULL);
 
         // 添加中断

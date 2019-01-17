@@ -74,7 +74,8 @@ TEST_CASE("UnixConnection(onRecv)")
 
         // 测试onSend
         Conn->onError(unixiserror);
-        Conn->onSend("hello world", sizeof("hello world"), 0, unixsendTest, NULL);
+        Conn->onSend(
+            "hello world", sizeof("hello world"), 0, unixsendTest, NULL);
 
         char recvBuf[15];
         memset(recvBuf, 0, sizeof(recvBuf));

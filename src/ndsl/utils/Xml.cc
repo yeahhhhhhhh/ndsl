@@ -1,30 +1,30 @@
 
-#include "ndsl/include/utils/Xml.h"
+#include "ndsl/utils/Xml.h"
 
-Xml::Xml()
+namespace ndsl {
+namespace utils {
+XML::XML()
     : m_doc()
-    , m_node(NULL);
+    , m_node(NULL)
 {}
 
-Xml::~Xml() {}
+XML::~XML() {}
 
-int Xml::lodestream(ifstream &stream)
+int XML::loadstream(std::istream &stream)
 {
     if (m_doc.load(stream))
-        return S_OK;
-    else
-        return s_FAIL;
-}
-
-int Xml::getproperty(xml_node node, const char *property, std::string &value)
-{
-    if (value = node.child(property).text().get())
         return S_OK;
     else
         return S_FALSE;
 }
 
-int Xml::delproperty(xml_node &node, const char *property)
+int XML::getproperty(xml_node node, const char *property, std::string &value)
+{
+    value = node.child(property).text().get();
+    return S_OK;
+}
+
+int XML::delproperty(xml_node &node, const char *property)
 {
     if (node.remove_attribute(property))
         return S_OK;
@@ -32,7 +32,7 @@ int Xml::delproperty(xml_node &node, const char *property)
         return S_FALSE;
 }
 
-int Xml::delchildnode(xml_node &node, const char *child)
+int XML::delchildnode(xml_node &node, const char *child)
 {
     if (node.remove_child(child))
         return S_OK;
@@ -40,32 +40,34 @@ int Xml::delchildnode(xml_node &node, const char *child)
         return S_FALSE;
 }
 
-int Xml::getnodesets(const char *xpath, xpath_node_set &sets)
+int XML::getnodesets(const char *xpath, xpath_node_set &sets)
 {
+    /* xpath_query query_remote_tool(xpath);
+     if (sets = query_remote_tool.evaluate_node_set(m_doc))
+         return S_OK;
+     else
+         return S_FALSE;
+         */
     xpath_query query_remote_tool(xpath);
-    if (sets = query_remote_tool.evaluate_node_set(m_doc))
-        return S_OK;
-    else
-        return S_FALSE;
+    sets = query_remote_tool.evaluate_node_set(m_doc);
+    return S_OK;
 }
 
-int Xml::getfirstnode(const char *xpath, xml_node &node)
+int XML::getfirstnode(const char *xpath, xml_node &node)
 {
-    if (node = m_doc.first_element_by_path(xpath))
-        return S_OK;
-    else
-        return S_FALSE;
+    node = m_doc.first_element_by_path(xpath);
+    return S_OK;
 }
 
-int Xml::addchildnode(xml_node &parentnode, const char *nodename)
+int XML::addchildnode(xml_node &parentnode, const char *nodename)
 {
     if (parentnode.append_child(nodename)) {
         return S_OK;
     } else
-        return S_FLASE;
+        return S_FALSE;
 }
 
-int Xml::setnodetextandattr(
+int XML::setnodetextandattr(
     xml_node &node,
     const char *text,
     const char *attr,
@@ -76,10 +78,10 @@ int Xml::setnodetextandattr(
     return S_OK;
 }
 
-int savestream(std::ofstream &stream)
+int XML::savestream(std::ostream &stream)
 {
-    if (m_doc.save(stream))
-        return S_OK;
-    else
-        return S_FALSE;
+    m_doc.save(stream);
+    return S_OK;
 }
+} // namespace utils
+} // namespace ndsl
