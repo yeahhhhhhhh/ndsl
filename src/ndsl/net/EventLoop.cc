@@ -47,9 +47,11 @@ int EventLoop::init()
     if (!pQueCh_) {
         evfd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK | EFD_SEMAPHORE);
         if (evfd < 0) {
-            LOG(LOG_DEBUG_LEVEL,
+            LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_EVENTLOOP,
-                "EventLoop::init pQueCh_ eventfd\n");
+                "pQueCh_ eventfd errno = %d:%s\n",
+                errno,
+                strerror(errno));
             return errno;
         }
 
@@ -66,9 +68,11 @@ int EventLoop::init()
     if (!pIntrCh_) {
         evfd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK | EFD_SEMAPHORE);
         if (evfd < 0) {
-            LOG(LOG_DEBUG_LEVEL,
+            LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_EVENTLOOP,
-                "EventLoop::init pIntrCh_ eventfd\n");
+                "pIntrCh_ eventfd errno = %d:%s\n",
+                errno,
+                strerror(errno));
             return errno;
         }
 
@@ -86,19 +90,13 @@ void *EventLoop::loop(void *pThis)
     int nEvents = 0;
     // 进入事件循环
     while (true) {
-        // printf("EventLoop::loop while(true)\n");
-
         Channel *channels[Epoll::MAX_EVENTS];
-        // LOG(LOG_DEBUG_LEVEL, "onWait\n");
         if (S_OK != el->epoll_.wait(channels, nEvents, -1)) {
-            // LOG(LOG_DEBUG_LEVEL, "EventLoop::loop epoll->wait\n");
-            break;
+            return (void *) S_FALSE; // 若wait出错,则直接返回
         }
 
         bool quit = false;    // 退出标志
         bool haswork = false; // 中断标志
-
-        // printf("EventLoop::loop flag 1\n");
 
         // 处理事件
         for (int i = 0; i < nEvents; i++) {
@@ -110,8 +108,6 @@ void *EventLoop::loop(void *pThis)
                 channels[i]->handleEvent();
         }
 
-        // printf("EventLoop::loop flag 2\n");
-
         // 处理任务队列
         if (haswork) {
             uint64_t data;
@@ -122,7 +118,7 @@ void *EventLoop::loop(void *pThis)
         if (quit) {
             uint64_t data;
             read(el->pIntrCh_->getFd(), &data, sizeof data);
-            LOG(LOG_INFO_LEVEL, LOG_SOURCE_EVENTLOOP, "EventLoop::loop quit");
+            LOG(LOG_DEBUG_LEVEL, LOG_SOURCE_EVENTLOOP, "quit");
             break;
         }
     }

@@ -26,19 +26,35 @@ Thread::~Thread() {}
 int Thread::run()
 {
     int ret = ::pthread_create(&id_, NULL, runInThread, (void *) this);
-    return ret;
+    if (ret != S_OK) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_THREAD,
+            "pthread_create errno = %d:%s\n",
+            errno,
+            strerror(errno));
+        return S_FALSE;
+    }
+    return S_OK;
 }
 
 int Thread::join(void **retval)
 {
     int ret = ::pthread_join(id_, retval);
-    if (ret != S_OK)
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_THREAD, "Thread::join pthread_join!");
-    return ret;
+    if (ret != S_OK) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_THREAD,
+            "pthread_join errno = %d:%s\n",
+            errno,
+            strerror(errno));
+        return S_FALSE;
+    }
+    return S_OK;
 }
 
 void *Thread::runInThread(void *arg)
 {
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_THREAD, "one thread is running!\n");
+
     Thread *th = static_cast<Thread *>(arg);
     th->ret_ = th->func_(th->param_);
     return (void *) th->ret_;
@@ -50,7 +66,9 @@ int Thread::getNumberOfProcessors()
     if (ret == -1) {
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_THREAD,
-            "Thread::getNumberOfProcessors sysconf");
+            "sysconf errno = %d:%s\n",
+            errno,
+            strerror(errno));
         return S_FALSE;
     }
 
@@ -81,7 +99,7 @@ int Threadpool::join()
 
     LOG(LOG_DEBUG_LEVEL,
         LOG_SOURCE_THREADPOOL,
-        "ThreadPool joined %ld threads.\n",
+        "joined %ld threads.\n",
         pool_.size());
 
     clean();
@@ -90,7 +108,13 @@ int Threadpool::join()
 
 int Threadpool::capacity()
 {
-    return Redundancy * Thread::getNumberOfProcessors();
+    int processors = Thread::getNumberOfProcessors();
+    if (processors == S_FALSE) {
+        // 获取失败,默认返回1
+        return 1;
+    }
+
+    return Redundancy * processors;
 }
 
 int Threadpool::size() { return pool_.size(); }

@@ -26,6 +26,8 @@
 using namespace ndsl;
 using namespace net;
 
+#define PORT 7878
+
 int id = 11;
 static void
 entitycallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
@@ -50,7 +52,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
     EventLoop loop;
     REQUIRE(loop.init() == S_OK);
 
-    struct SocketAddress4 servaddr("0.0.0.0", 7878);
+    struct SocketAddress4 servaddr("0.0.0.0", PORT);
 
     TcpAcceptor *tAc = new TcpAcceptor(&loop);
     tAc->start(servaddr);
@@ -64,7 +66,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
     Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun3, NULL);
 
     // 启动一个客户端
-    struct SocketAddress4 clientservaddr("127.0.0.1", 7878);
+    struct SocketAddress4 clientservaddr("127.0.0.1", PORT);
     TcpClient *pCli = new TcpClient();
     if (pCli->onConnect(&loop, true, &clientservaddr) == NULL) printf("kong\n");
 
@@ -121,53 +123,58 @@ TEST_CASE("Mutiplexer/cbmaptest")
         int len = 10;
         char *buffer =
             (char *) malloc((sizeof(int) * 2 + sizeof(char) * len) * 5);
-
+        // if (buffer != NULL) free(buffer);
+        printf("buffer len = %d", (sizeof(int) * 2 + sizeof(char) * len) * 5);
         Message *message = reinterpret_cast<struct Message *>(buffer);
         message->id = htobe32(id);
         message->len = htobe32(len);
         memcpy(buffer + sizeof(struct Message), data, len);
 
         char *p = buffer;
-        for (int i = 1; i <= 5; i++) //发了5个消息过去
+        for (int i = 1; i <= 4; i++) //发了5个消息过去
         {
             memcpy(buffer + 18 * i, p, 18);
         }
 
-        write(pCli->sockfd_, buffer, 10);
+        write(pCli->sockfd_, buffer, 90);
+        // for (int k = 0; k < 90; k++) {
+        //     printf("%c", *(p++));
+        // }
         printf("writed!\n");
+        if (buffer == NULL) printf("22222null\n");
+        if (buffer != NULL) free(buffer);
         loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
-        write(pCli->sockfd_, buffer + 10, 40);
-        loop.quit();
-        REQUIRE(loop.loop(&loop) == S_OK);
+        // write(pCli->sockfd_, buffer + 10, 40);
+        // loop.quit();
+        // REQUIRE(loop.loop(&loop) == S_OK);
 
-        write(pCli->sockfd_, buffer + 50, 40);
-        loop.quit();
-        REQUIRE(loop.loop(&loop) == S_OK);
+        // write(pCli->sockfd_, buffer + 50, 40);
+        // loop.quit();
+        // REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************
          * dispatch 测试：一个长消息
         //  ********************************/
-        int id2 = 99;
-        mymulti->addInsertWork(id2, entitycallbak);
-        int len2 = 60;
-        char data2[] =
-            "helloworldhelloworldhelloworldhelloworldhelloworldhelloworld";
+        // int id2 = 99;
+        // mymulti->addInsertWork(id2, entitycallbak);
+        // int len2 = 60;
+        // char data2[] =
+        //     "helloworldhelloworldhelloworldhelloworldhelloworldhelloworld";
 
-        char *buffer2 = (char *) malloc(sizeof(int) * 2 + sizeof(char) * len2);
-        Message *message2 = reinterpret_cast<struct Message *>(buffer2);
-        message2->id = htobe32(id2);
-        message2->len = htobe32(len2);
-        memcpy(buffer2 + sizeof(struct Message), data2, len2);
+        // char *buffer2 = (char *) malloc(sizeof(int) * 2 + sizeof(char) *
+        // len2); Message *message2 = reinterpret_cast<struct Message
+        // *>(buffer2); message2->id = htobe32(id2); message2->len =
+        // htobe32(len2); memcpy(buffer2 + sizeof(struct Message), data2, len2);
 
-        write(pCli->sockfd_, buffer2, 40);
-        loop.quit();
-        REQUIRE(loop.loop(&loop) == S_OK);
+        // write(pCli->sockfd_, buffer2, 40);
+        // loop.quit();
+        // REQUIRE(loop.loop(&loop) == S_OK);
 
-        write(pCli->sockfd_, buffer2 + 40, 28);
-        loop.quit();
-        REQUIRE(loop.loop(&loop) == S_OK);
+        // write(pCli->sockfd_, buffer2 + 40, 28);
+        // loop.quit();
+        // REQUIRE(loop.loop(&loop) == S_OK);
 
         /*********************************
          * sendMessage测试
