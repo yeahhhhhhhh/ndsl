@@ -20,7 +20,6 @@
 #include "ndsl/net/SignalHandler.h"
 #include "ndsl/utils/Log.h"
 
-
 void aaa(void *p){
 	LOG(LOG_INFO_LEVEL, LOG_SOURCE_SIGNALFDCHANNEL, "This is SIGCHLD handler!");
 }
@@ -71,7 +70,7 @@ TEST_CASE("signalfd"){
 	}
 	
 	SECTION("blockAllSignals && unBlockAllSignals"){
-		REQUIRE(sh.blockAllSignals() == 0);
+		REQUIRE(ndsl::net::SignalHandler::blockAllSignals() == 0);
 		
 		if(fork() == 0){
 			exit(0);
@@ -79,7 +78,7 @@ TEST_CASE("signalfd"){
 		
 		sleep(1);
 		
-		REQUIRE(sh.unBlockAllSignals() == 0);
+		REQUIRE(ndsl::net::SignalHandler::unBlockAllSignals() == 0);
 		for(int i = 0; i < 64; i++){
 			if(sh.blockSignals_[i] != 0){
 				LOG(LOG_INFO_LEVEL, LOG_SOURCE_SIGNALFDCHANNEL, "this is blockAllSignalsTest! blockSignals_[i] = %d", sh.blockSignals_[i]);
