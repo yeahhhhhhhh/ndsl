@@ -64,13 +64,13 @@ int TcpAcceptor::start(struct SocketAddress4 servaddr)
 {
     int n = createAndListen(servaddr);
     if (n < 0) {
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "createAndListen fail\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPACCETPOR, "createAndListen fail");
         return S_FALSE;
     }
 
     pTcpChannel_ = new TcpChannel(listenfd_, pLoop_);
     if (pTcpChannel_ == NULL) {
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "new TcpChannel fail\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPACCETPOR, "new TcpChannel fail");
         return S_FALSE;
     } else {
         pTcpChannel_->setCallBack(handleRead, NULL, this);
@@ -84,7 +84,7 @@ int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
 {
     listenfd_ = socket(AF_INET, SOCK_STREAM, 0);
     if (listenfd_ < 0) {
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "socket fail\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPACCETPOR, "socket fail");
         return S_FALSE;
     }
 
@@ -99,15 +99,13 @@ int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
 
     if (-1 ==
         bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "TcpAcceptor bind error");
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, strerror(errno));
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPACCETPOR, "bind error");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPACCETPOR, strerror(errno));
         return S_FALSE;
     }
 
     if (-1 == listen(listenfd_, LISTENQ)) {
-        LOG(LOG_INFO_LEVEL,
-            LOG_SOURCE_TCPACCETPOR,
-            "TcpAcceptor listen error\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPACCETPOR, "listen error");
         return S_FALSE;
     }
 
@@ -132,7 +130,7 @@ int TcpAcceptor::handleRead(void *pthis)
         //     "TcpAcceptor::connect succ\n");
     } else {
         // 连接失败
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "connect fail\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPACCETPOR, "connect fail");
         return S_FALSE;
     }
 
@@ -140,8 +138,6 @@ int TcpAcceptor::handleRead(void *pthis)
     fcntl(connfd, F_SETFL, O_NONBLOCK);
 
     if (pThis->info.inUse_) {
-        // printf("TcpAcceptor::handleRead info.inUser_ = true\n");
-
         ((pThis->info).pCon_)
             ->createChannel(connfd, pThis->pTcpChannel_->pLoop_);
         if (NULL != pThis->info.addr_)

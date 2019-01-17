@@ -5,8 +5,6 @@
  * @author gyz
  * @email mni_gyz@163.com
  */
-#include <boost/bind.hpp>
-#include <vector>
 #include <stdio.h>
 #include <cstring>
 #include <string.h>
@@ -22,9 +20,6 @@
 #include "ndsl/utils/EventLoopThreadpool.h"
 #include "ndsl/net/SocketAddress.h"
 
-#include <cstdio>
-#include <iostream>
-
 using namespace std;
 using namespace ndsl;
 using namespace net;
@@ -33,6 +28,7 @@ using namespace utils;
 class Client;
 char *buf; // 接收数据的地址
 bool toEnd = false;
+uint64_t mlog;
 
 class Session
 {
@@ -58,7 +54,6 @@ class Session
   private:
     static void onMessage(void *pthis)
     {
-        // printf("nClient::onMessage\n");
         Session *pThis = static_cast<Session *>(pthis);
         pThis->messagesRead_++;
         pThis->bytesRead_ += pThis->len;
@@ -66,7 +61,7 @@ class Session
 
         int n;
         if ((n = pThis->conn_->onSend(buf, pThis->len, 0, NULL, NULL)) < 0) {
-            printf("nClient::onMessage send fail\n");
+            LOG(LOG_ERROR_LEVEL, mlog, "send fail");
         }
     }
 
@@ -116,30 +111,16 @@ class Client
             sessions_.push_back(session);
             session->start();
         }
-
-        // for (vector<Session *>::iterator it = sessions_.begin();
-        //      it != sessions_.end();
-        //      ++it) {
-        //     // 发送数据
-        //     (*it)->start();
-        // }
     }
 
     const char *message() const { return message_; }
 
     void onConnect()
     {
-        // printf("nClient::Client onConnect sessionCount = %d\n",
-        // sessionCount_); printf(
-        //     "nClient::Client onConnect numConnected = %d\n",
-        //     (int) numConnected_);
-
         // 等所有链接都建立之后 设置定时器 发送数据
         if ((++numConnected_) == sessionCount_) {
-            // sleep(1);
-            // 提示所有链接已建立 TODO: 等待LOG确认写法
-            // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TESTCLIENT, "all connected\n");
-            printf("nClient::onConection all connected\n");
+            // 提示所有链接已建立
+            LOG(LOG_INFO_LEVEL, mlog, "all connected");
 
             // 新开线程放定时器
             // FIXME:MEMORY LEAK!!!
@@ -147,11 +128,10 @@ class Client
             loop->init();
             // FIXME:MEMORY LEAK!!!
             EventLoopThread *th0 = new EventLoopThread(loop);
-            // EventLoop *loop = threadPool_->getNextEventLoop();
 
             // 初始化定时器
             TimeWheel *time = new TimeWheel(loop);
-            // TimeWheel *time = new TimeWheel(threadPool_->getNextEventLoop());
+
             // 开始时间轮
             time->start();
 
@@ -174,7 +154,7 @@ class Client
 
                 if ((n = (*it)->conn_->onSend(
                          message_, blockSize_, 0, NULL, NULL)) < 0) {
-                    printf("nClient::onConect send fail\n");
+                    LOG(LOG_ERROR_LEVEL, mlog, "send fail");
                 }
             }
         }
@@ -183,19 +163,18 @@ class Client
     void onDisconnect()
     {
         if ((--numConnected_) == 0) {
-            // TODO:
-            // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TESTCLIENT, "all disconnected\n");
+            LOG(LOG_INFO_LEVEL, mlog, "all disconnected");
 
             int64_t totalBytesRead = 0;
             int64_t totalMessagesRead = 0;
             for (vector<Session *>::iterator it = sessions_.begin();
                  it != sessions_.end();
                  ++it) {
-                // printf("bytesRead = %ld\n", (*it)->bytesRead());
                 totalBytesRead += (*it)->bytesRead();
                 totalMessagesRead += (*it)->messagesRead();
             }
-            printf(
+            LOG(LOG_INFO_LEVEL,
+                mlog,
                 "%lf MiB/s throughput\n",
                 static_cast<double>(totalBytesRead) / (timeout_ * 1024 * 1024));
 
@@ -215,10 +194,7 @@ class Client
   private:
     static void handleTimeout(void *pthis)
     {
-        // TODO:
-        // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TESTCLIENT, "stop\n");
-
-        printf("nClient::handleTimeout\n");
+        LOG(LOG_INFO_LEVEL, mlog, "handleTimeout");
 
         Client *pThis = static_cast<Client *>(pthis);
 
@@ -231,14 +207,9 @@ class Client
              ++it) {
             (*it)->stop();
         }
-        // std::for_each(
-        //     pThis->sessions_.begin(),
-        //     pThis->sessions_.end(),
     }
 
-    // EventLoop *loop_;
     int blockSize_;
-    // EventLoopThreadPool threadPool_;
     EventLoopThreadpool *threadPool_;
     int sessionCount_;
     int timeout_;
@@ -253,12 +224,10 @@ class Client
 
 void Session::start()
 {
-    // printf("nClient::Session start\n");
-
     // 阻塞建立连接 建立好的之后调用client的onConnect
     conn_ = client_.onConnect(loop_, false, owner_->servaddr_);
 
-    if (conn_ == NULL) { printf("nClient::Session::start onConnect fail\n"); }
+    if (conn_ == NULL) { LOG(LOG_ERROR_LEVEL, mlog, "start onConnect fail"); }
     // 将自身的recv函数注册进去
     if (conn_ != NULL) conn_->onRecv(buf, &len, 0, onMessage, this);
 
@@ -273,15 +242,14 @@ void Session::stop()
 
 int main(int argc, char *argv[])
 {
+    mlog = add_source();
+    set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
     if (argc != 7) {
-        fprintf(
-            stderr,
+        LOG(LOG_ERROR_LEVEL,
+            mlog,
             "Usage: client <address> <port> <threads> <blocksize> <sessions> "
-            "<time>\n");
+            "<time>");
     } else {
-        uint64_t mlog = add_source();
-        set_ndsl_log_sinks(mlog | LOG_SOURCE_TCPCONNECTION | LOG_SOURCE_EVENTLOOP, LOG_OUTPUT_TER);
-
         struct SocketAddress4 *servaddr = new struct SocketAddress4(
             argv[1], static_cast<unsigned short>(atoi(argv[2])));
         int threadCount = atoi(argv[3]);
@@ -296,7 +264,6 @@ int main(int argc, char *argv[])
         // 在线程里new一个EventLoop
         // 只是让线程跑起来，里面的EventLoop并没开始循环
         threadPool->start();
-        // sleep(1);
 
         // 将buf的空间new出来 Memory leak
         buf = (char *) malloc(sizeof(char) * blockSize);
