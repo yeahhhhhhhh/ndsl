@@ -60,7 +60,7 @@ class  UdpEndpoint
 
     int createAndBind(struct SocketAddress4 servaddr);
 
-    Info1 SendInfo_; // 等待发送的队列
+    Info1 SendInfo_; // 发送的数据信息
     Info RecvInfo_;
 
   public:
@@ -77,7 +77,6 @@ class  UdpEndpoint
         Callback cb,
         void *p);
 
-    static int handleRead1(void *pthis);
     // 事件发生后的处理
     static int handleRead(void *pthis);
     static int handleWrite(void *pthis);

@@ -18,6 +18,9 @@
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/UdpClient.h"
 #include "ndsl/net/SocketAddress.h"
+bool flag_ = false;
+
+void TestFun1(void *a) { flag_ = true; }
 
 bool udpTestFlagSend = false;
 
@@ -47,15 +50,14 @@ TEST_CASE("net/UdpEndpoint")
 	{
 		// 准备客户端的接受参数 默认全ip接受 
 		struct SocketAddress4 servaddr("0.0.0.0", 6666);
-
+        bzero(&servaddr, sizeof(servaddr));
+		socklen_t addrlen;
+		addrlen =sizeof(servaddr);
 		REQUIRE((t->start(servaddr))== 0);
 
-		// 准备接收的数据结构
-		struct sockaddr_in rservaddr;
-		bzero(&rservaddr, sizeof(rservaddr));
-		socklen_t addrlen;
-		addrlen =sizeof(rservaddr);
-		
+		t->setInfo(
+            (SA *) &servaddr,addrlen,TestFun1, NULL);
+
         UdpEndpoint *pClient;
 		struct SocketAddress4 cliaddr("127.0.0.1", 6666);
 		UdpClient *pCli = new UdpClient();
@@ -67,17 +69,16 @@ TEST_CASE("net/UdpEndpoint")
         strcpy(sendbuf, "hello world\0");
 
         t->onSend(
-            sendbuf, strlen("hello world"),0,(struct sockaddr*)&cliaddr,sizeof(cliaddr),udpSendTest, NULL);
+            sendbuf,strlen("hello world"),0,(struct sockaddr*)&cliaddr,sizeof(sockaddr),udpSendTest, NULL);
+        // REQUIRE(udpTestFlagSend== true);
 
         char recvBuf[15];
         ssize_t recvLen;
         memset(recvBuf, 0, sizeof(recvBuf));
         pClient->onRecv(
-            recvBuf, &recvLen, 0,(struct sockaddr*)&rservaddr,addrlen,ClientudpRecvTest, NULL);
+            recvBuf, &recvLen, 0,(struct sockaddr*)&servaddr,addrlen,ClientudpRecvTest, NULL);
 
         // REQUIRE(strcmp("hello world", recvBuf) == 0);
-
-        // REQUIRE(udpTestFlagSend== true);
         // REQUIRE(udpClientRecv == true);
 
         // 测试onRecv

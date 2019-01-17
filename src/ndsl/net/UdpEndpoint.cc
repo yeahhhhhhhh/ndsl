@@ -56,7 +56,7 @@ int UdpEndpoint::start(struct SocketAddress4 servaddr)
     if(pUdpChannel_ == NULL){
         return S_FALSE;
     } else {
-        pUdpChannel_->setCallBack(handleRead1,NULL,this);
+        pUdpChannel_->setCallBack(handleRead,NULL,this);
         pUdpChannel_->enroll(false);
     }
     return S_OK;
@@ -65,6 +65,7 @@ int UdpEndpoint::start(struct SocketAddress4 servaddr)
 int UdpEndpoint::createAndBind(struct SocketAddress4 servaddr)
 {
     sfd_ = socket(AF_INET,SOCK_DGRAM,0);
+
     if(sfd_ < 0){
         return S_FALSE;
     }
@@ -80,10 +81,10 @@ int UdpEndpoint::createAndBind(struct SocketAddress4 servaddr)
 }
 
 int UdpEndpoint::setInfo(
-    struct sockaddr *addr,
-    socklen_t addrlen,
-    Callback cb,
-    void *p)
+        struct sockaddr *addr,
+        socklen_t addrlen,
+        Callback cb,
+        void *p)
 {
     memset(&info, 0, sizeof(struct RecvInfo));
 
@@ -91,33 +92,6 @@ int UdpEndpoint::setInfo(
     info.addrlen_ = addrlen;
     info.cb_ = cb;
     info.p_ = p;
-
-    return S_OK;
-}
-
-// 保存用户回调后的信息
-
-int UdpEndpoint::handleRead1(void *pthis)
-{
-    UdpEndpoint *pThis = static_cast<UdpEndpoint *>(pthis);
-
-    int fd;
-    fd = socket(AF_INET,SOCK_DGRAM,0);
-
-    struct sockaddr_in cliaddr;
-    socklen_t clilen = sizeof(struct sockaddr_in);
-
-
-    // 设置非阻塞io
-    fcntl(fd, F_SETFL, O_NONBLOCK);
-
-        pThis->createChannel(fd);
-        pThis->info.addr_ = (struct sockaddr *) &cliaddr;
-        pThis->info.addrlen_ = clilen;
-        if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.p_);
-
-    // 测试专用
-    if (pThis->cb_ != NULL) pThis->cb_(NULL);
 
     return S_OK;
 }
@@ -138,7 +112,7 @@ int UdpEndpoint::onSend(
 
     int sockfd = pUdpChannel_->getFd();
 
-    int n = sendto(sockfd,buf,len,flags | MSG_NOSIGNAL,(struct sockaddr*)&dest_addr,addrlen);
+    ssize_t n = sendto(sockfd,buf,len,flags | MSG_NOSIGNAL,(struct sockaddr*)&dest_addr,addrlen);
 
 
     if (n == len) {
@@ -154,7 +128,7 @@ int UdpEndpoint::onSend(
     // 保存发送数据的用户信息
     SendInfo_.recvBuf_ = NULL;
     SendInfo_.sendBuf_ = buf;
-    SendInfo_.flags_ = flags;
+    SendInfo_.flags_ = flags | MSG_NOSIGNAL;
 
     SendInfo_.len_ = new ssize_t;
     (*SendInfo_.len_) = len;
