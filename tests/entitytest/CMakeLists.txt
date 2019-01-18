@@ -7,7 +7,6 @@
 # @emial 429834658@qq.com
 #
 
-
 find_package(Protobuf REQUIRED)
 if(PROTOBUF_FOUND)
    message(STATUS "protobuf library found")

@@ -8,3 +8,4 @@
 #
 
 add_subdirectory(ftp_lgr)
+add_subdirectory(Relayserver_zsq)

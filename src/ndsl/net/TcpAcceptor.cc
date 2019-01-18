@@ -14,7 +14,7 @@
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/Log.h"
-
+#include <stdio.h>
 namespace ndsl {
 namespace net {
 
@@ -155,6 +155,16 @@ int TcpAcceptor::handleRead(void *pthis)
     if (pThis->cb_ != NULL) pThis->cb_(NULL);
 
     return S_OK;
+}
+
+int TcpAcceptor::onAccept(
+    TcpConnection *pCon,
+    struct sockaddr *addr,
+    socklen_t *addrlen,
+    Callback cb,
+    void *param)
+{
+    return setInfo(pCon, addr, addrlen, cb, param);
 }
 
 } // namespace net

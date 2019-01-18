@@ -10,6 +10,7 @@
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/utils/Log.h"
+#include "ndsl/utils/Error.h"
 #include <errno.h>
 #include <unistd.h>
 #include <cstring>
@@ -22,14 +23,14 @@ namespace ndsl {
 namespace net {
 
 TcpConnection::TcpConnection()
-    : pTcpAcceptor_(NULL)
-    , pTcpChannel_(NULL)
+    : pTcpChannel_(NULL)
+// pTcpAcceptor_(NULL)
 {}
 
-TcpConnection::TcpConnection(TcpAcceptor *tcpAcceptor)
-    : pTcpAcceptor_(tcpAcceptor)
-    , pTcpChannel_(NULL)
-{}
+// TcpConnection::TcpConnection(TcpAcceptor *tcpAcceptor)
+//     : pTcpChannel_(NULL)
+// // pTcpAcceptor_(tcpAcceptor)
+// {}
 
 TcpConnection::~TcpConnection() {}
 
@@ -49,8 +50,7 @@ int TcpConnection::onSend(
 {
     // 当创建顺序不对的时候 这里容易报段错误 故 加一条输出
     if (NULL == pTcpChannel_) {
-        // TODO:
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "pTcpChannel == NULL");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "pTcpChannel == NULL");
         return S_FALSE;
     } else {
         int sockfd = pTcpChannel_->getFd();
@@ -64,17 +64,18 @@ int TcpConnection::onSend(
         // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
         ssize_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
         if (n == len) {
+            // printf("n == len!\n");
             // 写完 通知用户
-            LOG(LOG_INFO_LEVEL,
-                LOG_SOURCE_TCPCONNECTION,
-                "TcpConnection::onSend write complete");
+            // LOG(LOG_INFO_LEVEL,
+            //     LOG_SOURCE_TCPCONNECTION,
+            //     "TcpConnection::onSend write complete");
             if (cb != NULL) cb(param);
             // 释放掉buf占用的空间 TODO: 暂时注释
             // if (buf != NULL) free(buf);
             return S_OK;
         } else if (n < 0) {
             // 出错 通知用户
-            LOG(LOG_INFO_LEVEL,
+            LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onSend send error");
             // printf("errno = %d\n%s\n", errno, strerror(errno));
@@ -108,6 +109,7 @@ int TcpConnection::onSend(
 
 int TcpConnection::handleWrite(void *pthis)
 {
+    // printf("TcpConnection::handleWrite!\n");
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
 
@@ -138,14 +140,14 @@ int TcpConnection::handleWrite(void *pthis)
                 delete tsi; // 删除申请的内存
             } else if (n == 0) {
                 // 发送缓冲区满 等待下一次被调用
-                LOG(LOG_INFO_LEVEL,
-                    LOG_SOURCE_TCPCONNECTION,
-                    "send error wait next time send");
+                // LOG(LOG_INFO_LEVEL,
+                //     LOG_SOURCE_TCPCONNECTION,
+                //     "send error wait next time send");
                 return S_OK;
             }
         } else if (n < 0) {
             // 写过程中出错 出错之后处理不了 注销事件 并交给用户处理
-            LOG(LOG_INFO_LEVEL,
+            LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "send error can not deal");
             pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
@@ -176,26 +178,27 @@ int TcpConnection::onRecv(
     // 作为下面recv接收的临时量，直接用(*len)接收会变成2^64-1 不知道为什么
     // 答案1：是flag参数的问题
     ssize_t n;
-    bool isOK = true;
+    int isOK = 0;
 
     int sockfd = pTcpChannel_->getFd();
+
     if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             // LOG(LOG_INFO_LEVEL,
             //     LOG_SOURCE_TCPCONNECTION,
-            //     "TcpConnection::onRecv EAGAIN\n");
+            //     "EAGAIN\n");
         } else {
             // 出错 回调用户
-            LOG(LOG_INFO_LEVEL,
+            LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
-                "TcpConnection::onRecv recv error can not deal");
+                "recv error can not deal");
             errorHandle_(errno, pTcpChannel_->getFd());
-            isOK = false;
+            isOK = -1;
         }
     } else {
         // LOG(LOG_INFO_LEVEL,
         //     LOG_SOURCE_TCPCONNECTION,
-        //     "TcpConnection::onRecv recv complete\n");
+        //     "recv complete\n");
 
         (*len) = n;
         // 一次性读完之后通知用户
@@ -215,19 +218,27 @@ int TcpConnection::onRecv(
 
 int TcpConnection::handleRead(void *pthis)
 {
+    // printf("TcpConnection::handleRead!\n");
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FALSE; }
 
     ssize_t n;
-    // TODO: 检查参数是否正确
+
+    // 检查参数是否正确，如果不正确则可能是之前未调用onRecv设置接收buf地址
+    if (NULL == pThis->RecvInfo_.readBuf_) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_TCPCONNECTION,
+            "please set buf address first.\nvia transfer onRecv();");
+    }
+
     if ((n = recv(
              sockfd,
              pThis->RecvInfo_.readBuf_,
              MAXLINE,
              pThis->RecvInfo_.flags_)) < 0) {
         // 出错
-        LOG(LOG_INFO_LEVEL,
+        LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TCPCONNECTION,
             "TcpConnection::handleRead recv fail");
         pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
@@ -248,16 +259,6 @@ int TcpConnection::handleRead(void *pthis)
     return S_OK;
 }
 
-int TcpConnection::onAccept(
-    TcpConnection *pCon,
-    struct sockaddr *addr,
-    socklen_t *addrlen,
-    Callback cb,
-    void *param)
-{
-    return pTcpAcceptor_->setInfo(pCon, addr, addrlen, cb, param);
-}
-
 int TcpConnection::sendMsg(
     struct msghdr *msg,
     int flags,
@@ -275,7 +276,7 @@ int TcpConnection::sendMsg(
         return S_OK;
     } else if (n < 0) {
         // 出错 通知用户
-        LOG(LOG_INFO_LEVEL,
+        LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TCPCONNECTION,
             "sendMsg error can not deal");
         errorHandle_(errno, pTcpChannel_->getFd());

@@ -268,7 +268,6 @@ int main(int argc, char *argv[])
         threadPool->setMaxThreads(threadCount);
 
         // 在线程里new一个EventLoop
-        // 只是让线程跑起来，里面的EventLoop并没开始循环
         threadPool->start();
 
         // 将buf的空间new出来 Memory leak

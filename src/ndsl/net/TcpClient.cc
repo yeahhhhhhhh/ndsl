@@ -47,7 +47,6 @@ TcpConnection *TcpClient::onConnect(
             return NULL;
         }
     }
-
     // 设成非阻塞
     if (!isConnNoBlock) fcntl(sockfd_, F_SETFL, O_NONBLOCK);
 
