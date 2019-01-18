@@ -1,29 +1,89 @@
 /**
- * @file EventLoopThreadpool.cc
+ * @file ELThreadpool.cc
  * @brief
  * 封装EventLoop的线程和线程池
  *
  * @author Liu GuangRui
  * @email 675040625@qq.com
  */
-#include "ndsl/utils/EventLoopThreadpool.h"
+#include "ndsl/net/ELThreadpool.h"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/utils/Error.h"
-#include "ndsl/utils/Thread.h"
+// #include "ndsl/utils/Thread.h"
 #include "ndsl/utils/Log.h"
 
 namespace ndsl {
 
-using namespace net;
-namespace utils {
+namespace net {
 
-EventLoopThread::EventLoopThread(EventLoop *loop)
+Thread::Thread(ThreadFunc threadfunc, void *param)
+    : func_(threadfunc)
+    , param_(param)
+    , id_(0)
+    , ret_(NULL)
+{}
+
+Thread::~Thread() {}
+
+int Thread::run()
+{
+    int ret = ::pthread_create(&id_, NULL, runInThread, (void *) this);
+    if (ret != S_OK) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_THREAD,
+            "pthread_create errno = %d:%s\n",
+            errno,
+            strerror(errno));
+        return S_FALSE;
+    }
+    return S_OK;
+}
+
+int Thread::join(void **retval)
+{
+    int ret = ::pthread_join(id_, retval);
+    if (ret != S_OK) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_THREAD,
+            "pthread_join errno = %d:%s\n",
+            errno,
+            strerror(errno));
+        return S_FALSE;
+    }
+    return S_OK;
+}
+
+void *Thread::runInThread(void *arg)
+{
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_THREAD, "one thread is running!\n");
+
+    Thread *th = static_cast<Thread *>(arg);
+    th->ret_ = th->func_(th->param_);
+    return (void *) th->ret_;
+}
+
+int Thread::getNumberOfProcessors()
+{
+    int ret = ::sysconf(_SC_NPROCESSORS_ONLN);
+    if (ret == -1) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_THREAD,
+            "sysconf errno = %d:%s\n",
+            errno,
+            strerror(errno));
+        return S_FALSE;
+    }
+
+    return ret;
+}
+
+ELThread::ELThread(EventLoop *loop)
     : loop_(loop)
     , thread_(loop_->loop, loop)
     , running_(false)
 {}
 
-EventLoopThread::~EventLoopThread()
+ELThread::~ELThread()
 {
     // 若线程正在运行,则退出循环,等待线程结束
     if (running_) {
@@ -32,7 +92,7 @@ EventLoopThread::~EventLoopThread()
     }
 }
 
-int EventLoopThread::run()
+int ELThread::run()
 {
     int ret = thread_.run();
     if (ret == S_OK) running_ = true;
@@ -40,7 +100,7 @@ int EventLoopThread::run()
     return ret;
 }
 
-int EventLoopThread::join()
+int ELThread::join()
 {
     int ret = thread_.join();
     if (ret == S_OK) running_ = false;
@@ -48,16 +108,16 @@ int EventLoopThread::join()
     return ret;
 }
 
-bool EventLoopThread::isRunning() const { return running_; }
+bool ELThread::isRunning() const { return running_; }
 
-EventLoopThreadpool::EventLoopThreadpool()
+ELThreadpool::ELThreadpool()
     : MaxThreads_(0)
     , nextThread_(0)
 {}
 
-EventLoopThreadpool::~EventLoopThreadpool() {}
+ELThreadpool::~ELThreadpool() {}
 
-int EventLoopThreadpool::start()
+int ELThreadpool::start()
 {
     // 若没有设置最大线程数,则设为默认值
     if (MaxThreads_ == 0) MaxThreads_ = capacity();
@@ -68,29 +128,25 @@ int EventLoopThreadpool::start()
     // EventLoop的初始化
     int ret = el->init();
     if (ret != S_OK) {
-        LOG(LOG_ERROR_LEVEL,
-            LOG_SOURCE_EVENTLOOPTHREADPOOL,
-            "EventLoop init error\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_ELTHREADPOOL, "EventLoop init error\n");
         return S_FALSE;
     }
 
-    EventLoopThread *elt = new EventLoopThread(el);
+    ELThread *elt = new ELThread(el);
     loops_.push_back(el);
     loopThreads_.push_back(elt);
 
     // 开启线程
     ret = elt->run();
     if (ret != S_OK) {
-        LOG(LOG_ERROR_LEVEL,
-            LOG_SOURCE_EVENTLOOPTHREADPOOL,
-            "EventLoopThread run error\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_ELTHREADPOOL, "ELThread run error\n");
         return S_FALSE;
     }
 
     return S_OK;
 }
 
-EventLoop *EventLoopThreadpool::getNextEventLoop()
+EventLoop *ELThreadpool::getNextEventLoop()
 {
     nextThread_ %= MaxThreads_;
     // 若已有足够多的线程,则直接返回
@@ -102,31 +158,29 @@ EventLoop *EventLoopThreadpool::getNextEventLoop()
         // EventLoop初始化
         int ret = el->init();
         if (ret != S_OK) {
-            LOG(LOG_ERROR_LEVEL,
-                LOG_SOURCE_EVENTLOOPTHREADPOOL,
-                "init error\n");
+            LOG(LOG_ERROR_LEVEL, LOG_SOURCE_ELTHREADPOOL, "init error\n");
             return NULL;
         }
 
-        EventLoopThread *elt = new EventLoopThread(el);
+        ELThread *elt = new ELThread(el);
         loops_.push_back(el);
         loopThreads_.push_back(elt);
 
         // 开启线程
         ret = elt->run();
         if (ret != S_OK) {
-            LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EVENTLOOPTHREADPOOL, "run error\n");
+            LOG(LOG_ERROR_LEVEL, LOG_SOURCE_ELTHREADPOOL, "run error\n");
             return NULL;
         }
 
         return loops_[nextThread_++];
     } else {
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EVENTLOOPTHREADPOOL, "fatal error\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_ELTHREADPOOL, "fatal error\n");
         return NULL;
     }
 }
 
-int EventLoopThreadpool::setMaxThreads(unsigned int maxThreads)
+int ELThreadpool::setMaxThreads(unsigned int maxThreads)
 {
     // 若设置的线程数小于当前已有的线程数,则退出
     if (maxThreads < loopThreads_.size()) return S_FALSE;
@@ -139,17 +193,17 @@ int EventLoopThreadpool::setMaxThreads(unsigned int maxThreads)
     return S_OK;
 }
 
-unsigned int EventLoopThreadpool::getMaxThreads() const { return MaxThreads_; }
+unsigned int ELThreadpool::getMaxThreads() const { return MaxThreads_; }
 
-int EventLoopThreadpool::quit()
+int ELThreadpool::quit()
 {
     if (loopThreads_.size() != loops_.size()) {
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EVENTLOOPTHREADPOOL, "fatal error\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_ELTHREADPOOL, "fatal error\n");
         return S_FALSE;
     }
 
     LOG(LOG_DEBUG_LEVEL,
-        LOG_SOURCE_EVENTLOOPTHREADPOOL,
+        LOG_SOURCE_ELTHREADPOOL,
         "%d threads joined\n",
         loops_.size());
 
@@ -164,9 +218,9 @@ int EventLoopThreadpool::quit()
     return S_OK;
 }
 
-int EventLoopThreadpool::getLoopsNum() { return loops_.size(); }
+int ELThreadpool::getLoopsNum() { return loops_.size(); }
 
-int EventLoopThreadpool::capacity()
+int ELThreadpool::capacity()
 {
     int processors = Thread::getNumberOfProcessors();
     if (processors == S_FALSE) {
@@ -176,5 +230,5 @@ int EventLoopThreadpool::capacity()
 
     return Redundancy * processors;
 }
-} // namespace utils
+} // namespace net
 } // namespace ndsl
