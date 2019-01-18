@@ -7,5 +7,5 @@
 # @email xiaowen.nie.cn@gmail.com
 #
 
-add_subdirectory(ftp_lgr)
-add_subdirectory(Relayserver_zsq)
+#add_subdirectory(ftp_lgr)
+#add_subdirectory(Relayserver_zsq)

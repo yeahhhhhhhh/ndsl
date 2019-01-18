@@ -7,7 +7,7 @@
 # @email xiaowen.nie.cn@gmail.com
 #
 include_directories(${CMAKE_SOURCE_DIR}/include)
-# add_subdirectory(entitytest)
+add_subdirectory(entitytest)
 
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -20,7 +20,7 @@ set(TEST
     # All files
     net/EpollTest.cc
     net/EventLoopTest.cc
-    # net/MultiplexerTest.cc
+    net/MultiplexerTest.cc
 
     net/PipeAndFifoTest.cc
     net/SignalfdTest.cc
@@ -58,7 +58,7 @@ add_executable(server ${pingserver})
 add_dependencies(server ndsl)
 target_link_libraries(server ndsl)
 
-# 生成pingpong测试 客户端
+# 生成pingpong测试 客户端s
 add_executable(client ${pingclient})
 add_dependencies(client ndsl)
 target_link_libraries(client ndsl boost_system pthread)
