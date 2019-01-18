@@ -63,12 +63,12 @@ int main(int argc,char **argv)
 
     while (!isEnd) {
         printf("cbuf = %s\n",cbuf);
-        n1 = write(sockfd_, cbuf, strlen(cbuf))
+        n1 = write(sockfd_, cbuf, strlen(cbuf));
         if (n1 < 0) {
             printf("write error\n");
             isEnd = true;
         } else {
-            n2 = read(sockfd_, recvbuf, BUFSIZE)
+            n2 = read(sockfd_, recvbuf, BUFSIZE);
             if (n2 < 0) {
                 printf("read error\n");
                 isEnd = true;
