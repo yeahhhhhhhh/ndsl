@@ -166,6 +166,7 @@ int TcpConnection::onRecv(
     ssize_t n;
 
     int sockfd = pTcpChannel_->getFd();
+
     if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             LOG(LOG_INFO_LEVEL,
