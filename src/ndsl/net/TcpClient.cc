@@ -43,25 +43,22 @@ TcpConnection *TcpClient::onConnect(
         0) {
         if (errno != EINPROGRESS) {
             // connect出错 返回
-            // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "connect fail\n");
-            printf("TcpClient::onConnection connect fail\n");
+            LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCLIENT, "connect fail");
             return NULL;
         }
     }
-
     // 设成非阻塞
     if (!isConnNoBlock) fcntl(sockfd_, F_SETFL, O_NONBLOCK);
 
     // 创建一个TcpConnection
     TcpConnection *conn = new TcpConnection();
     if (NULL == conn) {
-        // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCLIENT, "new TcpConnection
-        // fail\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCLIENT, "new TcpConnection fail");
         return NULL;
     }
 
     if ((n = conn->createChannel(sockfd_, loop)) < 0) {
-        printf("TcpClient::onConnection createChannel fail\n");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCLIENT, "createChannel fail");
         return NULL;
     }
 

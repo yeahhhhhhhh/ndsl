@@ -67,8 +67,8 @@ TEST_CASE("net/TcpConnection(onRecv)")
 
         // TODO: 逻辑需要再调整，其实Acceptor不需要Connection
         // 可以直接在Acceptor里面弄一个函数 setAcceptInfo() 把信息传进去
-        TcpConnection *Conn = new TcpConnection(tAc);
-        Conn->onAccept(
+        TcpConnection *Conn = new TcpConnection();
+        tAc->onAccept(
             Conn, (SA *) &rservaddr, &addrlen, tcpConnectionTestFun1, NULL);
 
         // 启动一个客户端

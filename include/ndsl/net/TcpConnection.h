@@ -42,7 +42,7 @@ class TcpConnection
     Info RecvInfo_;
 
     // 存储Acceptor的TcpChannel
-    TcpAcceptor *pTcpAcceptor_;
+    // TcpAcceptor *pTcpAcceptor_;
     // 错误处理的回调函数
     ErrorHandle errorHandle_;
 
@@ -69,14 +69,6 @@ class TcpConnection
 
     // 会有好多人同时调用这个进行send，需要一个队列
     int onSend(void *buf, ssize_t len, int flags, Callback cb, void *param);
-
-    // 准备接收一个新连接
-    int onAccept(
-        TcpConnection *pCon,
-        struct sockaddr *addr,
-        socklen_t *addrlen,
-        Callback cb,
-        void *param);
 
     // 进程之前相互通信
     int sendMsg(struct msghdr *msg, int flags, Callback cb, void *param);

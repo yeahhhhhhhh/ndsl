@@ -59,6 +59,14 @@ class TcpAcceptor
     // 开始
     int start(struct SocketAddress4 servaddr);
 
+    // 准备接收一个新连接
+    int onAccept(
+        TcpConnection *pCon,
+        struct sockaddr *addr,
+        socklen_t *addrlen,
+        Callback cb,
+        void *param);
+
   private:
     // new Channel socket bind listen
     int createAndListen(struct SocketAddress4 servaddr);
