@@ -67,8 +67,8 @@ TEST_CASE("net/TcpConnection(onRecv)")
 
         // TODO: 逻辑需要再调整，其实Acceptor不需要Connection
         // 可以直接在Acceptor里面弄一个函数 setAcceptInfo() 把信息传进去
-        TcpConnection *Conn = new TcpConnection(tAc);
-        Conn->onAccept(
+        TcpConnection *Conn = new TcpConnection();
+        tAc->onAccept(
             Conn, (SA *) &rservaddr, &addrlen, tcpConnectionTestFun1, NULL);
 
         // 启动一个客户端
@@ -76,7 +76,7 @@ TEST_CASE("net/TcpConnection(onRecv)")
         TcpConnection *pClientConn;
         TcpClient *pCli = new TcpClient();
         REQUIRE(
-            (pClientConn = pCli->onConnect(&loop, true, clientservaddr)) !=
+            (pClientConn = pCli->onConnect(&loop, true, &clientservaddr)) !=
             NULL);
 
         // 添加中断
@@ -114,8 +114,8 @@ TEST_CASE("net/TcpConnection(onRecv)")
         REQUIRE(len == strlen("hello world"));
         REQUIRE(tcpConnectionFlagRecv == true);
 
-        // 第二次不需要添加中断
-        // loop.quit();
+        // 第二次需要添加中断
+        loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
     }
 

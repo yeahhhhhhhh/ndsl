@@ -125,6 +125,7 @@ void ndsl_log_into_sink(
     if ((source & _sinks) && (tag == 0)) printf("%s\n", buffer);
 
     if ((source & _sinks) && (tag == 1)) {
-        file_log.log(buffer, ret1 + ret2 + ret3 + 1);
+        buffer[ret1 + ret2 + ret3 + 1] = '\n';
+        file_log.log(buffer, ret1 + ret2 + ret3 + 2);
     }
 }

@@ -18,6 +18,8 @@ SignalHandler::SignalHandler(EventLoop *pLoop) {
 
 SignalHandler::~SignalHandler() {}
 
+int SignalHandler::blockSignals_[64] = {0};
+
 int SignalHandler::registSignalfd(unsigned int signums[], int num, Callback handleFunc, void *p){
 	
 	handleFunc_ = handleFunc;
@@ -65,7 +67,7 @@ int SignalHandler::blockAllSignals(){
 	sigset_t set;
 	sigfillset(&set);
 	sigdelset(&set, SIGINT);
-	sigdelset(&set, SIGKILL);
+	sigdelset(&set, SIGTERM);
 	sigprocmask(SIG_BLOCK, &set, NULL);
 	return S_OK;
 }

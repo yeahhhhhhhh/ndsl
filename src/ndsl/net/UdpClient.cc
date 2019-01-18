@@ -22,14 +22,14 @@ UdpClient::~UdpClient() {}
 
 UdpEndpoint *UdpClient::begin(EventLoop *loop,struct SocketAddress4 servaddr)
 {
-    sfd = socket(AF_INET, SOCK_STREAM, 0);
+    sfd = socket(AF_INET, SOCK_DGRAM, 0);
     fcntl(sfd,F_SETFL,O_NONBLOCK);
 
     int n;
 
-    UdpEndpoint *ue=new UdpEndpoint();
+    UdpEndpoint *ue=new UdpEndpoint(loop);
 
-    if((n=ue->createChannel(sfd,loop))< 0)
+    if((n=ue->createChannel(sfd))< 0)
     {
         return NULL;
     }

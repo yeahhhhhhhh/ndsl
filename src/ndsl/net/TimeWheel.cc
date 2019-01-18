@@ -30,14 +30,18 @@ TimeWheel::~TimeWheel()
 // 初始化,创建TimerfdChannel
 int TimeWheel::init()
 {
+    // 生成timerfd
     int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
     if (fd == -1) {
-        LOG(LOG_DEBUG_LEVEL,
+        LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TIMEWHEEL,
-            "TimeWheel::init timerfd_create error!\n");
+            "timerfd_create errno = %d:%s\n",
+            errno,
+            strerror(errno));
         return errno;
     }
 
+    // 初始化TimerfdChannel
     ptimerfdChannel_ = new TimerfdChannel(fd, pLoop_);
     ptimerfdChannel_->setCallBack(onTick, NULL, this);
 
@@ -54,14 +58,6 @@ int TimeWheel::start()
 
     // 设置时间轮的时间间隔
     struct itimerspec new_value;
-    struct timespec now;
-
-    if (clock_gettime(CLOCK_MONOTONIC, &now) == -1) {
-        LOG(LOG_DEBUG_LEVEL,
-            LOG_SOURCE_TIMEWHEEL,
-            "TimeWheel::start clock_gettime error!\n");
-        return errno;
-    }
 
     new_value.it_value.tv_sec = INTERVAL;
     new_value.it_value.tv_nsec = 0;
@@ -69,10 +65,13 @@ int TimeWheel::start()
     new_value.it_interval.tv_sec = INTERVAL;
     new_value.it_interval.tv_nsec = 0;
 
+    // 注册时间间隔
     if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &new_value, NULL) == -1) {
-        LOG(LOG_DEBUG_LEVEL,
+        LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TIMEWHEEL,
-            "TimeWheel::start timerfd_settime error!\n");
+            "timerfd_settime errno = %d:%s\n",
+            errno,
+            strerror(errno));
         return errno;
     }
 
@@ -96,9 +95,11 @@ int TimeWheel::stop()
 
     if (timerfd_settime(ptimerfdChannel_->getFd(), 0, &stop_value, NULL) ==
         -1) {
-        LOG(LOG_DEBUG_LEVEL,
+        LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TIMEWHEEL,
-            "TimeWheel::stop timerfd_settime error!\n");
+            "timerfd_settime errno = %d:%s\n",
+            errno,
+            strerror(errno));
         return errno;
     }
 
@@ -109,9 +110,10 @@ int TimeWheel::addTask(Task *task)
 {
     // 若task为空,直接返回
     if (task->setInterval < 0 || task->doit == NULL) {
-        LOG(LOG_DEBUG_LEVEL,
+        LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TIMEWHEEL,
-            "TimeWheel::addTask invalid task!\n");
+            "invalid task! task->setInterval = %d\n",
+            task->setInterval);
         return S_FALSE;
     }
     int setTick;
@@ -134,9 +136,11 @@ int TimeWheel::removeTask(Task *task)
 {
     // task为空,直接返回
     if (task->setInterval == -1 || task->setTick == -1 || task->doit == NULL) {
-        LOG(LOG_DEBUG_LEVEL,
+        LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TIMEWHEEL,
-            "TimeWheel::removeTask invalid task!\n");
+            "invalid task! task->setInterval = %d, task->setTick = %d\n",
+            task->setInterval,
+            task->setTick);
         return S_FALSE;
     }
 
@@ -145,15 +149,19 @@ int TimeWheel::removeTask(Task *task)
         slot_[task->setTick].begin(), slot_[task->setTick].end(), task);
 
     // 若没有找到,则直接返回
-    if (iter == slot_[task->setTick].end()) return S_FALSE;
+    if (iter == slot_[task->setTick].end()) {
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_TIMEWHEEL,
+            "erased failed: not found task!\n");
+        return S_FALSE;
+    }
 
     slot_[task->setTick].erase(iter);
-    LOG(LOG_DEBUG_LEVEL,
-        LOG_SOURCE_TIMEWHEEL,
-        "TImeWheel::removeTask erased!\n");
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_TIMEWHEEL, "erased!\n");
     return S_OK;
 }
 
+// 每个时钟周期的响应函数
 int TimeWheel::onTick(void *pThis)
 {
     TimeWheel *ptw = (TimeWheel *) pThis;
@@ -163,12 +171,7 @@ int TimeWheel::onTick(void *pThis)
     if (ret == -1) {
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TIMEWHEEL,
-            "TimeWheel::onTick read error\n");
-
-        LOG(LOG_ERROR_LEVEL,
-            LOG_SOURCE_TIMEWHEEL,
-            "fd = %d, errno = %d, %s",
-            ptw->ptimerfdChannel_->getFd(),
+            "read errno = %d:%s\n",
             errno,
             strerror(errno));
         return errno;

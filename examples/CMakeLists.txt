@@ -7,4 +7,4 @@
 # @email 1575033031@qq.com
 #
 
-add_subdirectory(Relayserver)
+add_subdirectory(Relayserver_zsq)

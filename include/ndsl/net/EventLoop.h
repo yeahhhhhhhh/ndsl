@@ -107,7 +107,7 @@ class EventLoop
         {
             // 关闭描述符
             if (getFd() >= 0) {
-                erase();
+                erase(); // 从EventLoop中取消注册
                 ::close(getFd());
             }
         }
@@ -124,7 +124,9 @@ class EventLoop
             if (ret == -1) {
                 LOG(LOG_ERROR_LEVEL,
                     LOG_SOURCE_EVENTLOOP,
-                    "QueueChannel::onWrite write\n");
+                    "QueueChannel::onWrite write errno = %d:%s\n",
+                    errno,
+                    strerror(errno));
                 return errno;
             }
 
@@ -157,7 +159,7 @@ class EventLoop
         ~InterruptChannel()
         {
             if (getFd() >= 0) {
-                erase();
+                erase(); // 从EventLoop中取消注册
                 ::close(getFd());
             }
         }
@@ -171,9 +173,11 @@ class EventLoop
             int ret = ::write(getFd(), &data, sizeof(data));
 
             if (ret == -1) {
-                LOG(LOG_INFO_LEVEL,
+                LOG(LOG_ERROR_LEVEL,
                     LOG_SOURCE_EVENTLOOP,
-                    "InterruptChannel::onWrite\n");
+                    "InterruptChannel::onWrite write errno = %d:%s\n",
+                    errno,
+                    strerror(errno));
                 return errno;
             }
 

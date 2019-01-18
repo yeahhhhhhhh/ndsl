@@ -31,7 +31,11 @@ int Epoll::init()
 {
     epfd_ = epoll_create(1);
     if (epfd_ < 0) {
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "Epoll::init epoll_create\n");
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_EPOLL,
+            "epoll_create errno = %d:%s\n",
+            errno,
+            strerror(errno));
         return errno;
     }
 
@@ -48,11 +52,9 @@ int Epoll::enroll(Channel *pCh)
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_ADD, pCh->getFd(), &ev);
 
     if (ret < 0) {
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "Epoll::enroll epoll_ctl\n");
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_EPOLL,
-            "epfd_ = %d, errno = %d, %s",
-            epfd_,
+            "epoll_ctl errno = %d:%s\n",
             errno,
             strerror(errno));
         return errno;
@@ -71,7 +73,11 @@ int Epoll::modify(Channel *pCh)
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_MOD, pCh->getFd(), &ev);
 
     if (ret < 0) {
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "Epoll::modify epoll_ctl\n");
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_EPOLL,
+            "epoll_ctl errno = %d:%s\n",
+            errno,
+            strerror(errno));
         return errno;
     }
 
@@ -85,7 +91,11 @@ int Epoll::erase(Channel *pCh)
     int ret = ::epoll_ctl(epfd_, EPOLL_CTL_DEL, pCh->getFd(), &ev);
 
     if (ret < 0) {
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "Epoll::erase epoll_ctl\n");
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_EPOLL,
+            "epoll_ctl errno = %d:%s\n",
+            errno,
+            strerror(errno));
         return errno;
     }
 
@@ -99,11 +109,9 @@ int Epoll::wait(Channel *channels[], int &nEvents, int timeoutMs)
     int ret = ::epoll_wait(epfd_, events, MAX_EVENTS, timeoutMs);
 
     if (ret < 0) {
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "Epoll::wait epoll_wait\n");
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_EPOLL,
-            "Epoll::wait epfd = %d, errno = %d,%s\r\n",
-            epfd_,
+            "epoll_wait errno = %d:%s\n",
             errno,
             strerror(errno));
         return errno;
