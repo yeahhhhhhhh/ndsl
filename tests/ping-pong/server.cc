@@ -50,8 +50,8 @@ static void onConnection(void *conn)
     len = 0;
     Con->onRecv(sbuf, &len, 0, onMessage, Con);
 
-    TcpConnection *con1 = new TcpConnection(tAc);
-    con1->onAccept(con1, NULL, NULL, onConnection, con1);
+    TcpConnection *con1 = new TcpConnection();
+    tAc->onAccept(con1, NULL, NULL, onConnection, con1);
 }
 
 int main(int argc, char *argv[])
@@ -86,11 +86,10 @@ int main(int argc, char *argv[])
         socklen_t addrlen;
 
         // FIXME: 这里只能建立一个连接
-        Conn = new TcpConnection(tAc);
+        Conn = new TcpConnection();
         Conn->onError(mError);
-        Conn->onAccept(
+        tAc->onAccept(
             Conn, (struct sockaddr *) &rservaddr, &addrlen, onConnection, Conn);
-
         // 运行
         EventLoop::loop(&loop);
     }

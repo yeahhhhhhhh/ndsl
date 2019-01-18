@@ -39,8 +39,10 @@ TEST_CASE("net/TcpAcceptor")
         bzero(&rservaddr, sizeof(rservaddr));
         socklen_t addrlen;
 
-        TcpConnection *Conn = new TcpConnection(tAc);
-        Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
+        TcpConnection *Conn = new TcpConnection();
+        tAc->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
+
+        printf("***********\n");
 
         // 启动一个客户端
         struct SocketAddress4 clientservaddr("127.0.0.1", 6667);

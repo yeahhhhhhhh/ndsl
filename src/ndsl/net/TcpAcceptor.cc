@@ -157,5 +157,15 @@ int TcpAcceptor::handleRead(void *pthis)
     return S_OK;
 }
 
+int TcpAcceptor::onAccept(
+    TcpConnection *pCon,
+    struct sockaddr *addr,
+    socklen_t *addrlen,
+    Callback cb,
+    void *param)
+{
+    return setInfo(pCon, addr, addrlen, cb, param);
+}
+
 } // namespace net
 } // namespace ndsl
