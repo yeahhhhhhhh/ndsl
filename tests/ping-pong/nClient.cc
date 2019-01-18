@@ -278,8 +278,8 @@ int main(int argc, char *argv[])
             "Usage: client <address> <port> <threads> <blocksize> <sessions> "
             "<time>\n");
     } else {
-        uint64_t mlog = add_source();
-        set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
+        //uint64_t mlog = add_source();
+        //set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
 
         struct SocketAddress4 *servaddr = new struct SocketAddress4(
             argv[1], static_cast<unsigned short>(atoi(argv[2])));

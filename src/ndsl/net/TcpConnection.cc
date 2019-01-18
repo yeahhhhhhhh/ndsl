@@ -64,11 +64,16 @@ int TcpConnection::onSend(
         // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
         ssize_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
         if (n == len) {
+            //printf("n == len!\n");
             // 写完 通知用户
             // LOG(LOG_INFO_LEVEL,
             //     LOG_SOURCE_TCPCONNECTION,
             //     "TcpConnection::onSend write complete\n");
-            if (cb != NULL) cb(param);
+            if (cb != NULL) 
+            {
+                //printf("cb != NULL!\n");
+                cb(param);
+            }
             // 释放掉buf占用的空间 TODO: 暂时注释
             // if (buf != NULL) free(buf);
             return S_OK;
@@ -82,7 +87,7 @@ int TcpConnection::onSend(
             // if (buf != NULL) free(buf);
             return S_FALSE;
         }
-
+        printf(" n < len !\n");
         LOG(LOG_INFO_LEVEL,
             LOG_SOURCE_TCPCONNECTION,
             "TcpConnection::onSend send for next time\n");
@@ -107,6 +112,7 @@ int TcpConnection::onSend(
 
 int TcpConnection::handleWrite(void *pthis)
 {
+    //printf("TcpConnection::handleWrite!\n");
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
 
@@ -180,11 +186,13 @@ int TcpConnection::onRecv(
     int sockfd = pTcpChannel_->getFd();
     if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            printf("errno == EAGAIN || errno == EWOULDBLOCK!\n");
             LOG(LOG_INFO_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onRecv EAGAIN\n");
         } else {
             // 出错 回调用户
+            printf("error!\n");
             LOG(LOG_INFO_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onRecv recv error can not deal\n");
@@ -198,6 +206,7 @@ int TcpConnection::onRecv(
 
         (*len) = n;
         // 一次性读完之后通知用户
+        printf("通知用户!\n");
         if (cb != NULL) cb(param);
     }
 
@@ -216,6 +225,7 @@ int TcpConnection::onRecv(
 
 int TcpConnection::handleRead(void *pthis)
 {
+    //printf("TcpConnection::handleRead!\n");
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FALSE; }

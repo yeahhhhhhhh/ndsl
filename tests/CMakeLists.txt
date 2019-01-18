@@ -67,3 +67,25 @@ target_link_libraries(client ndsl boost_system pthread)
 #add_executable(plugin ${SRC_list})  #生成可执行文件
 #target_link_libraries(plugin dl)
 #target_link_libraries(plugin libplugin)
+
+
+#设置Relayserver测试文件
+set(test_server Relayserver/server.cc)
+set(test_client Relayserver/client.cc)
+set(tcprelay Relayserver/tcprelay.cc)
+include_directories(${CMAKE_SOURCE_DIR}/tests)
+
+# 生成Relayserver测试 服务端
+add_executable(test_server ${test_server})
+add_dependencies(test_server ndsl)
+target_link_libraries(test_server ndsl)
+
+# 生成Relayclient测试 客户端
+add_executable(test_client ${test_client})
+add_dependencies(test_client ndsl)
+target_link_libraries(test_client ndsl boost_system pthread)
+
+# 生成Relayserver测试 中继服务器
+add_executable(tcprelay ${tcprelay})
+add_dependencies(tcprelay ndsl)
+target_link_libraries(tcprelay ndsl)

@@ -14,7 +14,7 @@
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/utils/Log.h"
-
+#include <stdio.h>
 namespace ndsl {
 namespace net {
 
@@ -116,6 +116,7 @@ int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
 
 int TcpAcceptor::handleRead(void *pthis)
 {
+    printf("TcpAcceptor::handleRead!\n");
     LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "TcpAcceptor::handleRead\n");
 
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
@@ -140,6 +141,7 @@ int TcpAcceptor::handleRead(void *pthis)
     fcntl(connfd, F_SETFL, O_NONBLOCK);
 
     if (pThis->info.inUse_) {
+        printf("creatchannel connfd!\n");
         ((pThis->info).pCon_)
             ->createChannel(connfd, pThis->pTcpChannel_->pLoop_);
         pThis->info.addr_ = (struct sockaddr *) &cliaddr;

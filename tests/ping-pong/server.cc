@@ -79,6 +79,9 @@ int main(int argc, char *argv[])
         Conn->onAccept(
             Conn, (struct sockaddr *) &rservaddr, &addrlen, onConnection, NULL);
 
+        printf("conn->onerror() finish!\n");
+        printf("conn->onaccept() finish!\n");
+        printf("before loop!\n");
         // 运行
         EventLoop::loop(&loop);
     }
