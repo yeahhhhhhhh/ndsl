@@ -51,8 +51,7 @@ include_directories(${CMAKE_SOURCE_DIR}/tests)
 # net和utils下的测试文件
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
-target_link_libraries(utest ndsl)
-target_link_libraries(utest ndsl pthread) # boost_system)
+target_link_libraries(utest ndsl pthread)
 
 # 生成pingpong测试 服务端
 add_executable(server ${pingserver})
@@ -63,9 +62,3 @@ target_link_libraries(server ndsl)
 add_executable(client ${pingclient})
 add_dependencies(client ndsl)
 target_link_libraries(client ndsl boost_system pthread)
-
-#设置插件单元测试
-#set(SRC_list Plugintest/plugintest.cc) #宏定义
-#add_executable(plugin ${SRC_list})  #生成可执行文件
-#target_link_libraries(plugin dl)
-#target_link_libraries(plugin libplugin)

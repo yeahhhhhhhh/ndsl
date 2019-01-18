@@ -1,0 +1,10 @@
+##
+# @file CMakeLists.txt
+# @brief
+# examples目录的cmake文件
+#
+# @author niexw
+# @email xiaowen.nie.cn@gmail.com
+#
+
+add_subdirectory(ftp_lgr)

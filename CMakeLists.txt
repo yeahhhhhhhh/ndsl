@@ -67,5 +67,6 @@ set(CMAKE_CXX_RELWITHDEBINFO_RELEASE  "-O2")
 
 add_subdirectory(src)
 add_subdirectory(tests)
+add_subdirectory(examples)
 
 message(STATUS "### Done ###")
