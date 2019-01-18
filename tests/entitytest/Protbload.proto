@@ -1,14 +1,15 @@
+syntax = "proto3";
 package Protbload;
 message ADD
 {
-    required int32 agv1=1;
-    required int32 agv2=2;
+    int32 agv1=1;
+    int32 agv2=2;
 }
 
 message RESULT
 {
-    required int32 answer=1;
-    optional bool exflag=2 [default = false];
+    int32 answer=1;
+    bool exflag=2 ;
 }
 
 

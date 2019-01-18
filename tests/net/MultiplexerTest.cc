@@ -77,7 +77,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
 
     Multiplexer *mymulti = new Multiplexer(Conn);
     Multiplexer *multi2 = new Multiplexer(clientconn);
-    multi2->hellom();
+
     // SECTION("addInsertWork")
     // {
     //     int id = 1;
@@ -106,7 +106,6 @@ TEST_CASE("Mutiplexer/cbmaptest")
         multi2->addInsertWork(id, entitycallbak);
         loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
-        printf("insert entity\n");
 
         /********************************
          * remove()测试
@@ -127,8 +126,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
         int len = 10;
         char *buffer =
             (char *) malloc((sizeof(int) * 2 + sizeof(char) * len) * 5);
-        // if (buffer != NULL) free(buffer);
-        printf("buffer len = %lu", (sizeof(int) * 2 + sizeof(char) * len) * 5);
+
         Message *message = reinterpret_cast<struct Message *>(buffer);
         message->id = htobe32(id);
         message->len = htobe32(len);
@@ -151,11 +149,6 @@ TEST_CASE("Mutiplexer/cbmaptest")
         write(pCli->sockfd_, buffer + 50, 40);
         loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
-        loop.quit();
-        REQUIRE(loop.loop(&loop) == S_OK);
-        loop.quit();
-        REQUIRE(loop.loop(&loop) == S_OK);
-
         /*********************************
          * dispatch 测试：一个长消息
         //  ********************************/
