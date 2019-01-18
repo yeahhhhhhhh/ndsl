@@ -42,8 +42,6 @@ TEST_CASE("net/TcpAcceptor")
         TcpConnection *Conn = new TcpConnection();
         tAc->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun1, NULL);
 
-        printf("***********\n");
-
         // 启动一个客户端
         struct SocketAddress4 clientservaddr("127.0.0.1", 6667);
         TcpConnection *pClientConn;

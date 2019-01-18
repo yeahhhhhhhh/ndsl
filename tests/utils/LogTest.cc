@@ -19,9 +19,7 @@ TEST_CASE("utils/Log")
             LOG_OUTPUT_FILE);
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EVENTLOOP, "hello, world\n");
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EPOLL, "debug\n");
-        LOG(LOG_ERROR_LEVEL,
-            LOG_SOURCE_ELTHREADPOOL,
-            "ELThreadpool::getNextEventLoop");
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_ELTHREADPOOL, "Loop::getNextEventLoop");
     }
     SECTION("LOG1")
     {
