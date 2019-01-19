@@ -13,7 +13,8 @@ using namespace net;
 
 int flagFunc1 = 1;
 int func1(void *param){
-    printf("func1...\n");
+
+printf("func1...\n");
     return (++flagFunc1);
 }
 
@@ -64,7 +65,7 @@ TEST_CASE("eventfd test in one thread"){
     ret = conn->onRead(count2,0,func1,NULL);
     REQUIRE(ret == S_OK);
     REQUIRE(count2 == 2);
-REQUIRE(errno == 0);
+    REQUIRE(errno == 0);
 }
 
 //子线程，用作 先读，5秒后连续读两次
