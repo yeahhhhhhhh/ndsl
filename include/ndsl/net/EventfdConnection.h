@@ -1,10 +1,12 @@
 /*
- * @file: 
+ * @file: EventfdConnection.h
  * @description: file content
  * @Date: 2019-01-13 14:20:23
  * @author: peng jun
  * @email: 785733871@qq.com
  */
+#ifndef __NDSL_NET_EVENTCONNECTION__
+#define __NDSL_NET_EVENTCONNECTION__
 
 #include <queue>
 
@@ -44,15 +46,19 @@ class EventfdConnection{
 
         EventfdChannel *pEventfdChannel_;//fd保存在channel中
 
+        //创建fd，只在主线程中调用一次
         int createEventfd(int &ev_fd);
-
-        int createChannel(int fd,EventLoop *pLoop);
+        //创建channel
+        int createChannel(int ev_fd,EventLoop *pLoop);
         //flag去掉？
         int onWrite(uint64_t &count,int flags,Callback cb,void *param);
+        int onRead(uint64_t &count,int flags,Callback cb,void *param);        
+    protected:
         static int handleWrite(void *pthis);
-        int onRead(uint64_t &count,int flags,Callback cb,void *param);
         static int handleRead(void *pthis);
 };
 
 } // namespace net
 } // namespace ndsl
+
+#endif //__NDSL_NET_EVENTCONNECTION__

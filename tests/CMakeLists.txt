@@ -30,6 +30,8 @@ testMain.cc
 #net/UdpEndpointTest.cc
 #net/UnixAndTcpSocketAddressTest.cc
 # net/UnixConnectionTest.cc
+net/SockoptTest.cc
+net/EventfdTest.cc
 
  #utils/EndianTest.cc
  #utils/ErrorTest.cc
@@ -40,8 +42,7 @@ testMain.cc
  #utils/ThreadTest.cc
  #utils/TimeStampTest.cc
 # utils/XMLConfig_test.cc
-net/SockoptTest.cc
-net/EventfdTest.cc
+
 )
 
 # 设置ping-pong单元测试的文件

@@ -18,7 +18,7 @@
 #include"pugixml.hpp"
 #include "pugiconfig.hpp"
 
-#define S_FLASE -1;
+#define S_FALSE -1;
 #define S_OK 0;
 using namespace pugi;
 
