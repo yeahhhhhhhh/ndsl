@@ -18,78 +18,73 @@
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/UdpClient.h"
 #include "ndsl/net/SocketAddress.h"
-
 bool flag_ = false;
 
-void sign(void *a) { flag_ = true; }
+void TestFun1(void *a) { flag_ = true; }
 
-bool udpflagsend = false;
-static void sendTest(void *a) { udpflagsend = true; }
+bool udpTestFlagSend = false;
 
-bool udpflagrecv = false;
-static void recvTest(void *a) { udpflagrecv = true; }
+static void udpSendTest(void *aa) { udpTestFlagSend = true; }
 
-bool udpclientRecv = false;
-static void ClientRecvTest(void *a) { udpclientRecv = true; }
+// bool udpFlagRecv = false;
+
+// static void udpRecvTest(void *aa) { udpFlagRecv = true; }
+
+bool udpClientRecv = false;
+static void ClientudpRecvTest(void *aa)
+{
+    udpClientRecv = true;
+}
 
 using namespace ndsl::net;
 
 TEST_CASE("net/UdpEndpoint")
 {
+	// 初始化EPOLL 服务器 客户端共用一个EPOLL
+	EventLoop loop;
+	REQUIRE(loop.init() == S_OK);
+
+	UdpEndpoint *t = new UdpEndpoint(&loop);
+
 	SECTION("udp")
 	{
-		// 初始化EPOLL 服务器 客户端共用一个EPOLL
-		EventLoop loop;
-		REQUIRE(loop.init() == S_OK);
-
-		// 准备客户端的接受参数 默认全ip接受 端口9877
-		//struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
-
-		UdpEndpoint *t = new UdpEndpoint(&loop);
-		t->start();
-
-		// 准备接收的数据结构
-		struct sockaddr_in rservaddr;
-		bzero(&rservaddr, sizeof(rservaddr));
-		socklen_t addrlen;
-		t->onData((SA*)&rservaddr,&addrlen,sign,NULL);
+		// 准备客户端的接受参数 默认全ip接受 
+		struct SocketAddress4 servaddr("192.168.159.142", 6666);
+        bzero(&servaddr, sizeof(servaddr));
+		REQUIRE((t->start(servaddr))== 0);
 
         UdpEndpoint *pClient;
-		// 启动一个客户端
+		struct SocketAddress4 cliaddr("127.0.0.1", 6666);
 		UdpClient *pCli = new UdpClient();
 
-		REQUIRE((pClient = pCli->begin(&loop))!= NULL);
-		
-		// 添加中断
-		loop.quit();
-		REQUIRE(loop.loop(&loop) == S_OK);
+	    REQUIRE((pClient = pCli->begin(&loop,cliaddr))!= NULL);
 
+		// 测试Send
+        char *sendbuf = (char *) malloc(sizeof(char) * 12);
+        strcpy(sendbuf, "hello world\0");
 
-		// 测试onSend
-		char *sendbuf = (char *)malloc(sizeof(char) * 12);
-		strcpy(sendbuf, "hello world\0");
-		t->onSend(sendbuf, strlen("hello world"), 0,(struct sockaddr*)&rservaddr,sizeof(rservaddr),sendTest, NULL);
-		char recvBuf[15];
-		ssize_t recvLen;
-		memset(recvBuf, 0, sizeof(recvBuf));
-		t->onRecv(recvBuf, &recvLen, 0, (struct sockaddr*)&rservaddr,sizeof(rservaddr),ClientRecvTest, NULL);
+        t->onSend(
+        sendbuf,strlen("hello world"),0,(struct sockaddr*)&servaddr,sizeof(servaddr),udpSendTest, NULL);
+        REQUIRE(udpTestFlagSend== true);
 
-		REQUIRE(strcmp("hello world", recvBuf) == 0);
-		REQUIRE(udpflagsend == true);
-		REQUIRE(udpclientRecv == true);
+        char recvBuf[15];
+        // memset(recvBuf, 0, sizeof(recvBuf));
+        socklen_t struct_len;
+        struct_len = sizeof(cliaddr);
+        // size_t recvLen;
+        // recvLen=sizeof(recvBuf);
+        // t->onRecv(
+        //     recvBuf,recvLen, 0,(struct sockaddr*)&servaddr,struct_len,udpRecvTest, NULL);
+       
+        //  REQUIRE(udpFlagRecv == true);
 
-		// 测试onRecv
-		memset(recvBuf, 0, sizeof(recvBuf));
-		ssize_t len;
-		write(pCli->sfd, "hello world", strlen("hello world"));
+        // 测试onRecv
+        memset(recvBuf, 0, sizeof(recvBuf));
+        size_t len=sizeof(recvBuf);
+        sendto(pCli->sfd, "hello world", strlen("hello world"),0,(struct sockaddr*)&servaddr,sizeof(servaddr));
 
-		REQUIRE(t->onRecv(recvBuf, &len, 0,(struct sockaddr*)&rservaddr,sizeof(rservaddr),recvTest, NULL) == S_OK);
-		REQUIRE(len == strlen("hello world"));
-		REQUIRE(udpflagrecv == true);
-
-		// 第二次不需要添加中断
-		// loop.quit();
-		REQUIRE(loop.loop(&loop) == S_OK);
+        REQUIRE(
+        t->onRecv(recvBuf,len,0,(struct sockaddr*)&cliaddr,struct_len,ClientudpRecvTest, NULL) ==
+            S_OK);
 	}
-
 }

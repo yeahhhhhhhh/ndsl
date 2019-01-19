@@ -62,7 +62,6 @@ class TimeWheel
     TimeWheel(EventLoop *loop);
     ~TimeWheel();
 
-    int init();  // 初始化TimerfdChannel和slot
     int start(); // 开始运行时间轮
     int stop();  // 停止运行时间轮
 
@@ -70,6 +69,8 @@ class TimeWheel
     int removeTask(Task *task); // 删除任务
 
     static int onTick(void *pThis); // 处理事件
+  private:
+    int init(); // 初始化TimerfdChannel和slot
 };
 
 } // namespace net

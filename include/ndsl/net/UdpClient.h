@@ -20,7 +20,7 @@ class UdpClient
     ~UdpClient();
 
     int sfd; //用来保存链接fd
-    UdpEndpoint *begin(EventLoop *loop);
+    UdpEndpoint *begin(EventLoop *loop,struct SocketAddress4 servaddr);
 
     int end();
 };

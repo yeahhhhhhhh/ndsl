@@ -15,11 +15,20 @@
 using namespace ndsl;
 using namespace net;
 
-void func1(void *para) { printf("Call func1 and para is %ld!\n", (long) para); }
+void func1(void *para)
+{
+    LOG(LOG_INFO_LEVEL,
+        LOG_SOURCE_EVENTLOOP,
+        "Call func1 and para is %ld!\n",
+        (long) para);
+}
 
 void func2(void *para)
 {
-    printf("Call func2 and para is %s!\n", (char *) para);
+    LOG(LOG_INFO_LEVEL,
+        LOG_SOURCE_EVENTLOOP,
+        "Call func2 and para is %s!\n",
+        (char *) para);
 }
 
 TEST_CASE("net/EventLoop(WorkQueue)")

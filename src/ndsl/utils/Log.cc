@@ -7,6 +7,7 @@
 // @email 1575033031@qq.com
 //
 #include <iostream>
+#include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -15,8 +16,6 @@
 #include <stdarg.h>
 #include <ndsl/utils/Log.h>
 #include <ndsl/utils/TimeStamp.h>
-
-static int tag = 0;
 
 ////
 // @biref
@@ -64,9 +63,12 @@ class Filelog
 //
 static Filelog file_log;
 static int log_source_tag = 35;
+static int tag = -1;
+static uint64_t _sinks = 0;
 
 void set_ndsl_log_sinks(uint64_t sinks, int file_or_ter) // file = 1, ter = 0
 {
+    _sinks = sinks;
     if (file_or_ter == 1) {
         tag = 1;
         file_log.init();
@@ -77,15 +79,20 @@ void set_ndsl_log_sinks(uint64_t sinks, int file_or_ter) // file = 1, ter = 0
 
 uint64_t add_source()
 {
-    uint64_t module = 1 << log_source_tag ;
-    log_source_tag ++;
+    uint64_t module = 1UL << log_source_tag;
+    // printf("module = %lu\n",module);
+    log_source_tag++;
     return module;
 }
 
-void ndsl_log_into_sink(int level, uint64_t source,const char* file_name,const char * func_name, const char *format, ...)
+void ndsl_log_into_sink(
+    int level,
+    uint64_t source,
+    const char *file_name,
+    const char *func_name,
+    const char *format,
+    ...)
 {
-    uint64_t i = 1;
-    int k = 0;
     ndsl::utils::TimeStamp ts;
     char buffer[4096] = {0};
 
@@ -93,31 +100,32 @@ void ndsl_log_into_sink(int level, uint64_t source,const char* file_name,const c
     buffer[0] = '[';
     ts.to_string(buffer + 1, 4096);
     int ret1 = ::strlen(buffer);
-    
 
     buffer[ret1] = ']';
 
+    const char *ptr = strrchr(file_name, '/');
+
     int ret2 = sprintf(
         buffer + ret1 + 1,
-        " lv=%d pid=%d tid=%lx file_name = %s func_name = %s ",
+        " lv=%d pid=%d tid=%lx  %s  %s ",
         level,
         ::getpid(),
         (long) ::pthread_self(),
-        file_name,
-        func_name
-        ); // 毫秒
+        // file_name,
+        ptr + 1,
+        func_name); // 毫秒
 
-    
     // 复制数据
     va_list ap;
     va_start(ap, format);
     int ret3 =
         vsnprintf(buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
     if (ret3 < 0) return;
-    if (tag == 0) { std::cout << buffer << std::endl; }
-    while ((k <= log_source_tag) && (tag == 1)) {
-        if (source & i) { file_log.log(buffer, ret1 + ret2 + ret3 + 1); }
-        i = i * 2;
-        k++;
+
+    if ((source & _sinks) && (tag == 0)) printf("%s\n", buffer);
+
+    if ((source & _sinks) && (tag == 1)) {
+        buffer[ret1 + ret2 + ret3 + 1] = '\n';
+        file_log.log(buffer, ret1 + ret2 + ret3 + 2);
     }
 }
