@@ -12,9 +12,9 @@ using namespace ndsl;
 using namespace net;
 
 int flagFunc1 = 1;
-int func1(void *param){
+int fdfunc1(void *param){
 
-printf("func1...\n");
+printf("fdfunc1...\n");
     return (++flagFunc1);
 }
 
@@ -36,33 +36,33 @@ TEST_CASE("eventfd test in one thread"){
 
     //写之前读，设置为非阻塞，会产生EAGAIN的错误
     // ret = read(conn->pEventfdChannel_->getFd(),&count,sizeof(count));
-    ret = conn->onRead(count,0,func1,NULL);
+    ret = conn->onRead(count,0,fdfunc1,NULL);
     REQUIRE(count == 2);//count不变
     REQUIRE(ret == S_FALSE);
     REQUIRE(errno == EAGAIN);
     errno = 0;
 
     //写+写+读
-    ret = conn->onWrite(count,0,func1,NULL);
+    ret = conn->onWrite(count,0,fdfunc1,NULL);
     REQUIRE(ret == S_OK);
-    ret = conn->onWrite(count,0,func1,NULL);
+    ret = conn->onWrite(count,0,fdfunc1,NULL);
     REQUIRE(ret == S_OK);
-    ret = conn->onRead(count2,0,func1,NULL);
+    ret = conn->onRead(count2,0,fdfunc1,NULL);
     REQUIRE(ret == S_OK);
     REQUIRE(count2 == 4);
 
     //再读，会产生EAGAIN的错误,count2不变
     count2 = 3;
-    ret = conn->onRead(count2,0,func1,NULL);
+    ret = conn->onRead(count2,0,fdfunc1,NULL);
     REQUIRE(ret == S_FALSE);
     REQUIRE(errno == EAGAIN);
     errno = 0;
     REQUIRE(count2 == 3);//count2不变
 
     //再写+读，能成功读
-    ret = conn->onWrite(count,0,func1,NULL);
+    ret = conn->onWrite(count,0,fdfunc1,NULL);
     REQUIRE(ret == S_OK);
-    ret = conn->onRead(count2,0,func1,NULL);
+    ret = conn->onRead(count2,0,fdfunc1,NULL);
     REQUIRE(ret == S_OK);
     REQUIRE(count2 == 2);
     REQUIRE(errno == 0);
@@ -78,7 +78,7 @@ void *fun2(void *param){
     conn -> pEventfdChannel_ = channel;
 
     //读
-    ret = conn->onRead(count,0,func1,NULL);
+    ret = conn->onRead(count,0,fdfunc1,NULL);
     REQUIRE(ret == -1);
     REQUIRE(count == 3);
     REQUIRE(errno == EAGAIN);
@@ -88,13 +88,13 @@ void *fun2(void *param){
 
     // 写两次
     count = 3;
-    ret = conn->onRead(count,0,func1,NULL);
+    ret = conn->onRead(count,0,fdfunc1,NULL);
     REQUIRE(ret == 0);
     REQUIRE(count == 101*2);
     REQUIRE(errno == 0);
 
     count =  3;
-    ret = conn->onRead(count,0,func1,NULL);
+    ret = conn->onRead(count,0,fdfunc1,NULL);
     REQUIRE(ret == S_FALSE);
     REQUIRE(count == 3);
     REQUIRE(errno == EAGAIN);
@@ -124,9 +124,9 @@ TEST_CASE("multi thread,read before write"){
     
     // 连续写两次
     count = 101;
-    ret = conn->onWrite(count,0,func1,NULL);
+    ret = conn->onWrite(count,0,fdfunc1,NULL);
     REQUIRE(ret == S_OK);
-    ret = conn->onWrite(count,0,func1,NULL);
+    ret = conn->onWrite(count,0,fdfunc1,NULL);
     REQUIRE(ret == S_OK);
 
     //等待子线程结束

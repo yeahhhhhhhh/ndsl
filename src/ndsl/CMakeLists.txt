@@ -43,25 +43,13 @@ set(LIB_NDSL_SRC
   net/EventfdConnection.cc
   net/EventfdChannel.cc
 
-  utils/Clientplugin.cc
   utils/Endian.cc
-  utils/EventLoopThreadpool.cc
-  utils/Interrupter.cc
   utils/Plugin.cc
   utils/TimeStamp.cc
   utils/Error.cc
   utils/Guid.cc
   utils/Log.cc
-  utils/Thread.cc
-  utils/xmlconfig.cpp
-  utils/Endian.cc
-  utils/Plugin.cc
   utils/Semaphore.cc
-
-  utils/TimeStamp.cc
-  utils/Error.cc
-  utils/Guid.cc
-  utils/Log.cc
   utils/Xml.cc
  )
 
