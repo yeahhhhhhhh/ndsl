@@ -13,14 +13,21 @@
 
 #include <sys/stat.h>
 #include <queue>
-#include "ndsl/net/PipeChannel.h"
 #include "ndsl/net/EventLoop.h"
+#include "ndsl/net/BaseChannel.h"
 
 namespace ndsl{
 namespace net{
 	
 using Callback = void (*)(void *);	// callbank函数指针原型
 using ErrorHandle = void (*)(int, int);	// error回调函数
+
+class PipeChannel:public BaseChannel
+{
+  public:
+    PipeChannel(int pipefd, EventLoop *loop);
+    ~PipeChannel();
+};
 
 class PipeAndFifo{
   private:

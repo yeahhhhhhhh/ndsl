@@ -22,7 +22,7 @@ namespace net{
 PipeChannel::PipeChannel(int pipefd, EventLoop *loop)
     :BaseChannel(pipefd, loop){}
 
-PipeChannnel::~PipeChannel()
+PipeChannel::~PipeChannel()
 {
     erase();
 }

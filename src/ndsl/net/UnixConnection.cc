@@ -86,7 +86,7 @@ int UnixConnection::handleWrite(void *pthis)
                  tsi->flags_)) > 0) {
             tsi->offset_ += n;
 
-
+            if (tsi->offset_ == (*tsi->len_)){
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();    // 无写事件 注销写事件
                 // if (pThis->qSendInfo_.size() == 0) 

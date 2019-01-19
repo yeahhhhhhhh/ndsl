@@ -17,7 +17,6 @@ set(LIB_NDSL_SRC
   #all files
   net/BaseChannel.cc
   net/EventLoop.cc
-  net/PipeChannel.cc
   net/SignalHandler.cc
   net/TcpAcceptor.cc
 
