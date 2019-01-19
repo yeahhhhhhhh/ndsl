@@ -8,59 +8,65 @@
 #
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/third)
 
 add_subdirectory(net)
+add_subdirectory(third)
 add_subdirectory(utils)
 
 set(LIB_NDSL_SRC
-
   #all files
- net/BaseChannel.cc
- net/EventLoop.cc
- net/PipeChannel.cc
- # net/SignalHandler.cc
- # net/TcpAcceptor.cc
- # net/TcpConnection.cc
- # net/UdpClient.cc
- net/UnixChannel.cc
- # net/Multiplexer.cc
-#  net/Protbload.pb.cc
- net/SocketAddress.cc
- # net/TcpChannel.cc
- # net/TimeWheel.cc
- # net/UdpEndpoint.cc
- net/UnixConnection.cc
- net/Epoll.cc
- net/PipeAndFifo.cc
- #  net/SignalChannel.cc
- net/SocketAddressUn.cc
- # net/TcpClient.cc
- # net/UdpChannel.cc
- net/UnixAcceptor.cc
+  net/BaseChannel.cc
+  net/EventLoop.cc
+  net/SignalHandler.cc
+  net/TcpAcceptor.cc
 
-#  third/pugixml.cpp
+  net/TcpConnection.cc
+  net/UdpClient.cc
+  net/UnixChannel.cc
+  net/Multiplexer.cc
+  net/SocketAddress.cc
 
-#  utils/Clientplugin.cc
- utils/Endian.cc
- # utils/EventLoopThreadpool.cc
- utils/Interrupter.cc
- # utils/Plugin.cc
- utils/TimeStamp.cc
- utils/Error.cc
- # utils/Guid.cc
- utils/Log.cc
- # utils/Thread.cc
-#  utils/xmlconfig.cpp
-net/SocketOpt.cc
-net/EventfdChannel.cc
-net/EventfdConnection.cc
+  net/TcpChannel.cc
+  net/TimeWheel.cc
+  net/UdpEndpoint.cc
+  net/UnixConnection.cc
+  net/Epoll.cc
+
+  net/PipeAndFifo.cc
+  net/SignalChannel.cc
+  net/SocketAddressUn.cc
+  net/TcpClient.cc
+  net/UdpChannel.cc
+  net/UnixAcceptor.cc
+  net/ELThreadpool.cc
+  net/SocketOpt.cc
+  net/EventfdConnection.cc
+  net/EventfdChannel.cc
+
+  utils/Clientplugin.cc
+  utils/Endian.cc
+  utils/EventLoopThreadpool.cc
+  utils/Interrupter.cc
+  utils/Plugin.cc
+  utils/TimeStamp.cc
+  utils/Error.cc
+  utils/Guid.cc
+  utils/Log.cc
+  utils/Thread.cc
+  utils/xmlconfig.cpp
+  utils/Endian.cc
+  utils/Plugin.cc
+  utils/Semaphore.cc
+
+  utils/TimeStamp.cc
+  utils/Error.cc
+  utils/Guid.cc
+  utils/Log.cc
+  utils/Xml.cc
  )
 
-list(APPEND LIB_NDSL_SRC ${LIB_NDSL_SRC1})
 add_library(ndsl ${LIB_NDSL_SRC})
 target_link_libraries(ndsl uuid)
-
 
 #生成libplugin.so
  #set(LIB_SRC utils/Plugin.cc)

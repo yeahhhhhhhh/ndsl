@@ -70,7 +70,10 @@ class Multiplexer
     Multiplexer(ndsl::net::TcpConnection *conn)
         : conn_(conn)
     {
-        if (conn_ == NULL) printf("conn = NULL\n");
+        if (conn_ == NULL)
+            LOG(LOG_ERROR_LEVEL,
+                LOG_SOURCE_MULTIPLEXER,
+                "MULTIPLEXER::MULTIPLEXER conn_ == NULL\n");
         conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
     }
 
@@ -94,7 +97,6 @@ class Multiplexer
 
     // 分发消息给通信实体
     static void dispatch(void *p);
-    void hellom() { printf("in the multiplexer\n"); }
 };
 
 // 自定义addwork传入的参数结构体

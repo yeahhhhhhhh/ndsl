@@ -15,8 +15,9 @@
 #include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/TcpChannel.h"
-//#include "ndsl/utils/Endian.h"
-#include <endian.h>
+#include "ndsl/utils/Log.h"
+#include "ndsl/utils/Endian.h"
+//#include <endian.h>
 
 namespace ndsl {
 namespace net {
@@ -52,7 +53,6 @@ void Multiplexer::addInsertWork(int id, Callback cb)
     w1->doit = insert;
     w1->param = static_cast<void *>(p);
     conn_->pTcpChannel_->pLoop_->addWork(w1);
-    printf("success insert !\n");
 }
 
 // 在map中删除<id,callback>对
@@ -61,8 +61,12 @@ void Multiplexer::remove(void *pa)
     struct para *p = static_cast<struct para *>(pa);
     int id = p->id;
 
-    p->pthis->cbMap_.erase(id);
-
+    if (p->pthis->cbMap_.find(id) != p->pthis->cbMap_.end())
+        p->pthis->cbMap_.erase(id);
+    else
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_MULTIPLEXER,
+            "MULTIPLEXER::REMOVE cant remove the entity, not in the map\n");
     if (p != NULL) // 释放para
     {
         delete p;
@@ -111,7 +115,6 @@ void Multiplexer::sendMessage(int id, int length, const char *data)
  ********************/
 void Multiplexer::dispatch(void *p)
 {
-    printf("in the dispatch \n");
     Multiplexer *pthis = static_cast<Multiplexer *>(p);
 
     // 有不完整头部出现时，将其复制到msghead开始处，然后调用onrecv从残缺头部开始放
@@ -142,8 +145,15 @@ void Multiplexer::dispatch(void *p)
         pthis->id_ = be32toh(message->id);
         pthis->len_ = be32toh(message->len);
 
-        // printf("id:%d, len:%d \n", pthis->id_, pthis->len_);
-
+        Multiplexer::CallbackMap::iterator iter =
+            pthis->cbMap_.find(pthis->id_);
+        if (iter == pthis->cbMap_.end()) {
+            LOG(LOG_ERROR_LEVEL,
+                LOG_SOURCE_MULTIPLEXER,
+                "MULTIPLEXER::DISPATCH the entity id:%d is not in the map\n",
+                pthis->id_);
+            return;
+        }
         pthis->left_ = pthis->len_;
         pthis->rlen_ -= sizeof(int) * 2;     // 对rlen_做更新
         pthis->left_ -= pthis->rlen_;        // 对left_做更新

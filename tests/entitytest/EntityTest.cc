@@ -62,8 +62,8 @@ int main()
     loop.init();
 
     // unsigned short p = 8888;
-    struct SocketAddress4 servaddr("0.0.0.0", SERV_PORT);
-    printf("success \n");
+    struct SocketAddress4 servaddr("0.0.0.0", 8456);
+
     TcpAcceptor *tAc = new TcpAcceptor(&loop);
     tAc->start(servaddr);
 
@@ -72,25 +72,23 @@ int main()
     bzero(&rservaddr, sizeof(rservaddr));
     socklen_t addrlen;
 
-    TcpConnection *Conn = new TcpConnection(tAc);
-    Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun2, NULL);
+    TcpConnection *Conn = new TcpConnection();
+    tAc->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun2, NULL);
 
     // 启动一个客户端
+    struct SocketAddress4 clientservaddr("127.0.0.1", 8456);
     TcpConnection *serverconn;
     TcpClient *pCli = new TcpClient();
-    serverconn = pCli->onConnect(&loop, false);
-    printf("222222222 \n");
-    // REQUIRE(pCli->onConnect(&loop) == S_OK);
+    serverconn = pCli->onConnect(&loop, true, &clientservaddr);
 
     // 添加中断
     loop.quit();
     loop.loop(&loop);
-    printf("33333333333 \n");
-    Multiplexer *clientmulti = new Multiplexer(Conn);
-    printf("44444444444 \n");
-    Multiplexer *servermulti = new Multiplexer(serverconn);
-    printf("55555555555 \n");
 
+    Multiplexer *clientmulti = new Multiplexer(Conn);
+
+    Multiplexer *servermulti = new Multiplexer(serverconn);
+    loop.quit();
     loop.loop(&loop);
 
     /******
@@ -99,25 +97,28 @@ int main()
     int clientid = 10;
     int serverid = 12;
     Entity *client = new Entity(clientid, clientcallbak, clientmulti);
-    client->pri();
     Entity *server = new Entity(serverid, servercallbak, servermulti);
     server->pri();
-
+    loop.quit();
     loop.loop(&loop);
     /*********************************
      * 客户端服务器实体测试：
      ********************************/
+    int a, b;
+    printf("input the agv1 and agv2 of ADD equation: \n");
+    scanf("%d %d", &a, &b);
     std::string pstr;
     Protbload::ADD *addmessage = new Protbload::ADD;
-    addmessage->set_agv1(111);
-    addmessage->set_agv2(222);
+    addmessage->set_agv1(a);
+    addmessage->set_agv2(b);
     addmessage->SerializeToString(&pstr);
     int mlen = pstr.size();
-    printf("the size of pstr is %d\n", mlen);
 
     client->multiplexer_->sendMessage(serverid, mlen, pstr.c_str());
-    printf("sendMessage!\n");
+
+    loop.quit();
     loop.loop(&loop);
+    loop.quit();
     loop.loop(&loop);
     return 0;
 }

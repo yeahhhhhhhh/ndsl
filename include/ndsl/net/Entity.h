@@ -32,7 +32,8 @@ class Entity
     {
         multiplexer_->addInsertWork(id_, cb_);
     }
-    void pri() { printf("use entity\n"); }
+    // pri函数为测试用
+    void pri() {}
 };
 
 } // namespace net
