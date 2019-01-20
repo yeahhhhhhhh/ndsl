@@ -40,27 +40,19 @@ class  UdpEndpoint
     {
         void *sendBuf_;               // 用户的发送缓冲区
         void *recvBuf_;                     // 用户的接收缓冲区
-        ssize_t *len_;                        // 缓冲区的大小
+        size_t len_;                        // 缓冲区的大小
         int flags_;                         // sendto和recvfrom的参数
         struct sockaddr *dest_addr_;        // 接收数据的用户主机地址
         struct sockaddr *src_addr_;         // 发送数据的用户主机地址
-        socklen_t addrlen_;                 // 地址结构的长度
+        socklen_t addrlen_; 
+        size_t offset_;                // 地址结构的长度
         Callback cb_;                       // 存储用户传来的回调函数
         void *p_;                    
     
-    }Info,Info1;
-
-     struct RecvInfo
-    {
-        struct sockaddr *addr_; // sockaddr
-        socklen_t addrlen_;    // sockaddr长度
-        Callback cb_;           // 回调函数
-        void *p_;           // 回调函数参数
-    }info;
-
+    }Info,*pInfo;
     int createAndBind(struct SocketAddress4 servaddr);
 
-    Info1 SendInfo_; // 发送的数据信息
+    std::queue<pInfo> SendInfo_; // 发送的数据信息
     Info RecvInfo_;
 
   public:
@@ -71,20 +63,14 @@ class  UdpEndpoint
 
     int start(struct SocketAddress4 servaddr);
 
-    int setInfo(
-        struct sockaddr *addr,
-        socklen_t addrlen,
-        Callback cb,
-        void *p);
-
     // 事件发生后的处理
     static int handleRead(void *pthis);
     static int handleWrite(void *pthis);
     
     // 注册buffer,起回调作用
 
-    int onRecv(char *buffer, ssize_t *len, int flags,struct sockaddr *src_addr,socklen_t addrlen,Callback cb, void *param); // recv 接收函数
-    int onSend(void *buf, ssize_t len, int flags,struct sockaddr *dest_addr,socklen_t addrlen,Callback cb, void *param); // 用户调用send发送数据
+    int onRecv(char *buf, size_t len, int flags,struct sockaddr *src_addr,socklen_t addrlen,Callback cb, void *param); // recv 接收函数
+    int onSend(void *buf, size_t len, int flags,struct sockaddr *dest_addr,socklen_t addrlen,Callback cb, void *param); // 用户调用send发送数据
 };
 
 } // namespace net

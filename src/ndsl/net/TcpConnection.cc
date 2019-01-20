@@ -64,6 +64,7 @@ int TcpConnection::onSend(
         // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
         ssize_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
         if (n == len) {
+            // printf("n == len!\n");
             // 写完 通知用户
             // LOG(LOG_INFO_LEVEL,
             //     LOG_SOURCE_TCPCONNECTION,
@@ -108,6 +109,7 @@ int TcpConnection::onSend(
 
 int TcpConnection::handleWrite(void *pthis)
 {
+    // printf("TcpConnection::handleWrite!\n");
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
 
@@ -179,6 +181,7 @@ int TcpConnection::onRecv(
     int isOK = 0;
 
     int sockfd = pTcpChannel_->getFd();
+
     if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             // LOG(LOG_INFO_LEVEL,
@@ -215,6 +218,7 @@ int TcpConnection::onRecv(
 
 int TcpConnection::handleRead(void *pthis)
 {
+    // printf("TcpConnection::handleRead!\n");
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FALSE; }

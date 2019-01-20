@@ -19,6 +19,14 @@ using namespace std;
 namespace ndsl{
 namespace net{
 
+PipeChannel::PipeChannel(int pipefd, EventLoop *loop)
+    :BaseChannel(pipefd, loop){}
+
+PipeChannel::~PipeChannel()
+{
+    erase();
+}
+
 PipeAndFifo::PipeAndFifo(EventLoop *pLoop)
 {
 	pLoop_ = pLoop;

@@ -7,7 +7,7 @@
 # @email xiaowen.nie.cn@gmail.com
 #
 include_directories(${CMAKE_SOURCE_DIR}/include)
-# add_subdirectory(entitytest)
+#add_subdirectory(entitytest)
 
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -20,7 +20,7 @@ set(TEST
     # All files
     net/EpollTest.cc
     net/EventLoopTest.cc
-    # net/MultiplexerTest.cc
+    #net/MultiplexerTest.cc
 
     net/PipeAndFifoTest.cc
     net/SignalfdTest.cc
@@ -31,7 +31,9 @@ set(TEST
     net/UdpEndpointTest.cc
     net/UnixAndTcpSocketAddressTest.cc
     # net/UnixConnectionTest.cc
-    net/ELThreadpoolTest.cc
+    #net/ELThreadpoolTest.cc
+    net/SockoptTest.cc
+    net/EventfdTest.cc
 
     utils/EndianTest.cc
     utils/ErrorTest.cc
@@ -51,21 +53,14 @@ include_directories(${CMAKE_SOURCE_DIR}/tests)
 # net和utils下的测试文件
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
-target_link_libraries(utest ndsl)
-target_link_libraries(utest ndsl pthread) # boost_system)
+target_link_libraries(utest ndsl pthread)
 
 # 生成pingpong测试 服务端
 add_executable(server ${pingserver})
 add_dependencies(server ndsl)
 target_link_libraries(server ndsl)
 
-# 生成pingpong测试 客户端
+# 生成pingpong测试 客户端s
 add_executable(client ${pingclient})
 add_dependencies(client ndsl)
 target_link_libraries(client ndsl boost_system pthread)
-
-#设置插件单元测试
-#set(SRC_list Plugintest/plugintest.cc) #宏定义
-#add_executable(plugin ${SRC_list})  #生成可执行文件
-#target_link_libraries(plugin dl)
-#target_link_libraries(plugin libplugin)

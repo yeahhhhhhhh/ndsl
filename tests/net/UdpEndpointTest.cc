@@ -26,9 +26,9 @@ bool udpTestFlagSend = false;
 
 static void udpSendTest(void *aa) { udpTestFlagSend = true; }
 
-bool udpFlagRecv = false;
+// bool udpFlagRecv = false;
 
-static void udpRecvTest(void *aa) { udpFlagRecv = true; }
+// static void udpRecvTest(void *aa) { udpFlagRecv = true; }
 
 bool udpClientRecv = false;
 static void ClientudpRecvTest(void *aa)
@@ -49,14 +49,9 @@ TEST_CASE("net/UdpEndpoint")
 	SECTION("udp")
 	{
 		// 准备客户端的接受参数 默认全ip接受 
-		struct SocketAddress4 servaddr("0.0.0.0", 6666);
+		struct SocketAddress4 servaddr("192.168.159.142", 6666);
         bzero(&servaddr, sizeof(servaddr));
-		socklen_t addrlen;
-		addrlen =sizeof(servaddr);
 		REQUIRE((t->start(servaddr))== 0);
-
-		t->setInfo(
-            (SA *) &servaddr,addrlen,TestFun1, NULL);
 
         UdpEndpoint *pClient;
 		struct SocketAddress4 cliaddr("127.0.0.1", 6666);
@@ -69,27 +64,27 @@ TEST_CASE("net/UdpEndpoint")
         strcpy(sendbuf, "hello world\0");
 
         t->onSend(
-            sendbuf,strlen("hello world"),0,(struct sockaddr*)&cliaddr,sizeof(sockaddr),udpSendTest, NULL);
-        // REQUIRE(udpTestFlagSend== true);
+        sendbuf,strlen("hello world"),0,(struct sockaddr*)&servaddr,sizeof(servaddr),udpSendTest, NULL);
+        REQUIRE(udpTestFlagSend== true);
 
         char recvBuf[15];
-        ssize_t recvLen;
-        memset(recvBuf, 0, sizeof(recvBuf));
-        pClient->onRecv(
-            recvBuf, &recvLen, 0,(struct sockaddr*)&servaddr,addrlen,ClientudpRecvTest, NULL);
-
-        // REQUIRE(strcmp("hello world", recvBuf) == 0);
-        // REQUIRE(udpClientRecv == true);
+        // memset(recvBuf, 0, sizeof(recvBuf));
+        socklen_t struct_len;
+        struct_len = sizeof(cliaddr);
+        // size_t recvLen;
+        // recvLen=sizeof(recvBuf);
+        // t->onRecv(
+        //     recvBuf,recvLen, 0,(struct sockaddr*)&servaddr,struct_len,udpRecvTest, NULL);
+       
+        //  REQUIRE(udpFlagRecv == true);
 
         // 测试onRecv
         memset(recvBuf, 0, sizeof(recvBuf));
-        ssize_t len;
-        write(pCli->sfd, "hello world", strlen("hello world"));
+        size_t len=sizeof(recvBuf);
+        sendto(pCli->sfd, "hello world", strlen("hello world"),0,(struct sockaddr*)&servaddr,sizeof(servaddr));
 
         REQUIRE(
-           t->onRecv(recvBuf, &len,0,(struct sockaddr*)&cliaddr,sizeof(cliaddr),udpRecvTest, NULL) ==
+        t->onRecv(recvBuf,len,0,(struct sockaddr*)&cliaddr,struct_len,ClientudpRecvTest, NULL) ==
             S_OK);
-        // REQUIRE(len == strlen("hello world"));
-        // REQUIRE(udpFlagRecv == true);
 	}
 }

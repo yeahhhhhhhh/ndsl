@@ -72,15 +72,15 @@ int main()
     bzero(&rservaddr, sizeof(rservaddr));
     socklen_t addrlen;
 
-    TcpConnection *Conn = new TcpConnection(tAc);
-    Conn->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun2, NULL);
+    TcpConnection *Conn = new TcpConnection();
+    tAc->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun2, NULL);
 
     // 启动一个客户端
     struct SocketAddress4 clientservaddr("127.0.0.1", 8456);
     TcpConnection *serverconn;
     TcpClient *pCli = new TcpClient();
     serverconn = pCli->onConnect(&loop, true, &clientservaddr);
-    printf("success \n");
+
     // 添加中断
     loop.quit();
     loop.loop(&loop);
@@ -97,7 +97,6 @@ int main()
     int clientid = 10;
     int serverid = 12;
     Entity *client = new Entity(clientid, clientcallbak, clientmulti);
-    client->pri();
     Entity *server = new Entity(serverid, servercallbak, servermulti);
     server->pri();
     loop.quit();
@@ -114,10 +113,9 @@ int main()
     addmessage->set_agv2(b);
     addmessage->SerializeToString(&pstr);
     int mlen = pstr.size();
-    printf("the size of pstr is %d\n", mlen);
 
     client->multiplexer_->sendMessage(serverid, mlen, pstr.c_str());
-    printf("sendMessage!\n");
+
     loop.quit();
     loop.loop(&loop);
     loop.quit();

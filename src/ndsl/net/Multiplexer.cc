@@ -16,8 +16,8 @@
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/utils/Log.h"
-//#include "ndsl/utils/Endian.h"
-#include <endian.h>
+#include "ndsl/utils/Endian.h"
+//#include <endian.h>
 
 namespace ndsl {
 namespace net {
@@ -33,7 +33,7 @@ void Multiplexer::insert(void *pa)
     if (iter == pthis->cbMap_.end() || iter->first != p->id) {
         pthis->cbMap_.insert(std::make_pair(p->id, p->cb));
     }
-    printf("success insert id %d\n", p->id);
+
     if (p != NULL) // 释放para
     {
         delete p;
@@ -53,7 +53,6 @@ void Multiplexer::addInsertWork(int id, Callback cb)
     w1->doit = insert;
     w1->param = static_cast<void *>(p);
     conn_->pTcpChannel_->pLoop_->addWork(w1);
-    printf("add insert work!\n");
 }
 
 // 在map中删除<id,callback>对
@@ -116,7 +115,6 @@ void Multiplexer::sendMessage(int id, int length, const char *data)
  ********************/
 void Multiplexer::dispatch(void *p)
 {
-    printf("in the dispatch \n");
     Multiplexer *pthis = static_cast<Multiplexer *>(p);
 
     // 有不完整头部出现时，将其复制到msghead开始处，然后调用onrecv从残缺头部开始放
@@ -140,7 +138,6 @@ void Multiplexer::dispatch(void *p)
 
     if (pthis->left_ == 0) // 是新任务，处理读取消息头的逻辑
     {
-        printf("left_ == 0, rlen_ == %lu\n", pthis->rlen_);
         struct Message *message =
             reinterpret_cast<struct Message *>(pthis->location_);
         // pthis->id_ = ndsl::utils::Endian::nToH32(message->id);
