@@ -240,6 +240,12 @@ int TcpConnection::handleRead(void *pthis)
         pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
         (*pThis->RecvInfo_.len_) = n;
         return S_FALSE;
+    } else if (n == 0) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_TCPCONNECTION,
+            "TcpConnection::handleRead peer closed");
+        close(sockfd);
+        return S_OK;
     }
 
     (*pThis->RecvInfo_.len_) = n;
@@ -255,7 +261,9 @@ int TcpConnection::handleRead(void *pthis)
     return S_OK;
 }
 
+// TODO: 重做
 int TcpConnection::sendMsg(
+    int sockfd, // 要不要加?
     struct msghdr *msg,
     int flags,
     Callback cb,
