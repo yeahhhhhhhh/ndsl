@@ -79,7 +79,7 @@ int TcpConnection::onSend(
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onSend send error");
             // printf("errno = %d\n%s\n", errno, strerror(errno));
-            errorHandle_(errno, pTcpChannel_->getFd());
+            errorHandle_(errno, pTcpChannel_);
             // 释放掉buf占用的空间 TODO: 暂时注释
             // if (buf != NULL) free(buf);
             return S_FALSE;
@@ -150,7 +150,7 @@ int TcpConnection::handleWrite(void *pthis)
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "send error can not deal");
-            pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
+            pThis->errorHandle_(errno, pThis->pTcpChannel_);
 
             // 将事件从队列中移除
             pThis->qSendInfo_.pop();
@@ -193,7 +193,7 @@ int TcpConnection::onRecv(
                 LOG(LOG_ERROR_LEVEL,
                     LOG_SOURCE_TCPCONNECTION,
                     "recv error can not deal");
-                errorHandle_(errno, pTcpChannel_->getFd());
+                errorHandle_(errno, pTcpChannel_);
                 isOK = -1;
             }
         } else {
@@ -242,7 +242,7 @@ int TcpConnection::handleRead(void *pthis)
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::handleRead recv fail");
-            pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
+            pThis->errorHandle_(errno, pThis->pTcpChannel_);
             (*pThis->RecvInfo_.len_) = n;
             return S_FALSE;
         } else if (n == 0) {
@@ -289,7 +289,7 @@ int TcpConnection::sendMsg(
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TCPCONNECTION,
             "sendMsg error can not deal");
-        errorHandle_(errno, pTcpChannel_->getFd());
+        errorHandle_(errno, pTcpChannel_);
         return S_FALSE;
     }
 

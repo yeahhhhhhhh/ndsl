@@ -27,7 +27,7 @@ ssize_t len;
 TcpAcceptor *tAc;
 uint64_t mlog;
 
-static void mError(int a, int b)
+static void mError(int a, Channel *c)
 {
     LOG(LOG_ERROR_LEVEL, mlog, "there is a error");
 }
