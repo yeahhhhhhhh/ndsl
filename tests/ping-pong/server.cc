@@ -85,7 +85,6 @@ int main(int argc, char *argv[])
         bzero(&rservaddr, sizeof(rservaddr));
         socklen_t addrlen;
 
-        // FIXME: 这里只能建立一个连接
         Conn = new TcpConnection();
         Conn->onError(mError);
         tAc->onAccept(
