@@ -112,6 +112,7 @@ int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
     return S_OK;
 }
 
+// FIXME: 是否改为自动newTcpConnection
 int TcpAcceptor::handleRead(void *pthis)
 {
     // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "TcpAcceptor::handleRead\n");

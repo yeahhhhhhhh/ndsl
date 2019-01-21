@@ -163,7 +163,7 @@ class Client
     void onDisconnect()
     {
         if ((--numConnected_) == 0) {
-            LOG(LOG_INFO_LEVEL, mlog, "all disconnected");
+            // LOG(LOG_INFO_LEVEL, mlog, "all disconnected");
 
             int64_t totalBytesRead = 0;
             int64_t totalMessagesRead = 0;
@@ -194,12 +194,9 @@ class Client
   private:
     static void handleTimeout(void *pthis)
     {
-        LOG(LOG_INFO_LEVEL, mlog, "handleTimeout");
+        // LOG(LOG_INFO_LEVEL, mlog, "handleTimeout");
 
         Client *pThis = static_cast<Client *>(pthis);
-
-        // 计时器时间到
-        pThis->threadPool_->quit();
 
         // 关闭每个链接
         for (vector<Session *>::iterator it = pThis->sessions_.begin();
@@ -207,10 +204,13 @@ class Client
              ++it) {
             (*it)->stop();
         }
+
+        // 关闭线程池
+        // Tips:先断开链接，后关闭线程池
+        pThis->threadPool_->quit();
     }
 
     int blockSize_;
-    // ELThreadPool threadPool_;
     ELThreadpool *threadPool_;
     int sessionCount_;
     int timeout_;

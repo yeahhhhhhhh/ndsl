@@ -231,38 +231,38 @@ int TcpConnection::handleRead(void *pthis)
     if (NULL == pThis->RecvInfo_.readBuf_) {
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TCPCONNECTION,
-            "please set buf address first.\tvia transfer onRecv();");
-    }
+            "please set buf address first.");
+    } else {
+        if ((n = recv(
+                 sockfd,
+                 pThis->RecvInfo_.readBuf_,
+                 MAXLINE,
+                 pThis->RecvInfo_.flags_)) < 0) {
+            // 出错
+            LOG(LOG_ERROR_LEVEL,
+                LOG_SOURCE_TCPCONNECTION,
+                "TcpConnection::handleRead recv fail");
+            pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
+            (*pThis->RecvInfo_.len_) = n;
+            return S_FALSE;
+        } else if (n == 0) {
+            LOG(LOG_ERROR_LEVEL,
+                LOG_SOURCE_TCPCONNECTION,
+                "TcpConnection::handleRead peer closed");
+            close(sockfd);
+            return S_OK;
+        }
 
-    if ((n = recv(
-             sockfd,
-             pThis->RecvInfo_.readBuf_,
-             MAXLINE,
-             pThis->RecvInfo_.flags_)) < 0) {
-        // 出错
-        LOG(LOG_ERROR_LEVEL,
-            LOG_SOURCE_TCPCONNECTION,
-            "TcpConnection::handleRead recv fail");
-        pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
         (*pThis->RecvInfo_.len_) = n;
-        return S_FALSE;
-    } else if (n == 0) {
-        LOG(LOG_ERROR_LEVEL,
-            LOG_SOURCE_TCPCONNECTION,
-            "TcpConnection::handleRead peer closed");
-        close(sockfd);
-        return S_OK;
+
+        // LOG(LOG_INFO_LEVEL,
+        //     LOG_SOURCE_TCPCONNECTION,
+        //     "TcpConnection::handleRead recv complete");
+
+        // 完成数据读取之后通知mul
+        if (pThis->RecvInfo_.cb_ != NULL)
+            pThis->RecvInfo_.cb_(pThis->RecvInfo_.param_);
     }
-
-    (*pThis->RecvInfo_.len_) = n;
-
-    // LOG(LOG_INFO_LEVEL,
-    //     LOG_SOURCE_TCPCONNECTION,
-    //     "TcpConnection::handleRead recv complete");
-
-    // 完成数据读取之后通知mul
-    if (pThis->RecvInfo_.cb_ != NULL)
-        pThis->RecvInfo_.cb_(pThis->RecvInfo_.param_);
 
     return S_OK;
 }
