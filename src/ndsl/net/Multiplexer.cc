@@ -52,9 +52,12 @@ void Multiplexer::addInsertWork(int id, Callback cb)
     EventLoop::WorkItem *w1 = new EventLoop::WorkItem; // 在eventloop中释放
     w1->doit = insert;
     w1->param = static_cast<void *>(p);
-    printf("hhhhhhhhhhhhere\n");
-    conn_->pTcpChannel_->pLoop_->addWork(w1);
-    printf("success addwork\n");
+    if (conn_->pTcpChannel_ == NULL)
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_MULTIPLEXER,
+            "MULTIPLEXER::ADDINSERTWORK tcpchannel==NULL,cant find loop\n");
+    else
+        conn_->pTcpChannel_->pLoop_->addWork(w1);
 }
 
 // 在map中删除<id,callback>对
@@ -148,7 +151,7 @@ void Multiplexer::dispatch(void *p)
         pthis->len_ = be32toh(message->len);
 
         Multiplexer::CallbackMap::iterator iter =
-            pthis->cbMap_.find(pthis->id_);
+            pthis->cbMap_.find(pthis->id_); // 检查id是否在map中
         if (iter == pthis->cbMap_.end()) {
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_MULTIPLEXER,

@@ -19,10 +19,20 @@ using namespace Protbload;
 
 void clientcallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
-    printf("********client callback********\n");
     Protbload::RESULT *resultmessage = new Protbload::RESULT;
     resultmessage->ParseFromString(data);
     printf("result==%d \n", resultmessage->answer());
+    int a, b;
+    printf("\ninput the agv1 and agv2 of ADD equation: \n");
+    scanf("%d %d", &a, &b);
+    std::string pstr;
+    Protbload::ADD *addmessage = new Protbload::ADD;
+    addmessage->set_agv1(a);
+    addmessage->set_agv2(b);
+    addmessage->SerializeToString(&pstr);
+    int mlen = pstr.size();
+
+    Multiplexer->sendMessage(1, mlen, pstr.c_str());
 }
 
 int main()
