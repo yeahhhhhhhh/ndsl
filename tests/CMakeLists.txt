@@ -19,30 +19,30 @@ set(TEST
     test.cc 
 
     # All files
-    net/EpollTest.cc
-    net/EventLoopTest.cc
+    # net/EpollTest.cc
+    # net/EventLoopTest.cc
     #net/MultiplexerTest.cc
 
-    net/PipeAndFifoTest.cc
-    net/SignalfdTest.cc
+    # net/PipeAndFifoTest.cc
+    # net/SignalfdTest.cc
     net/TcpAcceptorTest.cc
     net/TcpConnectionTest.cc
 
-    net/TimeWheelTest.cc
-    net/UdpEndpointTest.cc
-    net/UnixAndTcpSocketAddressTest.cc
+    # net/TimeWheelTest.cc
+    # net/UdpEndpointTest.cc
+    # net/UnixAndTcpSocketAddressTest.cc
     # net/UnixConnectionTest.cc
     #net/ELThreadpoolTest.cc
-    net/SockoptTest.cc
-    net/EventfdTest.cc
+    # net/SockoptTest.cc
+    # net/EventfdTest.cc
 
-    utils/EndianTest.cc
-    utils/ErrorTest.cc
-    utils/GuidTest.cc
-    utils/LogTest.cc
-    utils/PluginTest.cc
-    utils/SemaphoreTest.cc
-    utils/TimeStampTest.cc
+    # utils/EndianTest.cc
+    # utils/ErrorTest.cc
+    # utils/GuidTest.cc
+    # utils/LogTest.cc
+    # utils/PluginTest.cc
+    # utils/SemaphoreTest.cc
+    # utils/TimeStampTest.cc
     # utils/XmlTest.cc
 )
 
@@ -61,7 +61,7 @@ add_executable(server ${pingserver})
 add_dependencies(server ndsl)
 target_link_libraries(server ndsl)
 
-# 生成pingpong测试 客户端s
+# 生成pingpong测试 客户端
 add_executable(client ${pingclient})
 add_dependencies(client ndsl)
-target_link_libraries(client ndsl boost_system pthread)
+target_link_libraries(client ndsl pthread)

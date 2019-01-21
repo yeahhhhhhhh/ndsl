@@ -251,10 +251,10 @@ int main(int argc, char *argv[])
             "Usage: client <address> <port> <threads> <blocksize> <sessions> "
             "<time>");
     } else {
-        uint64_t mlog = add_source();
-        set_ndsl_log_sinks(
-            mlog | LOG_SOURCE_TCPCONNECTION | LOG_SOURCE_EVENTLOOP,
-            LOG_OUTPUT_TER);
+        // uint64_t mlog = add_source();
+        // set_ndsl_log_sinks(
+        //     mlog | LOG_SOURCE_TCPCONNECTION | LOG_SOURCE_EVENTLOOP,
+        //     LOG_OUTPUT_TER);
 
         struct SocketAddress4 *servaddr = new struct SocketAddress4(
             argv[1], static_cast<unsigned short>(atoi(argv[2])));

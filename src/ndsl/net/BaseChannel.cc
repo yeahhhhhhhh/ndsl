@@ -36,13 +36,13 @@ int BaseChannel::handleEvent()
     // necessary to set it in events.
 
     if ((revents_ & EPOLLIN) && (revents_ & EPOLLHUP)) {
-        printf("BaseChannel::handleEvent receive EPOLLHUP\n");
+        // printf("BaseChannel::handleEvent receive EPOLLHUP\n");
         close(fd_);
     } else if ((revents_ & EPOLLIN) && (revents_ & EPOLLRDHUP)) {
-        printf("BaseChannel::handleEvent receive EPOLLRDHUP\n");
+        // printf("BaseChannel::handleEvent receive EPOLLRDHUP\n");
         close(fd_);
     } else if ((revents_ & EPOLLIN) && (revents_ & EPOLLERR)) {
-        printf("BaseChannel::handleEvent receive EPOLLERR\n");
+        // printf("BaseChannel::handleEvent receive EPOLLERR\n");
         close(fd_);
     } else if (revents_ & EPOLLIN) {
         // printf("BaseChannel::handleEvent EPOLLIN\n");
