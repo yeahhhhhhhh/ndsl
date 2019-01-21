@@ -20,7 +20,7 @@ set(TEST
     # All files
     net/EpollTest.cc
     net/EventLoopTest.cc
-    #net/MultiplexerTest.cc
+    net/MultiplexerTest.cc
 
     net/PipeAndFifoTest.cc
     net/SignalfdTest.cc
@@ -30,8 +30,8 @@ set(TEST
     net/TimeWheelTest.cc
     net/UdpEndpointTest.cc
     net/UnixAndTcpSocketAddressTest.cc
-    # net/UnixConnectionTest.cc
-    #net/ELThreadpoolTest.cc
+    net/UnixConnectionTest.cc
+    net/ELThreadpoolTest.cc
     net/SockoptTest.cc
     net/EventfdTest.cc
 
