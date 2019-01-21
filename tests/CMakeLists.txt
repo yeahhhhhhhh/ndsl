@@ -8,6 +8,7 @@
 #
 include_directories(${CMAKE_SOURCE_DIR}/include)
 #add_subdirectory(entitytest)
+# add_subdirectory(easytest)
 
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -42,7 +43,7 @@ set(TEST
     utils/PluginTest.cc
     utils/SemaphoreTest.cc
     utils/TimeStampTest.cc
-    # utils/XmlTest.cc
+    utils/XmlTest.cc
 )
 
 # 设置ping-pong单元测试的文件
@@ -60,7 +61,7 @@ add_executable(server ${pingserver})
 add_dependencies(server ndsl)
 target_link_libraries(server ndsl)
 
-# 生成pingpong测试 客户端s
+# 生成pingpong测试 客户端
 add_executable(client ${pingclient})
 add_dependencies(client ndsl)
-target_link_libraries(client ndsl boost_system pthread)
+target_link_libraries(client ndsl pthread)

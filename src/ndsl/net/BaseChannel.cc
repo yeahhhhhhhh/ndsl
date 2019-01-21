@@ -24,7 +24,7 @@ int BaseChannel::getFd() { return fd_; }
 
 int BaseChannel::handleEvent()
 {
-    // EPOLLHUP EPOLLRDHUP
+    // EPOLLHUP EPOLLRDHUP 好像老版本的Linux内核才会有EPOLLHUP这个提示
     // Stream socket peer closed connection, or shut down writing half of
     // connection.  (This flag is especially useful for writing simple code  to
     // detect peer shutdown when using Edge Triggered monitoring.)
@@ -35,21 +35,16 @@ int BaseChannel::handleEvent()
     // epoll_wait(2)  will always wait for this event; it is not
     // necessary to set it in events.
 
-    // TODO: 关闭掉fd之后要不要做相应的Channel和Connection的释放 ？
     if ((revents_ & EPOLLIN) && (revents_ & EPOLLHUP)) {
-        printf("BaseChannel::handleEvent receive EPOLLHUP\n");
+        // printf("BaseChannel::handleEvent receive EPOLLHUP\n");
         close(fd_);
     } else if ((revents_ & EPOLLIN) && (revents_ & EPOLLRDHUP)) {
-        printf("BaseChannel::handleEvent receive EPOLLRDHUP\n");
+        // printf("BaseChannel::handleEvent receive EPOLLRDHUP\n");
         close(fd_);
-    }
-
-    else if ((revents_ & EPOLLIN) && (revents_ & EPOLLERR)) {
-        printf("BaseChannel::handleEvent receive EPOLLERR\n");
+    } else if ((revents_ & EPOLLIN) && (revents_ & EPOLLERR)) {
+        // printf("BaseChannel::handleEvent receive EPOLLERR\n");
         close(fd_);
-    }
-
-    else if (revents_ & EPOLLIN) {
+    } else if (revents_ & EPOLLIN) {
         // printf("BaseChannel::handleEvent EPOLLIN\n");
         if (handleRead_) handleRead_(pThis_);
     }
@@ -80,6 +75,11 @@ int BaseChannel::enroll(bool isET)
     // 同时注册输入输出
     events_ |= EPOLLIN;
     events_ |= EPOLLOUT;
+
+    // 注册出错
+    // events_ |= EPOLLHUP; // 不需要注册,系统自动注册
+    events_ |= EPOLLRDHUP;
+    events_ |= EPOLLERR;
 
     return pLoop_->enroll(this);
 }

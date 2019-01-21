@@ -163,7 +163,7 @@ class Client
     void onDisconnect()
     {
         if ((--numConnected_) == 0) {
-            LOG(LOG_INFO_LEVEL, mlog, "all disconnected");
+            // LOG(LOG_INFO_LEVEL, mlog, "all disconnected");
 
             int64_t totalBytesRead = 0;
             int64_t totalMessagesRead = 0;
@@ -194,11 +194,13 @@ class Client
   private:
     static void handleTimeout(void *pthis)
     {
-        LOG(LOG_INFO_LEVEL, mlog, "handleTimeout");
+        // LOG(LOG_INFO_LEVEL, mlog, "handleTimeout");
 
         Client *pThis = static_cast<Client *>(pthis);
 
-        // 计时器时间到
+        // FIXME: 顺序更改之后 单线程多连接会报段错误
+        // 关闭线程池
+        // Tips:先断开链接，后关闭线程池
         pThis->threadPool_->quit();
 
         // 关闭每个链接
@@ -210,7 +212,6 @@ class Client
     }
 
     int blockSize_;
-    // ELThreadPool threadPool_;
     ELThreadpool *threadPool_;
     int sessionCount_;
     int timeout_;
@@ -251,10 +252,10 @@ int main(int argc, char *argv[])
             "Usage: client <address> <port> <threads> <blocksize> <sessions> "
             "<time>");
     } else {
-        uint64_t mlog = add_source();
-        set_ndsl_log_sinks(
-            mlog | LOG_SOURCE_TCPCONNECTION | LOG_SOURCE_EVENTLOOP,
-            LOG_OUTPUT_TER);
+        // uint64_t mlog = add_source();
+        // set_ndsl_log_sinks(
+        //     mlog | LOG_SOURCE_TCPCONNECTION | LOG_SOURCE_EVENTLOOP,
+        //     LOG_OUTPUT_TER);
 
         struct SocketAddress4 *servaddr = new struct SocketAddress4(
             argv[1], static_cast<unsigned short>(atoi(argv[2])));

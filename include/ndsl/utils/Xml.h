@@ -1,58 +1,73 @@
 ////
 // @file Xml.h
 // @brief
-// 解析xml文件,主要用于配置文件的读取
+// xml的解析库的封装，主要用于读取配置文件
 //
-// @author zhujicheng
-// @email 2364464666@qq.com
+// @author zjc
+// @email zjc@email.com
 //
-
 #ifndef __NDSL_UTILS_XML_H__
 #define __NDSL_UTILS_XML_H__
-
+#include <libxml2/libxml/parser.h>
+#include <libxml2/libxml/tree.h>
+#include <libxml2/libxml/xpath.h>
+#include <libxml2/libxml/xmlreader.h>
 #include <string>
-#include <iostream>
-#include "ndsl/third/pugixml.hpp"
-#include "Error.h"
-
-using namespace pugi;
+#include <vector>
 
 namespace ndsl {
+
 namespace utils {
-class XML
+
+class Xml
 {
   public:
-    XML();
+    Xml();
+    ~Xml();
+    // 从内存中导入xml数据
+    xmlNode *loadmemory(const char *xbuf, unsigned int size);
+    //
+    xmlNode *createxmlbuffer(const char *rootname);
+    // 查找第一个满足xpath条件的节点
+    int getfirstnode(const char *xpath, xmlNode *&node);
+    // 查询满足条件的所有的节点
+    int getnodeset(const char *xpath, std::vector<xmlNode *> &nodes);
 
-    ~XML();
+    //  获取子节点
+    int
+    getchildren(const xmlNode *curnode, std::vector<xmlNode *> &children) const;
+    // 从当前节点中获取某个子节点
+    // int getspecialchild(const xmlNode *curnode, const char *nodename) const;
+    // 从当前节点获取子节点集
+    int getspecialchildren(
+        const xmlNode *curnode,
+        const char *nodename,
+        std::vector<xmlNode *> &nodes) const;
 
-    //从流中导入文件
-    int loadstream(std::istream &stream);
-    //保存到流中
-    int savestream(std::ostream &stream);
+    // 获取节点属性
+    int
+    getproperty(const xmlNode *node, const char *property, std::string &value);
+    // 设置节点属性
+    int setproperty(xmlNode *node, const char *property, const char *value);
+    // 删除属性
+    int delproperty(xmlNode *node, const char *property);
+    //增加子节点
+    xmlNode *
+    addsimplechild(xmlNode *parent, const char *nodename, const char *value);
+    xmlNode *addchild(xmlNode *parent, xmlNode *cur);
 
-    //获取满足xpath条件的第一个节点
-    int getfirstnode(const char *xpath, xml_node &node);
-    //获取xpath查询条件的所有节点
-    int getnodesets(const char *xpath, xpath_node_set &sets);
-    //获取，设置，删除节点属性信息
-    int getproperty(xml_node node, const char *property, std::string &value);
+    int getfirstnodevalue(const char *xpath, std::string &value);
 
-    int delproperty(xml_node &node, const char *property);
-
-    int setnodetextandattr(
-        xml_node &node,
-        const char *text,
-        const char *attr,
-        const char *value);
-    int delchildnode(xml_node &node, const char *child);
-    int addchildnode(xml_node &parentnode, const char *nodename);
-    // int addnode(xml_node);
+    xmlNode *getrootnode();
 
   private:
-    xml_document m_doc;
-    xml_node m_node;
-};
+    xmlDocPtr m_pdoc;          // doc
+    xmlNodePtr m_proot;        // 根节点
+    xmlBufferPtr m_pbuf;       // buffer
+    xmlTextReaderPtr m_reader; //
+    std::vector<xmlchar *> m_attrs;
+}；
 } // namespace utils
 } // namespace ndsl
-#endif // __NDSL_UTILS_XML_H__
+
+#endif //__NDSL_UTILS_XML_H__
