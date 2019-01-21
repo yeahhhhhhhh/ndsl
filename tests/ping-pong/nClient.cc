@@ -198,16 +198,17 @@ class Client
 
         Client *pThis = static_cast<Client *>(pthis);
 
+        // FIXME: 顺序更改之后 单线程多连接会报段错误
+        // 关闭线程池
+        // Tips:先断开链接，后关闭线程池
+        pThis->threadPool_->quit();
+
         // 关闭每个链接
         for (vector<Session *>::iterator it = pThis->sessions_.begin();
              it != pThis->sessions_.end();
              ++it) {
             (*it)->stop();
         }
-
-        // 关闭线程池
-        // Tips:先断开链接，后关闭线程池
-        pThis->threadPool_->quit();
     }
 
     int blockSize_;
