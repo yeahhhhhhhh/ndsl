@@ -30,7 +30,6 @@ using namespace Protbload;
 
 void servercallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
-    printf("********server callback********\n");
     Protbload::ADD *addmessage = new Protbload::ADD;
     addmessage->ParseFromString(data);
     printf("agv1:%d   agv2:%d \n", addmessage->agv1(), addmessage->agv2());
@@ -45,7 +44,6 @@ void servercallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 
 void clientcallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
-    printf("********client callback********\n");
     Protbload::RESULT *resultmessage = new Protbload::RESULT;
     resultmessage->ParseFromString(data);
     printf("result==%d \n", resultmessage->answer());

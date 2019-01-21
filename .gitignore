@@ -4,6 +4,7 @@ build/*
 bin/
 tests/tmpMain.cc
 include/ndsl/utils/temp_define.h
+examples/Proxyserver_zzt/doc/
 
 *.log
 *.fls
