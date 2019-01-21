@@ -179,9 +179,7 @@ int TcpConnection::onRecv(
     // 答案1：是flag参数的问题
     ssize_t n;
     int isOK = 0;
-
     int sockfd = pTcpChannel_->getFd();
-
     if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             // LOG(LOG_INFO_LEVEL,
