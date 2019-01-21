@@ -71,7 +71,12 @@ class TcpConnection
     int onSend(void *buf, ssize_t len, int flags, Callback cb, void *param);
 
     // 进程之前相互通信
-    int sendMsg(struct msghdr *msg, int flags, Callback cb, void *param);
+    int sendMsg(
+        int sockfd, // 要不要加?
+        struct msghdr *msg,
+        int flags,
+        Callback cb,
+        void *param);
 };
 
 } // namespace net
