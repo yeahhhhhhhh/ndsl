@@ -75,6 +75,7 @@ class Multiplexer
                 LOG_SOURCE_MULTIPLEXER,
                 "MULTIPLEXER::MULTIPLEXER conn_ == NULL\n");
         conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
+        conn_->onError(handleErro);
     }
 
     Multiplexer() {}
@@ -97,6 +98,10 @@ class Multiplexer
 
     // 分发消息给通信实体
     static void dispatch(void *p);
+    static void handleErro(int, int)
+    {
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_MULTIPLEXER, "ERROR!!!\n");
+    }
 };
 
 // 自定义addwork传入的参数结构体

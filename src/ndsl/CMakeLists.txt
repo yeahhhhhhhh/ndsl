@@ -50,7 +50,7 @@ set(LIB_NDSL_SRC
   utils/Guid.cc
   utils/Log.cc
   utils/Semaphore.cc
-  utils/Xml.cc
+  # utils/Xml.cc
  )
 
 add_library(ndsl ${LIB_NDSL_SRC})

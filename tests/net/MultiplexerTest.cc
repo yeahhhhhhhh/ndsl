@@ -32,13 +32,9 @@ int id = 11;
 static void
 entitycallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
-    printf("********entity callback********\n");
-    char *p = data;
-    for (int i = 0; i < len; i++) {
-        printf("%c", *p);
-        p++;
-    }
-    printf("\n");
+    char buff[10];
+    memcpy(buff, data, 10);
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "%s\n", buff);
 }
 
 bool flag3 = false;
