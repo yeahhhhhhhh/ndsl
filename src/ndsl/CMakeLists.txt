@@ -17,13 +17,13 @@ set(LIB_NDSL_SRC
   #all files
   net/BaseChannel.cc
   net/EventLoop.cc
-  # net/SignalHandler.cc
+  net/SignalHandler.cc
   net/TcpAcceptor.cc
 
   net/TcpConnection.cc
-  # net/UdpClient.cc
-  # net/UnixChannel.cc
-  # net/Multiplexer.cc
+  net/UdpClient.cc
+  net/UnixChannel.cc
+  net/Multiplexer.cc
   net/SocketAddress.cc
 
   net/TcpChannel.cc
@@ -37,7 +37,7 @@ set(LIB_NDSL_SRC
   net/SocketAddressUn.cc
   net/TcpClient.cc
   net/UdpChannel.cc
-  # net/UnixAcceptor.cc
+  net/UnixAcceptor.cc
   net/ELThreadpool.cc
   net/SocketOpt.cc
   net/EventfdConnection.cc
@@ -47,14 +47,14 @@ set(LIB_NDSL_SRC
   utils/Plugin.cc
   utils/TimeStamp.cc
   utils/Error.cc
-  # utils/Guid.cc
+  utils/Guid.cc
   utils/Log.cc
   utils/Semaphore.cc
   utils/Xml.cc
  )
 
 add_library(ndsl ${LIB_NDSL_SRC})
-target_link_libraries(ndsl)# uuid)
+target_link_libraries(ndsl uuid)
 
 #生成libplugin.so
  #set(LIB_SRC utils/Plugin.cc)

@@ -8,7 +8,7 @@
 #
 include_directories(${CMAKE_SOURCE_DIR}/include)
 #add_subdirectory(entitytest)
-add_subdirectory(easytest)
+# add_subdirectory(easytest)
 
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -19,31 +19,31 @@ set(TEST
     test.cc 
 
     # All files
-    # net/EpollTest.cc
-    # net/EventLoopTest.cc
-    #net/MultiplexerTest.cc
+    net/EpollTest.cc
+    net/EventLoopTest.cc
+    net/MultiplexerTest.cc
 
-    # net/PipeAndFifoTest.cc
-    # net/SignalfdTest.cc
+    net/PipeAndFifoTest.cc
+    net/SignalfdTest.cc
     net/TcpAcceptorTest.cc
     net/TcpConnectionTest.cc
 
-    # net/TimeWheelTest.cc
-    # net/UdpEndpointTest.cc
-    # net/UnixAndTcpSocketAddressTest.cc
-    # net/UnixConnectionTest.cc
-    #net/ELThreadpoolTest.cc
-    # net/SockoptTest.cc
-    # net/EventfdTest.cc
+    net/TimeWheelTest.cc
+    net/UdpEndpointTest.cc
+    net/UnixAndTcpSocketAddressTest.cc
+    net/UnixConnectionTest.cc
+    net/ELThreadpoolTest.cc
+    net/SockoptTest.cc
+    net/EventfdTest.cc
 
-    # utils/EndianTest.cc
-    # utils/ErrorTest.cc
-    # utils/GuidTest.cc
-    # utils/LogTest.cc
-    # utils/PluginTest.cc
-    # utils/SemaphoreTest.cc
-    # utils/TimeStampTest.cc
-    # utils/XmlTest.cc
+    utils/EndianTest.cc
+    utils/ErrorTest.cc
+    utils/GuidTest.cc
+    utils/LogTest.cc
+    utils/PluginTest.cc
+    utils/SemaphoreTest.cc
+    utils/TimeStampTest.cc
+    utils/XmlTest.cc
 )
 
 # 设置ping-pong单元测试的文件
