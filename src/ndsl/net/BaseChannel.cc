@@ -49,6 +49,19 @@ int BaseChannel::handleEvent()
         close(fd_);
     }
 
+    // FIXME: temp define , delete in the after
+    else if (revents_ & EPOLLHUP) {
+        printf("BaseChannel::handleEvent only receive EPOLLHUP\n");
+        if (handleRead_) handleRead_(pThis_);
+    } else if (revents_ & EPOLLRDHUP) {
+        printf("BaseChannel::handleEvent only receive EPOLLRDHUP\n");
+        if (handleRead_) handleRead_(pThis_);
+    } else if (revents_ & EPOLLERR) {
+        printf("BaseChannel::handleEvent only receive EPOLLERR\n");
+        if (handleRead_) handleRead_(pThis_);
+    }
+    // FIXME: temp define , delete in the after end
+
     else if (revents_ & EPOLLIN) {
         // printf("BaseChannel::handleEvent EPOLLIN\n");
         if (handleRead_) handleRead_(pThis_);
@@ -80,6 +93,11 @@ int BaseChannel::enroll(bool isET)
     // 同时注册输入输出
     events_ |= EPOLLIN;
     events_ |= EPOLLOUT;
+
+    // 注册出错
+    events_ |= EPOLLHUP; // 可能不需要注册
+    // events_ |= EPOLLRDHUP;
+    // events_ |= EPOLLERR;
 
     return pLoop_->enroll(this);
 }

@@ -7,7 +7,7 @@
 // @email ranxianshen@gmail.com
 //
 #ifndef __NDSL_NET_UNIXCONNECTION_H__
-#define __NDSL_NETUNIXCONNECTION_H__
+#define __NDSL_NET_UNIXCONNECTION_H__
 #include <queue>
 #include <sys/socket.h>
 #include "ndsl/config.h"

@@ -179,28 +179,32 @@ int TcpConnection::onRecv(
     // 答案1：是flag参数的问题
     ssize_t n;
     int isOK = 0;
-    int sockfd = pTcpChannel_->getFd();
-    if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+
+    if (NULL != pTcpChannel_) {
+        int sockfd = pTcpChannel_->getFd();
+
+        if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                // LOG(LOG_INFO_LEVEL,
+                //     LOG_SOURCE_TCPCONNECTION,
+                //     "EAGAIN\n");
+            } else {
+                // 出错 回调用户
+                LOG(LOG_ERROR_LEVEL,
+                    LOG_SOURCE_TCPCONNECTION,
+                    "recv error can not deal");
+                errorHandle_(errno, pTcpChannel_->getFd());
+                isOK = -1;
+            }
+        } else {
             // LOG(LOG_INFO_LEVEL,
             //     LOG_SOURCE_TCPCONNECTION,
-            //     "EAGAIN\n");
-        } else {
-            // 出错 回调用户
-            LOG(LOG_ERROR_LEVEL,
-                LOG_SOURCE_TCPCONNECTION,
-                "recv error can not deal");
-            errorHandle_(errno, pTcpChannel_->getFd());
-            isOK = -1;
-        }
-    } else {
-        // LOG(LOG_INFO_LEVEL,
-        //     LOG_SOURCE_TCPCONNECTION,
-        //     "recv complete\n");
+            //     "recv complete\n");
 
-        (*len) = n;
-        // 一次性读完之后通知用户
-        if (cb != NULL) cb(param);
+            (*len) = n;
+            // 一次性读完之后通知用户
+            if (cb != NULL) cb(param);
+        }
     }
 
     // 因为一直epollIn语义 所以无论怎样都得保存用户信息
@@ -227,7 +231,7 @@ int TcpConnection::handleRead(void *pthis)
     if (NULL == pThis->RecvInfo_.readBuf_) {
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TCPCONNECTION,
-            "please set buf address first.\nvia transfer onRecv();");
+            "please set buf address first.\tvia transfer onRecv();");
     }
 
     if ((n = recv(
@@ -242,6 +246,12 @@ int TcpConnection::handleRead(void *pthis)
         pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
         (*pThis->RecvInfo_.len_) = n;
         return S_FALSE;
+    } else if (n == 0) {
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_TCPCONNECTION,
+            "TcpConnection::handleRead peer closed");
+        close(sockfd);
+        return S_OK;
     }
 
     (*pThis->RecvInfo_.len_) = n;
@@ -257,17 +267,19 @@ int TcpConnection::handleRead(void *pthis)
     return S_OK;
 }
 
+// TODO: 重做
 int TcpConnection::sendMsg(
+    int sockfd, // 要不要加?
     struct msghdr *msg,
     int flags,
     Callback cb,
     void *param)
 {
-    int sockfd = pTcpChannel_->getFd();
+    int tsockfd = pTcpChannel_->getFd();
     ssize_t len = sizeof(struct msghdr);
 
     // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
-    ssize_t n = send(sockfd, msg, len, flags | MSG_NOSIGNAL);
+    ssize_t n = send(tsockfd, msg, len, flags | MSG_NOSIGNAL);
     if (n == len) {
         // 写完 通知用户
         if (cb != NULL) cb(param);

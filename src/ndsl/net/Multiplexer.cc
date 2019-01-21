@@ -52,7 +52,9 @@ void Multiplexer::addInsertWork(int id, Callback cb)
     EventLoop::WorkItem *w1 = new EventLoop::WorkItem; // 在eventloop中释放
     w1->doit = insert;
     w1->param = static_cast<void *>(p);
+    printf("hhhhhhhhhhhhere\n");
     conn_->pTcpChannel_->pLoop_->addWork(w1);
+    printf("success addwork\n");
 }
 
 // 在map中删除<id,callback>对

@@ -17,7 +17,6 @@ set(LIB_NDSL_SRC
   #all files
   net/BaseChannel.cc
   net/EventLoop.cc
-  net/PipeChannel.cc
   net/SignalHandler.cc
   net/TcpAcceptor.cc
 
@@ -40,15 +39,17 @@ set(LIB_NDSL_SRC
   net/UdpChannel.cc
   net/UnixAcceptor.cc
   net/ELThreadpool.cc
+  net/SocketOpt.cc
+  net/EventfdConnection.cc
+  net/EventfdChannel.cc
 
   utils/Endian.cc
   utils/Plugin.cc
-  utils/Semaphore.cc
-
   utils/TimeStamp.cc
   utils/Error.cc
   utils/Guid.cc
   utils/Log.cc
+  utils/Semaphore.cc
   utils/Xml.cc
  )
 
