@@ -98,7 +98,7 @@ class Multiplexer
 
     // 分发消息给通信实体
     static void dispatch(void *p);
-    static void handleErro(int, int)
+    static void handleErro(int, Channel *)
     {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_MULTIPLEXER, "ERROR!!!\n");
     }
