@@ -18,12 +18,14 @@ namespace net {
 class TcpChannel;
 class EventLoop;
 class TcpAcceptor;
+class Channel;
 
 class TcpConnection
 {
   public:
-    using Callback = void (*)(void *);      // Callback 函数指针原型
-    using ErrorHandle = void (*)(int, int); // error回调函数
+    using Callback = void (*)(void *); // Callback 函数指针原型
+    using ErrorHandle =
+        void (*)(int, Channel *); // error回调函数 int errno, Channel*
 
   private:
     // 用户主动调用onRecv/onSend函数的参数存在这
