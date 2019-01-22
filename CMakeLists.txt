@@ -54,7 +54,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${PROJECT_BINARY_DIR}/bin")
 
 # 设置编译参数
 set(CMAKE_C_FLAGS                     "-Wall -Werror -Wno-attributes")
-set(CMAKE_C_FLAGS_DEBUG               "-g -DDEBUG")
+set(CMAKE_C_FLAGS_DEBUG               "-g -DDEBUG") #-fstack-protector-all
 set(CMAKE_C_FLAGS_RELEASE             "-O3")
 set(CMAKE_C_FLAGS_MINSIZEREL          "-Os")
 set(CMAKE_C_RELWITHDEBINFO_RELEASE    "-O2")
