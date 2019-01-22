@@ -8,8 +8,8 @@
 //
 #include "ndsl/utils/Xml.h"
 #include "ndsl/utils/Error.h"
-#include "ndsl/utils/LOG.h"
-
+#include "ndsl/utils/Log.h"
+#include <libxml/xpathInternals.h>
 using namespace std;
 
 namespace ndsl {
@@ -24,10 +24,7 @@ Xml::~Xml()
 {
     if (m_pdoc != NULL) { xmlFreeDoc(m_pdoc); }
     if (m_pbuf != NULL) { xmlBufferFree(m_pbuf); }
-    vector<xmlChar *>::iterator vit;
-    for (vit = m_attrs.begin(); vit != m_attrs.end(); ++vit) {
-        xmlFree(*vit);
-    }
+  
 }
 
 xmlNode *Xml::loadmemory(const char *buf, unsigned int size)
@@ -62,6 +59,7 @@ xmlNode *Xml::createxmlbuffer(const char *rootname)
 }
 int Xml::getfirstnode(const char *xpath, xmlNode *&node)
 {
+   // LOG(LOG_INFO_LEVEL, LOG_SOURCE_XML, "madesdfhaoishdfoihasoidfhio");
     xmlXPathContextPtr context = xmlXPathNewContext(m_pdoc);
     if (NULL == context) {
         LOG(LOG_INFO_LEVEL, LOG_SOURCE_XML, "content is NULL");
@@ -86,6 +84,7 @@ int Xml::getfirstnode(const char *xpath, xmlNode *&node)
     }
     xmlXPathFreeObject(result); // new add
     return S_OK;
+    
 }
 
 int Xml::getnodeset(const char *xpath, std::vector<xmlNode *> &nodes)
@@ -135,15 +134,15 @@ int Xml::getspecialchildren(
     const char *nodename,
     std::vector<xmlNode *> &nodes) const
 {
-    vector<XMLNode *> children;
-    if (getChildren(curnode, children) != S_OK) {
+    vector<xmlNode *> children;
+    if (getchildren(curnode, children) != S_OK) {
         LOG(LOG_INFO_LEVEL, LOG_SOURCE_XML, "getChildren error");
         return S_FALSE;
     }
 
-    vector<XMLNode *>::iterator vit;
+    vector<xmlNode *>::iterator vit;
     for (vit = children.begin(); vit != children.end(); ++vit) {
-        if (!xmlStrcmp((*vit)->name, BAD_CAST nodeName)) {
+        if (!xmlStrcmp((*vit)->name, BAD_CAST nodename)) {
             /*  lint -e(534) */
             nodes.push_back(*vit); // no return value
         }
@@ -152,10 +151,8 @@ int Xml::getspecialchildren(
     return S_OK;
 }
 
-int Xml::getproperty(
-    const xmlNode *node,
-    const char *property,
-    std::string &value)
+int Xml::getproperty(xmlNode *node, const char *property, std::string &value)
+    const
 {
     xmlChar *attr = NULL;
     if (xmlHasProp(node, BAD_CAST property)) {
@@ -171,7 +168,7 @@ int Xml::getproperty(
     // need to xmlFree()
 }
 
-int Xml::setproperty((xmlNode *node, const char *property, const char *value)
+int Xml::setproperty(xmlNode *node, const char *property, const char *value)
 {
     if (xmlHasProp(node, BAD_CAST property)) {
         if (NULL == xmlSetProp(node, BAD_CAST property, BAD_CAST value)) {
@@ -183,7 +180,7 @@ int Xml::setproperty((xmlNode *node, const char *property, const char *value)
         }
     }
 
-    return S_OK;  
+    return S_OK;
 }
 
 int Xml::delproperty(xmlNode *node, const char *property)
@@ -197,13 +194,13 @@ int Xml::delproperty(xmlNode *node, const char *property)
     }
 }
 
-xmlNode* Xml::addsimplechild(xmlNode *parent, const char *nodename, const char *value)
+xmlNode *
+Xml::addsimplechild(xmlNode *parent, const char *nodename, const char *value)
 {
     return xmlNewTextChild(parent, NULL, BAD_CAST nodename, BAD_CAST value);
 }
 
-
-xmlNode* Xml::addchild(xmlNode *parent, xmlNode *cur)
+xmlNode *Xml::addchild(xmlNode *parent, xmlNode *cur)
 {
     xmlNodePtr node = xmlCopyNode(
         cur,
@@ -217,26 +214,57 @@ xmlNode* Xml::addchild(xmlNode *parent, xmlNode *cur)
     }
 }
 
- int Xml::getfirstnodevalue(const char *xpath, std::string &value)
- {
-    XMLNode *node = NULL;
-    if (getFirstNode(xpath, node) < 0) {
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_XML, "getFirstNode error");
-        return S_FALSE;
-    }
-    if (node != NULL) {
-        return getValue(node, value);
+
+int Xml::getvalue(xmlNode *node, std::string &value)
+{
+    xmlChar *pValue = xmlNodeGetContent(node);
+    if (pValue != NULL) {
+        value = (const char *) pValue;
+        xmlFree(pValue);
+        return S_OK;
     } else {
         return S_FALSE;
-    }  
- }
+    }
+} 
 
 
- xmlNode* Xml::getrootnode()
- {
-    return m_proot;
- }
+void Xml::savefile()
+{
+    xmlSaveFile("test.xml",m_pdoc);
+}
+
+
+char* Xml::getxmlbuffer()
+{
+     return getnodebuffer(m_proot);
+}
+
+
+char* Xml::getnodebuffer(xmlNode *node)
+{
+    if ( m_pbuf != NULL )
+    {
+        xmlBufferFree( m_pbuf );
+        m_pbuf = NULL;
+    }
+
+    m_pbuf = xmlBufferCreate();
+    if ( m_pbuf == NULL )
+    {
+        LOG( LOG_INFO_LEVEL, LOG_SOURCE_XML,"xmlBufferCreate error" );
+        return NULL;
+    }
+
+    int bytes = xmlNodeDump( m_pbuf, m_pdoc, node, 0, 1 );
+    if ( bytes < 0 )
+    {
+        LOG( LOG_INFO_LEVEL, LOG_SOURCE_XML,"xmlNodeDump failed" );
+        return NULL;
+    }
+
+    return ( char* )m_pbuf->content;
+}
+xmlNode *Xml::getrootnode() { return m_proot; }
 
 } // namespace utils
-
 } // namespace ndsl

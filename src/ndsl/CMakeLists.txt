@@ -8,14 +8,14 @@
 #
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
-
+include_directories("/usr/include/libxml2")
 add_subdirectory(net)
 add_subdirectory(third)
 add_subdirectory(utils)
 
 set(LIB_NDSL_SRC
   #all files
-  net/BaseChannel.cc
+   net/BaseChannel.cc
   net/EventLoop.cc
   net/SignalHandler.cc
   net/TcpAcceptor.cc
@@ -46,16 +46,16 @@ set(LIB_NDSL_SRC
   utils/Endian.cc
   utils/Plugin.cc
   utils/TimeStamp.cc
-  utils/Error.cc
+    utils/Error.cc
   utils/Guid.cc
-  utils/Log.cc
+    utils/Log.cc
   utils/Semaphore.cc
   utils/Xml.cc
  )
 
 add_library(ndsl ${LIB_NDSL_SRC})
 target_link_libraries(ndsl uuid)
-
+target_link_libraries(ndsl xml2)
 #生成libplugin.so
  #set(LIB_SRC utils/Plugin.cc)
  #set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)  
