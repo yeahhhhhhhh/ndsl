@@ -26,7 +26,7 @@
 //#include "ndsl/net/EventLoop.h"
 namespace ndsl {
 namespace net {
-// 自定义消息结构体 TODO 小序
+// 自定义消息结构体
 #pragma pack(push)
 #pragma pack(1) // 一字节对齐
 struct Message

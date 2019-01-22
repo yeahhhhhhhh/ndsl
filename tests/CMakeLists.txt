@@ -43,7 +43,7 @@ set(TEST
     utils/PluginTest.cc
     utils/SemaphoreTest.cc
     utils/TimeStampTest.cc
-    utils/XmlTest.cc
+    # utils/XmlTest.cc
 )
 
 # # 设置ping-pong单元测试的文件
@@ -52,9 +52,9 @@ set(TEST
 # include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 # net和utils下的测试文件
-add_executable(utest ${TEST})
-add_dependencies(utest ndsl)
-target_link_libraries(utest ndsl pthread)
+# add_executable(utest ${TEST})
+# add_dependencies(utest ndsl)
+# target_link_libraries(utest ndsl pthread)
 
 # # 生成pingpong测试 服务端
 # add_executable(server ${pingserver})
@@ -62,6 +62,6 @@ target_link_libraries(utest ndsl pthread)
 # target_link_libraries(server ndsl)
 
 # 生成pingpong测试 客户端
-add_executable(client ${pingclient})
-add_dependencies(client ndsl)
-target_link_libraries(client ndsl pthread)
+# add_executable(client ${pingclient})
+# add_dependencies(client ndsl)
+# target_link_libraries(client ndsl pthread)

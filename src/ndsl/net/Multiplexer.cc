@@ -122,7 +122,7 @@ void Multiplexer::dispatch(void *p)
 {
     Multiplexer *pthis = static_cast<Multiplexer *>(p);
 
-    // 有不完整头部出现时，将其复制到msghead开始处，然后调用onrecv从残缺头部开始放
+    //有不完整头部出现时，将其复制到msghead开始处，然后调用onrecv从残缺头部开始放
     if ((size_t) pthis->rlen_ < sizeof(struct Message)) {
         memcpy(pthis->msg_, pthis->location_, pthis->rlen_);
         pthis->location_ = pthis->msg_ + pthis->rlen_;
