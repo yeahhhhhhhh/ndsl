@@ -23,14 +23,9 @@ namespace ndsl {
 namespace net {
 
 TcpConnection::TcpConnection()
-    : pTcpChannel_(NULL)
-// pTcpAcceptor_(NULL)
+    : errorHandle_(NULL)
+    , pTcpChannel_(NULL)
 {}
-
-// TcpConnection::TcpConnection(TcpAcceptor *tcpAcceptor)
-//     : pTcpChannel_(NULL)
-// // pTcpAcceptor_(tcpAcceptor)
-// {}
 
 TcpConnection::~TcpConnection() {}
 
@@ -55,16 +50,9 @@ int TcpConnection::onSend(
     } else {
         int sockfd = pTcpChannel_->getFd();
 
-        // printf("*********\n");
-        // printf("TcpConnection::onSend\n");
-        // printf("buf = %s\n", (char *) buf);
-        // printf("len = %lu\n", len);
-        // printf("*********\n");
-
         // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
         ssize_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
         if (n == len) {
-            // printf("n == len!\n");
             // 写完 通知用户
             LOG(LOG_INFO_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
@@ -81,7 +69,7 @@ int TcpConnection::onSend(
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onSend send error");
             // printf("errno = %d\n%s\n", errno, strerror(errno));
-            errorHandle_(errno, pTcpChannel_->getFd());
+            if (NULL != errorHandle_) errorHandle_(errno, pTcpChannel_);
             // 释放掉buf占用的空间 TODO: 暂时注释
             // if (buf != NULL) free(buf);
             return S_FALSE;
@@ -152,7 +140,8 @@ int TcpConnection::handleWrite(void *pthis)
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "send error can not deal");
-            pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
+            if (NULL != pThis->errorHandle_)
+                pThis->errorHandle_(errno, pThis->pTcpChannel_);
 
             // 将事件从队列中移除
             pThis->qSendInfo_.pop();
@@ -195,7 +184,7 @@ int TcpConnection::onRecv(
                 LOG(LOG_ERROR_LEVEL,
                     LOG_SOURCE_TCPCONNECTION,
                     "recv error can not deal");
-                errorHandle_(errno, pTcpChannel_->getFd());
+                if (NULL != errorHandle_) errorHandle_(errno, pTcpChannel_);
                 isOK = -1;
             }
         } else {
@@ -244,7 +233,8 @@ int TcpConnection::handleRead(void *pthis)
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::handleRead recv fail");
-            pThis->errorHandle_(errno, pThis->pTcpChannel_->getFd());
+            if (NULL != pThis->errorHandle_)
+                pThis->errorHandle_(errno, pThis->pTcpChannel_);
             (*pThis->RecvInfo_.len_) = n;
             return S_FALSE;
         } else if (n == 0) {
@@ -291,7 +281,7 @@ int TcpConnection::sendMsg(
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TCPCONNECTION,
             "sendMsg error can not deal");
-        errorHandle_(errno, pTcpChannel_->getFd());
+        if (NULL != errorHandle_) errorHandle_(errno, pTcpChannel_);
         return S_FALSE;
     }
 

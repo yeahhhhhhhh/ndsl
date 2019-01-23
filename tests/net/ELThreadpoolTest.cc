@@ -41,10 +41,10 @@ TEST_CASE("ELThreadpool")
     ELThreadpool eltp;
     SECTION("setMaxThreads")
     {
-        int ret = eltp.setMaxThreads(4);
+        int ret = eltp.setMaxThreads(2);
         REQUIRE(ret == S_OK);
 
-        REQUIRE(eltp.getMaxThreads() == 4);
+        REQUIRE(eltp.getMaxThreads() == 2);
 
         eltp.setMaxThreads(1024);
         REQUIRE(ret == S_OK);

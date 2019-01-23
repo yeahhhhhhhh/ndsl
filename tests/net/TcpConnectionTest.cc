@@ -32,7 +32,7 @@ bool tcpConnectionTestFlagSend = false;
 static void tcpConnectionSendTest(void *a) { tcpConnectionTestFlagSend = true; }
 
 bool tcpConnectionFalgError = false;
-static void tcpConnectionisError(int a, int b)
+static void tcpConnectionisError(int a, Channel *c)
 {
     tcpConnectionFalgError = true;
 }

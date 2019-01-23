@@ -19,6 +19,7 @@
 #include "ndsl/utils/Log.h"
 #include "ndsl/net/ELThreadpool.h"
 #include "ndsl/net/SocketAddress.h"
+#include "ndsl/net/TcpChannel.h"
 
 using namespace std;
 using namespace ndsl;
@@ -27,7 +28,6 @@ using namespace utils;
 
 class Client;
 char *buf; // 接收数据的地址
-bool toEnd = false;
 uint64_t mlog;
 
 class Session
@@ -81,12 +81,14 @@ class Client
   public:
     // Client client(threadPool, blockSize, sessionCount, timeout);
     Client(
+        EventLoop *loop,
         ELThreadpool *threadPool,
         int blockSize,
         int sessionCount,
         int timeout,
         struct SocketAddress4 *servaddr)
-        : blockSize_(blockSize)
+        : loop_(loop)
+        , blockSize_(blockSize)
         , threadPool_(threadPool)
         , sessionCount_(sessionCount)
         , timeout_(timeout)
@@ -120,17 +122,10 @@ class Client
         // 等所有链接都建立之后 设置定时器 发送数据
         if ((++numConnected_) == sessionCount_) {
             // 提示所有链接已建立
-            LOG(LOG_INFO_LEVEL, mlog, "all connected");
-
-            // 新开线程放定时器
-            // FIXME:MEMORY LEAK!!!
-            EventLoop *loop = new EventLoop;
-            loop->init();
-            // FIXME:MEMORY LEAK!!!
-            ELThread *th0 = new ELThread(loop);
+            // LOG(LOG_INFO_LEVEL, mlog, "all connected");
 
             // 初始化定时器
-            TimeWheel *time = new TimeWheel(loop);
+            TimeWheel *time = new TimeWheel(loop_);
 
             // 开始时间轮
             time->start();
@@ -145,8 +140,6 @@ class Client
             // 添加任务
             time->addTask(t);
 
-            th0->run();
-
             for (vector<Session *>::iterator it = sessions_.begin();
                  it != sessions_.end();
                  ++it) {
@@ -154,7 +147,8 @@ class Client
 
                 if ((n = (*it)->conn_->onSend(
                          message_, blockSize_, 0, NULL, NULL)) < 0) {
-                    LOG(LOG_ERROR_LEVEL, mlog, "send fail");
+                    if (errno != EAGAIN || errno != EWOULDBLOCK)
+                        LOG(LOG_ERROR_LEVEL, mlog, "send fail");
                 }
             }
         }
@@ -187,7 +181,7 @@ class Client
             //                 (timeout_ * 1024 * 1024)
             //          << " MiB/s throughput";
 
-            toEnd = true;
+            // toEnd = true;
         }
     }
 
@@ -198,19 +192,21 @@ class Client
 
         Client *pThis = static_cast<Client *>(pthis);
 
-        // FIXME: 顺序更改之后 单线程多连接会报段错误
-        // 关闭线程池
-        // Tips:先断开链接，后关闭线程池
-        pThis->threadPool_->quit();
+        pThis->loop_->quit();
 
         // 关闭每个链接
         for (vector<Session *>::iterator it = pThis->sessions_.begin();
              it != pThis->sessions_.end();
              ++it) {
+            (*it)->conn_->pTcpChannel_->erase();
             (*it)->stop();
         }
+
+        // 关闭线程池
+        pThis->threadPool_->quit();
     }
 
+    EventLoop *loop_;
     int blockSize_;
     ELThreadpool *threadPool_;
     int sessionCount_;
@@ -230,7 +226,7 @@ void Session::start()
     conn_ = client_.onConnect(loop_, false, owner_->servaddr_);
 
     if (conn_ == NULL) { LOG(LOG_ERROR_LEVEL, mlog, "start onConnect fail"); }
-    // 将自身的recv函数注册进去
+    //将自身的recv函数注册进去
     if (conn_ != NULL) conn_->onRecv(buf, &len, 0, onMessage, this);
 
     if (conn_ != NULL) owner_->onConnect();
@@ -249,20 +245,20 @@ int main(int argc, char *argv[])
     if (argc != 7) {
         LOG(LOG_ERROR_LEVEL,
             mlog,
-            "Usage: client <address> <port> <threads> <blocksize> <sessions> "
+            "Usage: client <address> <port> <threads> <blocksize> "
+            "<sessions> "
             "<time>");
     } else {
-        // uint64_t mlog = add_source();
-        // set_ndsl_log_sinks(
-        //     mlog | LOG_SOURCE_TCPCONNECTION | LOG_SOURCE_EVENTLOOP,
-        //     LOG_OUTPUT_TER);
-
         struct SocketAddress4 *servaddr = new struct SocketAddress4(
             argv[1], static_cast<unsigned short>(atoi(argv[2])));
         int threadCount = atoi(argv[3]);
         int blockSize = atoi(argv[4]);
         int sessionCount = atoi(argv[5]);
         int timeout = atoi(argv[6]);
+
+        // 新开loop放定时器
+        EventLoop *loop = new EventLoop;
+        loop->init();
 
         // 初始化线程池 设置线程
         ELThreadpool *threadPool = new ELThreadpool();
@@ -274,11 +270,11 @@ int main(int argc, char *argv[])
         // 将buf的空间new出来 Memory leak
         buf = (char *) malloc(sizeof(char) * blockSize);
 
-        Client client(threadPool, blockSize, sessionCount, timeout, servaddr);
+        Client client(
+            loop, threadPool, blockSize, sessionCount, timeout, servaddr);
 
-        // 防止主线程提前结束
-        while (!toEnd)
-            ;
+        // 开启定时器
+        EventLoop::loop(loop);
     }
 
     return 0;
