@@ -29,6 +29,7 @@ class EventLoop
 {
   public:
     // 定义work结构体
+    // FIXME:堆上分配内存,最终会在WorkQueue中释放
     struct WorkItem
     {
         // 任务回调函数
@@ -66,7 +67,7 @@ class EventLoop
                 return ret;
             }
             // 执行队头任务
-            void dequeue()
+            void doit()
             {
                 WorkItem *curWork;
 
@@ -83,16 +84,34 @@ class EventLoop
 
                     // 执行任务
                     curWork->doit(curWork->param);
+
+                    // TODO:在此处释放WorkItem
+                    delete curWork;
                 }
             }
             // 返回队列长度
             size_t size() { return queue_.size(); }
             // 队尾增加任务
-            void enqueue(WorkItem *work)
+            int enqueue(WorkItem *item)
             {
                 queueMutex_.lock();
-                queue_.push_back(work);
+                queue_.push_back(item);
                 queueMutex_.unlock();
+                return S_OK;
+            }
+            // 删除队中任务
+            int dequeue(WorkItem *item)
+            {
+                queueMutex_.lock();
+                for (auto it = queue_.begin(); it != queue_.end(); ++it) {
+                    if ((*it) == item) {
+                        queue_.erase(it);
+                        queueMutex_.unlock();
+                        return S_OK;
+                    }
+                }
+                queueMutex_.unlock();
+                return S_FALSE;
             }
         };
 
@@ -113,7 +132,10 @@ class EventLoop
         }
 
         // 增加任务
-        void addWork(WorkItem *work) { workqueue_.enqueue(work); }
+        int addWork(WorkItem *item) { return workqueue_.enqueue(item); }
+
+        // 删除任务
+        int removeWork(WorkItem *item) { return workqueue_.dequeue(item); }
 
         // 发送中断信号
         int onWrite()
@@ -137,7 +159,7 @@ class EventLoop
         {
             QueueChannel *pQc = (QueueChannel *) pThis;
             while (!pQc->workqueue_.empty()) {
-                pQc->workqueue_.dequeue();
+                pQc->workqueue_.doit();
             }
             return S_OK;
         }
@@ -201,7 +223,8 @@ class EventLoop
     static void *loop(void *pThis);
 
     // 添加任务
-    void addWork(WorkItem *work);
+    int addWork(WorkItem *item);
+    int removeWork(WorkItem *item);
 
     // 注册、更新、删除事件
     int enroll(Channel *);
