@@ -17,7 +17,7 @@ class Httphandler
 {
   private:
     const constexpr static char *HttpHead = "http://";
-    static void handleErro(int, int)
+    static void handleErro(int, Channel *)
     {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_ENTITY, "ERROR!!!\n");
     }

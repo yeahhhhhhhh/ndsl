@@ -62,7 +62,7 @@ class Multiplexer
     int left_ = 0;
     ssize_t rlen_;
 
-    char msg_[sizeof(char) * MAXLINE];
+    char msg_[sizeof(char) * MAXLINE + sizeof(Message)];
     char *location_ = msg_;
     char *databuf_ = NULL;
 
@@ -98,7 +98,7 @@ class Multiplexer
 
     // 分发消息给通信实体
     static void dispatch(void *p);
-    static void handleErro(int, int)
+    static void handleErro(int, Channel *)
     {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_MULTIPLEXER, "ERROR!!!\n");
     }

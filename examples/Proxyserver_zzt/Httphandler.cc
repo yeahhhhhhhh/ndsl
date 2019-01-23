@@ -14,6 +14,7 @@
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpClient.h"
+
 namespace ndsl {
 namespace net {
 
@@ -67,11 +68,16 @@ void Httphandler::disposeClientMsg(void *para)
     switch (hp->h_addrtype) {
     case AF_INET: {
         char **iptr = hp->h_addr_list;
-        for (; *iptr != NULL; iptr++) {
+        if (*iptr != NULL) {
             LOG(LOG_INFO_LEVEL,
                 LOG_SOURCE_ENTITY,
                 "\taddress:%s\n",
-                inet_ntop(AF_INET, hp->h_addr, pa->hostip, sizeof(pa->hostip)));
+                inet_ntop(
+                    AF_INET,
+                    hp->h_addr_list[0],
+                    pa->hostip,
+                    sizeof(pa->hostip)));
+            //将获取的IP地址转为点分十进制后存入pa->hostip
         }
         break;
     }
@@ -88,7 +94,7 @@ void Httphandler::connectGoalserver(void *para)
 {
     struct hpara *pa = reinterpret_cast<struct hpara *>(para);
 
-    struct SocketAddress4 clientservaddr(pa->hostip, 80);
+    struct SocketAddress4 clientservaddr(pa->hostip, 9999);
     TcpConnection *Conn2s;
     TcpClient *pCli = new TcpClient();
 

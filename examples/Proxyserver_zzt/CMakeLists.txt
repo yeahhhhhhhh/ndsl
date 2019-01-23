@@ -8,15 +8,15 @@
 
 include_directories(Httphandler.h, ${CMAKE_SOURCE_DIR}/include)
 
-# find_package(Protobuf REQUIRED)
-# if(PROTOBUF_FOUND)
-#    message(STATUS "protobuf library found")
-# else()
-#     message(FATAL_ERROR "protobuf library is needed but cant be found\n")
-# endif()
-# include_directories(${PROTOBUF_INCLUDE_DIRS})
-# INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-# PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS Protbload.proto)
+find_package(Protobuf REQUIRED)
+if(PROTOBUF_FOUND)
+   message(STATUS "protobuf library found")
+else()
+    message(FATAL_ERROR "protobuf library is needed but cant be found\n")
+endif()
+include_directories(${PROTOBUF_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS Protbload.proto)
 
 # 生成client客户端程序
 # set(SRC_CLIENT Client.cc)
@@ -24,8 +24,14 @@ include_directories(Httphandler.h, ${CMAKE_SOURCE_DIR}/include)
 # add_dependencies(client ndsl)
 # target_link_libraries(client ndsl pthread protobuf ${PROTOBUF_LIBRARIES})
 
+# 生成proxyserver服务端程序
+set(SRC_PROSERVER proxyserver.cc Httphandler.cc)
+ADD_EXECUTABLE(proxyserver ${SRC_PROSERVER})
+add_dependencies(proxyserver ndsl)
+target_link_libraries(proxyserver ndsl pthread)
+
 # 生成server服务端程序
-set(SRC_SERVER proxyserver.cc Httphandler.cc)
-ADD_EXECUTABLE(server ${SRC_SERVER})
+set(SRC_SERVER server.cc)
+ADD_EXECUTABLE(server ${SRC_SERVER} ${PROTO_SRCS} ${PROTO_HDRS})
 add_dependencies(server ndsl)
-target_link_libraries(server ndsl pthread)
+target_link_libraries(server ndsl pthread protobuf ${PROTOBUF_LIBRARIES})

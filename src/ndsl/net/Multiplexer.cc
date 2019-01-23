@@ -109,6 +109,11 @@ void Multiplexer::sendMessage(int id, int length, const char *data)
     conn_->onSend(buffer, length + sizeof(Message), 0, NULL, NULL);
 }
 
+// void Multiplexer::dispatch(void *p)
+// {
+//     Multiplexer *pthis = static_cast<Multiplexer *>(p);
+//     printf("msg_=%s\n", pthis->msg_);
+// }
 /********************
  * 函数： Multiplexer::dispatch
  * 功能：分发消息给上层通信实体
@@ -118,13 +123,15 @@ void Multiplexer::sendMessage(int id, int length, const char *data)
  * 3.在长消息的最后一次读取时可能会有别的消息在后面，需要根据rlen_进行判断
  * 4.消息可能会短到没有完整的头部，需要将这些字节存下来，下次再来消息一并处理
  ********************/
+
 void Multiplexer::dispatch(void *p)
 {
     Multiplexer *pthis = static_cast<Multiplexer *>(p);
 
     //有不完整头部出现时，将其复制到msghead开始处，然后调用onrecv从残缺头部开始放
-    if ((size_t) pthis->rlen_ < sizeof(struct Message)) {
-        memcpy(pthis->msg_, pthis->location_, pthis->rlen_);
+    if (pthis->rlen_ < sizeof(struct Message) && pthis->left_ == 0) {
+        if (pthis->location_ != pthis->msg_)
+            memcpy(pthis->msg_, pthis->location_, pthis->rlen_);
         pthis->location_ = pthis->msg_ + pthis->rlen_;
         pthis->msghead = pthis->rlen_; // 将此次读出的未完整的头部字数保存
         pthis->conn_->onRecv(
@@ -135,7 +142,6 @@ void Multiplexer::dispatch(void *p)
     // 对不完整头部的后续处理
     if (pthis->msghead > 0) {
         pthis->rlen_ += pthis->msghead;
-        if (pthis->rlen_ > MAXLINE) pthis->rlen_ = MAXLINE;
         pthis->msghead = 0;
         pthis->changeheadflag = 1;
         pthis->location_ = pthis->msg_;
@@ -181,7 +187,7 @@ void Multiplexer::dispatch(void *p)
                 pthis->location_ += pthis->len_; // location_指针后移
                 dispatch((void *) pthis); // 递归 继续分发缓冲区剩下的消息
                 return;
-            } else {
+            } else { // 刚好读完消息
                 pthis->location_ = pthis->msg_;
                 if (pthis->changeheadflag == 1) {
                     pthis->changeheadflag = 0;
