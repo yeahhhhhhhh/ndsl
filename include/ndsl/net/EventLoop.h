@@ -29,6 +29,7 @@ class EventLoop
 {
   public:
     // 定义work结构体
+    // FIXME:堆上分配内存,最终会在WorkQueue中释放
     struct WorkItem
     {
         // 任务回调函数
@@ -83,6 +84,9 @@ class EventLoop
 
                     // 执行任务
                     curWork->doit(curWork->param);
+
+                    // TODO:在此处释放WorkItem
+                    delete curWork;
                 }
             }
             // 返回队列长度
