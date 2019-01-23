@@ -54,17 +54,17 @@ class Multiplexer
 
     ndsl::net::TcpConnection *conn_ = NULL; // 绑定的connection
 
-    int error_ = 0;
-    int msghead = 0;
-    int changeheadflag = 0;
-    int id_;
-    int len_; // 负载长度
-    int left_ = 0;
-    ssize_t rlen_;
+    int error_ = 0;         // ???
+    int msghead = 0;        // 保存未完整头部
+    int changeheadflag = 0; // 未完整头部的标志
+    int id_;                // 实体id
+    int len_;               // 负载长度
+    int left_ = 0;          // 待处理的消息长度
+    ssize_t rlen_;          // 收到的消息长度
 
-    char msg_[sizeof(char) * MAXLINE];
-    char *location_ = msg_;
-    char *databuf_ = NULL;
+    char msg_[sizeof(char) * MAXLINE]; // 接收消息的缓冲区
+    char *location_ = msg_;            // 待处理负载的起始位置(?)
+    char *databuf_ = NULL;             // 接收太太太长的消息
 
   public:
     Multiplexer(ndsl::net::TcpConnection *conn)

@@ -175,13 +175,14 @@ void Multiplexer::dispatch(void *p)
                     pthis->len_,
                     pthis->error_); // 在这里调用了实体对应的回调函数
 
+            // 还有别的实体消息
             if (pthis->left_ < 0) {
                 pthis->rlen_ -= pthis->len_;     //对rlen更新
                 pthis->left_ = 0;                //对left_做更新
                 pthis->location_ += pthis->len_; // location_指针后移
                 dispatch((void *) pthis); // 递归 继续分发缓冲区剩下的消息
                 return;
-            } else {
+            } else { // left == 0 刚好读完消息
                 pthis->location_ = pthis->msg_;
                 if (pthis->changeheadflag == 1) {
                     pthis->changeheadflag = 0;
