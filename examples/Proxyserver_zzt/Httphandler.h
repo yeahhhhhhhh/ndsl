@@ -23,10 +23,10 @@ class Httphandler
     }
     struct hpara
     {
-        char *databuf = NULL;
+        char *clientbuf = NULL;
+        char *serverbuf = NULL;
         ssize_t readlen;
         char hostip[INET_ADDRSTRLEN];
-        EventLoop *loop;
         TcpConnection *conn2c = NULL;
         TcpConnection *conn2s = NULL;
     };

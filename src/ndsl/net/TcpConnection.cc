@@ -66,9 +66,9 @@ int TcpConnection::onSend(
         if (n == len) {
             // printf("n == len!\n");
             // 写完 通知用户
-            // LOG(LOG_INFO_LEVEL,
-            //     LOG_SOURCE_TCPCONNECTION,
-            //     "TcpConnection::onSend write complete");
+            LOG(LOG_INFO_LEVEL,
+                LOG_SOURCE_TCPCONNECTION,
+                "TcpConnection::onSend write complete");
             if (cb != NULL) cb(param);
             // 释放掉buf占用的空间 TODO: 暂时注释
             // if (buf != NULL) free(buf);
@@ -87,9 +87,9 @@ int TcpConnection::onSend(
             return S_FALSE;
         }
 
-        // LOG(LOG_INFO_LEVEL,
-        //     LOG_SOURCE_TCPCONNECTION,
-        //     "TcpConnection::onSend send for next time\n");
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_TCPCONNECTION,
+            "TcpConnection::onSend send for next time\n");
         pInfo tsi = new Info;
         tsi->offset_ = n;
         tsi->sendBuf_ = (void *) buf;
@@ -133,9 +133,9 @@ int TcpConnection::handleWrite(void *pthis)
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();
 
-                // LOG(LOG_INFO_LEVEL,
-                //     LOG_SOURCE_TCPCONNECTION,
-                //     "TcpConnection::handleWrite send complete\n");
+                LOG(LOG_INFO_LEVEL,
+                    LOG_SOURCE_TCPCONNECTION,
+                    "TcpConnection::handleWrite send complete\n");
 
                 // 释放掉buf占用的空间 TODO: 暂时注释
                 // if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
@@ -257,9 +257,9 @@ int TcpConnection::handleRead(void *pthis)
 
         (*pThis->RecvInfo_.len_) = n;
 
-        // LOG(LOG_INFO_LEVEL,
-        //     LOG_SOURCE_TCPCONNECTION,
-        //     "TcpConnection::handleRead recv complete");
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_TCPCONNECTION,
+            "TcpConnection::handleRead recv complete");
 
         // 完成数据读取之后通知mul
         if (pThis->RecvInfo_.cb_ != NULL)

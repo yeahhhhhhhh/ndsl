@@ -36,7 +36,10 @@ int main()
     TcpConnection *conn2c = new TcpConnection();
     tAc->onAccept(
         conn2c, (SA *) &rservaddr, &addrlen, Httphandler::beginProxy, conn2c);
-    // LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "after onaccept\n");
+
+    TcpConnection *conn22 = new TcpConnection();
+    tAc->onAccept(
+        conn22, (SA *) &rservaddr, &addrlen, Httphandler::beginProxy, conn22);
     loop.loop(&loop);
     return 0;
 }
