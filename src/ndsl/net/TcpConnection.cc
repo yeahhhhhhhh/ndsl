@@ -64,7 +64,7 @@ int TcpConnection::onSend(
         } else if (n < 0) {
             // 出错 通知用户
             // if (errno != EAGAIN || errno != EWOULDBLOCK) {}
-            printf("errno = %d\nstr = %s\n", errno, strerror(errno));
+            // printf("errno = %d\nstr = %s\n", errno, strerror(errno));
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onSend send error");
@@ -211,7 +211,7 @@ int TcpConnection::onRecv(
 
 int TcpConnection::handleRead(void *pthis)
 {
-    printf("TcpConnection::handleRead!\n");
+    // printf("TcpConnection::handleRead!\n");
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
     if (sockfd < 0) { return S_FALSE; }
