@@ -26,7 +26,7 @@
 //#include "ndsl/net/EventLoop.h"
 namespace ndsl {
 namespace net {
-// 自定义消息结构体 TODO 小序
+// 自定义消息结构体
 #pragma pack(push)
 #pragma pack(1) // 一字节对齐
 struct Message
@@ -54,17 +54,17 @@ class Multiplexer
 
     ndsl::net::TcpConnection *conn_ = NULL; // 绑定的connection
 
-    int error_ = 0;
-    int msghead = 0;
-    int changeheadflag = 0;
-    int id_;
-    int len_; // 负载长度
-    int left_ = 0;
-    ssize_t rlen_;
+    int error_ = 0;         // ???
+    int msghead = 0;        // 保存未完整头部
+    int changeheadflag = 0; // 已改变onrecv保存的缓冲区地址的标志
+    int id_;                // 实体id
+    int len_;               // 负载长度
+    int left_ = 0;          // 待处理的消息长度
+    ssize_t rlen_;          // 收到的消息长度
 
-    char msg_[sizeof(char) * MAXLINE];
-    char *location_ = msg_;
-    char *databuf_ = NULL;
+    char msg_[sizeof(char) * MAXLINE]; // 接收消息的缓冲区
+    char *location_ = msg_;            // 当前处理位置
+    char *databuf_ = NULL;             // 接收太太太长的消息
 
   public:
     Multiplexer(ndsl::net::TcpConnection *conn)
@@ -98,7 +98,7 @@ class Multiplexer
 
     // 分发消息给通信实体
     static void dispatch(void *p);
-    static void handleErro(int, int)
+    static void handleErro(int, Channel *)
     {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_MULTIPLEXER, "ERROR!!!\n");
     }

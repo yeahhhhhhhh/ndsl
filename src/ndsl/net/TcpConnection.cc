@@ -54,15 +54,17 @@ int TcpConnection::onSend(
         ssize_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
         if (n == len) {
             // 写完 通知用户
-            // LOG(LOG_INFO_LEVEL,
-            //     LOG_SOURCE_TCPCONNECTION,
-            //     "TcpConnection::onSend write complete");
+            LOG(LOG_INFO_LEVEL,
+                LOG_SOURCE_TCPCONNECTION,
+                "TcpConnection::onSend write complete");
             if (cb != NULL) cb(param);
             // 释放掉buf占用的空间 TODO: 暂时注释
             // if (buf != NULL) free(buf);
             return S_OK;
         } else if (n < 0) {
             // 出错 通知用户
+            // if (errno != EAGAIN || errno != EWOULDBLOCK) {}
+            // printf("errno = %d\nstr = %s\n", errno, strerror(errno));
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onSend send error");
@@ -73,9 +75,9 @@ int TcpConnection::onSend(
             return S_FALSE;
         }
 
-        // LOG(LOG_INFO_LEVEL,
-        //     LOG_SOURCE_TCPCONNECTION,
-        //     "TcpConnection::onSend send for next time\n");
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_TCPCONNECTION,
+            "TcpConnection::onSend send for next time\n");
         pInfo tsi = new Info;
         tsi->offset_ = n;
         tsi->sendBuf_ = (void *) buf;
@@ -119,9 +121,9 @@ int TcpConnection::handleWrite(void *pthis)
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();
 
-                // LOG(LOG_INFO_LEVEL,
-                //     LOG_SOURCE_TCPCONNECTION,
-                //     "TcpConnection::handleWrite send complete\n");
+                LOG(LOG_INFO_LEVEL,
+                    LOG_SOURCE_TCPCONNECTION,
+                    "TcpConnection::handleWrite send complete\n");
 
                 // 释放掉buf占用的空间 TODO: 暂时注释
                 // if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);

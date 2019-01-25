@@ -15,21 +15,11 @@
 using namespace ndsl;
 using namespace net;
 
-void func1(void *para)
-{
-    LOG(LOG_INFO_LEVEL,
-        LOG_SOURCE_EVENTLOOP,
-        "Call func1 and para is %ld!\n",
-        (long) para);
-}
+bool ev = false;
 
-void func2(void *para)
-{
-    LOG(LOG_INFO_LEVEL,
-        LOG_SOURCE_EVENTLOOP,
-        "Call func2 and para is %s!\n",
-        (char *) para);
-}
+void func1(void *para) { ev = true; }
+
+void func2(void *para) { ev = false; }
 
 TEST_CASE("net/EventLoop(WorkQueue)")
 {
@@ -39,25 +29,30 @@ TEST_CASE("net/EventLoop(WorkQueue)")
         REQUIRE(loop.init() == S_OK);
     }
 
-    SECTION("addwork and quit")
+    SECTION("addwork/removeWork and quit")
     {
         EventLoop loop;
         REQUIRE(loop.init() == S_OK);
-        // bind c++11特性
-        // std::thread th(std::bind(&EventLoop::loop, &loop));
 
         EventLoop::WorkItem *w1 = new EventLoop::WorkItem;
         w1->doit = func1;
-        w1->param = (void *) 100;
+        w1->param = NULL;
         loop.addWork(w1);
+
+        loop.quit();
+        REQUIRE(loop.loop(&loop) == S_OK);
+
+        REQUIRE(ev == true);
 
         EventLoop::WorkItem *w2 = new EventLoop::WorkItem;
         w2->doit = func2;
-        w2->param = (void *) "Hello World!";
+        w2->param = NULL;
         loop.addWork(w2);
+        REQUIRE(loop.removeWork(w2) == S_OK);
 
         loop.quit();
-
         REQUIRE(loop.loop(&loop) == S_OK);
+
+        REQUIRE(ev == true);
     }
 }
