@@ -14,27 +14,27 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 
-# # 设置单元测试的文件
+# 设置单元测试的文件
 set(TEST 
     test.cc 
 
-#     # All files
-#     net/EpollTest.cc
-#     net/EventLoopTest.cc
+    # All files
+    # net/EpollTest.cc
+    # net/EventLoopTest.cc
     net/MultiplexerTest.cc
 
-#     net/PipeAndFifoTest.cc
-#     net/SignalfdTest.cc
-#     net/TcpAcceptorTest.cc
-#     net/TcpConnectionTest.cc
+    # net/PipeAndFifoTest.cc
+    # net/SignalfdTest.cc
+    # net/TcpAcceptorTest.cc
+    # net/TcpConnectionTest.cc
 
-#     net/TimeWheelTest.cc
-#     net/UdpEndpointTest.cc
-#     net/UnixAndTcpSocketAddressTest.cc
-#     net/UnixConnectionTest.cc
-#     net/ELThreadpoolTest.cc
-#     net/SockoptTest.cc
-#     net/EventfdTest.cc
+    # net/TimeWheelTest.cc
+    # net/UdpEndpointTest.cc
+    # net/UnixAndTcpSocketAddressTest.cc
+    # net/UnixConnectionTest.cc
+    # net/ELThreadpoolTest.cc
+    # net/SockoptTest.cc
+    # net/EventfdTest.cc
 
     # utils/EndianTest.cc
     # utils/ErrorTest.cc

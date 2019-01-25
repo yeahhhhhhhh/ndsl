@@ -12,7 +12,7 @@ include_directories(/usr/include/libxml2)
 
 set(LIB_NDSL_SRC
   #all files
-   net/BaseChannel.cc
+  net/BaseChannel.cc
   net/EventLoop.cc
   net/SignalHandler.cc
   net/TcpAcceptor.cc
@@ -43,9 +43,9 @@ set(LIB_NDSL_SRC
   utils/Endian.cc
   utils/Plugin.cc
   utils/TimeStamp.cc
-    utils/Error.cc
+  utils/Error.cc
   utils/Guid.cc
-    utils/Log.cc
+  utils/Log.cc
   utils/Semaphore.cc
   utils/Xml.cc
  )

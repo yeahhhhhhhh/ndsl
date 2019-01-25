@@ -38,6 +38,7 @@ class TcpConnection
         Callback cb_;    // 存储用户传过来的回调函数
         void *param_;    // 回调函数的参数
         ssize_t offset_; // 一次没发送完的发送偏移
+        bool recvInUse_; // 判断是否已经使用过一次 Proactor要求每次注册
     } Info, *pInfo;
 
     std::queue<pInfo> qSendInfo_; // 等待发送的队列
