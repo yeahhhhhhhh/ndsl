@@ -7,9 +7,8 @@
 # @email xiaowen.nie.cn@gmail.com
 #
 include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(/usr/include/libxml2)
-
-add_subdirectory(entitytest)
+# include_directories(/usr/include/libxml2)
+# add_subdirectory(entitytest)
 
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -37,15 +36,15 @@ string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 #     net/SockoptTest.cc
 #     net/EventfdTest.cc
 
-    utils/EndianTest.cc
-    utils/ErrorTest.cc
-    utils/GuidTest.cc
-    utils/LogTest.cc
-    utils/PluginTest.cc
-    utils/SemaphoreTest.cc
-    utils/TimeStampTest.cc
-    utils/XmlTest.cc
-)
+    # utils/EndianTest.cc
+    # utils/ErrorTest.cc
+    # utils/GuidTest.cc
+    # utils/LogTest.cc
+    # utils/PluginTest.cc
+    # utils/SemaphoreTest.cc
+    # utils/TimeStampTest.cc
+    # utils/XmlTest.cc
+# )
 
 # # 设置ping-pong单元测试的文件
 # set(pingserver ping-pong/server.cc)
