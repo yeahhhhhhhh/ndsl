@@ -112,33 +112,34 @@ int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
     return S_OK;
 }
 
-// FIXME: 是否改为自动newTcpConnection
 int TcpAcceptor::handleRead(void *pthis)
 {
     // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPACCETPOR, "TcpAcceptor::handleRead\n");
 
     TcpAcceptor *pThis = static_cast<TcpAcceptor *>(pthis);
-    int connfd;
-    struct sockaddr_in cliaddr;
-    socklen_t clilen = sizeof(struct sockaddr_in);
-    connfd = accept(
-        pThis->listenfd_, (struct sockaddr *) &cliaddr, (socklen_t *) &clilen);
-
-    if (connfd > 0) {
-        // 连接成功
-        // LOG(LOG_INFO_LEVEL,
-        //     LOG_SOURCE_TCPACCETPOR,
-        //     "TcpAcceptor::connect succ\n");
-    } else {
-        // 连接失败
-        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPACCETPOR, "connect fail");
-        return S_FALSE;
-    }
-
-    // 设置非阻塞io
-    fcntl(connfd, F_SETFL, O_NONBLOCK);
-
     if (pThis->info.inUse_) {
+        int connfd;
+        struct sockaddr_in cliaddr;
+        socklen_t clilen = sizeof(struct sockaddr_in);
+        connfd = accept(
+            pThis->listenfd_,
+            (struct sockaddr *) &cliaddr,
+            (socklen_t *) &clilen);
+
+        if (connfd > 0) {
+            // 连接成功
+            // LOG(LOG_INFO_LEVEL,
+            //     LOG_SOURCE_TCPACCETPOR,
+            //     "TcpAcceptor::connect succ\n");
+        } else {
+            // 连接失败
+            LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPACCETPOR, "connect fail");
+            return S_FALSE;
+        }
+
+        // 设置非阻塞io
+        fcntl(connfd, F_SETFL, O_NONBLOCK);
+
         ((pThis->info).pCon_)
             ->createChannel(connfd, pThis->pTcpChannel_->pLoop_);
         if (NULL != pThis->info.addr_)
@@ -150,10 +151,10 @@ int TcpAcceptor::handleRead(void *pthis)
         pThis->info.inUse_ = false;
 
         if (pThis->info.cb_ != NULL) pThis->info.cb_(pThis->info.param_);
-    }
 
-    // 测试专用
-    if (pThis->cb_ != NULL) pThis->cb_(NULL);
+        // 测试专用
+        if (pThis->cb_ != NULL) pThis->cb_(NULL);
+    }
 
     return S_OK;
 }

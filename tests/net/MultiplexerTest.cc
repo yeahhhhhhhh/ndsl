@@ -32,9 +32,13 @@ int id = 11;
 static void
 entitycallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
-    char buff[10];
-    memcpy(buff, data, 10);
-    LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "%s\n", buff);
+    // char buff[10];
+    // memcpy(buff, data, 10);
+    LOG(LOG_INFO_LEVEL,
+        LOG_SOURCE_MULTIPLEXER,
+        "len= %d,\tdata=%s\n",
+        len,
+        data);
 }
 
 bool flag3 = false;
@@ -134,15 +138,15 @@ TEST_CASE("Mutiplexer/cbmaptest")
             memcpy(buffer + 18 * i, p, 18);
         }
 
-        write(pCli->sockfd_, buffer, 10);
+        write(pCli->sockfd_, buffer, 4);
         loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
-        write(pCli->sockfd_, buffer + 10, 40);
+        write(pCli->sockfd_, buffer + 4, 40);
         loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
 
-        write(pCli->sockfd_, buffer + 50, 40);
+        write(pCli->sockfd_, buffer + 44, 46);
         loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
         /*********************************

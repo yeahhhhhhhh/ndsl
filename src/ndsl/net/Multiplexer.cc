@@ -134,16 +134,18 @@ void Multiplexer::dispatch(void *p)
             memcpy(pthis->msg_, pthis->location_, pthis->rlen_);
         pthis->location_ = pthis->msg_ + pthis->rlen_;
         pthis->msghead = pthis->rlen_; // 将此次读出的未完整的头部字数保存
+        pthis->changeheadflag = 1; // 提醒后面记得把首地址换回来
         pthis->conn_->onRecv(
             pthis->location_, &(pthis->rlen_), 0, dispatch, (void *) pthis);
-
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_MULTIPLEXER,
+            "uncompleted Msghead, wait for next dispatch\n");
         return;
     }
     // 对不完整头部的后续处理
     if (pthis->msghead > 0) {
         pthis->rlen_ += pthis->msghead;
         pthis->msghead = 0;
-        pthis->changeheadflag = 1;
         pthis->location_ = pthis->msg_;
     }
 
@@ -190,15 +192,13 @@ void Multiplexer::dispatch(void *p)
                 return;
             } else { // left == 0 刚好读完消息
                 pthis->location_ = pthis->msg_;
-                if (pthis->changeheadflag == 1) {
-                    pthis->changeheadflag = 0;
-                    pthis->conn_->onRecv(
-                        pthis->location_,
-                        &(pthis->rlen_),
-                        0,
-                        dispatch,
-                        (void *) pthis);
-                }
+                if (pthis->changeheadflag == 1) pthis->changeheadflag = 0;
+                pthis->conn_->onRecv(
+                    pthis->location_,
+                    &(pthis->rlen_),
+                    0,
+                    dispatch,
+                    (void *) pthis);
             }
         } else if (
             pthis->left_ > 0) //没有读完该实体消息，申请一块len_大小的缓冲区
@@ -213,11 +213,14 @@ void Multiplexer::dispatch(void *p)
             pthis->location_ = pthis->databuf_;
             pthis->location_ += pthis->rlen_; // location指针向后滑动
 
-            if (pthis->changeheadflag == 1) {
-                pthis->changeheadflag = 0;
-                pthis->conn_->onRecv(
-                    pthis->msg_, &(pthis->rlen_), 0, dispatch, (void *) pthis);
-            }
+            if (pthis->changeheadflag == 1) pthis->changeheadflag = 0;
+
+            pthis->conn_->onRecv(
+                pthis->msg_,
+                &(pthis->rlen_),
+                0,
+                dispatch,
+                (void *) pthis); // 这里必须是msg，不是location
         }
     } else if (pthis->left_ > 0) // 有实体消息未读完
     {
@@ -235,23 +238,37 @@ void Multiplexer::dispatch(void *p)
             {
                 free(pthis->databuf_);
                 pthis->databuf_ = NULL;
-                // printf("free buffer\n");
+                LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "free databuf\n");
             }
 
             pthis->location_ = pthis->msg_;
-            //重新将location指针指向msg_，读取别的实体消息
+            //重新将location指针指向msg_缓冲区
 
-            if (pthis->left_ < (int) pthis->rlen_) {
+            if (pthis->left_ < (int) pthis->rlen_) // 还有别的实体消息
+            {
                 pthis->rlen_ -= pthis->left_;     //对rlen更新
                 pthis->location_ += pthis->left_; // location_指针后移
                 pthis->left_ = 0;                 //对left_做更新
                 dispatch((void *) pthis); // 递归 继续分发缓冲区剩下的消息
                 return;
+            } else {
+                pthis->conn_->onRecv(
+                    pthis->location_,
+                    &(pthis->rlen_),
+                    0,
+                    dispatch,
+                    (void *) pthis);
             }
         } else //太太太长了，还没读完
         {
             memcpy(pthis->location_, pthis->msg_, pthis->rlen_);
             pthis->left_ -= pthis->rlen_;
+            pthis->conn_->onRecv(
+                pthis->msg_,
+                &(pthis->rlen_),
+                0,
+                dispatch,
+                (void *) pthis); // 这里必须是msg，不是location
         }
     }
 }

@@ -205,6 +205,7 @@ int TcpConnection::onRecv(
     RecvInfo_.len_ = len;
     RecvInfo_.cb_ = cb;
     RecvInfo_.param_ = param;
+    RecvInfo_.recvInUse_ = true;
 
     return isOK;
 }
@@ -213,47 +214,50 @@ int TcpConnection::handleRead(void *pthis)
 {
     // printf("TcpConnection::handleRead!\n");
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
-    int sockfd = pThis->pTcpChannel_->getFd();
-    if (sockfd < 0) { return S_FALSE; }
+    if (pThis->RecvInfo_.recvInUse_) {
+        int sockfd = pThis->pTcpChannel_->getFd();
+        if (sockfd < 0) { return S_FALSE; }
 
-    ssize_t n;
+        ssize_t n;
 
-    // 检查参数是否正确，如果不正确则可能是之前未调用onRecv设置接收buf地址
-    if (NULL == pThis->RecvInfo_.readBuf_) {
-        LOG(LOG_ERROR_LEVEL,
-            LOG_SOURCE_TCPCONNECTION,
-            "please set buf address first.");
-    } else {
-        if ((n = recv(
-                 sockfd,
-                 pThis->RecvInfo_.readBuf_,
-                 MAXLINE,
-                 pThis->RecvInfo_.flags_)) < 0) {
-            // 出错
+        // 检查参数是否正确，如果不正确则可能是之前未调用onRecv设置接收buf地址
+        if (NULL == pThis->RecvInfo_.readBuf_) {
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_TCPCONNECTION,
-                "TcpConnection::handleRead recv fail");
-            if (NULL != pThis->errorHandle_)
-                pThis->errorHandle_(errno, pThis->pTcpChannel_);
+                "please set buf address first.");
+        } else {
+            if ((n = recv(
+                     sockfd,
+                     pThis->RecvInfo_.readBuf_,
+                     MAXLINE,
+                     pThis->RecvInfo_.flags_)) < 0) {
+                // 出错
+                LOG(LOG_ERROR_LEVEL,
+                    LOG_SOURCE_TCPCONNECTION,
+                    "TcpConnection::handleRead recv fail");
+                if (NULL != pThis->errorHandle_)
+                    pThis->errorHandle_(errno, pThis->pTcpChannel_);
+                (*pThis->RecvInfo_.len_) = n;
+                return S_FALSE;
+            } else if (n == 0) {
+                LOG(LOG_ERROR_LEVEL,
+                    LOG_SOURCE_TCPCONNECTION,
+                    "TcpConnection::handleRead peer closed");
+                close(sockfd);
+                return S_OK;
+            }
+
             (*pThis->RecvInfo_.len_) = n;
-            return S_FALSE;
-        } else if (n == 0) {
-            LOG(LOG_ERROR_LEVEL,
-                LOG_SOURCE_TCPCONNECTION,
-                "TcpConnection::handleRead peer closed");
-            close(sockfd);
-            return S_OK;
+            pThis->RecvInfo_.recvInUse_ = false;
+
+            // LOG(LOG_INFO_LEVEL,
+            //     LOG_SOURCE_TCPCONNECTION,
+            //     "TcpConnection::handleRead recv complete");
+
+            // 完成数据读取之后通知mul
+            if (pThis->RecvInfo_.cb_ != NULL)
+                pThis->RecvInfo_.cb_(pThis->RecvInfo_.param_);
         }
-
-        (*pThis->RecvInfo_.len_) = n;
-
-        LOG(LOG_INFO_LEVEL,
-            LOG_SOURCE_TCPCONNECTION,
-            "TcpConnection::handleRead recv complete");
-
-        // 完成数据读取之后通知mul
-        if (pThis->RecvInfo_.cb_ != NULL)
-            pThis->RecvInfo_.cb_(pThis->RecvInfo_.param_);
     }
 
     return S_OK;
