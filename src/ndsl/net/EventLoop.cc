@@ -126,11 +126,15 @@ void *EventLoop::loop(void *pThis)
 }
 
 // 添加任务
-void EventLoop::addWork(WorkItem *work)
+int EventLoop::addWork(WorkItem *item)
 {
-    pQueCh_->addWork(work);
-    pQueCh_->onWrite();
+    pQueCh_->addWork(item);
+    int ret = pQueCh_->onWrite();
+    return ret;
 }
+
+// 删除任务
+int EventLoop::removeWork(WorkItem *item) { return pQueCh_->removeWork(item); }
 
 int EventLoop::enroll(Channel *pCh) { return epoll_.enroll(pCh); }
 

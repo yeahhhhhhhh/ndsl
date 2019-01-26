@@ -62,11 +62,11 @@ TEST_CASE("ELThreadpool")
 
         loop = eltp.getNextEventLoop();
 
-        EventLoop::WorkItem wi;
-        wi.doit = ELTP_func;
-        wi.param = NULL;
+        EventLoop::WorkItem *wi = new EventLoop::WorkItem;
+        wi->doit = ELTP_func;
+        wi->param = NULL;
 
-        loop->addWork(&wi);
+        loop->addWork(wi);
 
         // 以后没getNextEventLoop再起线程
         REQUIRE(eltp.getLoopsNum() == 2);

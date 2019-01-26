@@ -67,7 +67,7 @@ TcpConnection *TcpClient::onConnect(
 
 int TcpClient::disConnect()
 {
-    close(sockfd_);
+    shutdown(sockfd_, SHUT_WR);
     return S_OK;
 }
 

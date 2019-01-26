@@ -4,7 +4,8 @@
         "string_view": "cpp",
         "string": "cpp",
         "thread": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "sstream": "cpp"
     },
     "editor.suggestFontSize": 20
 }

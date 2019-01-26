@@ -29,8 +29,7 @@ using namespace Protbload;
 
 #define BUFSIZE 2048
 #define RANDOMPORT 1314
-int clientid = 1025;
-int serverid = 21;
+
 
 bool FalgError = false;
 static void tcpConnectionisError(int a, Channel *c)
@@ -38,61 +37,40 @@ static void tcpConnectionisError(int a, Channel *c)
     FalgError = true;
 }
 
+bool acceptFlag =false;
+static  void tcpAccept(void *aa){
+    acceptFlag = true;
+}
+
+TcpConnection* sConn;
 struct SocketAddress4 ftpsrvaddr;
 TcpAcceptor *tAc;
+
 // receive cmd and responce
-// static int response(int fd,char cmd[])
-// {
-// 	int status;
-// 	if(-1==recv(fd,cmd,strlen(cmd),0))
-//     {
-//         return S_FALSE;
-//     }
-// 	if(strcmp(cmd,"QUIT")==0)
-//     {
-//         status =221;
-//     }
-// 	else if(strcmp(cmd,"PASV")){
-//         status = 227;
-//         ftpsrvaddr.setPort(RANDOMPORT);
-//     }else{
-//         status = 502;
-//     }
-// 	return status;
-// }
-
-static void servercallback(Multiplexer *Multiplexer, char *data, int len, int ero)
+static int response(TcpConnection* sConn)
 {
-    Protbload::ADD *addmessage = new Protbload::ADD;
-    addmessage->ParseFromString(data);
-    printf("agv1:%d  agv2:%d \n", addmessage->agv1(), addmessage->agv2());
-
-    std::string fstr;
-    Protbload::RESULT *resultmessage = new Protbload::RESULT;
-    resultmessage->set_answer(addmessage->agv1() + addmessage->agv2());
-    printf("argv1 and argv2 of ADD: %d  %d\n",addmessage->agv1(),addmessage->agv2());
-    printf("result == %d \n", resultmessage->answer());
-    resultmessage->SerializeToString(&fstr);
-    int flen = fstr.size();
-    Multiplexer->sendMessage(clientid , flen, fstr.c_str());
+	int status;
+    char recvbuf[BUFSIZE];
+    ssize_t len1;
+    sConn->onRecv(recvbuf,&len1,0,NULL,NULL);
+	if(strcmp(recvbuf,"QUIT")==0)
+    {
+        status =221;
+    }
+	else if(strcmp(recvbuf,"PASV")){
+        status = 227;
+        ftpsrvaddr.setPort(RANDOMPORT);
+    }else{
+        status = 502;
+    }
+	return status;
 }
 
-static void onConn(void * para)
-{
-    TcpConnection *conn = (TcpConnection *) para;
-    Multiplexer *servermulti = new Multiplexer(conn);
-
-    Entity *server = new Entity(serverid, servercallback, servermulti);
-    server->pri();
-
-    TcpConnection *con1 = new TcpConnection();
-    tAc->onAccept(con1, NULL, NULL, onConn, con1);
-}
 
 int main(int argc,char **argv)
 {
     set_ndsl_log_sinks(LOG_SOURCE_ALL, LOG_OUTPUT_TER);
-    if(argc < 3)
+    if(argc < 2)
     {
         fprintf(stderr, "Usage: server <address> <port>\n");
     }else{
@@ -103,6 +81,7 @@ int main(int argc,char **argv)
         if(s < 0) {printf("loop init fail!\n"); }
 
         //地址结构
+        //static_cast<unsigned short>(atoi(argv[2]))
         struct SocketAddress4 servaddr(
             argv[1],static_cast<unsigned short>(atoi(argv[2])));
         tAc = new TcpAcceptor(&loop);
@@ -112,10 +91,14 @@ int main(int argc,char **argv)
         bzero(&rservaddr,sizeof(rservaddr));
         socklen_t addrlen;
       
-        TcpConnection* conn = new TcpConnection();
-        conn->onError(tcpConnectionisError);
+        sConn = new TcpConnection();
+        sConn->onError(tcpConnectionisError);
         tAc->onAccept(
-            conn,(struct sockaddr *)&rservaddr,&addrlen,onConn,conn);
+            sConn,(struct sockaddr *)&rservaddr,&addrlen,tcpAccept,sConn);
+        //  responce cmd request
+
+        int stat= response(sConn);
+        printf("%d\n",stat);
         EventLoop::loop(&loop);
 
     }
