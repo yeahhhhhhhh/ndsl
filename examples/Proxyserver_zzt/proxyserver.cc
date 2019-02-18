@@ -6,14 +6,25 @@
  * @emial 429834658@qq.com
  **/
 #include <netdb.h>
+#include "./Httphandler.h"
+#include "ndsl/net/Entity.h"
+#include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/TcpConnection.h"
+#include "ndsl/net/TcpClient.h"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/SocketAddress.h"
-#include "Httphandler.h"
+
 using namespace ndsl;
 using namespace net;
-Multiplexer *multi2s = NULL;
+// static Multiplexer *multi2s = NULL;
+struct con
+{
+    TcpConnection con2c;
+    Multiplexer multi2s;
+};
+
+class Httphandler;
 int main()
 {
     set_ndsl_log_sinks(
@@ -29,10 +40,16 @@ int main()
     TcpConnection *conn2s;
     TcpClient *pCli = new TcpClient();
     conn2s = pCli->onConnect(&loop, true, &mathserveraddr);
+    if (conn2s != NULL)
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "already connect to server\n");
 
-    multi2s = new Multiplexer(conn2s);
-    Entity *client = new Entity(
-        1, Httphandler::disposeServerMsg, multi2s); // 插入entity在本地multi
+    struct con *conPtr = new struct con;
+    conPtr->multi2s = new Multiplexer(conn2s);
+    if (conPtr->multi2s != NULL)
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_ENTITY,
+            "already build multiplexer to server\n");
+    printf("%p\n", conPtr->multi2s);
 
     // 准备接收来自浏览器的连接
     struct SocketAddress4 proservaddr("0.0.0.0", 8080);
@@ -44,8 +61,13 @@ int main()
     socklen_t addrlen;
 
     TcpConnection *conn2c = new TcpConnection();
+    conPtr->con2c = conn2c;
     tAc->onAccept(
-        conn2c, (SA *) &rservaddr, &addrlen, Httphandler::beginProxy, conn2c);
+        conn2c,
+        (SA *) &rservaddr,
+        &addrlen,
+        Httphandler::beginProxy,
+        (void *) conPtr);
 
     // TcpConnection *conn22 = new TcpConnection();
     // tAc->onAccept(

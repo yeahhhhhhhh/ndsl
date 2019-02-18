@@ -20,6 +20,7 @@ using namespace Protbload;
 
 void servercallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "in the servercallback\n");
     Protbload::ADD *addmessage = new Protbload::ADD;
     addmessage->ParseFromString(data);
 

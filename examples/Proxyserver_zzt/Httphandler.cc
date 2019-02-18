@@ -11,23 +11,26 @@
 #include "malloc.h"
 #include <arpa/inet.h>
 #include "Httphandler.h"
+#include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpClient.h"
+#include "Protbload.pb.h"
 
 namespace ndsl {
 namespace net {
+using namespace Protbload;
+// static extern Multiplexer *multi2s;
 
 // 开始代理，作为onAccept函数的回调
 void Httphandler::beginProxy(void *para)
 {
-    TcpConnection *conn2c = (TcpConnection *) para;
+    struct con *conPtr = (struct con *) para;
     char *recvbuf = (char *) malloc(sizeof(char) * MAXLINE); // TODO: 内存释放
     struct hpara *p = new struct hpara(); // TODO: 内存释放
     p->clientbuf = recvbuf;
     p->readlen = 0;
-    p->conn2c = conn2c;
-    conn2c->onRecv(
+    conPtr->con2c->onRecv(
         recvbuf,
         &(p->readlen),
         0,
@@ -35,6 +38,7 @@ void Httphandler::beginProxy(void *para)
         reinterpret_cast<void *>(p));
     conn2c->onError(handleErro);
 }
+
 // 解析从客户端发来的http报文
 void Httphandler::disposeClientMsg(void *para)
 {
@@ -52,47 +56,34 @@ void Httphandler::disposeClientMsg(void *para)
     LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "num1 = %d\n", a);
 
     // 得到第二个参数
-    char *FirstLocation = strstr(FirstLocation, "num2=") + strlen("num2=");
-    char *LastLocation = strstr(LastLocation ，" ");
+    FirstLocation = strstr(FirstLocation, "num2=") + strlen("num2=");
+    LastLocation = strstr(LastLocation, " ");
     memset(num, 0, 4);
     memcpy(num, FirstLocation, LastLocation - FirstLocation);
     int b = atoi(num);
     LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "num2 = %d\n", b);
 
+    std::string pstr;
     Protbload::ADD *addmessage = new Protbload::ADD; // TODO: 内存释放
     addmessage->set_agv1(a);
     addmessage->set_agv2(b);
     addmessage->SerializeToString(&pstr);
     int mlen = pstr.size();
 
-    multi2s->sendMessage(1, mlen, pstr.c_str());
-}
+    // extern Multiplexer *multi2s;    printf("before mendMag to server\n");
+    printf("%p\n", Httphandler::multi2s); // FIXME:指针为NULL ???为啥
+    if (Httphandler::multi2s != NULL) }
 
-// 解析从服务器端发来的http报文
+// 解析从服务器端发来的消息
 void Httphandler::disposeServerMsg(
     Multiplexer *Multiplexer,
     char *data,
     int len,
     int ero)
 {
-    struct hpara *pa = reinterpret_cast<struct hpara *>(para);
-    LOG(LOG_INFO_LEVEL,
-        LOG_SOURCE_ENTITY,
-        "\nServerMsg = \n%s\n",
-        pa->serverbuf);
-    LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "\nreadlen = \n%lu\n", pa->readlen);
-
-    pa->conn2c->onSend(pa->serverbuf, pa->readlen, 0, NULL, NULL);
-    LOG(LOG_INFO_LEVEL,
-        LOG_SOURCE_ENTITY,
-        "already send to client,wait for recv\n");
-
-    pa->conn2c->onRecv(
-        pa->clientbuf,
-        &(pa->readlen),
-        0,
-        disposeClientMsg,
-        reinterpret_cast<void *>(pa));
+    Protbload::RESULT *resultmessage = new Protbload::RESULT;
+    resultmessage->ParseFromString(data);
+    printf("result==%d \n", resultmessage->answer());
 }
 
 /********** FIXME: 现在建立了到服务器的长连接，不需要这样处理了

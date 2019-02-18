@@ -10,9 +10,12 @@
 #include "ndsl/utils/Log.h"
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/EventLoop.h"
+#include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/TcpConnection.h"
+
 namespace ndsl {
 namespace net {
+
 class Httphandler
 {
   private:
@@ -32,10 +35,12 @@ class Httphandler
     };
 
   public:
+    static Multiplexer *multi2s;
     static void beginProxy(void *para);
     static void disposeClientMsg(void *para);
-    static void disposeServerMsg(void *para);
-    static void connectGoalserver(void *para);
+    static void
+    disposeServerMsg(Multiplexer *Multiplexer, char *data, int len, int ero);
+    // static void connectGoalserver(void *para);
 };
 } // namespace net
 } // namespace ndsl
