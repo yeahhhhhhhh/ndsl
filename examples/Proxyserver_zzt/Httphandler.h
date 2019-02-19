@@ -7,6 +7,7 @@
  **/
 #ifndef __HTTPHANDLER_H__
 #define __HTTPHANDLER_H__
+
 #include "ndsl/utils/Log.h"
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/net/EventLoop.h"
@@ -16,6 +17,8 @@
 namespace ndsl {
 namespace net {
 
+using entityMap = std::map<int, TcpConnection *>;
+
 class Httphandler
 {
   private:
@@ -24,22 +27,13 @@ class Httphandler
     {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_ENTITY, "ERROR!!!\n");
     }
-    struct hpara
-    {
-        char *clientbuf = NULL;
-        char *serverbuf = NULL;
-        ssize_t readlen;
-        char hostip[INET_ADDRSTRLEN];
-        TcpConnection *conn2c = NULL;
-        TcpConnection *conn2s = NULL;
-    };
 
   public:
-    static Multiplexer *multi2s;
     static void beginProxy(void *para);
     static void disposeClientMsg(void *para);
     static void
-    disposeServerMsg(Multiplexer *Multiplexer, char *data, int len, int ero);
+    disposeServerMsg(Multiplexer *Multiplexer, char *data, int len, int error);
+    static entityMap *getMap();
     // static void connectGoalserver(void *para);
 };
 } // namespace net

@@ -27,6 +27,8 @@ void servercallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
     std::string fstr;
     Protbload::RESULT *resultmessage = new Protbload::RESULT;
     resultmessage->set_answer(addmessage->agv1() + addmessage->agv2());
+    // printf("the answer = %d\n", resultmessage->answer());
+    resultmessage->set_id(addmessage->id());
     resultmessage->SerializeToString(&fstr);
     int flen = fstr.size();
     Multiplexer->sendMessage(1, flen, fstr.c_str());
@@ -36,7 +38,6 @@ void AcceptCallback(void *para)
 {
     TcpConnection *conn2c = (TcpConnection *) para;
     Multiplexer *smulti = new Multiplexer(conn2c);
-
     Entity *server = new Entity(1, servercallbak, smulti);
     server->pri();
 }

@@ -33,7 +33,7 @@ void Multiplexer::insert(void *pa)
     if (iter == pthis->cbMap_.end() || iter->first != p->id) {
         pthis->cbMap_.insert(std::make_pair(p->id, p->cb));
     }
-
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "success insert entity\n");
     if (p != NULL) // 释放para
     {
         delete p;
@@ -123,18 +123,35 @@ void Multiplexer::sendMessage(int id, int length, const char *data)
  * 3.在长消息的最后一次读取时可能会有别的消息在后面，需要根据rlen_进行判断
  * 4.消息可能会短到没有完整的头部，需要将这些字节存下来，下次再来消息一并处理
  ********************/
-
 void Multiplexer::dispatch(void *p)
 {
     Multiplexer *pthis = static_cast<Multiplexer *>(p);
+    if (pthis->dirtyleft_ > 0) // 有脏数据要丢弃
+    {
+        if (pthis->dirtyleft_ < pthis->rlen_) {
+            pthis->rlen_ -= pthis->dirtyleft_;
+            pthis->location_ += pthis->dirtyleft_;
+            pthis->dirtyleft_ = 0;
+        } else if (pthis->dirtyleft_ > pthis->rlen_) {
+            pthis->dirtyleft_ -= pthis->rlen_;
+            pthis->conn_->onRecv(
+                pthis->location_, &(pthis->rlen_), 0, dispatch, (void *) pthis);
+            return;
+        } else {
+            pthis->dirtyleft_ = 0;
+            pthis->conn_->onRecv(
+                pthis->location_, &(pthis->rlen_), 0, dispatch, (void *) pthis);
+            return;
+        }
+    }
 
     //有不完整头部出现时，将其复制到msghead开始处，然后调用onrecv从残缺头部开始放
     if ((size_t) pthis->rlen_ < sizeof(struct Message) && pthis->left_ == 0) {
         if (pthis->location_ != pthis->msg_)
             memcpy(pthis->msg_, pthis->location_, pthis->rlen_);
         pthis->location_ = pthis->msg_ + pthis->rlen_;
-        pthis->msghead = pthis->rlen_; // 将此次读出的未完整的头部字数保存
-        pthis->changeheadflag = 1; // 提醒后面记得把首地址换回来
+        pthis->msghead_ = pthis->rlen_; // 将此次读出的未完整的头部字数保存
+        pthis->changeheadflag_ = 1; // 提醒后面记得把首地址换回来
         pthis->conn_->onRecv(
             pthis->location_, &(pthis->rlen_), 0, dispatch, (void *) pthis);
         LOG(LOG_INFO_LEVEL,
@@ -143,9 +160,9 @@ void Multiplexer::dispatch(void *p)
         return;
     }
     // 对不完整头部的后续处理
-    if (pthis->msghead > 0) {
-        pthis->rlen_ += pthis->msghead;
-        pthis->msghead = 0;
+    if (pthis->msghead_ > 0) {
+        pthis->rlen_ += pthis->msghead_;
+        pthis->msghead_ = 0;
         pthis->location_ = pthis->msg_;
     }
 
@@ -164,8 +181,29 @@ void Multiplexer::dispatch(void *p)
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_MULTIPLEXER,
                 "MULTIPLEXER::DISPATCH the entity id:%d is not in the map\n",
-                pthis->id_);
-            return;
+                pthis->id_); // 丢弃该消息
+            if (pthis->len_ < pthis->rlen_) {
+                pthis->rlen_ -= pthis->len_;
+                pthis->location_ += pthis->len_;
+                dispatch((void *) pthis);
+            } else if (pthis->len_ > pthis->rlen_) {
+                pthis->dirtyleft_ = (pthis->len_ - pthis->rlen_);
+                pthis->conn_->onRecv(
+                    pthis->location_,
+                    &(pthis->rlen_),
+                    0,
+                    dispatch,
+                    (void *) pthis);
+                return;
+            } else {
+                pthis->conn_->onRecv(
+                    pthis->location_,
+                    &(pthis->rlen_),
+                    0,
+                    dispatch,
+                    (void *) pthis);
+                return;
+            }
         }
         pthis->left_ = pthis->len_;
         pthis->rlen_ -= sizeof(int) * 2;     // 对rlen_做更新
@@ -192,7 +230,7 @@ void Multiplexer::dispatch(void *p)
                 return;
             } else { // left == 0 刚好读完消息
                 pthis->location_ = pthis->msg_;
-                if (pthis->changeheadflag == 1) pthis->changeheadflag = 0;
+                if (pthis->changeheadflag_ == 1) pthis->changeheadflag_ = 0;
                 pthis->conn_->onRecv(
                     pthis->location_,
                     &(pthis->rlen_),
@@ -213,7 +251,7 @@ void Multiplexer::dispatch(void *p)
             pthis->location_ = pthis->databuf_;
             pthis->location_ += pthis->rlen_; // location指针向后滑动
 
-            if (pthis->changeheadflag == 1) pthis->changeheadflag = 0;
+            if (pthis->changeheadflag_ == 1) pthis->changeheadflag_ = 0;
 
             pthis->conn_->onRecv(
                 pthis->msg_,

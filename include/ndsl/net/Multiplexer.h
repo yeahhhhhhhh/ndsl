@@ -54,13 +54,14 @@ class Multiplexer
 
     ndsl::net::TcpConnection *conn_ = NULL; // 绑定的connection
 
-    int error_ = 0;         // ???
-    int msghead = 0;        // 保存未完整头部
-    int changeheadflag = 0; // 已改变onrecv保存的缓冲区地址的标志
-    int id_;                // 实体id
-    int len_;               // 负载长度
-    int left_ = 0;          // 待处理的消息长度
-    ssize_t rlen_;          // 收到的消息长度
+    int error_ = 0;
+    int msghead_ = 0;        // 保存未完整头部
+    int changeheadflag_ = 0; // 已改变onrecv保存的缓冲区地址的标志
+    int dirtyleft_ = 0;      // 应该丢弃的字节数
+    int id_;                 // 实体id
+    int len_;                // 负载长度
+    int left_ = 0;           // 待处理的消息长度
+    ssize_t rlen_;           // 收到的消息长度
 
     char msg_[sizeof(char) * MAXLINE]; // 接收消息的缓冲区
     char *location_ = msg_;            // 当前处理位置
