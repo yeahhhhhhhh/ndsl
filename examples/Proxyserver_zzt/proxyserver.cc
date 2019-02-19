@@ -14,13 +14,8 @@
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/SocketAddress.h"
 #include "Httphandler.h"
-#include "./var.h"
 using namespace ndsl;
 using namespace net;
-// extern entityMap *entitymap;
-// printf("enMap = %p\n",Httphandler::enMap);
-// class Httphandler;
-// void Httphandler::beginProxy(void *para);
 int main()
 {
     set_ndsl_log_sinks(
@@ -40,13 +35,13 @@ int main()
     if (conn2s != NULL)
         LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "already connect to server\n");
 
-    struct con *conPtr = new struct con;
-    conPtr->multi2s = new Multiplexer(conn2s);
-    if (conPtr->multi2s != NULL)
+    struct hpara *hp = new struct hpara;
+    hp->multi2s = new Multiplexer(conn2s);
+    if (hp->multi2s != NULL)
         LOG(LOG_INFO_LEVEL,
             LOG_SOURCE_MULTIPLEXER,
             "already build multiplexer to server\n");
-    printf("multi = %p\n", conPtr->multi2s);
+    printf("multi = %p\n", hp->multi2s);
 
     // 准备接收来自浏览器的连接
     struct SocketAddress4 proservaddr("0.0.0.0", 8080);
@@ -58,11 +53,9 @@ int main()
     socklen_t addrlen;
 
     TcpConnection *conn2c = new TcpConnection(); // TODO:内存释放
-    conPtr->con2c = conn2c;
+    hp->con2c = conn2c;
     printf("con2c = %p\n", conn2c);
-    struct hpara *hp = new struct hpara(); // TODO:内存释放
     hp->map = Httphandler::getMap();
-    hp->conn = conPtr;
     hp->tAc = tAc;
     tAc->onAccept(
         conn2c,

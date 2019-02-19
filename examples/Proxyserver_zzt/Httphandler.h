@@ -13,12 +13,21 @@
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/TcpConnection.h"
-
 namespace ndsl {
 namespace net {
-
 using entityMap = std::map<int, TcpConnection *>;
+struct hpara
+{
+    char *clientbuf = NULL;
 
+    TcpConnection *con2c;
+    Multiplexer *multi2s;
+    ssize_t readlen;
+    std::map<int, TcpConnection *> *map = NULL;
+    TcpAcceptor *tAc;
+    // char *serverbuf = NULL;
+    // char hostip[INET_ADDRSTRLEN];
+};
 class Httphandler
 {
   private:

@@ -15,10 +15,10 @@
 #include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/Entity.h"
 #include "ndsl/net/TcpConnection.h"
+#include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/TcpChannel.h"
 #include "ndsl/net/TcpClient.h"
 #include "Protbload.pb.h"
-#include "./var.h"
 
 namespace ndsl {
 namespace net {
@@ -32,18 +32,18 @@ void Httphandler::beginProxy(void *para)
 
     p->clientbuf = recvbuf;
     p->readlen = 0;
-    p->conn->con2c->onRecv(
-        recvbuf, &(p->readlen), 0, disposeClientMsg, (void *) p);
-    p->conn->con2c->onError(handleErro);
+    p->con2c->onRecv(recvbuf, &(p->readlen), 0, disposeClientMsg, (void *) p);
+    p->con2c->onError(handleErro);
 
+    struct hpara *hp = new struct hpara(); // TODO:内存释放
+    hp->multi2s = p->multi2s;
     struct sockaddr_in rservaddr;
     bzero(&rservaddr, sizeof(rservaddr));
     socklen_t addrlen;
     TcpConnection *conn2c = new TcpConnection(); // TODO: 内存释放
+    hp->con2c = conn2c;
     printf("con2c = %p\n", conn2c);
-    struct hpara *hp = new struct hpara(); // TODO:内存释放
     hp->map = Httphandler::getMap();
-    hp->conn = conPtr;
     hp->tAc = p->tAc;
     hp->tAc->onAccept(
         conn2c,
@@ -56,10 +56,15 @@ void Httphandler::beginProxy(void *para)
 // 解析从客户端发来的http报文
 void Httphandler::disposeClientMsg(void *para)
 {
+    printf("int the disposeclientMsg fun\n");
     struct hpara *hp = reinterpret_cast<struct hpara *>(para);
     LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "\nClientMsg = \n%s", hp->clientbuf);
     LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "rlen = %lu\n", hp->readlen);
 
+    if (strstr(hp->clientbuf, "Referer") != NULL) {
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "丢弃Referer\n");
+        return;
+    }
     // 得到第一个参数
     char *FirstLocation = strstr(hp->clientbuf, "num1=") + strlen("num1=");
     char *LastLocation = strstr(FirstLocation, "&");
@@ -82,25 +87,25 @@ void Httphandler::disposeClientMsg(void *para)
         LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "delete clientbuf\n");
     }
 
+    static int id = 1;
     std::string pstr;
     Protbload::ADD *addmessage = new Protbload::ADD; // 在本函数最后释放
     addmessage->set_agv1(a);
     addmessage->set_agv2(b);
-    addmessage->set_id(1);
+    addmessage->set_id(id);
     addmessage->SerializeToString(&pstr);
     int mlen = pstr.size();
 
-    // extern Multiplexer *multi2s;    printf("before mendMag to server\n");
-    printf("multi = %p\n", hp->conn->multi2s);
-    if (hp->conn->multi2s != NULL) {
+    if (hp->multi2s != NULL) {
         // Entity *myent =
-        //     new Entity(1, Httphandler::disposeServerMsg, pa->conn->multi2s);
+        //     new Entity(1, Httphandler::disposeServerMsg,
+        //     pa->conn->multi2s);
         //     //TODO:这里有问题，对方消息都发回来了我的id还没有注册
         // myent->pri();
         struct para *mp = new struct para; // 在insert()中释放
-        mp->id = 1;
+        mp->id = id;
         mp->cb = Httphandler::disposeServerMsg;
-        mp->pthis = hp->conn->multi2s;
+        mp->pthis = hp->multi2s;
         Multiplexer::insert((void *) mp);
 
         std::map<int, TcpConnection *>::iterator iter =
@@ -108,16 +113,20 @@ void Httphandler::disposeClientMsg(void *para)
 
         printf("hp->enMap = %p\n", hp->map);
         if (iter == hp->map->end() || iter->first != mp->id) {
-            hp->map->insert(std::make_pair(mp->id, hp->conn->con2c));
+            hp->map->insert(std::make_pair(mp->id, hp->con2c));
         }
         LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "insert entityMap\n");
 
-        hp->conn->multi2s->sendMessage(1, mlen, pstr.c_str());
+        hp->multi2s->sendMessage(1, mlen, pstr.c_str());
         if (addmessage != NULL) {
             delete addmessage;
             LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "delete addmessage\n");
         }
     }
+
+    id++;
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "id = %d\n", id);
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "con2c = %p\n", hp->con2c);
 }
 
 // 解析从服务器端发来的消息
@@ -144,7 +153,7 @@ void Httphandler::disposeServerMsg(
     printf("result==%d \n", resultmessage->answer());
     // conec2c->onSend((void *) (s.c_str()), s.size(), 0, NULL, NULL);
     std::string str = "HTTP/1.0 200 "
-                      "OK\r\nConnection:close\r\nContent-type:text/"
+                      "OK\r\nContent-type:text/"
                       "plain\r\n";
     s = "the result is=" + s;
     str += "Content-Length: " + std::to_string(s.size()) + "\r\n\r\n";
