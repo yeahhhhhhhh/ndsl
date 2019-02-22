@@ -27,18 +27,26 @@ ssize_t len;
 TcpAcceptor *tAc;
 uint64_t mlog;
 
+static void onSendMessage(void *conn);
+
 static void mError(int a, Channel *c)
 {
     LOG(LOG_ERROR_LEVEL, mlog, "there is a error");
 }
 
-static void onSendMessage(void *a) {
-} // LOG(LOG_ERROR_LEVEL, mlog, "send a message"); }
-
 static void onMessage(void *conn)
 {
     TcpConnection *con1 = static_cast<TcpConnection *>(conn);
-    if (len > 0) con1->onSend(sbuf, len, 0, onSendMessage, NULL);
+
+    // 循环注册onRecv
+    con1->onRecv(sbuf, &len, 0, onMessage, con1);
+
+    if (len > 0) con1->onSend(sbuf, len, 0, onSendMessage, con1);
+}
+
+static void onSendMessage(void *conn)
+{
+    // LOG(LOG_ERROR_LEVEL, mlog, "send a message");
 }
 
 static void onConnection(void *conn)
@@ -58,6 +66,7 @@ int main(int argc, char *argv[])
 {
     // 设置log
     mlog = add_source();
+    // set_ndsl_log_sinks(LOG_SOURCE_ALL | mlog, LOG_OUTPUT_TER);
     set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
 
     if (argc < 4) {
@@ -87,6 +96,8 @@ int main(int argc, char *argv[])
 
         Conn = new TcpConnection();
         Conn->onError(mError);
+
+        // TODO: 增加一个loop参数
         tAc->onAccept(
             Conn, (struct sockaddr *) &rservaddr, &addrlen, onConnection, Conn);
         // 运行

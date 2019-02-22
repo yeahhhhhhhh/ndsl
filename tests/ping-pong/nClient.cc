@@ -54,12 +54,18 @@ class Session
   private:
     static void onMessage(void *pthis)
     {
+        // LOG(LOG_ERROR_LEVEL, mlog, "onMessage");
+
         Session *pThis = static_cast<Session *>(pthis);
         pThis->messagesRead_++;
         pThis->bytesRead_ += pThis->len;
         pThis->bytesWritten_ += pThis->len;
 
-        int n;
+        // 循环注册onRecv
+        int n = pThis->conn_->onRecv(buf, &(pThis->len), 0, onMessage, pThis);
+        if (n < 0) { LOG(LOG_ERROR_LEVEL, mlog, "regist onRecv error"); }
+
+        // int n;
         if ((n = pThis->conn_->onSend(buf, pThis->len, 0, NULL, NULL)) < 0) {
             LOG(LOG_ERROR_LEVEL, mlog, "send fail");
         }

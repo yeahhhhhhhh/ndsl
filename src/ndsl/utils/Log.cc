@@ -54,7 +54,11 @@ class Filelog
         if (m_file == -1)
             printf("unable to open %s, error = %d\n", path, errno);
     }
-    void log(const char *data, size_t size) { ::write(m_file, data, size); }
+    void log(const char *data, size_t size)
+    {
+        int n = ::write(m_file, data, size);
+        if (n < 0) {}
+    }
 };
 
 ////

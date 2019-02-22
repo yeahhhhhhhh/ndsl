@@ -58,8 +58,6 @@ int TcpConnection::onSend(
                 LOG_SOURCE_TCPCONNECTION,
                 "TcpConnection::onSend write complete");
             if (cb != NULL) cb(param);
-            // 释放掉buf占用的空间 TODO: 暂时注释
-            // if (buf != NULL) free(buf);
             return S_OK;
         } else if (n < 0) {
             // 出错 通知用户
@@ -70,8 +68,6 @@ int TcpConnection::onSend(
                 "TcpConnection::onSend send error");
             // printf("errno = %d\n%s\n", errno, strerror(errno));
             if (NULL != errorHandle_) errorHandle_(errno, pTcpChannel_);
-            // 释放掉buf占用的空间 TODO: 暂时注释
-            // if (buf != NULL) free(buf);
             return S_FALSE;
         }
 
@@ -188,15 +184,15 @@ int TcpConnection::onRecv(
                 isOK = -1;
             }
         } else {
-            // LOG(LOG_INFO_LEVEL,
-            //     LOG_SOURCE_TCPCONNECTION,
-            //     "recv complete\n");
-
+            // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "recv complete\n");
             (*len) = n;
             // 一次性读完之后通知用户
             if (cb != NULL) cb(param);
+            return S_OK;
         }
     }
+
+    // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "regist recv info");
 
     // 因为一直epollIn语义 所以无论怎样都得保存用户信息
     RecvInfo_.readBuf_ = buf;
@@ -213,7 +209,13 @@ int TcpConnection::onRecv(
 int TcpConnection::handleRead(void *pthis)
 {
     // printf("TcpConnection::handleRead!\n");
-    TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
+    TcpConnection *pThis;
+
+    if (NULL != pthis)
+        pThis = static_cast<TcpConnection *>(pthis);
+    else
+        return S_FALSE;
+
     if (pThis->RecvInfo_.recvInUse_) {
         int sockfd = pThis->pTcpChannel_->getFd();
         if (sockfd < 0) { return S_FALSE; }
@@ -237,13 +239,15 @@ int TcpConnection::handleRead(void *pthis)
                     "TcpConnection::handleRead recv fail");
                 if (NULL != pThis->errorHandle_)
                     pThis->errorHandle_(errno, pThis->pTcpChannel_);
-                (*pThis->RecvInfo_.len_) = n;
+                // (*pThis->RecvInfo_.len_) = n;
                 return S_FALSE;
             } else if (n == 0) {
                 LOG(LOG_ERROR_LEVEL,
                     LOG_SOURCE_TCPCONNECTION,
                     "TcpConnection::handleRead peer closed");
-                close(sockfd);
+                (*pThis->RecvInfo_.len_) = 0;
+                pThis->RecvInfo_.recvInUse_ = false;
+                // close(sockfd);
                 return S_OK;
             }
 
@@ -255,8 +259,9 @@ int TcpConnection::handleRead(void *pthis)
             //     "TcpConnection::handleRead recv complete");
 
             // 完成数据读取之后通知mul
-            if (pThis->RecvInfo_.cb_ != NULL)
+            if (pThis->RecvInfo_.cb_ != NULL) {
                 pThis->RecvInfo_.cb_(pThis->RecvInfo_.param_);
+            }
         }
     }
 
