@@ -41,7 +41,6 @@ int main()
         LOG(LOG_INFO_LEVEL,
             LOG_SOURCE_MULTIPLEXER,
             "already build multiplexer to server\n");
-    printf("multi = %p\n", hp->multi2s);
 
     // 准备接收来自浏览器的连接
     struct SocketAddress4 proservaddr("0.0.0.0", 8080);
@@ -54,7 +53,6 @@ int main()
 
     TcpConnection *conn2c = new TcpConnection(); // TODO:内存释放
     hp->con2c = conn2c;
-    printf("con2c = %p\n", conn2c);
     hp->map = Httphandler::getMap();
     hp->tAc = tAc;
     tAc->onAccept(

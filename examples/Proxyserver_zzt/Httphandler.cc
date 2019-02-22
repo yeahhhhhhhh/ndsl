@@ -42,7 +42,7 @@ void Httphandler::beginProxy(void *para)
     socklen_t addrlen;
     TcpConnection *conn2c = new TcpConnection(); // TODO: 内存释放
     hp->con2c = conn2c;
-    printf("con2c = %p\n", conn2c);
+    // printf("con2c = %p\n", conn2c);
     hp->map = Httphandler::getMap();
     hp->tAc = p->tAc;
     hp->tAc->onAccept(
@@ -56,13 +56,17 @@ void Httphandler::beginProxy(void *para)
 // 解析从客户端发来的http报文
 void Httphandler::disposeClientMsg(void *para)
 {
-    printf("int the disposeclientMsg fun\n");
+    // printf("int the disposeclientMsg fun\n");
     struct hpara *hp = reinterpret_cast<struct hpara *>(para);
     LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "\nClientMsg = \n%s", hp->clientbuf);
     LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "rlen = %lu\n", hp->readlen);
 
     if (strstr(hp->clientbuf, "Referer") != NULL) {
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "丢弃Referer\n");
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "丢弃referer消息\n");
+        return;
+    }
+    if (strstr(hp->clientbuf, "num1=") == NULL) {
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "丢弃无法处理消息\n");
         return;
     }
     // 得到第一个参数
@@ -84,7 +88,9 @@ void Httphandler::disposeClientMsg(void *para)
 
     if (hp->clientbuf != NULL) {
         delete hp->clientbuf;
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "delete clientbuf\n");
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_ENTITY,
+            "finish read,delete clientbuf\n");
     }
 
     static int id = 1;
@@ -108,14 +114,34 @@ void Httphandler::disposeClientMsg(void *para)
         mp->pthis = hp->multi2s;
         Multiplexer::insert((void *) mp);
 
-        std::map<int, TcpConnection *>::iterator iter =
-            hp->map->lower_bound(mp->id);
+        std::map<int, TcpConnection *>::iterator iter = hp->map->find(mp->id);
+        // printf("hp->enMap = %p\n", hp->map);
+        if (iter == hp->map->end()) {
+            std::pair<std::map<int, TcpConnection *>::iterator, bool>
+                Insert_Pair;
+            LOG(LOG_INFO_LEVEL,
+                LOG_SOURCE_ENTITY,
+                "before insert:con2c = %p\n",
+                hp->con2c);
+            Insert_Pair = hp->map->insert(std::make_pair(mp->id, hp->con2c));
+            if (Insert_Pair.second == 1)
+                LOG(LOG_INFO_LEVEL,
+                    LOG_SOURCE_ENTITY,
+                    "success insert entityMap, con2c=%p\n",
+                    Insert_Pair.first->second);
 
-        printf("hp->enMap = %p\n", hp->map);
-        if (iter == hp->map->end() || iter->first != mp->id) {
-            hp->map->insert(std::make_pair(mp->id, hp->con2c));
+            else
+                LOG(LOG_INFO_LEVEL,
+                    LOG_SOURCE_ENTITY,
+                    "Failure : insert entityMap\n");
         }
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "insert entityMap\n");
+
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "id = %d\n", id);
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_ENTITY,
+            "after insert:con2c = %p\n",
+            hp->con2c);
+        id++;
 
         hp->multi2s->sendMessage(1, mlen, pstr.c_str());
         if (addmessage != NULL) {
@@ -123,10 +149,6 @@ void Httphandler::disposeClientMsg(void *para)
             LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "delete addmessage\n");
         }
     }
-
-    id++;
-    LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "id = %d\n", id);
-    LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "con2c = %p\n", hp->con2c);
 }
 
 // 解析从服务器端发来的消息
@@ -137,20 +159,29 @@ void Httphandler::disposeServerMsg(
     int error)
 {
     TcpConnection *conec2c = NULL;
-    Protbload::RESULT *resultmessage = new Protbload::RESULT;
+    Protbload::RESULT *resultmessage =
+        new Protbload::RESULT; // 在函数末尾释放内存
     resultmessage->ParseFromString(data);
-    printf("result==%d \n", resultmessage->answer());
     entityMap *map = Httphandler::getMap();
-    printf("enMap = %p\n", map);
     std::map<int, TcpConnection *>::iterator iter =
         map->find(resultmessage->id());
-    printf("id = %d\n", resultmessage->id());
+    // printf("id = %d\n", resultmessage->id());
     if (iter != map->end()) {
         conec2c = iter->second;
-        printf("con2c = %p\n", iter->second);
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_ENTITY,
+            "disposeServerMsg即将发送到con2c = %p\n",
+            iter->second);
+    } else {
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_ENTITY,
+            "cannot find the connection of id=%d\n",
+            resultmessage->id());
+        return;
     }
+
     std::string s = std::to_string(resultmessage->answer());
-    printf("result==%d \n", resultmessage->answer());
+    // printf("result==%d \n", resultmessage->answer());
     // conec2c->onSend((void *) (s.c_str()), s.size(), 0, NULL, NULL);
     std::string str = "HTTP/1.0 200 "
                       "OK\r\nContent-type:text/"
@@ -159,9 +190,22 @@ void Httphandler::disposeServerMsg(
     str += "Content-Length: " + std::to_string(s.size()) + "\r\n\r\n";
     str += s;
 
-    printf("%s\n", str.c_str());
+    // printf("%s\n", str.c_str());
     conec2c->onSend((void *) (str.c_str()), str.size(), 0, NULL, NULL);
-    // conec2c->onSend((void *) (s.c_str()), s.size(), 0, NULL, NULL);
+
+    map->erase(iter);
+    if (resultmessage != NULL) {
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_ENTITY,
+            "erase id=%d\n",
+            resultmessage->id());
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_ENTITY,
+            "the size of map is %d\n",
+            map->size());
+        delete resultmessage;
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "delete resultmessage\n");
+    }
 }
 
 entityMap *Httphandler::getMap()
