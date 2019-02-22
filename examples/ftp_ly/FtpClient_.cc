@@ -34,7 +34,6 @@ int serverid = 21;
 // int sockfd;
 // EventLoop loop;
 
-
 static void clientcallback(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
     Protbload::RESULT *resultmessage = new Protbload::RESULT;
@@ -45,15 +44,17 @@ static void clientcallback(Multiplexer *Multiplexer, char *data, int len, int er
 int main(int argc,char **argv)
 {
     set_ndsl_log_sinks(LOG_SOURCE_ALL, LOG_OUTPUT_TER);
-    if(argc < 1){
-        fprintf(stderr,"Usage: %s <address>\n",argv[0]);
+    if(argc < 2){
+        fprintf(stderr,"Usage: <address>\n");
     }else{  
         //初始化EPOLL
         EventLoop loop;
         loop.init();
         //地址结构
-        struct SocketAddress4 servaddr(
-            argv[1],static_cast<unsigned short>(21));
+        // struct SocketAddress4 servaddr(
+        //  argv[1],static_cast<unsigned short>(21));
+        //struct SocketAddress4 servaddr(argv[1],21);
+        struct SocketAddress4 servaddr(argv[1],static_cast<unsigned short>(atoi(argv[2])));
         // start a client
         TcpConnection *conn;
         TcpClient* pCli = new TcpClient();
