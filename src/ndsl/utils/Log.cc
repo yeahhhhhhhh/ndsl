@@ -97,39 +97,41 @@ void ndsl_log_into_sink(
     const char *format,
     ...)
 {
-    ndsl::utils::TimeStamp ts;
-    char buffer[4096] = {0};
+    if (source & _sinks) {
+        ndsl::utils::TimeStamp ts;
+        char buffer[4096] = {0};
 
-    ts.now();
-    buffer[0] = '[';
-    ts.to_string(buffer + 1, 4096);
-    int ret1 = ::strlen(buffer);
+        ts.now();
+        buffer[0] = '[';
+        ts.to_string(buffer + 1, 4096);
+        int ret1 = ::strlen(buffer);
 
-    buffer[ret1] = ']';
+        buffer[ret1] = ']';
 
-    const char *ptr = strrchr(file_name, '/');
+        const char *ptr = strrchr(file_name, '/');
 
-    int ret2 = sprintf(
-        buffer + ret1 + 1,
-        " lv=%d pid=%d tid=%lx  %s  %s ",
-        level,
-        ::getpid(),
-        (long) ::pthread_self(),
-        // file_name,
-        ptr + 1,
-        func_name); // 毫秒
+        int ret2 = sprintf(
+            buffer + ret1 + 1,
+            " lv=%d pid=%d tid=%lx  %s  %s ",
+            level,
+            ::getpid(),
+            (long) ::pthread_self(),
+            // file_name,
+            ptr + 1,
+            func_name); // 毫秒
 
-    // 复制数据
-    va_list ap;
-    va_start(ap, format);
-    int ret3 =
-        vsnprintf(buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
-    if (ret3 < 0) return;
+        // 复制数据
+        va_list ap;
+        va_start(ap, format);
+        int ret3 = vsnprintf(
+            buffer + ret1 + ret2 + 1, 512 - ret1 - ret2 - 1, format, ap);
+        if (ret3 < 0) return;
 
-    if ((source & _sinks) && (tag == 0)) printf("%s\n", buffer);
+        if ((source & _sinks) && (tag == 0)) printf("%s\n", buffer);
 
-    if ((source & _sinks) && (tag == 1)) {
-        buffer[ret1 + ret2 + ret3 + 1] = '\n';
-        file_log.log(buffer, ret1 + ret2 + ret3 + 2);
+        if ((source & _sinks) && (tag == 1)) {
+            buffer[ret1 + ret2 + ret3 + 1] = '\n';
+            file_log.log(buffer, ret1 + ret2 + ret3 + 2);
+        }
     }
 }

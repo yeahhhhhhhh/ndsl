@@ -35,21 +35,26 @@ int BaseChannel::handleEvent()
     // epoll_wait(2)  will always wait for this event; it is not
     // necessary to set it in events.
 
-    if ((revents_ & EPOLLIN) && (revents_ & EPOLLHUP)) {
-        // printf("BaseChannel::handleEvent receive EPOLLHUP\n");
-        close(fd_);
-    } else if ((revents_ & EPOLLIN) && (revents_ & EPOLLRDHUP)) {
-        // printf("BaseChannel::handleEvent receive EPOLLRDHUP\n");
-        close(fd_);
-    } else if ((revents_ & EPOLLIN) && (revents_ & EPOLLERR)) {
-        // printf("BaseChannel::handleEvent receive EPOLLERR\n");
-        close(fd_);
-    } else if (revents_ & EPOLLIN) {
-        // printf("BaseChannel::handleEvent EPOLLIN\n");
-        if (handleRead_) handleRead_(pThis_);
-    }
+    // FIXME: 这个fd在哪close还得协商 是不是没必要实现
+    // if ((revents_ & EPOLLIN) && (revents_ & EPOLLHUP)) {
+    //     printf("BaseChannel::handleEvent receive EPOLLHUP\n");
+    //     // close(fd_);
+    // } else if ((revents_ & EPOLLIN) && (revents_ & EPOLLRDHUP)) {
+    //     printf("BaseChannel::handleEvent receive EPOLLRDHUP\n");
+    //     // close(fd_);
+    // } else if ((revents_ & EPOLLIN) && (revents_ & EPOLLERR)) {
+    //     printf("BaseChannel::handleEvent receive EPOLLERR\n");
+    //     // close(fd_);
+    // } else if (revents_ & EPOLLIN) {
+    //     printf("BaseChannel::handleEvent EPOLLIN\n");
+    //     if (handleRead_) handleRead_(pThis_);
+    // } else if (revents_ & EPOLLOUT) {
+    //     if (handleWrite_) handleWrite_(pThis_);
+    // }
 
-    else if (revents_ & EPOLLOUT) {
+    if (revents_ & EPOLLIN) {
+        if (handleRead_) handleRead_(pThis_);
+    } else if (revents_ & EPOLLOUT) {
         if (handleWrite_) handleWrite_(pThis_);
     }
 

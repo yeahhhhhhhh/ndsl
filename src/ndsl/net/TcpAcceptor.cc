@@ -29,8 +29,6 @@ TcpAcceptor::TcpAcceptor(EventLoop *pLoop)
     cb_ = NULL;
 }
 
-TcpAcceptor::~TcpAcceptor() { delete pTcpChannel_; }
-
 // 测试专用构造函数
 TcpAcceptor::TcpAcceptor(Callback cb, EventLoop *pLoop)
     : listenfd_(-1)
@@ -39,6 +37,12 @@ TcpAcceptor::TcpAcceptor(Callback cb, EventLoop *pLoop)
     , cb_(cb)
 {
     info.inUse_ = false;
+}
+
+TcpAcceptor::~TcpAcceptor()
+{
+    pTcpChannel_->erase();
+    delete pTcpChannel_;
 }
 
 int TcpAcceptor::setInfo(
@@ -88,14 +92,9 @@ int TcpAcceptor::createAndListen(struct SocketAddress4 servaddr)
         return S_FALSE;
     }
 
-    // 在这初始化 IP+PORT
-    // struct SocketAddress4 servaddr;
-
     // 设置非阻塞
     fcntl(listenfd_, F_SETFL, O_NONBLOCK);
     // setsockopt(listenfd_, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
-
-    // servaddr.setPort(SERV_PORT);
 
     if (-1 ==
         bind(listenfd_, (struct sockaddr *) &servaddr, sizeof(servaddr))) {

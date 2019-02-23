@@ -18,7 +18,7 @@ TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
 TcpChannel::~TcpChannel()
 {
     // 将自身从eventloop上面删掉
-    erase();
+    // erase();
 }
 
 } // namespace net

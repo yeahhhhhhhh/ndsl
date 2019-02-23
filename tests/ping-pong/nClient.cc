@@ -27,13 +27,11 @@ using namespace net;
 using namespace utils;
 
 class Client;
-char *buf; // 接收数据的地址
 uint64_t mlog;
 
 class Session
 {
   public:
-    // Session *session = new Session(threadPool_.getNextLoop(), this);
     Session(EventLoop *loop, Client *owner)
         : client_() // 在这初始化的TcpClient
         , loop_(loop)
@@ -41,7 +39,10 @@ class Session
         , bytesRead_(0)
         , bytesWritten_(0)
         , messagesRead_(0)
+        , buf_(NULL)
+        , isStop_(false)
     {}
+    ~Session() { free(buf_); }
 
     void start();
 
@@ -54,25 +55,28 @@ class Session
   private:
     static void onMessage(void *pthis)
     {
-        // LOG(LOG_ERROR_LEVEL, mlog, "onMessage");
-
         Session *pThis = static_cast<Session *>(pthis);
+
         pThis->messagesRead_++;
-        pThis->bytesRead_ += pThis->len;
-        pThis->bytesWritten_ += pThis->len;
+        pThis->bytesRead_ += pThis->len_;
+        pThis->bytesWritten_ += pThis->len_;
 
-        // 循环注册onRecv
-        int n = pThis->conn_->onRecv(buf, &(pThis->len), 0, onMessage, pThis);
-        if (n < 0) { LOG(LOG_ERROR_LEVEL, mlog, "regist onRecv error"); }
-
-        // int n;
-        if ((n = pThis->conn_->onSend(buf, pThis->len, 0, NULL, NULL)) < 0) {
+        int n;
+        if ((n = pThis->conn_->onSend(
+                 pThis->buf_, pThis->len_, 0, NULL, NULL)) < 0) {
             LOG(LOG_ERROR_LEVEL, mlog, "send fail");
+        }
+
+        if (!(pThis->isStop_)) {
+            // 循环注册onRecv
+            n = pThis->conn_->onRecv(
+                pThis->buf_, &(pThis->len_), 0, onMessage, pThis);
+            if (n < 0) { LOG(LOG_ERROR_LEVEL, mlog, "regist onRecv error"); }
         }
     }
 
   public:
-    ssize_t len;
+    ssize_t len_;
     TcpClient client_;
     EventLoop *loop_;
     TcpConnection *conn_;
@@ -80,12 +84,13 @@ class Session
     int64_t bytesRead_;
     int64_t bytesWritten_;
     int64_t messagesRead_;
+    char *buf_;
+    bool isStop_;
 };
 
 class Client
 {
   public:
-    // Client client(threadPool, blockSize, sessionCount, timeout);
     Client(
         EventLoop *loop,
         ELThreadpool *threadPool,
@@ -104,7 +109,7 @@ class Client
         numConnected_ = 0;
 
         // new出数据需要的空间
-        message_ = (char *) malloc(sizeof(char) * blockSize);
+        message_ = (char *) malloc(sizeof(char) * (blockSize + 1));
 
         // 准备发送的数据
         for (int i = 0; i < blockSize; ++i) {
@@ -116,25 +121,27 @@ class Client
         for (int i = 0; i < sessionCount; ++i) {
             Session *session =
                 new Session(threadPool_->getNextEventLoop(), this);
+            session->buf_ = (char *) malloc(sizeof(char) * 16384);
             sessions_.push_back(session);
             session->start();
         }
     }
-
-    const char *message() const { return message_; }
+    ~Client()
+    {
+        // 关闭定时器 释放资源
+        time_->stop();
+        delete time_;
+    }
 
     void onConnect()
     {
         // 等所有链接都建立之后 设置定时器 发送数据
         if ((++numConnected_) == sessionCount_) {
-            // 提示所有链接已建立
-            // LOG(LOG_INFO_LEVEL, mlog, "all connected");
-
             // 初始化定时器
-            TimeWheel *time = new TimeWheel(loop_);
+            time_ = new TimeWheel(loop_);
 
             // 开始时间轮
-            time->start();
+            time_->start();
 
             // 初始化定时器任务
             TimeWheel::Task *t = new TimeWheel::Task;
@@ -143,8 +150,8 @@ class Client
             t->doit = handleTimeout;
             t->param = this;
 
-            // 添加任务
-            time->addTask(t);
+            // FIXME: 添加任务 task回收任务交给time处理
+            time_->addTask(t);
 
             for (vector<Session *>::iterator it = sessions_.begin();
                  it != sessions_.end();
@@ -157,6 +164,8 @@ class Client
                         LOG(LOG_ERROR_LEVEL, mlog, "send fail");
                 }
             }
+
+            free(message_);
         }
     }
 
@@ -167,12 +176,18 @@ class Client
 
             int64_t totalBytesRead = 0;
             int64_t totalMessagesRead = 0;
-            for (vector<Session *>::iterator it = sessions_.begin();
-                 it != sessions_.end();
-                 ++it) {
-                totalBytesRead += (*it)->bytesRead();
-                totalMessagesRead += (*it)->messagesRead();
+
+            for (Session *it : sessions_) {
+                totalBytesRead += it->bytesRead();
+                totalMessagesRead += it->messagesRead();
+
+                delete it;
             }
+
+            // 清空及释放内存
+            sessions_.clear();
+            vector<Session *>().swap(sessions_);
+
             LOG(LOG_INFO_LEVEL,
                 mlog,
                 "%lf MiB/s throughput\n",
@@ -186,30 +201,33 @@ class Client
             // LOG_WARN << static_cast<double>(totalBytesRead) /
             //                 (timeout_ * 1024 * 1024)
             //          << " MiB/s throughput";
-
-            // toEnd = true;
         }
     }
 
   private:
     static void handleTimeout(void *pthis)
     {
-        // LOG(LOG_INFO_LEVEL, mlog, "handleTimeout");
-
         Client *pThis = static_cast<Client *>(pthis);
 
-        pThis->loop_->quit();
-
         // 关闭每个链接
-        for (vector<Session *>::iterator it = pThis->sessions_.begin();
-             it != pThis->sessions_.end();
-             ++it) {
-            (*it)->conn_->pTcpChannel_->erase();
-            (*it)->stop();
+        for (Session *it : pThis->sessions_) {
+            // 从loop上移除自身
+            it->conn_->pTcpChannel_->erase();
+
+            // 停止继续发送消息
+            it->isStop_ = true;
         }
 
         // 关闭线程池
         pThis->threadPool_->quit();
+
+        // 关闭每个链接
+        for (Session *it : pThis->sessions_) {
+            // 断开链接
+            it->stop();
+        }
+
+        pThis->loop_->quit();
     }
 
     EventLoop *loop_;
@@ -219,8 +237,8 @@ class Client
     int timeout_;
     vector<Session *> sessions_;
     char *message_;
-    // 原子操作 C++支持的
     atomic_int numConnected_;
+    TimeWheel *time_;
 
   public:
     struct SocketAddress4 *servaddr_;
@@ -228,12 +246,12 @@ class Client
 
 void Session::start()
 {
-    // 阻塞建立连接 建立好的之后调用client的onConnect
+    // 阻塞建立连接
     conn_ = client_.onConnect(loop_, false, owner_->servaddr_);
 
     if (conn_ == NULL) { LOG(LOG_ERROR_LEVEL, mlog, "start onConnect fail"); }
     //将自身的recv函数注册进去
-    if (conn_ != NULL) conn_->onRecv(buf, &len, 0, onMessage, this);
+    if (conn_ != NULL) conn_->onRecv(buf_, &len_, 0, onMessage, this);
 
     if (conn_ != NULL) owner_->onConnect();
 }
@@ -246,8 +264,8 @@ void Session::stop()
 
 int main(int argc, char *argv[])
 {
-    mlog = add_source();
-    set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
+    // mlog = add_source();
+    // set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
     if (argc != 7) {
         LOG(LOG_ERROR_LEVEL,
             mlog,
@@ -255,32 +273,30 @@ int main(int argc, char *argv[])
             "<sessions> "
             "<time>");
     } else {
-        struct SocketAddress4 *servaddr = new struct SocketAddress4(
+        struct SocketAddress4 servaddr(
             argv[1], static_cast<unsigned short>(atoi(argv[2])));
+
         int threadCount = atoi(argv[3]);
         int blockSize = atoi(argv[4]);
         int sessionCount = atoi(argv[5]);
         int timeout = atoi(argv[6]);
 
         // 新开loop放定时器
-        EventLoop *loop = new EventLoop;
-        loop->init();
+        EventLoop loop;
+        loop.init();
 
         // 初始化线程池 设置线程
-        ELThreadpool *threadPool = new ELThreadpool();
-        threadPool->setMaxThreads(threadCount);
+        ELThreadpool threadPool;
+        threadPool.setMaxThreads(threadCount);
 
         // 在线程里new一个EventLoop
-        threadPool->start();
-
-        // 将buf的空间new出来 Memory leak
-        buf = (char *) malloc(sizeof(char) * blockSize);
+        threadPool.start();
 
         Client client(
-            loop, threadPool, blockSize, sessionCount, timeout, servaddr);
+            &loop, &threadPool, blockSize, sessionCount, timeout, &servaddr);
 
         // 开启定时器
-        EventLoop::loop(loop);
+        EventLoop::loop(&loop);
     }
 
     return 0;

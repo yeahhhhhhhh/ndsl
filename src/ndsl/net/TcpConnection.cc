@@ -27,7 +27,11 @@ TcpConnection::TcpConnection()
     , pTcpChannel_(NULL)
 {}
 
-TcpConnection::~TcpConnection() {}
+TcpConnection::~TcpConnection()
+{
+    pTcpChannel_->setCallBack(NULL, NULL, NULL);
+    delete pTcpChannel_;
+}
 
 int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
@@ -54,34 +58,29 @@ int TcpConnection::onSend(
         ssize_t n = send(sockfd, buf, len, flags | MSG_NOSIGNAL);
         if (n == len) {
             // 写完 通知用户
-            LOG(LOG_INFO_LEVEL,
-                LOG_SOURCE_TCPCONNECTION,
-                "TcpConnection::onSend write complete");
+            // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "write complete");
             if (cb != NULL) cb(param);
             return S_OK;
         } else if (n < 0) {
             // 出错 通知用户
             // if (errno != EAGAIN || errno != EWOULDBLOCK) {}
             // printf("errno = %d\nstr = %s\n", errno, strerror(errno));
-            LOG(LOG_ERROR_LEVEL,
-                LOG_SOURCE_TCPCONNECTION,
-                "TcpConnection::onSend send error");
+            LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "send error");
             // printf("errno = %d\n%s\n", errno, strerror(errno));
             if (NULL != errorHandle_) errorHandle_(errno, pTcpChannel_);
             return S_FALSE;
         }
 
-        LOG(LOG_INFO_LEVEL,
-            LOG_SOURCE_TCPCONNECTION,
-            "TcpConnection::onSend send for next time\n");
+        // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "send for next
+        // time\n");
+
         pInfo tsi = new Info;
         tsi->offset_ = n;
         tsi->sendBuf_ = (void *) buf;
         tsi->readBuf_ = NULL;
 
-        // TODO: memory leak
         tsi->len_ = new ssize_t;
-        (*tsi->len_) = len;
+        *(tsi->len_) = len;
 
         tsi->flags_ = flags | MSG_NOSIGNAL;
         tsi->cb_ = cb;
@@ -117,12 +116,11 @@ int TcpConnection::handleWrite(void *pthis)
                 if (tsi->cb_ != NULL) tsi->cb_(tsi->param_);
                 pThis->qSendInfo_.pop();
 
-                LOG(LOG_INFO_LEVEL,
-                    LOG_SOURCE_TCPCONNECTION,
-                    "TcpConnection::handleWrite send complete\n");
+                // LOG(LOG_INFO_LEVEL,
+                //     LOG_SOURCE_TCPCONNECTION,
+                //     "send complete\n");
 
-                // 释放掉buf占用的空间 TODO: 暂时注释
-                // if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
+                delete tsi->len_;
                 delete tsi; // 删除申请的内存
             } else if (n == 0) {
                 // 发送缓冲区满 等待下一次被调用
@@ -142,8 +140,7 @@ int TcpConnection::handleWrite(void *pthis)
             // 将事件从队列中移除
             pThis->qSendInfo_.pop();
 
-            // 释放掉buf占用的空间 TODO: 暂时注释
-            // if (tsi->sendBuf_ != NULL) free(tsi->sendBuf_);
+            delete tsi->len_;
             delete tsi;
 
             return S_FALSE;
@@ -162,19 +159,19 @@ int TcpConnection::onRecv(
     Callback cb,
     void *param)
 {
+    // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "onRecv");
+
     // 作为下面recv接收的临时量，直接用(*len)接收会变成2^64-1 不知道为什么
     // 答案1：是flag参数的问题
     ssize_t n;
-    int isOK = 0;
+    int isOK = 1;
 
     if (NULL != pTcpChannel_) {
         int sockfd = pTcpChannel_->getFd();
 
         if ((n = recv(sockfd, buf, MAXLINE, flags | MSG_NOSIGNAL)) < 0) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                // LOG(LOG_INFO_LEVEL,
-                //     LOG_SOURCE_TCPCONNECTION,
-                //     "EAGAIN\n");
+                // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "EAGAIN\n");
             } else {
                 // 出错 回调用户
                 LOG(LOG_ERROR_LEVEL,
@@ -182,13 +179,14 @@ int TcpConnection::onRecv(
                     "recv error can not deal");
                 if (NULL != errorHandle_) errorHandle_(errno, pTcpChannel_);
                 isOK = -1;
+                return isOK;
             }
         } else {
             // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "recv complete\n");
             (*len) = n;
             // 一次性读完之后通知用户
             if (cb != NULL) cb(param);
-            return S_OK;
+            return isOK;
         }
     }
 
@@ -234,29 +232,29 @@ int TcpConnection::handleRead(void *pthis)
                      MAXLINE,
                      pThis->RecvInfo_.flags_)) < 0) {
                 // 出错
-                LOG(LOG_ERROR_LEVEL,
-                    LOG_SOURCE_TCPCONNECTION,
-                    "TcpConnection::handleRead recv fail");
+                LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "recv fail");
                 if (NULL != pThis->errorHandle_)
                     pThis->errorHandle_(errno, pThis->pTcpChannel_);
-                // (*pThis->RecvInfo_.len_) = n;
                 return S_FALSE;
             } else if (n == 0) {
-                LOG(LOG_ERROR_LEVEL,
-                    LOG_SOURCE_TCPCONNECTION,
-                    "TcpConnection::handleRead peer closed");
+                // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "peer
+                // closed");
                 (*pThis->RecvInfo_.len_) = 0;
                 pThis->RecvInfo_.recvInUse_ = false;
-                // close(sockfd);
+
+                if (NULL != pThis->errorHandle_)
+                    pThis->errorHandle_(errno, pThis->pTcpChannel_);
+
+                printf("%d\n%s\n", errno, strerror(errno));
+
+                close(sockfd);
                 return S_OK;
             }
 
             (*pThis->RecvInfo_.len_) = n;
             pThis->RecvInfo_.recvInUse_ = false;
 
-            // LOG(LOG_INFO_LEVEL,
-            //     LOG_SOURCE_TCPCONNECTION,
-            //     "TcpConnection::handleRead recv complete");
+            // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "recv complete");
 
             // 完成数据读取之后通知mul
             if (pThis->RecvInfo_.cb_ != NULL) {

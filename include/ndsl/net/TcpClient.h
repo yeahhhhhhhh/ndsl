@@ -19,8 +19,8 @@ class TcpClient
     TcpClient();
     ~TcpClient();
 
-    int sockfd_; // 保存sockfd
-    // EventLoop *loop_; // 保存EventLoop
+    int sockfd_;          // 保存sockfd
+    TcpConnection *conn_; // 保存用于释放内存
 
     // 与服务器建立连接
     TcpConnection *onConnect(

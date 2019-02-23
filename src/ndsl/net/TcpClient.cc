@@ -20,7 +20,10 @@
 namespace ndsl {
 namespace net {
 
-TcpClient::TcpClient() {}
+TcpClient::TcpClient()
+    : sockfd_(0)
+    , conn_(NULL)
+{}
 TcpClient::~TcpClient() {}
 
 TcpConnection *TcpClient::onConnect(
@@ -29,11 +32,6 @@ TcpConnection *TcpClient::onConnect(
     struct SocketAddress4 *servaddr)
 {
     sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
-
-    // struct SocketAddress4 servaddr;
-    // servaddr.setPort(SERV_PORT);
-
-    // inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 
     // 设成非阻塞
     if (isConnNoBlock) fcntl(sockfd_, F_SETFL, O_NONBLOCK);
@@ -51,23 +49,26 @@ TcpConnection *TcpClient::onConnect(
     if (!isConnNoBlock) fcntl(sockfd_, F_SETFL, O_NONBLOCK);
 
     // 创建一个TcpConnection
-    TcpConnection *conn = new TcpConnection();
-    if (NULL == conn) {
+    conn_ = new TcpConnection();
+    if (NULL == conn_) {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCLIENT, "new TcpConnection fail");
         return NULL;
     }
 
-    if ((n = conn->createChannel(sockfd_, loop)) < 0) {
+    if ((n = conn_->createChannel(sockfd_, loop)) < 0) {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCLIENT, "createChannel fail");
         return NULL;
     }
 
-    return conn;
+    return conn_;
 }
 
 int TcpClient::disConnect()
 {
     shutdown(sockfd_, SHUT_WR);
+
+    // 释放内存
+    delete conn_;
     return S_OK;
 }
 

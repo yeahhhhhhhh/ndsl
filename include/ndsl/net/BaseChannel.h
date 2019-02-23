@@ -20,7 +20,7 @@ class BaseChannel : public Channel
   private:
     int fd_; // sockfd
 
-    void *pThis_; // 存储上层的this Connecion Accept
+    void *pThis_; // 存储上层的this Connecion Acceptor
 
     // 定义handleRead handleWrite函数指针原型
     using ChannelCallBack = int (*)(void *);
