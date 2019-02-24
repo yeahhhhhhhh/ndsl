@@ -8,7 +8,7 @@
 #
 include_directories(${CMAKE_SOURCE_DIR}/include)
 # include_directories(/usr/include/libxml2)
-add_subdirectory(entitytest)
+# add_subdirectory(entitytest)
 
 # catch要求打开异常
 string(REGEX REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -21,7 +21,7 @@ set(TEST
     # All files
     # net/EpollTest.cc
     # net/EventLoopTest.cc
-    net/MultiplexerTest.cc
+    # net/MultiplexerTest.cc
 
     # net/PipeAndFifoTest.cc
     # net/SignalfdTest.cc
