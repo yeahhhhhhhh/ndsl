@@ -19,7 +19,6 @@ using entityMap = std::map<int, TcpConnection *>;
 struct hpara
 {
     char *clientbuf = NULL;
-
     TcpConnection *con2c;
     Multiplexer *multi2s;
     ssize_t readlen;
@@ -40,9 +39,11 @@ class Httphandler
   public:
     static void beginProxy(void *para);
     static void disposeClientMsg(void *para);
+    static void sendMsg2server(void *para);
     static void
     disposeServerMsg(Multiplexer *Multiplexer, char *data, int len, int error);
     static entityMap *getMap();
+    static Multiplexer *getMultiplexer();
     // static void connectGoalserver(void *para);
 };
 } // namespace net

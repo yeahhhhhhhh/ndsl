@@ -39,7 +39,7 @@ void AcceptCallback(void *para)
     TcpConnection *conn2c = (TcpConnection *) para;
     Multiplexer *smulti = new Multiplexer(conn2c);
     Entity *server = new Entity(1, servercallbak, smulti);
-    server->pri();
+    server->start();
 }
 
 int main()

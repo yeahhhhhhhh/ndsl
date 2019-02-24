@@ -94,63 +94,53 @@ void Httphandler::disposeClientMsg(void *para)
     }
 
     static int id = 1;
-    std::string pstr;
-    Protbload::ADD *addmessage = new Protbload::ADD; // 在本函数最后释放
+
+    Protbload::ADD *addmessage =
+        new Protbload::ADD; // 在sendMsg2server函数中释放
     addmessage->set_agv1(a);
     addmessage->set_agv2(b);
     addmessage->set_id(id);
-    addmessage->SerializeToString(&pstr);
-    int mlen = pstr.size();
 
     if (hp->multi2s != NULL) {
-        // Entity *myent =
-        //     new Entity(1, Httphandler::disposeServerMsg,
-        //     pa->conn->multi2s);
-        //     //TODO:这里有问题，对方消息都发回来了我的id还没有注册
-        // myent->pri();
-        struct para *mp = new struct para; // 在insert()中释放
-        mp->id = id;
-        mp->cb = Httphandler::disposeServerMsg;
-        mp->pthis = hp->multi2s;
-        Multiplexer::insert((void *) mp);
+        Entity *myent =
+            new Entity(id, Httphandler::disposeServerMsg, hp->multi2s);
+        std::pair<Protbload::ADD *, struct hpara *> Pair;
+        myent->start(Httphandler::sendMsg2server, (void *) addmessage);
 
-        std::map<int, TcpConnection *>::iterator iter = hp->map->find(mp->id);
+        std::map<int, TcpConnection *>::iterator iter = hp->map->find(id);
         // printf("hp->enMap = %p\n", hp->map);
         if (iter == hp->map->end()) {
             std::pair<std::map<int, TcpConnection *>::iterator, bool>
                 Insert_Pair;
-            LOG(LOG_INFO_LEVEL,
-                LOG_SOURCE_ENTITY,
-                "before insert:con2c = %p\n",
-                hp->con2c);
-            Insert_Pair = hp->map->insert(std::make_pair(mp->id, hp->con2c));
+            Insert_Pair = hp->map->insert(std::make_pair(id, hp->con2c));
             if (Insert_Pair.second == 1)
                 LOG(LOG_INFO_LEVEL,
                     LOG_SOURCE_ENTITY,
-                    "success insert entityMap, con2c=%p\n",
+                    "success insert entityMap, id= %d, con2c=%p\n",
+                    id,
                     Insert_Pair.first->second);
-
             else
                 LOG(LOG_INFO_LEVEL,
                     LOG_SOURCE_ENTITY,
                     "Failure : insert entityMap\n");
         }
-
-        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "id = %d\n", id);
-        LOG(LOG_INFO_LEVEL,
-            LOG_SOURCE_ENTITY,
-            "after insert:con2c = %p\n",
-            hp->con2c);
         id++;
-
-        hp->multi2s->sendMessage(1, mlen, pstr.c_str());
-        if (addmessage != NULL) {
-            delete addmessage;
-            LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "delete addmessage\n");
-        }
     }
 }
 
+void Httphandler::sendMsg2server(void *para)
+{
+    Protbload::ADD *addmessage = reinterpret_cast<Protbload::ADD *>(para);
+    std::string pstr;
+    addmessage->SerializeToString(&pstr);
+    int mlen = pstr.size();
+    Multiplexer *mul = Httphandler::getMultiplexer();
+    mul->sendMessage(1, mlen, pstr.c_str());
+    if (addmessage != NULL) {
+        delete addmessage;
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "delete addmessage\n");
+    }
+}
 // 解析从服务器端发来的消息
 void Httphandler::disposeServerMsg(
     Multiplexer *Multiplexer,
@@ -189,7 +179,6 @@ void Httphandler::disposeServerMsg(
     s = "the result is=" + s;
     str += "Content-Length: " + std::to_string(s.size()) + "\r\n\r\n";
     str += s;
-
     // printf("%s\n", str.c_str());
     conec2c->onSend((void *) (str.c_str()), str.size(), 0, NULL, NULL);
 
@@ -212,6 +201,30 @@ entityMap *Httphandler::getMap()
 {
     static entityMap *map = new entityMap;
     return map;
+}
+
+Multiplexer *Httphandler::getMultiplexer()
+{
+    static Multiplexer *multi2s = NULL;
+    if (multi2s != NULL) {
+        return multi2s;
+    } else {
+        entityMap *map = Httphandler::getMap();
+        std::map<int, TcpConnection *>::iterator iter = map->find(0);
+        if (iter != map->end()) {
+            multi2s = new Multiplexer(iter->second);
+            if (multi2s != NULL)
+                LOG(LOG_INFO_LEVEL,
+                    LOG_SOURCE_MULTIPLEXER,
+                    "already build multiplexer to server\n");
+            return multi2s;
+        } else {
+            LOG(LOG_ERROR_LEVEL,
+                LOG_SOURCE_MULTIPLEXER,
+                "no con2s in the entitymap\n");
+            return NULL;
+        }
+    }
 }
 
 /********** FIXME: 现在建立了到服务器的长连接，不需要这样处理了

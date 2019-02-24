@@ -12,6 +12,7 @@
  * @emial 429834658@qq.com
  **/
 #include <string.h>
+#include "ndsl/net/Entity.h"
 #include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/TcpChannel.h"
@@ -25,15 +26,21 @@ namespace net {
 // 在map中插入<id,callback>
 void Multiplexer::insert(void *pa)
 {
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "in the insert function\n");
     struct para *p = static_cast<struct para *>(pa);
     Multiplexer *pthis = p->pthis;
 
     Multiplexer::CallbackMap::iterator iter =
         pthis->cbMap_.lower_bound(p->id); // 返回map中第一个不小于id的迭代器指针
     if (iter == pthis->cbMap_.end() || iter->first != p->id) {
-        pthis->cbMap_.insert(std::make_pair(p->id, p->cb));
-    }
-    LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "success insert entity\n");
+        pthis->cbMap_.insert(std::make_pair(p->id, p->entity->cb_));
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "success insert entity\n");
+    } else
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_MULTIPLEXER,
+            "the entity of id=%d has already existed\n",
+            p->id);
+    if (p->entity->scb_ != NULL) { p->entity->scb_(p->entity->startcbparam_); }
     if (p != NULL) // 释放para
     {
         delete p;
@@ -42,11 +49,15 @@ void Multiplexer::insert(void *pa)
 }
 
 // 在loop工作队列中加入insert任务
-void Multiplexer::addInsertWork(int id, Callback cb)
+void Multiplexer::addInsertWork(int id, Entity *entity)
 {
+    LOG(LOG_INFO_LEVEL,
+        LOG_SOURCE_MULTIPLEXER,
+        "in the addInsertWork function\n");
+
     struct para *p = new para; // 在insert()中释放
     p->id = id;
-    p->cb = cb;
+    p->entity = entity;
     p->pthis = this;
 
     EventLoop::WorkItem *w1 = new EventLoop::WorkItem; // 在eventloop中释放
@@ -84,7 +95,7 @@ void Multiplexer::addRemoveWork(int id)
 {
     struct para *p = new para; // 在remove()中释放
     p->id = id;
-    p->cb = NULL;
+    p->entity = NULL;
     p->pthis = this;
 
     EventLoop::WorkItem *w2 = new EventLoop::WorkItem; // 在eventloop中释放

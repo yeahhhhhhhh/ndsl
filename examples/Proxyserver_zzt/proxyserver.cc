@@ -35,12 +35,21 @@ int main()
     if (conn2s != NULL)
         LOG(LOG_INFO_LEVEL, LOG_SOURCE_ENTITY, "already connect to server\n");
 
-    struct hpara *hp = new struct hpara;
-    hp->multi2s = new Multiplexer(conn2s);
-    if (hp->multi2s != NULL)
-        LOG(LOG_INFO_LEVEL,
-            LOG_SOURCE_MULTIPLEXER,
-            "already build multiplexer to server\n");
+    entityMap *map = Httphandler::getMap();
+    std::map<int, TcpConnection *>::iterator iter = map->find(0);
+    if (iter == map->end()) {
+        std::pair<std::map<int, TcpConnection *>::iterator, bool> Insert_Pair;
+        Insert_Pair = map->insert(std::make_pair(0, conn2s));
+        if (Insert_Pair.second == 1)
+            LOG(LOG_INFO_LEVEL,
+                LOG_SOURCE_ENTITY,
+                "success insert entityMap, con2s=%p\n",
+                Insert_Pair.first->second);
+        else
+            LOG(LOG_INFO_LEVEL,
+                LOG_SOURCE_ENTITY,
+                "Failure : insert conn2s to entityMap\n");
+    }
 
     // 准备接收来自浏览器的连接
     struct SocketAddress4 proservaddr("0.0.0.0", 8080);
@@ -52,6 +61,8 @@ int main()
     socklen_t addrlen;
 
     TcpConnection *conn2c = new TcpConnection(); // TODO:内存释放
+    struct hpara *hp = new struct hpara;
+    hp->multi2s = Httphandler::getMultiplexer();
     hp->con2c = conn2c;
     hp->map = Httphandler::getMap();
     hp->tAc = tAc;
@@ -61,11 +72,6 @@ int main()
         &addrlen,
         Httphandler::beginProxy,
         (void *) hp);
-
-    // TcpConnection *conn22 = new TcpConnection();
-    // tAc->onAccept(
-    //     conn22, (SA *) &rservaddr, &addrlen, Httphandler::beginProxy,
-    //     conn22);
 
     loop.loop(&loop);
     return 0;

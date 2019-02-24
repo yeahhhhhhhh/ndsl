@@ -8,6 +8,7 @@
  */
 
 #include "../catch.hpp"
+#include "ndsl/net/Entity.h"
 #include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/TcpConnection.h"
 #include "ndsl/net/TcpChannel.h"
@@ -28,7 +29,7 @@ using namespace net;
 
 #define PORT 7878
 
-int id = 11;
+// int id = 11;
 static void
 entitycallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
 {
@@ -40,10 +41,14 @@ entitycallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
         len,
         data);
 }
+static void startcallback(void *p)
+{
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "entity success start\n");
+}
 
-bool flag3 = false;
+bool multitestflag = false;
 
-void fun3(void *a) { flag3 = true; }
+void fun3(void *a) { multitestflag = true; }
 
 TEST_CASE("Mutiplexer/cbmaptest")
 {
@@ -62,8 +67,8 @@ TEST_CASE("Mutiplexer/cbmaptest")
     bzero(&rservaddr, sizeof(rservaddr));
     socklen_t addrlen;
 
-    TcpConnection *Conn = new TcpConnection();
-    tAc->onAccept(Conn, (SA *) &rservaddr, &addrlen, fun3, NULL);
+    TcpConnection *servConn = new TcpConnection();
+    tAc->onAccept(servConn, (SA *) &rservaddr, &addrlen, fun3, NULL);
 
     // 启动一个客户端
     struct SocketAddress4 clientservaddr("127.0.0.1", PORT);
@@ -75,37 +80,33 @@ TEST_CASE("Mutiplexer/cbmaptest")
     loop.quit();
     REQUIRE(loop.loop(&loop) == S_OK);
 
-    Multiplexer *mymulti = new Multiplexer(Conn);
+    Multiplexer *mymulti = new Multiplexer(servConn);
     Multiplexer *multi2 = new Multiplexer(clientconn);
+    int serverid = 9;
+    Entity *server = new Entity(serverid, entitycallbak, mymulti);
+    server->start(startcallback, NULL);
 
-    // SECTION("addInsertWork")
-    // {
-    //     int id = 1;
-    //     mymulti->addInsertWork(id, entitycallbak);
-    // }
-    // SECTION("addRemoveWork")
-    // {
-    //     int id = 1;
-    //     mymulti->addRemoveWork(id);
-    // }
-
+    int clientid = 1;
+    Entity *client = new Entity(clientid, entitycallbak, multi2);
+    client->start(startcallback, NULL);
     SECTION("insert and remove ")
     {
-        /******
-         * insert()测试
-         *****/
-        struct para *p1 = new para;
-        p1->id = id;
-        p1->cb = entitycallbak;
-        p1->pthis = mymulti;
+        // struct para *p1 = new para;
+        // p1->id = serverid;
+        // p1->entity = server;
+        // p1->pthis = mymulti;
 
-        mymulti->insert((void *) p1);
-        std::map<int, Multiplexer::Callback>::iterator iter;
-        iter = mymulti->cbMap_.find(id);
-        REQUIRE(iter != mymulti->cbMap_.end());
-        multi2->addInsertWork(id, entitycallbak);
-        loop.quit();
-        REQUIRE(loop.loop(&loop) == S_OK);
+        // mymulti->insert((void *) p1);
+        // std::map<int, Multiplexer::Callback>::iterator iter;
+        // iter = mymulti->cbMap_.find(id);
+        // REQUIRE(iter != mymulti->cbMap_.end());
+
+        /******
+         * addInsertWork()测试
+         *****/
+        // multi2->addInsertWork(serverid, server);
+        // loop.quit();
+        // REQUIRE(loop.loop(&loop) == S_OK);
 
         /********************************
          * remove()测试
@@ -128,7 +129,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
             (char *) malloc((sizeof(int) * 2 + sizeof(char) * len) * 5);
 
         Message *message = reinterpret_cast<struct Message *>(buffer);
-        message->id = htobe32(id);
+        message->id = htobe32(serverid);
         message->len = htobe32(len);
         memcpy(buffer + sizeof(struct Message), data, len);
 
@@ -152,18 +153,13 @@ TEST_CASE("Mutiplexer/cbmaptest")
         /*********************************
          * dispatch 测试：一个长消息
         //  ********************************/
-        int id2 = 99;
-        mymulti->addInsertWork(id2, entitycallbak);
-        loop.quit();
-        REQUIRE(loop.loop(&loop) == S_OK);
-
         int len2 = 60;
         char data2[] =
             "helloworldhelloworldhelloworldhelloworldhelloworldhelloworld";
 
         char *buffer2 = (char *) malloc(sizeof(int) * 2 + sizeof(char) * len2);
         Message *message2 = reinterpret_cast<struct Message *>(buffer2);
-        message2->id = htobe32(id2);
+        message2->id = htobe32(serverid);
         message2->len = htobe32(len2);
         memcpy(buffer2 + sizeof(struct Message), data2, len2);
 
@@ -181,7 +177,7 @@ TEST_CASE("Mutiplexer/cbmaptest")
 
         char data3[] = "helloworld";
         int len3 = 10;
-        mymulti->sendMessage(id, len3, data3);
+        mymulti->sendMessage(clientid, len3, data3);
 
         loop.quit();
         REQUIRE(loop.loop(&loop) == S_OK);
