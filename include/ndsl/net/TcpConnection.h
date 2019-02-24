@@ -24,8 +24,10 @@ class TcpConnection
 {
   public:
     using Callback = void (*)(void *); // Callback 函数指针原型
-    using ErrorHandle =
-        void (*)(int, Channel *); // error回调函数 int errno, Channel*
+    using ErrorHandle = void (*)(
+        void *,
+        int,
+        TcpConnection *); // error回调函数 自定义参数, int errno, TcpConnection*
 
   private:
     // 用户主动调用onRecv/onSend函数的参数存在这
@@ -48,6 +50,7 @@ class TcpConnection
     // TcpAcceptor *pTcpAcceptor_;
     // 错误处理的回调函数
     ErrorHandle errorHandle_;
+    void *errParam_;
 
   public:
     TcpConnection();
@@ -64,13 +67,13 @@ class TcpConnection
     int createChannel(int sockfd, EventLoop *pLoop);
 
     // error汇总 注册error回调函数
-    int onError(ErrorHandle cb);
+    int onError(ErrorHandle cb, void *param);
 
     // onSend onRecv 的语义是异步通知
     // 需要调用一次 就是起到一个注册buf和回调的作用
     int onRecv(char *buffer, ssize_t *len, int flags, Callback cb, void *param);
 
-    // 会有好多人同时调用这个进行send，需要一个队列
+    // 允许多用户同时调用这个进行send，需要一个队列
     int onSend(void *buf, ssize_t len, int flags, Callback cb, void *param);
 
     // 进程之前相互通信

@@ -18,13 +18,14 @@
 
 using namespace ndsl;
 using namespace net;
+using namespace utils;
 
 #define BUFSIZE 16384
 
 TcpAcceptor *tAc;
 uint64_t mlog;
 
-// vector<Session *> sessions_;
+static void mError(void *se, int eno, TcpConnection *conn);
 
 class Session
 {
@@ -36,10 +37,8 @@ class Session
         if (pThis->len_ > 0)
             pThis->conn_->onSend(pThis->buf_, pThis->len_, 0, NULL, NULL);
 
-        // LOG(LOG_ERROR_LEVEL, mlog, "before onRecv");
         // 循环注册onRecv
         pThis->conn_->onRecv(pThis->buf_, &(pThis->len_), 0, onMessage, pThis);
-        // LOG(LOG_ERROR_LEVEL, mlog, "after onRecv");
     }
 
   public:
@@ -52,9 +51,11 @@ class Session
         : conn_(conn)
         , len_(0)
     {}
+    ~Session() {}
 
     void start()
     {
+        conn_->onError(::mError, this);
         int n = conn_->onRecv(buf_, &len_, 0, onMessage, this);
         if (n < 0) {}
     }
@@ -64,10 +65,16 @@ class Session
     ssize_t len_;
 };
 
-// static void mError(int a, Channel *c)
-// {
-//     LOG(LOG_ERROR_LEVEL, mlog, "there is a error");
-// }
+static void mError(void *se, int eno, TcpConnection *conn)
+{
+    Session *session = static_cast<Session *>(se);
+    if (eno == 11 && session->len_ == 0) {
+        // 对端断开 释放资源
+        conn->pTcpChannel_->erase();
+        delete conn;
+        delete session;
+    }
+}
 
 static void onConnection(void *conn)
 {
@@ -107,7 +114,6 @@ int main(int argc, char *argv[])
         if (s < 0) LOG(LOG_ERROR_LEVEL, mlog, "tAc->start fail");
 
         TcpConnection *Conn = new TcpConnection();
-        // Conn->onError(mError);
 
         // TODO: 增加一个loop参数
         tAc->onAccept(Conn, NULL, NULL, onConnection, Conn);

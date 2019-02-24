@@ -67,7 +67,7 @@ int TcpConnection::onSend(
             // printf("errno = %d\nstr = %s\n", errno, strerror(errno));
             LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "send error");
             // printf("errno = %d\n%s\n", errno, strerror(errno));
-            if (NULL != errorHandle_) errorHandle_(errno, pTcpChannel_);
+            if (NULL != errorHandle_) errorHandle_(errParam_, errno, this);
             return S_FALSE;
         }
 
@@ -94,7 +94,6 @@ int TcpConnection::onSend(
 
 int TcpConnection::handleWrite(void *pthis)
 {
-    // printf("TcpConnection::handleWrite!\n");
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
     int sockfd = pThis->pTcpChannel_->getFd();
 
@@ -135,7 +134,7 @@ int TcpConnection::handleWrite(void *pthis)
                 LOG_SOURCE_TCPCONNECTION,
                 "send error can not deal");
             if (NULL != pThis->errorHandle_)
-                pThis->errorHandle_(errno, pThis->pTcpChannel_);
+                pThis->errorHandle_(pThis->errParam_, errno, pThis);
 
             // 将事件从队列中移除
             pThis->qSendInfo_.pop();
@@ -177,7 +176,8 @@ int TcpConnection::onRecv(
                 LOG(LOG_ERROR_LEVEL,
                     LOG_SOURCE_TCPCONNECTION,
                     "recv error can not deal");
-                if (NULL != errorHandle_) errorHandle_(errno, pTcpChannel_);
+                (*len) = -1;
+                if (NULL != errorHandle_) errorHandle_(errParam_, errno, this);
                 isOK = -1;
                 return isOK;
             }
@@ -233,8 +233,11 @@ int TcpConnection::handleRead(void *pthis)
                      pThis->RecvInfo_.flags_)) < 0) {
                 // 出错
                 LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "recv fail");
+                (*pThis->RecvInfo_.len_) = -1;
+                pThis->RecvInfo_.recvInUse_ = false;
                 if (NULL != pThis->errorHandle_)
-                    pThis->errorHandle_(errno, pThis->pTcpChannel_);
+                    pThis->errorHandle_(pThis->errParam_, errno, pThis);
+
                 return S_FALSE;
             } else if (n == 0) {
                 // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "peer
@@ -243,9 +246,9 @@ int TcpConnection::handleRead(void *pthis)
                 pThis->RecvInfo_.recvInUse_ = false;
 
                 if (NULL != pThis->errorHandle_)
-                    pThis->errorHandle_(errno, pThis->pTcpChannel_);
+                    pThis->errorHandle_(pThis->errParam_, errno, pThis);
 
-                printf("%d\n%s\n", errno, strerror(errno));
+                // printf("%d\n%s\n", errno, strerror(errno));
 
                 close(sockfd);
                 return S_OK;
@@ -288,7 +291,7 @@ int TcpConnection::sendMsg(
         LOG(LOG_ERROR_LEVEL,
             LOG_SOURCE_TCPCONNECTION,
             "sendMsg error can not deal");
-        if (NULL != errorHandle_) errorHandle_(errno, pTcpChannel_);
+        if (NULL != errorHandle_) errorHandle_(errParam_, errno, this);
         return S_FALSE;
     }
 
@@ -308,9 +311,10 @@ int TcpConnection::sendMsg(
 }
 
 // 错误处理 交给用户
-int TcpConnection::onError(ErrorHandle cb)
+int TcpConnection::onError(ErrorHandle cb, void *param = NULL)
 {
     errorHandle_ = cb;
+    errParam_ = param;
     return S_OK;
 }
 

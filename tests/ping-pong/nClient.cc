@@ -264,8 +264,8 @@ void Session::stop()
 
 int main(int argc, char *argv[])
 {
-    // mlog = add_source();
-    // set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
+    mlog = add_source();
+    set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
     if (argc != 7) {
         LOG(LOG_ERROR_LEVEL,
             mlog,
