@@ -36,6 +36,7 @@ class TcpAcceptor
         Callback cb_;           // 回调函数
         void *param_;           // 回调函数参数
         bool inUse_;            // 判断当前结构体是否有数据
+        EventLoop *loop_;       // 允许绑定到其他的loop
     } info;
 
   public:
@@ -51,7 +52,8 @@ class TcpAcceptor
         struct sockaddr *addr,
         socklen_t *addrlen,
         Callback cb,
-        void *param);
+        void *param,
+        EventLoop *loop);
 
     // 新连接到来时候执行此函数
     static int handleRead(void *pthis);
@@ -65,7 +67,8 @@ class TcpAcceptor
         struct sockaddr *addr,
         socklen_t *addrlen,
         Callback cb,
-        void *param);
+        void *param,
+        EventLoop *loop = NULL);
 
   private:
     // new Channel socket bind listen

@@ -50,7 +50,8 @@ int TcpAcceptor::setInfo(
     struct sockaddr *addr,
     socklen_t *addrlen,
     Callback cb,
-    void *param)
+    void *param,
+    EventLoop *loop)
 {
     memset(&info, 0, sizeof(struct Info));
 
@@ -59,6 +60,7 @@ int TcpAcceptor::setInfo(
     info.addrlen_ = addrlen;
     info.cb_ = cb;
     info.param_ = param;
+    info.loop_ = loop;
     info.inUse_ = true;
 
     return S_OK;
@@ -139,8 +141,13 @@ int TcpAcceptor::handleRead(void *pthis)
         // 设置非阻塞io
         fcntl(connfd, F_SETFL, O_NONBLOCK);
 
-        ((pThis->info).pCon_)
-            ->createChannel(connfd, pThis->pTcpChannel_->pLoop_);
+        if (NULL != pThis->info.loop_) {
+            ((pThis->info).pCon_)->createChannel(connfd, pThis->info.loop_);
+        } else {
+            ((pThis->info).pCon_)
+                ->createChannel(connfd, pThis->pTcpChannel_->pLoop_);
+        }
+
         if (NULL != pThis->info.addr_)
             pThis->info.addr_ = (struct sockaddr *) &cliaddr;
         if (NULL != pThis->info.addrlen_)
@@ -163,9 +170,10 @@ int TcpAcceptor::onAccept(
     struct sockaddr *addr,
     socklen_t *addrlen,
     Callback cb,
-    void *param)
+    void *param,
+    EventLoop *loop)
 {
-    return setInfo(pCon, addr, addrlen, cb, param);
+    return setInfo(pCon, addr, addrlen, cb, param, loop);
 }
 
 } // namespace net

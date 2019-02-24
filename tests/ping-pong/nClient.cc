@@ -57,21 +57,17 @@ class Session
     {
         Session *pThis = static_cast<Session *>(pthis);
 
-        pThis->messagesRead_++;
+        // pThis->messagesRead_++;
         pThis->bytesRead_ += pThis->len_;
-        pThis->bytesWritten_ += pThis->len_;
+        // pThis->bytesWritten_ += pThis->len_;
 
-        int n;
-        if ((n = pThis->conn_->onSend(
-                 pThis->buf_, pThis->len_, 0, NULL, NULL)) < 0) {
-            LOG(LOG_ERROR_LEVEL, mlog, "send fail");
-        }
+        pThis->conn_->onSend(pThis->buf_, pThis->len_, 0, NULL, NULL);
 
         if (!(pThis->isStop_)) {
             // 循环注册onRecv
-            n = pThis->conn_->onRecv(
+            pThis->conn_->onRecv(
                 pThis->buf_, &(pThis->len_), 0, onMessage, pThis);
-            if (n < 0) { LOG(LOG_ERROR_LEVEL, mlog, "regist onRecv error"); }
+            // if (n < 0) { LOG(LOG_ERROR_LEVEL, mlog, "regist onRecv error"); }
         }
     }
 
@@ -175,11 +171,11 @@ class Client
             // LOG(LOG_INFO_LEVEL, mlog, "all disconnected");
 
             int64_t totalBytesRead = 0;
-            int64_t totalMessagesRead = 0;
+            // int64_t totalMessagesRead = 0;
 
             for (Session *it : sessions_) {
                 totalBytesRead += it->bytesRead();
-                totalMessagesRead += it->messagesRead();
+                // totalMessagesRead += it->messagesRead();
 
                 delete it;
             }

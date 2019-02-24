@@ -74,17 +74,8 @@ int TcpConnection::onSend(
         // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "send for next
         // time\n");
 
-        pInfo tsi = new Info;
-        tsi->offset_ = n;
-        tsi->sendBuf_ = (void *) buf;
-        tsi->readBuf_ = NULL;
-
-        tsi->len_ = new ssize_t;
-        *(tsi->len_) = len;
-
-        tsi->flags_ = flags | MSG_NOSIGNAL;
-        tsi->cb_ = cb;
-        tsi->param_ = param;
+        pInfo tsi =
+            new Info(buf, NULL, len, flags | MSG_NOSIGNAL, cb, param, n, false);
 
         qSendInfo_.push(tsi);
 
@@ -277,35 +268,35 @@ int TcpConnection::sendMsg(
     Callback cb,
     void *param)
 {
-    int tsockfd = pTcpChannel_->getFd();
-    ssize_t len = sizeof(struct msghdr);
+    // int tsockfd = pTcpChannel_->getFd();
+    // ssize_t len = sizeof(struct msghdr);
 
-    // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
-    ssize_t n = send(tsockfd, msg, len, flags | MSG_NOSIGNAL);
-    if (n == len) {
-        // 写完 通知用户
-        if (cb != NULL) cb(param);
-        return S_OK;
-    } else if (n < 0) {
-        // 出错 通知用户
-        LOG(LOG_ERROR_LEVEL,
-            LOG_SOURCE_TCPCONNECTION,
-            "sendMsg error can not deal");
-        if (NULL != errorHandle_) errorHandle_(errParam_, errno, this);
-        return S_FALSE;
-    }
+    // // 加上MSG_NOSIGNAL参数 防止send失败向系统发送消息导致关闭
+    // ssize_t n = send(tsockfd, msg, len, flags | MSG_NOSIGNAL);
+    // if (n == len) {
+    //     // 写完 通知用户
+    //     if (cb != NULL) cb(param);
+    //     return S_OK;
+    // } else if (n < 0) {
+    //     // 出错 通知用户
+    //     LOG(LOG_ERROR_LEVEL,
+    //         LOG_SOURCE_TCPCONNECTION,
+    //         "sendMsg error can not deal");
+    //     if (NULL != errorHandle_) errorHandle_(errParam_, errno, this);
+    //     return S_FALSE;
+    // }
 
-    // 没写完 存起来 等待下次写
-    pInfo tsi = new Info;
-    tsi->offset_ = n;
-    tsi->sendBuf_ = reinterpret_cast<void *>(msg);
-    tsi->readBuf_ = NULL;
-    (*tsi->len_) = len;
-    tsi->flags_ = flags | MSG_NOSIGNAL;
-    tsi->cb_ = cb;
-    tsi->param_ = param;
+    // // 没写完 存起来 等待下次写
+    // pInfo tsi = new Info;
+    // tsi->offset_ = n;
+    // tsi->sendBuf_ = reinterpret_cast<void *>(msg);
+    // tsi->readBuf_ = NULL;
+    // (*tsi->len_) = len;
+    // tsi->flags_ = flags | MSG_NOSIGNAL;
+    // tsi->cb_ = cb;
+    // tsi->param_ = param;
 
-    qSendInfo_.push(tsi);
+    // qSendInfo_.push(tsi);
 
     return S_OK;
 }

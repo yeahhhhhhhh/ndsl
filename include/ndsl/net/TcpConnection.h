@@ -31,8 +31,29 @@ class TcpConnection
 
   private:
     // 用户主动调用onRecv/onSend函数的参数存在这
-    typedef struct SInfo
+    struct SInfo
     {
+        SInfo() {}
+        SInfo(
+            void *sbuf,
+            void *rbuf,
+            ssize_t len,
+            int flags,
+            Callback cb,
+            void *p,
+            ssize_t off,
+            bool inUse)
+            : sendBuf_(sbuf)
+            , readBuf_(rbuf)
+            , flags_(flags)
+            , cb_(cb)
+            , param_(p)
+            , offset_(off)
+            , recvInUse_(inUse)
+        {
+            len_ = new ssize_t;
+            (*len_) = len;
+        }
         void *sendBuf_;  // 用户给的写地址
         void *readBuf_;  // 用户给的读地址
         ssize_t *len_;   // buf长度
@@ -41,7 +62,9 @@ class TcpConnection
         void *param_;    // 回调函数的参数
         ssize_t offset_; // 一次没发送完的发送偏移
         bool recvInUse_; // 判断是否已经使用过一次 Proactor要求每次注册
-    } Info, *pInfo;
+    };
+
+    typedef struct SInfo Info, *pInfo;
 
     std::queue<pInfo> qSendInfo_; // 等待发送的队列
     Info RecvInfo_;
