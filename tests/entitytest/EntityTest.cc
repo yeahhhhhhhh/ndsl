@@ -15,6 +15,7 @@
 #include "ndsl/net/TcpClient.h"
 #include "ndsl/net/Epoll.h"
 #include "ndsl/net/SocketAddress.h"
+#include "ndsl/utils/Log.h"
 #include <sys/socket.h>
 #include "ndsl/config.h"
 #include <cstring>
@@ -49,11 +50,17 @@ void clientcallbak(Multiplexer *Multiplexer, char *data, int len, int ero)
     printf("result==%d \n", resultmessage->answer());
 }
 
+void startcallback(void *)
+{
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "entity success start\n");
+}
+
 bool flag2 = false;
 
 void fun2(void *a) { flag2 = true; }
 int main()
 {
+    set_ndsl_log_sinks(LOG_SOURCE_ALL, LOG_OUTPUT_FILE);
     // 启动服务
     // 初始化EPOLL
     EventLoop loop;
@@ -96,7 +103,8 @@ int main()
     int serverid = 12;
     Entity *client = new Entity(clientid, clientcallbak, clientmulti);
     Entity *server = new Entity(serverid, servercallbak, servermulti);
-    server->pri();
+    server->start(startcallback, NULL);
+    client->start(startcallback, NULL);
     loop.quit();
     loop.loop(&loop);
     /*********************************

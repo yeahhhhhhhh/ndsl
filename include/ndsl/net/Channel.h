@@ -8,7 +8,7 @@
  */
 #ifndef __NDSL_NET_CHANNEL_H__
 #define __NDSL_NET_CHANNEL_H__
-#include <stdint.h>
+// #include <stdint.h>
 #include "ndsl/config.h"
 #include "ndsl/utils/Log.h"
 

@@ -8,6 +8,7 @@
 #ifndef __NDSL_NET_BASECHANNEL_H__
 #define __NDSL_NET_BASECHANNEL_H__
 
+#include <cstdlib>
 #include "Channel.h"
 
 namespace ndsl {
@@ -18,9 +19,9 @@ class EventLoop;
 class BaseChannel : public Channel
 {
   private:
-    int fd_; // sockfd
-
-    void *pThis_; // 存储上层的this Connecion Acceptor
+    int fd_;         // sockfd
+    void *errParam_; // errHandle函数 用户传递过来的参数
+    void *pUp_;      // 存储上层的this Connecion Acceptor
 
     // 定义handleRead handleWrite函数指针原型
     using ChannelCallBack = int (*)(void *);
@@ -28,6 +29,12 @@ class BaseChannel : public Channel
   public:
     BaseChannel(int fd, EventLoop *loop);
     // ~BaseChannel(); // TODO: 要不要去做fd的释放
+
+    using ErrorHandle = void (*)(
+        void *,
+        int); // error回调函数 自定义参数, int errno
+
+    ErrorHandle errorHandle_; // 用户注册的出错回调函数
 
     // 指向被调用的函数
     ChannelCallBack handleRead_, handleWrite_;
@@ -47,6 +54,8 @@ class BaseChannel : public Channel
         ChannelCallBack handleRead,
         ChannelCallBack handleWrite,
         void *thi);
+
+    int onError(ErrorHandle cb, void *param = NULL);
 };
 
 } // namespace net

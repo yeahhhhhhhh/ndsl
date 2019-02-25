@@ -111,17 +111,13 @@ void *EventLoop::loop(void *pThis)
         // 处理任务队列
         if (haswork) {
             uint64_t data;
-            int n = read(el->pQueCh_->getFd(), &data, sizeof data);
-            if (data == 0) {}
-            if (n < 0) {}
+            read(el->pQueCh_->getFd(), &data, sizeof data);
             el->pQueCh_->handleEvent();
         }
         // 退出
         if (quit) {
             uint64_t data;
-            int n = read(el->pIntrCh_->getFd(), &data, sizeof data);
-            if (data == 0) {}
-            if (n < 0) {}
+            read(el->pIntrCh_->getFd(), &data, sizeof data);
             LOG(LOG_DEBUG_LEVEL, LOG_SOURCE_EVENTLOOP, "quit");
             break;
         }

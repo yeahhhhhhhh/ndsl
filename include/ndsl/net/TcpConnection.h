@@ -26,8 +26,7 @@ class TcpConnection
     using Callback = void (*)(void *); // Callback 函数指针原型
     using ErrorHandle = void (*)(
         void *,
-        int,
-        TcpConnection *); // error回调函数 自定义参数, int errno, TcpConnection*
+        int); // error回调函数 自定义参数, int errno
 
   private:
     // 用户主动调用onRecv/onSend函数的参数存在这

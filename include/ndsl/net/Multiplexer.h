@@ -35,7 +35,7 @@ struct Message
     int len; // 负载长度
 };
 #pragma pack(pop)
-
+class Entity;
 /**
  * @class: Multiplexer
  * @brief:
@@ -51,16 +51,17 @@ class Multiplexer
   private:
     // 回调函数映射容器
     using CallbackMap = std::map<int, Callback>;
-
+    CallbackMap cbMap_;                     // 回调函数映射容器
     ndsl::net::TcpConnection *conn_ = NULL; // 绑定的connection
 
-    int error_ = 0;         // ???
-    int msghead = 0;        // 保存未完整头部
-    int changeheadflag = 0; // 已改变onrecv保存的缓冲区地址的标志
-    int id_;                // 实体id
-    int len_;               // 负载长度
-    int left_ = 0;          // 待处理的消息长度
-    ssize_t rlen_;          // 收到的消息长度
+    int error_ = 0;
+    int msghead_ = 0;        // 保存未完整头部
+    int changeheadflag_ = 0; // 已改变onrecv保存的缓冲区地址的标志
+    int dirtyleft_ = 0;      // 应该丢弃的字节数
+    int id_;                 // 实体id
+    int len_;                // 负载长度
+    int left_ = 0;           // 待处理的消息长度
+    ssize_t rlen_;           // 收到的消息长度
 
     char msg_[sizeof(char) * MAXLINE]; // 接收消息的缓冲区
     char *location_ = msg_;            // 当前处理位置
@@ -74,15 +75,16 @@ class Multiplexer
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_MULTIPLEXER,
                 "MULTIPLEXER::MULTIPLEXER conn_ == NULL\n");
-        conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
-        conn_->onError(handleErro);
+        else {
+            conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
+            conn_->onError(handleErro);
+        }
     }
 
     Multiplexer() {}
-    CallbackMap cbMap_; // 回调函数映射容器
 
     // 在loop工作队列中加入insert任务
-    void addInsertWork(int id, Callback cb);
+    void addInsertWork(int id, Entity *entity);
 
     // 在loop工作队列中加入remove任务
     void addRemoveWork(int id);
@@ -105,11 +107,12 @@ class Multiplexer
 };
 
 // 自定义addwork传入的参数结构体
+
 struct para
 {
     Multiplexer *pthis;
     int id;
-    ndsl::net::Multiplexer::Callback cb;
+    ndsl::net::Entity *entity;
 };
 
 } // namespace net

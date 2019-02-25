@@ -27,11 +27,7 @@ TcpConnection::TcpConnection()
     , pTcpChannel_(NULL)
 {}
 
-TcpConnection::~TcpConnection()
-{
-    pTcpChannel_->setCallBack(NULL, NULL, NULL);
-    delete pTcpChannel_;
-}
+TcpConnection::~TcpConnection() { delete pTcpChannel_; }
 
 int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
 {
@@ -67,7 +63,7 @@ int TcpConnection::onSend(
             // printf("errno = %d\nstr = %s\n", errno, strerror(errno));
             LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "send error");
             // printf("errno = %d\n%s\n", errno, strerror(errno));
-            if (NULL != errorHandle_) errorHandle_(errParam_, errno, this);
+            if (NULL != errorHandle_) errorHandle_(errParam_, errno);
             return S_FALSE;
         }
 
@@ -125,7 +121,7 @@ int TcpConnection::handleWrite(void *pthis)
                 LOG_SOURCE_TCPCONNECTION,
                 "send error can not deal");
             if (NULL != pThis->errorHandle_)
-                pThis->errorHandle_(pThis->errParam_, errno, pThis);
+                pThis->errorHandle_(pThis->errParam_, errno);
 
             // 将事件从队列中移除
             pThis->qSendInfo_.pop();
@@ -168,7 +164,7 @@ int TcpConnection::onRecv(
                     LOG_SOURCE_TCPCONNECTION,
                     "recv error can not deal");
                 (*len) = -1;
-                if (NULL != errorHandle_) errorHandle_(errParam_, errno, this);
+                if (NULL != errorHandle_) errorHandle_(errParam_, errno);
                 isOK = -1;
                 return isOK;
             }
@@ -227,17 +223,16 @@ int TcpConnection::handleRead(void *pthis)
                 (*pThis->RecvInfo_.len_) = -1;
                 pThis->RecvInfo_.recvInUse_ = false;
                 if (NULL != pThis->errorHandle_)
-                    pThis->errorHandle_(pThis->errParam_, errno, pThis);
+                    pThis->errorHandle_(pThis->errParam_, errno);
 
                 return S_FALSE;
             } else if (n == 0) {
-                // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "peer
-                // closed");
+                LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "peer closed");
                 (*pThis->RecvInfo_.len_) = 0;
                 pThis->RecvInfo_.recvInUse_ = false;
 
                 if (NULL != pThis->errorHandle_)
-                    pThis->errorHandle_(pThis->errParam_, errno, pThis);
+                    pThis->errorHandle_(pThis->errParam_, errno);
 
                 // printf("%d\n%s\n", errno, strerror(errno));
 
@@ -282,7 +277,7 @@ int TcpConnection::sendMsg(
     //     LOG(LOG_ERROR_LEVEL,
     //         LOG_SOURCE_TCPCONNECTION,
     //         "sendMsg error can not deal");
-    //     if (NULL != errorHandle_) errorHandle_(errParam_, errno, this);
+    //     if (NULL != errorHandle_) errorHandle_(errParam_, errno);
     //     return S_FALSE;
     // }
 
@@ -304,9 +299,7 @@ int TcpConnection::sendMsg(
 // 错误处理 交给用户
 int TcpConnection::onError(ErrorHandle cb, void *param = NULL)
 {
-    errorHandle_ = cb;
-    errParam_ = param;
-    return S_OK;
+    return pTcpChannel_->onError(cb, param);
 }
 
 } // namespace net

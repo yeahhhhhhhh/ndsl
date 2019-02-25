@@ -15,11 +15,7 @@ TcpChannel::TcpChannel(int sockfd, EventLoop *loop)
     : BaseChannel(sockfd, loop)
 {}
 
-TcpChannel::~TcpChannel()
-{
-    // 将自身从eventloop上面删掉
-    // erase();
-}
+TcpChannel::~TcpChannel() {}
 
 } // namespace net
 } // namespace ndsl

@@ -12,6 +12,7 @@
  * @emial 429834658@qq.com
  **/
 #include <string.h>
+#include "ndsl/net/Entity.h"
 #include "ndsl/net/Multiplexer.h"
 #include "ndsl/net/EventLoop.h"
 #include "ndsl/net/TcpChannel.h"
@@ -25,15 +26,21 @@ namespace net {
 // 在map中插入<id,callback>
 void Multiplexer::insert(void *pa)
 {
+    LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "in the insert function\n");
     struct para *p = static_cast<struct para *>(pa);
     Multiplexer *pthis = p->pthis;
 
     Multiplexer::CallbackMap::iterator iter =
         pthis->cbMap_.lower_bound(p->id); // 返回map中第一个不小于id的迭代器指针
     if (iter == pthis->cbMap_.end() || iter->first != p->id) {
-        pthis->cbMap_.insert(std::make_pair(p->id, p->cb));
-    }
-
+        pthis->cbMap_.insert(std::make_pair(p->id, p->entity->cb_));
+        LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "success insert entity\n");
+    } else
+        LOG(LOG_ERROR_LEVEL,
+            LOG_SOURCE_MULTIPLEXER,
+            "the entity of id=%d has already existed\n",
+            p->id);
+    if (p->entity->scb_ != NULL) { p->entity->scb_(p->entity->startcbparam_); }
     if (p != NULL) // 释放para
     {
         delete p;
@@ -42,11 +49,15 @@ void Multiplexer::insert(void *pa)
 }
 
 // 在loop工作队列中加入insert任务
-void Multiplexer::addInsertWork(int id, Callback cb)
+void Multiplexer::addInsertWork(int id, Entity *entity)
 {
+    LOG(LOG_INFO_LEVEL,
+        LOG_SOURCE_MULTIPLEXER,
+        "in the addInsertWork function\n");
+
     struct para *p = new para; // 在insert()中释放
     p->id = id;
-    p->cb = cb;
+    p->entity = entity;
     p->pthis = this;
 
     EventLoop::WorkItem *w1 = new EventLoop::WorkItem; // 在eventloop中释放
@@ -84,7 +95,7 @@ void Multiplexer::addRemoveWork(int id)
 {
     struct para *p = new para; // 在remove()中释放
     p->id = id;
-    p->cb = NULL;
+    p->entity = NULL;
     p->pthis = this;
 
     EventLoop::WorkItem *w2 = new EventLoop::WorkItem; // 在eventloop中释放
@@ -123,27 +134,46 @@ void Multiplexer::sendMessage(int id, int length, const char *data)
  * 3.在长消息的最后一次读取时可能会有别的消息在后面，需要根据rlen_进行判断
  * 4.消息可能会短到没有完整的头部，需要将这些字节存下来，下次再来消息一并处理
  ********************/
-
 void Multiplexer::dispatch(void *p)
 {
     Multiplexer *pthis = static_cast<Multiplexer *>(p);
+    if (pthis->dirtyleft_ > 0) // 有脏数据要丢弃
+    {
+        if (pthis->dirtyleft_ < pthis->rlen_) {
+            pthis->rlen_ -= pthis->dirtyleft_;
+            pthis->location_ += pthis->dirtyleft_;
+            pthis->dirtyleft_ = 0;
+        } else if (pthis->dirtyleft_ > pthis->rlen_) {
+            pthis->dirtyleft_ -= pthis->rlen_;
+            pthis->conn_->onRecv(
+                pthis->location_, &(pthis->rlen_), 0, dispatch, (void *) pthis);
+            return;
+        } else {
+            pthis->dirtyleft_ = 0;
+            pthis->conn_->onRecv(
+                pthis->location_, &(pthis->rlen_), 0, dispatch, (void *) pthis);
+            return;
+        }
+    }
 
     //有不完整头部出现时，将其复制到msghead开始处，然后调用onrecv从残缺头部开始放
     if ((size_t) pthis->rlen_ < sizeof(struct Message) && pthis->left_ == 0) {
         if (pthis->location_ != pthis->msg_)
             memcpy(pthis->msg_, pthis->location_, pthis->rlen_);
         pthis->location_ = pthis->msg_ + pthis->rlen_;
-        pthis->msghead = pthis->rlen_; // 将此次读出的未完整的头部字数保存
+        pthis->msghead_ = pthis->rlen_; // 将此次读出的未完整的头部字数保存
+        pthis->changeheadflag_ = 1; // 提醒后面记得把首地址换回来
         pthis->conn_->onRecv(
             pthis->location_, &(pthis->rlen_), 0, dispatch, (void *) pthis);
-
+        LOG(LOG_INFO_LEVEL,
+            LOG_SOURCE_MULTIPLEXER,
+            "uncompleted Msghead, wait for next dispatch\n");
         return;
     }
     // 对不完整头部的后续处理
-    if (pthis->msghead > 0) {
-        pthis->rlen_ += pthis->msghead;
-        pthis->msghead = 0;
-        pthis->changeheadflag = 1;
+    if (pthis->msghead_ > 0) {
+        pthis->rlen_ += pthis->msghead_;
+        pthis->msghead_ = 0;
         pthis->location_ = pthis->msg_;
     }
 
@@ -162,8 +192,29 @@ void Multiplexer::dispatch(void *p)
             LOG(LOG_ERROR_LEVEL,
                 LOG_SOURCE_MULTIPLEXER,
                 "MULTIPLEXER::DISPATCH the entity id:%d is not in the map\n",
-                pthis->id_);
-            return;
+                pthis->id_); // 丢弃该消息
+            if (pthis->len_ < pthis->rlen_) {
+                pthis->rlen_ -= pthis->len_;
+                pthis->location_ += pthis->len_;
+                dispatch((void *) pthis);
+            } else if (pthis->len_ > pthis->rlen_) {
+                pthis->dirtyleft_ = (pthis->len_ - pthis->rlen_);
+                pthis->conn_->onRecv(
+                    pthis->location_,
+                    &(pthis->rlen_),
+                    0,
+                    dispatch,
+                    (void *) pthis);
+                return;
+            } else {
+                pthis->conn_->onRecv(
+                    pthis->location_,
+                    &(pthis->rlen_),
+                    0,
+                    dispatch,
+                    (void *) pthis);
+                return;
+            }
         }
         pthis->left_ = pthis->len_;
         pthis->rlen_ -= sizeof(int) * 2;     // 对rlen_做更新
@@ -190,15 +241,13 @@ void Multiplexer::dispatch(void *p)
                 return;
             } else { // left == 0 刚好读完消息
                 pthis->location_ = pthis->msg_;
-                if (pthis->changeheadflag == 1) {
-                    pthis->changeheadflag = 0;
-                    pthis->conn_->onRecv(
-                        pthis->location_,
-                        &(pthis->rlen_),
-                        0,
-                        dispatch,
-                        (void *) pthis);
-                }
+                if (pthis->changeheadflag_ == 1) pthis->changeheadflag_ = 0;
+                pthis->conn_->onRecv(
+                    pthis->location_,
+                    &(pthis->rlen_),
+                    0,
+                    dispatch,
+                    (void *) pthis);
             }
         } else if (
             pthis->left_ > 0) //没有读完该实体消息，申请一块len_大小的缓冲区
@@ -213,11 +262,14 @@ void Multiplexer::dispatch(void *p)
             pthis->location_ = pthis->databuf_;
             pthis->location_ += pthis->rlen_; // location指针向后滑动
 
-            if (pthis->changeheadflag == 1) {
-                pthis->changeheadflag = 0;
-                pthis->conn_->onRecv(
-                    pthis->msg_, &(pthis->rlen_), 0, dispatch, (void *) pthis);
-            }
+            if (pthis->changeheadflag_ == 1) pthis->changeheadflag_ = 0;
+
+            pthis->conn_->onRecv(
+                pthis->msg_,
+                &(pthis->rlen_),
+                0,
+                dispatch,
+                (void *) pthis); // 这里必须是msg，不是location
         }
     } else if (pthis->left_ > 0) // 有实体消息未读完
     {
@@ -235,23 +287,37 @@ void Multiplexer::dispatch(void *p)
             {
                 free(pthis->databuf_);
                 pthis->databuf_ = NULL;
-                // printf("free buffer\n");
+                LOG(LOG_INFO_LEVEL, LOG_SOURCE_MULTIPLEXER, "free databuf\n");
             }
 
             pthis->location_ = pthis->msg_;
-            //重新将location指针指向msg_，读取别的实体消息
+            //重新将location指针指向msg_缓冲区
 
-            if (pthis->left_ < (int) pthis->rlen_) {
+            if (pthis->left_ < (int) pthis->rlen_) // 还有别的实体消息
+            {
                 pthis->rlen_ -= pthis->left_;     //对rlen更新
                 pthis->location_ += pthis->left_; // location_指针后移
                 pthis->left_ = 0;                 //对left_做更新
                 dispatch((void *) pthis); // 递归 继续分发缓冲区剩下的消息
                 return;
+            } else {
+                pthis->conn_->onRecv(
+                    pthis->location_,
+                    &(pthis->rlen_),
+                    0,
+                    dispatch,
+                    (void *) pthis);
             }
         } else //太太太长了，还没读完
         {
             memcpy(pthis->location_, pthis->msg_, pthis->rlen_);
             pthis->left_ -= pthis->rlen_;
+            pthis->conn_->onRecv(
+                pthis->msg_,
+                &(pthis->rlen_),
+                0,
+                dispatch,
+                (void *) pthis); // 这里必须是msg，不是location
         }
     }
 }
