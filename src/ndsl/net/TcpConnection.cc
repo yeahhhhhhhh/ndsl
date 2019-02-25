@@ -231,12 +231,12 @@ int TcpConnection::handleRead(void *pthis)
                 (*pThis->RecvInfo_.len_) = 0;
                 pThis->RecvInfo_.recvInUse_ = false;
 
-                if (NULL != pThis->errorHandle_)
-                    pThis->errorHandle_(pThis->errParam_, errno);
+                // if (NULL != pThis->errorHandle_)
+                //     pThis->errorHandle_(pThis->errParam_, errno);
 
                 // printf("%d\n%s\n", errno, strerror(errno));
 
-                close(sockfd);
+                // close(sockfd);
                 return S_OK;
             }
 

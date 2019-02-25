@@ -15,6 +15,7 @@
 #include "ndsl/net/TcpAcceptor.h"
 #include "ndsl/net/SocketAddress.h"
 #include "ndsl/config.h"
+#include "ndsl/net/ELThreadpool.h"
 
 using namespace ndsl;
 using namespace net;

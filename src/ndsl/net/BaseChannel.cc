@@ -36,6 +36,12 @@ int BaseChannel::handleEvent()
     // necessary to set it in events.
 
     // FIXME: 这个fd在哪close还得协商 是不是没必要实现
+    if (revents_ & EPOLLIN) {
+        if (handleRead_) handleRead_(pUp_);
+    } else if (revents_ & EPOLLOUT) {
+        if (handleWrite_) handleWrite_(pUp_);
+    }
+
     if ((revents_ & EPOLLIN) && (revents_ & EPOLLHUP)) {
         // printf("BaseChannel::handleEvent receive EPOLLHUP\n");
         if (errorHandle_) errorHandle_(errParam_, errno);
@@ -48,11 +54,6 @@ int BaseChannel::handleEvent()
         // printf("BaseChannel::handleEvent receive EPOLLERR\n");
         if (errorHandle_) errorHandle_(errParam_, errno);
         // close(fd_);
-    } else if (revents_ & EPOLLIN) {
-        // printf("BaseChannel::handleEvent EPOLLIN\n");
-        if (handleRead_) handleRead_(pUp_);
-    } else if (revents_ & EPOLLOUT) {
-        if (handleWrite_) handleWrite_(pUp_);
     }
 
     return S_OK;
