@@ -37,8 +37,10 @@ int BaseChannel::handleEvent()
 
     // FIXME: 这个fd在哪close还得协商 是不是没必要实现
     if (revents_ & EPOLLIN) {
+        // printf("BaseChannel::handleEvent  EPOLLIN\n");
         if (handleRead_) handleRead_(pUp_);
     } else if (revents_ & EPOLLOUT) {
+        // printf("BaseChannel::handleEvent  EPOLLOUT\n");
         if (handleWrite_) handleWrite_(pUp_);
     }
 

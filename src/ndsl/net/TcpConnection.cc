@@ -24,6 +24,7 @@ namespace net {
 
 TcpConnection::TcpConnection()
     : errorHandle_(NULL)
+    , errParam_(NULL)
     , pTcpChannel_(NULL)
 {}
 
@@ -145,7 +146,7 @@ int TcpConnection::onRecv(
     Callback cb,
     void *param)
 {
-    // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "onRecv");
+    LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "onRecv");
 
     // 作为下面recv接收的临时量，直接用(*len)接收会变成2^64-1 不知道为什么
     // 答案1：是flag参数的问题
@@ -168,6 +169,15 @@ int TcpConnection::onRecv(
                 isOK = -1;
                 return isOK;
             }
+        } else if (n == 0) {
+            LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "peer closed");
+            (*len) = 0;
+            if (NULL != errorHandle_)
+                errorHandle_(errParam_, errno);
+            else {
+                LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "no errhandle");
+            }
+            return S_OK;
         } else {
             // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "recv complete\n");
             (*len) = n;
@@ -299,6 +309,11 @@ int TcpConnection::sendMsg(
 // 错误处理 交给用户
 int TcpConnection::onError(ErrorHandle cb, void *param = NULL)
 {
+    if (NULL == cb) {
+        LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "cb = NULL");
+    }
+    errorHandle_ = cb;
+    errParam_ = param;
     return pTcpChannel_->onError(cb, param);
 }
 

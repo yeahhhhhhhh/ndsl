@@ -34,17 +34,23 @@ class Session
   private:
     static void onMessage(void *pthis)
     {
-        if (!isStop) {
-            Session *pThis = static_cast<Session *>(pthis);
-            int n;
+        Session *pThis = static_cast<Session *>(pthis);
+        int n;
 
-            if (pThis->len_ > 0)
-                if ((n = pThis->conn_->onSend(
-                         pThis->buf_, pThis->len_, 0, NULL, NULL)) < 0)
-                    LOG(LOG_ERROR_LEVEL, mlog, "send error");
+        if (pThis->len_ > 0) {
+            // LOG(LOG_ERROR_LEVEL, mlog, "len > 0");
+            if ((n = pThis->conn_->onSend(
+                     pThis->buf_, pThis->len_, 0, NULL, NULL)) < 0)
+                LOG(LOG_ERROR_LEVEL, mlog, "send error");
+        }
 
+        if (!pThis->isStop_) {
             // 循环注册onRecv
-
+            // LOG(LOG_ERROR_LEVEL, mlog, "before recv");
+            // LOG(LOG_ERROR_LEVEL, mlog, "conn = %p", pThis->conn_);
+            // LOG(LOG_ERROR_LEVEL, mlog, "buf = %s", pThis->buf_);
+            // LOG(LOG_ERROR_LEVEL, mlog, "len = %u", pThis->len_);
+            // LOG(LOG_ERROR_LEVEL, mlog, "this = %p", pThis);
             if ((n = pThis->conn_->onRecv(
                      pThis->buf_, &(pThis->len_), 0, onMessage, pThis)) < 0)
                 LOG(LOG_ERROR_LEVEL, mlog, "recv error");
@@ -60,6 +66,7 @@ class Session
     Session(TcpConnection *conn)
         : conn_(conn)
         , len_(0)
+        , isStop_(false)
     {}
     ~Session() {}
 
@@ -73,18 +80,17 @@ class Session
     char buf_[BUFSIZE];
     TcpConnection *conn_;
     ssize_t len_;
-    // bool isStop_;
+    bool isStop_;
 };
 
 static void mError(void *se, int eno)
 {
     // LOG(LOG_ERROR_LEVEL, mlog, "error");
     Session *session = static_cast<Session *>(se);
-    if (eno == 11) {
-        // LOG(LOG_ERROR_LEVEL, mlog, "bad error");
-        printf("sd\n");
-        // session->isStop_ = true;
-        isStop = true;
+    if (session->len_ == 0) {
+        LOG(LOG_ERROR_LEVEL, mlog, "bad error");
+        session->isStop_ = true;
+        // isStop = true;
         // 对端断开 释放资源
         session->conn_->pTcpChannel_->erase();
 
@@ -105,11 +111,11 @@ static void onConnection(void *conn)
 
 int main(int argc, char *argv[])
 {
-    printf("main\n");
     // 设置log
     mlog = add_source();
-    // set_ndsl_log_sinks(LOG_SOURCE_ALL | mlog, LOG_OUTPUT_FILE);
-    set_ndsl_log_sinks(mlog | LOG_SOURCE_TCPCONNECTION, LOG_OUTPUT_TER);
+    set_ndsl_log_sinks(mlog, LOG_OUTPUT_FILE);
+    // set_ndsl_log_sinks(mlog | LOG_SOURCE_TCPCONNECTION, LOG_OUTPUT_TER);
+    // set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
 
     if (argc < 4) {
         LOG(LOG_ERROR_LEVEL, mlog, "Usage: server <address> <port> <threads>");
@@ -125,13 +131,13 @@ int main(int argc, char *argv[])
             argv[1], static_cast<unsigned short>(atoi(argv[2])));
 
         // 线程还没加入 后面加
-        int threadCount = atoi(argv[3]);
+        // int threadCount = atoi(argv[3]);
 
         // 初始化线程池
-        ELThreadpool threadPool;
-        threadPool.setMaxThreads(threadCount);
+        // ELThreadpool threadPool;
+        // threadPool.setMaxThreads(threadCount);
 
-        threadPool.start();
+        // threadPool.start();
 
         tAc = new TcpAcceptor(&loop);
         s = tAc->start(servaddr);

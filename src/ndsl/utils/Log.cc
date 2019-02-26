@@ -57,7 +57,8 @@ class Filelog
     void log(const char *data, size_t size)
     {
         int n = ::write(m_file, data, size);
-        if (n < 0) {}
+        // printf("write = %d\n", n);
+        if (n < 0) { printf("write error\n"); }
     }
 };
 
