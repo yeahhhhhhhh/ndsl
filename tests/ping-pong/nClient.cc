@@ -44,7 +44,7 @@ class Session
     {}
     ~Session() { free(buf_); }
 
-    void start();
+    static void start(void *);
 
     void stop();
 
@@ -58,6 +58,7 @@ class Session
         Session *pThis = static_cast<Session *>(pthis);
 
         // pThis->messagesRead_++;
+        // LOG(LOG_ERROR_LEVEL, mlog, "*");
         pThis->bytesRead_ += pThis->len_;
         // pThis->bytesWritten_ += pThis->len_;
 
@@ -69,6 +70,15 @@ class Session
                 pThis->buf_, &(pThis->len_), 0, onMessage, pThis);
             // if (n < 0) { LOG(LOG_ERROR_LEVEL, mlog, "regist onRecv error"); }
         }
+    }
+
+    static void onSendComp(void *pthis)
+    {
+        // LOG(LOG_ERROR_LEVEL, mlog, "-");
+        Session *session = static_cast<Session *>(pthis);
+        // 将自身的recv函数注册进去
+        session->conn_->onRecv(
+            session->buf_, &(session->len_), 0, onMessage, session);
     }
 
   public:
@@ -99,8 +109,25 @@ class Client
         , threadPool_(threadPool)
         , sessionCount_(sessionCount)
         , timeout_(timeout)
+        , time_(NULL)
         , servaddr_(servaddr)
+
     {
+        // 初始化定时器
+        time_ = new TimeWheel(loop_);
+
+        // 开始时间轮
+        time_->start();
+
+        // 初始化定时器任务
+        TimeWheel::Task *t = new TimeWheel::Task;
+        t->setInterval = timeout_; // 中断
+        t->times = 1;
+        t->doit = handleTimeout;
+        t->param = this;
+
+        time_->addTask(t);
+
         // 初始化已连接数量
         numConnected_ = 0;
 
@@ -119,7 +146,13 @@ class Client
                 new Session(threadPool_->getNextEventLoop(), this);
             session->buf_ = (char *) malloc(sizeof(char) * 16384);
             sessions_.push_back(session);
-            session->start();
+
+            EventLoop::WorkItem *w1 = new EventLoop::WorkItem;
+            w1->doit = Session::start;
+            w1->param = session;
+            session->loop_->addWork(w1);
+
+            // session->start();
         }
     }
     ~Client()
@@ -127,41 +160,17 @@ class Client
         // 关闭定时器 释放资源
         time_->stop();
         delete time_;
+        free(message_);
     }
+
+    char *message() const { return message_; }
+    int getLength() const { return blockSize_; }
 
     void onConnect()
     {
         // 等所有链接都建立之后 设置定时器 发送数据
         if ((++numConnected_) == sessionCount_) {
-            // 初始化定时器
-            time_ = new TimeWheel(loop_);
-
-            // 开始时间轮
-            time_->start();
-
-            // 初始化定时器任务
-            TimeWheel::Task *t = new TimeWheel::Task;
-            t->setInterval = timeout_; // 中断
-            t->times = 1;
-            t->doit = handleTimeout;
-            t->param = this;
-
-            // FIXME: 添加任务 task回收任务交给time处理
-            time_->addTask(t);
-
-            for (vector<Session *>::iterator it = sessions_.begin();
-                 it != sessions_.end();
-                 ++it) {
-                int n;
-
-                if ((n = (*it)->conn_->onSend(
-                         message_, blockSize_, 0, NULL, NULL)) < 0) {
-                    if (errno != EAGAIN || errno != EWOULDBLOCK)
-                        LOG(LOG_ERROR_LEVEL, mlog, "send fail");
-                }
-            }
-
-            free(message_);
+            LOG(LOG_INFO_LEVEL, mlog, "ALL CONNECTED");
         }
     }
 
@@ -240,16 +249,32 @@ class Client
     struct SocketAddress4 *servaddr_;
 };
 
-void Session::start()
+void Session::start(void *pthis)
 {
+    // LOG(LOG_ERROR_LEVEL, mlog, "should be child pthread");
+
+    Session *session = static_cast<Session *>(pthis);
     // 阻塞建立连接
-    conn_ = client_.onConnect(loop_, false, owner_->servaddr_);
+    session->conn_ = session->client_.onConnect(
+        session->loop_, false, session->owner_->servaddr_);
 
-    if (conn_ == NULL) { LOG(LOG_ERROR_LEVEL, mlog, "start onConnect fail"); }
-    //将自身的recv函数注册进去
-    if (conn_ != NULL) conn_->onRecv(buf_, &len_, 0, onMessage, this);
+    if (session->conn_ == NULL) {
+        LOG(LOG_ERROR_LEVEL, mlog, "start onConnect fail");
+    } else {
+        session->owner_->onConnect();
 
-    if (conn_ != NULL) owner_->onConnect();
+        int n;
+        if ((n = session->conn_->onSend(
+                 session->owner_->message(),
+                 session->owner_->getLength(),
+                 0,
+                 onSendComp,
+                 session)) < 0) {
+            if (errno != EAGAIN || errno != EWOULDBLOCK) {
+                LOG(LOG_ERROR_LEVEL, mlog, "send fail");
+            }
+        }
+    }
 }
 
 void Session::stop()

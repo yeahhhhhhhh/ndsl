@@ -8,6 +8,7 @@
 #ifndef __NDSL_NET_TCPCONNECTION_H__
 #define __NDSL_NET_TCPCONNECTION_H__
 #include <queue>
+#include <stdlib.h>
 #include <sys/socket.h>
 #include "ndsl/config.h"
 #include "ndsl/utils/Log.h"
@@ -32,7 +33,16 @@ class TcpConnection
     // 用户主动调用onRecv/onSend函数的参数存在这
     struct SInfo
     {
-        SInfo() {}
+        SInfo()
+            : sendBuf_(NULL)
+            , readBuf_(NULL)
+            , len_(NULL)
+            , flags_(0)
+            , cb_(NULL)
+            , param_(NULL)
+            , offset_(0)
+            , recvInUse_(false)
+        {}
         SInfo(
             void *sbuf,
             void *rbuf,
@@ -96,7 +106,7 @@ class TcpConnection
     int onRecv(char *buffer, ssize_t *len, int flags, Callback cb, void *param);
 
     // 允许多用户同时调用这个进行send，需要一个队列
-    int onSend(void *buf, ssize_t len, int flags, Callback cb, void *param);
+    ssize_t onSend(void *buf, ssize_t len, int flags, Callback cb, void *param);
 
     // 进程之前相互通信
     int sendMsg(

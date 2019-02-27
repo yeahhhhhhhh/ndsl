@@ -37,13 +37,14 @@ int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
     return pTcpChannel_->enroll(true);
 }
 
-int TcpConnection::onSend(
+ssize_t TcpConnection::onSend(
     void *buf,
     ssize_t len,
     int flags,
     Callback cb,
     void *param)
 {
+    // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "onSend");
     // 当创建顺序不对的时候 这里容易报段错误 故 加一条输出
     if (NULL == pTcpChannel_) {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "pTcpChannel == NULL");
@@ -57,7 +58,7 @@ int TcpConnection::onSend(
             // 写完 通知用户
             // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "write complete");
             if (cb != NULL) cb(param);
-            return S_OK;
+            return n;
         } else if (n < 0) {
             // 出错 通知用户
             // if (errno != EAGAIN || errno != EWOULDBLOCK) {}
@@ -65,7 +66,7 @@ int TcpConnection::onSend(
             LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "send error");
             // printf("errno = %d\n%s\n", errno, strerror(errno));
             if (NULL != errorHandle_) errorHandle_(errParam_, errno);
-            return S_FALSE;
+            return n;
         }
 
         // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "send for next
@@ -76,7 +77,7 @@ int TcpConnection::onSend(
 
         qSendInfo_.push(tsi);
 
-        return S_OK;
+        return n;
     }
 }
 
@@ -146,7 +147,7 @@ int TcpConnection::onRecv(
     Callback cb,
     void *param)
 {
-    LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "onRecv");
+    // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "onRecv");
 
     // 作为下面recv接收的临时量，直接用(*len)接收会变成2^64-1 不知道为什么
     // 答案1：是flag参数的问题
@@ -204,12 +205,7 @@ int TcpConnection::onRecv(
 int TcpConnection::handleRead(void *pthis)
 {
     // printf("TcpConnection::handleRead!\n");
-    TcpConnection *pThis;
-
-    if (NULL != pthis)
-        pThis = static_cast<TcpConnection *>(pthis);
-    else
-        return S_FALSE;
+    TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
 
     if (pThis->RecvInfo_.recvInUse_) {
         int sockfd = pThis->pTcpChannel_->getFd();
