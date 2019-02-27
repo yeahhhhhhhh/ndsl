@@ -189,7 +189,7 @@ int TimeWheel::onTick(void *pThis)
     // 将对应的list拉下来一一处理
     curSlot.swap(ptw->slot_[ptw->curTick_]);
 
-    for (auto it = curSlot.begin(); it != curSlot.end(); ++it) {
+    for (auto it = curSlot.begin(); it != curSlot.end();) {
         // 若不在本轮,则减少轮数后再加入相应的list
         if ((*it)->restInterval > ptw->SLOTNUM) {
             (*it)->restInterval -= ptw->SLOTNUM;
@@ -198,10 +198,16 @@ int TimeWheel::onTick(void *pThis)
             (*it)->doit((*it)->param);
             if ((*it)->times > 0) (*it)->times--;
 
-            // FIXME:
             // 若times减到0,由用户自己释放所分配的内存
             // But,用户如何知道何时可以释放内存
-            if ((*it)->times == 0) continue;
+            if ((*it)->times == 0) {
+                Task *delTask = *it;
+                // 一定要以这种形式(it++)
+                curSlot.erase(it++);
+                // 此处释放Task
+                delete delTask;
+                continue;
+            }
 
             // 若任务是周期性执行,即(*it)->times == -1 或 (*it)->times > 0
             // ,则再次插入,并重新选择时间槽和设置restInterval值
@@ -209,8 +215,11 @@ int TimeWheel::onTick(void *pThis)
                 (ptw->curTick_ + (*it)->setInterval) % ptw->SLOTNUM;
             (*it)->restInterval = (*it)->setInterval;
             ptw->slot_[(*it)->setTick].push_back((*it));
+            // 指向下一个地址
+            ++it;
         }
     }
+
     return S_OK;
 }
 } // namespace net
