@@ -35,32 +35,33 @@ class Session
     static void onMessage(void *pthis)
     {
         // LOG(LOG_ERROR_LEVEL, mlog, "*");
-        Session *pThis = static_cast<Session *>(pthis);
+        Session *session = static_cast<Session *>(pthis);
         ssize_t n;
 
-        if (pThis->len_ > 0) {
-            if ((n = pThis->conn_->onSend(
-                     pThis->buf_, pThis->len_, 0, NULL, NULL)) < 0) {
+        if (session->len_ > 0) {
+            if ((n = session->conn_->onSend(
+                     session->buf_, session->len_, 0, onSendMessage, session)) <
+                0) {
+                LOG(LOG_ERROR_LEVEL, mlog, "send error");
             }
-            // LOG(LOG_ERROR_LEVEL, mlog, "send error");
-            else {
-                // pThis->bytesWritten_ += n;
-            }
-        }
-
-        if (!pThis->isStop_) {
-            // 循环注册onRecv
-            if ((n = pThis->conn_->onRecv(
-                     pThis->buf_, &(pThis->len_), 0, onMessage, pThis)) < 0) {}
-            // LOG(LOG_ERROR_LEVEL, mlog, "recv error");
         }
     }
 
   public:
-    // static void onSendMessage(void *conn)
-    // {
-    //     // LOG(LOG_ERROR_LEVEL, mlog, "send a message");
-    // }
+    static void onSendMessage(void *pthis)
+    {
+        Session *session = static_cast<Session *>(pthis);
+        // LOG(LOG_ERROR_LEVEL, mlog, "send a message");
+        int n;
+        if (!session->isStop_) {
+            // 循环注册onRecv
+            if ((n = session->conn_->onRecv(
+                     session->buf_, &(session->len_), 0, onMessage, session)) <
+                0) {
+                LOG(LOG_ERROR_LEVEL, mlog, "recv error");
+            }
+        }
+    }
 
     Session(TcpConnection *conn)
         : conn_(conn)
@@ -86,20 +87,31 @@ class Session
     ssize_t bytesWritten_;
 };
 
+static void stop(void *pthis)
+{
+    Session *session = static_cast<Session *>(pthis);
+
+    // 对端断开 释放资源 从epoll上取消注册
+    session->conn_->pTcpChannel_->erase();
+    delete session->conn_;
+    delete session;
+}
+
 static void mError(void *se, int eno)
 {
     Session *session = static_cast<Session *>(se);
     if (session->len_ == 0) {
         // LOG(LOG_ERROR_LEVEL, mlog, "bad error");
         session->isStop_ = true;
-        // 对端断开 释放资源 从epoll上取消注册
-        session->conn_->pTcpChannel_->erase();
+
+        // 添加到addWord
+        EventLoop::WorkItem *w1 = new EventLoop::WorkItem;
+        w1->doit = stop;
+        w1->param = session;
+        session->conn_->pTcpChannel_->pLoop_->addWork(w1);
 
         // LOG(LOG_ERROR_LEVEL, mlog, "byteWrite = %zd",
         // session->bytesWritten_);
-
-        delete session->conn_;
-        delete session;
     }
 }
 
@@ -109,7 +121,7 @@ static void onConnection(void *conn)
     Session *session = new Session(Con);
     // session->start();
 
-    // 向loop里面添加任务  FIXME: Mem leak
+    // 向loop里面添加任务
     EventLoop::WorkItem *w1 = new EventLoop::WorkItem;
     w1->doit = Session::start;
     w1->param = session;

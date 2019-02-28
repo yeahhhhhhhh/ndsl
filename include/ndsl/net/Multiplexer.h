@@ -77,7 +77,7 @@ class Multiplexer
                 "MULTIPLEXER::MULTIPLEXER conn_ == NULL\n");
         else {
             conn_->onRecv(msg_, &rlen_, 0, dispatch, (void *) this);
-            conn_->onError(handleErro);
+            conn_->onError(handleErro, NULL);
         }
     }
 
@@ -100,7 +100,9 @@ class Multiplexer
 
     // 分发消息给通信实体
     static void dispatch(void *p);
-    static void handleErro(int, Channel *)
+
+    // 错误处理函数
+    static void handleErro(void *, int)
     {
         LOG(LOG_ERROR_LEVEL, LOG_SOURCE_MULTIPLEXER, "ERROR!!!\n");
     }

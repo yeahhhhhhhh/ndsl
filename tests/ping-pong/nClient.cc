@@ -46,7 +46,9 @@ class Session
 
     static void start(void *);
 
-    void stop();
+    void disConnect();
+
+    static void stop(void *);
 
     int64_t bytesRead() const { return bytesRead_; }
 
@@ -62,23 +64,18 @@ class Session
         pThis->bytesRead_ += pThis->len_;
         // pThis->bytesWritten_ += pThis->len_;
 
-        pThis->conn_->onSend(pThis->buf_, pThis->len_, 0, NULL, NULL);
-
-        if (!(pThis->isStop_)) {
-            // 循环注册onRecv
-            pThis->conn_->onRecv(
-                pThis->buf_, &(pThis->len_), 0, onMessage, pThis);
-            // if (n < 0) { LOG(LOG_ERROR_LEVEL, mlog, "regist onRecv error"); }
-        }
+        pThis->conn_->onSend(pThis->buf_, pThis->len_, 0, onSendComp, pThis);
     }
 
     static void onSendComp(void *pthis)
     {
         // LOG(LOG_ERROR_LEVEL, mlog, "-");
         Session *session = static_cast<Session *>(pthis);
-        // 将自身的recv函数注册进去
-        session->conn_->onRecv(
-            session->buf_, &(session->len_), 0, onMessage, session);
+        if (!(session->isStop_)) {
+            // 注册onRecv
+            session->conn_->onRecv(
+                session->buf_, &(session->len_), 0, onMessage, session);
+        }
     }
 
   public:
@@ -216,11 +213,13 @@ class Client
 
         // 关闭每个链接
         for (Session *it : pThis->sessions_) {
-            // 从loop上移除自身
-            it->conn_->pTcpChannel_->erase();
-
             // 停止继续发送消息
             it->isStop_ = true;
+            // 通过addWork，让每个线程自己停止
+            EventLoop::WorkItem *w1 = new EventLoop::WorkItem;
+            w1->doit = Session::stop;
+            w1->param = it;
+            it->loop_->addWork(w1);
         }
 
         // 关闭线程池
@@ -229,7 +228,7 @@ class Client
         // 关闭每个链接
         for (Session *it : pThis->sessions_) {
             // 断开链接
-            it->stop();
+            it->disConnect();
         }
 
         pThis->loop_->quit();
@@ -277,7 +276,14 @@ void Session::start(void *pthis)
     }
 }
 
-void Session::stop()
+void Session::stop(void *pthis)
+{
+    Session *session = static_cast<Session *>(pthis);
+    // 从loop上移除自身
+    session->conn_->pTcpChannel_->erase();
+}
+
+void Session::disConnect()
 {
     client_.disConnect();
     owner_->onDisconnect();

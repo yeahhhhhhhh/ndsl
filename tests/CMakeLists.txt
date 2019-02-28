@@ -47,21 +47,21 @@ set(TEST
 )
 
 # 设置ping-pong单元测试的文件
-set(pingserver ping-pong/server.cc)
-set(pingclient ping-pong/nClient.cc)
-include_directories(${CMAKE_SOURCE_DIR}/tests)
+# set(pingserver ping-pong/server.cc)
+# set(pingclient ping-pong/nClient.cc)
+# include_directories(${CMAKE_SOURCE_DIR}/tests)
 
-# net和utils下的测试文件
+# # net和utils下的测试文件
 add_executable(utest ${TEST})
 add_dependencies(utest ndsl)
 target_link_libraries(utest ndsl pthread)
 
 # 生成pingpong测试 服务端
-add_executable(pserver ${pingserver})
-add_dependencies(pserver ndsl)
-target_link_libraries(pserver ndsl pthread)
+# add_executable(pserver ${pingserver})
+# add_dependencies(pserver ndsl)
+# target_link_libraries(pserver ndsl pthread)
 
 # 生成pingpong测试 客户端
-add_executable(pclient ${pingclient})
-add_dependencies(pclient ndsl)
-target_link_libraries(pclient ndsl pthread)
+# add_executable(pclient ${pingclient})
+# add_dependencies(pclient ndsl)
+# target_link_libraries(pclient ndsl pthread)
