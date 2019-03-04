@@ -37,7 +37,7 @@ int TcpConnection::createChannel(int sockfd, EventLoop *pLoop)
     return pTcpChannel_->enroll(true);
 }
 
-ssize_t TcpConnection::onSend(
+int TcpConnection::onSend(
     void *buf,
     ssize_t len,
     int flags,
@@ -58,7 +58,7 @@ ssize_t TcpConnection::onSend(
             // 写完 通知用户
             // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "write complete");
             if (cb != NULL) cb(param);
-            return n;
+            return S_OK;
         } else if (n < 0) {
             // 出错 通知用户
             // if (errno != EAGAIN || errno != EWOULDBLOCK) {}
@@ -66,7 +66,7 @@ ssize_t TcpConnection::onSend(
             LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "send error");
             // printf("errno = %d\n%s\n", errno, strerror(errno));
             if (NULL != errorHandle_) errorHandle_(errParam_, errno);
-            return n;
+            return S_FALSE;
         }
 
         // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "send for next
@@ -77,20 +77,21 @@ ssize_t TcpConnection::onSend(
 
         qSendInfo_.push(tsi);
 
-        return n;
+        return S_OK;
     }
 }
 
 int TcpConnection::handleWrite(void *pthis)
 {
     TcpConnection *pThis = static_cast<TcpConnection *>(pthis);
-    int sockfd = pThis->pTcpChannel_->getFd();
-
-    if (sockfd < 0) { return -1; }
-    ssize_t n;
 
     // 有数据待写
     if (pThis->qSendInfo_.size() > 0) {
+        int sockfd = pThis->pTcpChannel_->getFd();
+
+        if (sockfd < 0) { return -1; }
+        ssize_t n;
+
         pInfo tsi = pThis->qSendInfo_.front();
 
         if ((n = send(
@@ -147,12 +148,12 @@ int TcpConnection::onRecv(
     Callback cb,
     void *param)
 {
-    // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "onRecv");
+    // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "");
 
     // 作为下面recv接收的临时量，直接用(*len)接收会变成2^64-1 不知道为什么
     // 答案1：是flag参数的问题
     ssize_t n;
-    int isOK = 1;
+    // int isOK = 1;
 
     if (NULL != pTcpChannel_) {
         int sockfd = pTcpChannel_->getFd();
@@ -167,24 +168,24 @@ int TcpConnection::onRecv(
                     "recv error can not deal");
                 (*len) = -1;
                 if (NULL != errorHandle_) errorHandle_(errParam_, errno);
-                isOK = -1;
-                return isOK;
+                // isOK = -1;
+                return S_FALSE;
             }
         } else if (n == 0) {
-            LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "peer closed");
+            // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "= 0");
             (*len) = 0;
-            if (NULL != errorHandle_)
-                errorHandle_(errParam_, errno);
-            else {
-                LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "no errhandle");
-            }
-            return S_OK;
+            RecvInfo_.recvInUse_ = false;
+            // TODO: 暂时先这样，因为会调用两次delete，所以把这一次注释掉
+            // 第一次在这里 read到0以后 调用mError
+            // 第二次在Epoll收到SHUTDOWN信号之后 调用mError
+            // if (NULL != errorHandle_) errorHandle_(errParam_, errno);
+            return S_FALSE;
         } else {
             // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "recv complete\n");
             (*len) = n;
             // 一次性读完之后通知用户
             if (cb != NULL) cb(param);
-            return isOK;
+            return S_OK;
         }
     }
 
@@ -199,7 +200,9 @@ int TcpConnection::onRecv(
     RecvInfo_.param_ = param;
     RecvInfo_.recvInUse_ = true;
 
-    return isOK;
+    return S_OK;
+
+    // LOG(LOG_INFO_LEVEL, LOG_SOURCE_TCPCONNECTION, "end");
 }
 
 int TcpConnection::handleRead(void *pthis)
@@ -233,7 +236,8 @@ int TcpConnection::handleRead(void *pthis)
 
                 return S_FALSE;
             } else if (n == 0) {
-                LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "peer closed");
+                // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_TCPCONNECTION, "peer
+                // closed");
                 (*pThis->RecvInfo_.len_) = 0;
                 pThis->RecvInfo_.recvInUse_ = false;
 

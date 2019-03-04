@@ -106,7 +106,7 @@ class TcpConnection
     int onRecv(char *buffer, ssize_t *len, int flags, Callback cb, void *param);
 
     // 允许多用户同时调用这个进行send，需要一个队列
-    ssize_t onSend(void *buf, ssize_t len, int flags, Callback cb, void *param);
+    int onSend(void *buf, ssize_t len, int flags, Callback cb, void *param);
 
     // 进程之前相互通信
     int sendMsg(

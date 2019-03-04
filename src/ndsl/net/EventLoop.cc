@@ -91,6 +91,7 @@ void *EventLoop::loop(void *pThis)
     // 进入事件循环
     while (true) {
         Channel *channels[Epoll::MAX_EVENTS];
+        // LOG(LOG_ERROR_LEVEL, LOG_SOURCE_EVENTLOOP, "wait");
         if (S_OK != el->epoll_.wait(channels, nEvents, -1)) {
             return (void *) S_FALSE; // 若wait出错,则直接返回
         }
@@ -114,6 +115,7 @@ void *EventLoop::loop(void *pThis)
             int n1 = read(el->pQueCh_->getFd(), &data, sizeof data);
             if (n1 < 0) {}
             el->pQueCh_->handleEvent();
+            // removeWork();
         }
         // 退出
         if (quit) {

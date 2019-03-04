@@ -34,14 +34,17 @@ class Session
   private:
     static void onMessage(void *pthis)
     {
-        // LOG(LOG_ERROR_LEVEL, mlog, "*");
+        // LOG(LOG_ERROR_LEVEL, mlog, "");
         Session *session = static_cast<Session *>(pthis);
         ssize_t n;
 
         if (session->len_ > 0) {
             if ((n = session->conn_->onSend(
-                     session->buf_, session->len_, 0, onSendMessage, session)) <
-                0) {
+                     session->buf_,
+                     session->len_,
+                     0,
+                     onSendMessage,
+                     session)) == S_FALSE) {
                 LOG(LOG_ERROR_LEVEL, mlog, "send error");
             }
         }
@@ -50,15 +53,17 @@ class Session
   public:
     static void onSendMessage(void *pthis)
     {
+        // LOG(LOG_ERROR_LEVEL, mlog, "");
         Session *session = static_cast<Session *>(pthis);
-        // LOG(LOG_ERROR_LEVEL, mlog, "send a message");
+
         int n;
         if (!session->isStop_) {
+            // LOG(LOG_ERROR_LEVEL, mlog, "send a message");
             // 循环注册onRecv
             if ((n = session->conn_->onRecv(
-                     session->buf_, &(session->len_), 0, onMessage, session)) <
-                0) {
-                LOG(LOG_ERROR_LEVEL, mlog, "recv error");
+                     session->buf_, &(session->len_), 0, onMessage, session)) ==
+                S_FALSE) {
+                // LOG(LOG_ERROR_LEVEL, mlog, "recv error");
             }
         }
     }
@@ -77,7 +82,7 @@ class Session
         session->conn_->onError(mError, session);
         int n = session->conn_->onRecv(
             session->buf_, &(session->len_), 0, onMessage, session);
-        if (n < 0) { LOG(LOG_ERROR_LEVEL, mlog, "recv error"); }
+        if (n == S_FALSE) { LOG(LOG_ERROR_LEVEL, mlog, "recv error"); }
     }
 
     char buf_[BUFSIZE];
@@ -100,8 +105,8 @@ static void stop(void *pthis)
 static void mError(void *se, int eno)
 {
     Session *session = static_cast<Session *>(se);
-    if (session->len_ == 0) {
-        // LOG(LOG_ERROR_LEVEL, mlog, "bad error");
+    if (session->len_ == 0 && !(session->isStop_) && eno == 11) {
+        LOG(LOG_ERROR_LEVEL, mlog, "bad error");
         session->isStop_ = true;
 
         // 添加到addWord
@@ -135,10 +140,12 @@ static void onConnection(void *conn)
 int main(int argc, char *argv[])
 {
     // 设置log
-    mlog = add_source();
-    set_ndsl_log_sinks(mlog, LOG_OUTPUT_FILE);
-    // set_ndsl_log_sinks(mlog | LOG_SOURCE_TCPCONNECTION, LOG_OUTPUT_FILE);
-    set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
+    // mlog = add_source();
+    // set_ndsl_log_sinks(mlog, LOG_OUTPUT_FILE);
+    // set_ndsl_log_sinks(
+    //     mlog | LOG_SOURCE_TCPCONNECTION | LOG_SOURCE_EVENTLOOP,
+    //     LOG_OUTPUT_FILE);
+    // set_ndsl_log_sinks(mlog, LOG_OUTPUT_TER);
 
     if (argc < 4) {
         LOG(LOG_ERROR_LEVEL, mlog, "Usage: server <address> <port> <threads>");

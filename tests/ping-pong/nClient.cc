@@ -148,8 +148,6 @@ class Client
             w1->doit = Session::start;
             w1->param = session;
             session->loop_->addWork(w1);
-
-            // session->start();
         }
     }
     ~Client()
